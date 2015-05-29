@@ -120,6 +120,10 @@ setup(
       ],
 
       'bob.bio.extractor': [
+        'dct-blocks        = bob.bio.face.config.extractor.dct_blocks:extractor', # DCT blocks
+        'grid-graph        = bob.bio.face.config.extractor.grid_graph:extractor', # Grid graph
+        'lgbphs            = bob.bio.face.config.extractor.lgbphs:extractor', # LGBPHS
+        'eigenface         = bob.bio.face.config.extractor.eigenface:extractor', # Eigenface
       ],
 
       'bob.bio.algorithm': [

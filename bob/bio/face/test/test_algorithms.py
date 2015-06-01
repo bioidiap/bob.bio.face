@@ -25,7 +25,6 @@ import os
 import numpy
 import math
 import tempfile
-import facereclib
 from nose.plugins.skip import SkipTest
 
 import pkg_resources
@@ -112,60 +111,3 @@ def test_lgbphs():
   reference *= 2.
   assert abs(lgbphs.score(model2, feature2) - reference) < 1e-5
   assert abs(lgbphs.score_for_multiple_probes(model2, [feature2, feature2]) - reference) < 1e-5
-
-
-"""
-  def test09_plda(self):
-    # read input
-    feature = facereclib.utils.load(self.input_dir('linearize.hdf5'))
-    # assure that the config file is readable
-    tool = self.config('pca+plda')
-    self.assertTrue(isinstance(tool, facereclib.tools.PLDA))
-
-    # here, we use a reduced complexity for test purposes
-    tool = facereclib.tools.PLDA(
-        subspace_dimension_of_f = 2,
-        subspace_dimension_of_g = 2,
-        subspace_dimension_pca = 10,
-        plda_training_iterations = 1,
-        INIT_SEED = seed_value,
-    )
-    self.assertFalse(tool.performs_projection)
-    self.assertTrue(tool.requires_enroller_training)
-
-    # train the projector
-    t = tempfile.mkstemp('pca+plda.hdf5', prefix='frltest_')[1]
-    tool.train_enroller(facereclib.utils.tests.random_training_set_by_id(feature.shape, count=20, minimum=0., maximum=255.), t)
-    if regenerate_refs:
-      import shutil
-      shutil.copy2(t, self.reference_dir('pca+plda_enroller.hdf5'))
-
-    # load the projector file
-    tool.load_enroller(self.reference_dir('pca+plda_enroller.hdf5'))
-    # compare the resulting machines
-    test_file = bob.io.base.HDF5File(t)
-    test_file.cd('/pca')
-    pca_machine = bob.learn.linear.Machine(test_file)
-    test_file.cd('/plda')
-    plda_machine = bob.learn.em.PLDABase(test_file)
-    # TODO: compare the PCA machines
-    #self.assertEqual(pca_machine, tool.m_pca_machine)
-    # TODO: compare the PLDA machines
-    #self.assertEqual(plda_machine, tool.m_plda_base_machine)
-    os.remove(t)
-
-    # enroll model
-    model = tool.enroll([feature])
-    if regenerate_refs:
-      model.save(bob.io.base.HDF5File(self.reference_dir('pca+plda_model.hdf5'), 'w'))
-    # TODO: compare the models with the reference
-    #reference_model = tool.read_model(self.reference_dir('pca+plda_model.hdf5'))
-    #self.assertEqual(model, reference_model)
-
-    # score
-    sim = tool.score(model, feature)
-    self.assertAlmostEqual(sim, 0.)
-    # score with a concatenation of the probe
-    self.assertAlmostEqual(tool.score_for_multiple_probes(model, [feature, feature]), 0.)
-
-"""

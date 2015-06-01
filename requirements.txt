@@ -1,0 +1,25 @@
+setuptools
+bob.extension
+bob.blitz 
+bob.core 
+bob.io.base 
+bob.io.image 
+bob.learn.activation
+bob.math 
+bob.sp 
+bob.ip.base 
+bob.ip.color 
+bob.ip.draw 
+bob.ip.gabor
+bob.learn.linear 
+bob.learn.em 
+bob.measure 
+bob.db.base
+bob.db.verification.utils 
+bob.db.verification.filelist
+bob.db.atnt  # required for testing
+bob.bio.base 
+bob.learn.boosting 
+bob.ip.facedetect
+bob.ip.flandmark
+matplotlib   # for plotting

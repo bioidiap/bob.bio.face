@@ -1,7 +1,6 @@
 bob.db.arface
 bob.db.banca
 bob.db.caspeal
-bob.db.gbu
 bob.db.frgc
 bob.db.gbu
 bob.db.lfw

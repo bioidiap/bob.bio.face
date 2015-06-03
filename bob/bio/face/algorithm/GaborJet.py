@@ -105,7 +105,7 @@ class GaborJet (Algorithm):
     return [[bob.ip.gabor.Jet(jets_per_node[n])] for n in range(len(jets_per_node))]
 
 
-  def save_model(self, model, model_file):
+  def write_model(self, model, model_file):
     """Saves the enrolled model of Gabor jets to file."""
     f = bob.io.base.HDF5File(model_file, 'w')
     # several model graphs

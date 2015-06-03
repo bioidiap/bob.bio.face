@@ -33,10 +33,10 @@
 # allows you to test your package with new python dependencies w/o requiring
 # administrative interventions.
 
-from setuptools import setup, find_packages, dist
+from setuptools import setup, dist
 dist.Distribution(dict(setup_requires=['bob.extension']))
 
-from bob.extension.utils import load_requirements
+from bob.extension.utils import load_requirements, find_packages
 install_requires = load_requirements()
 
 # The only thing we do in this file is to call the setup() function with all
@@ -103,6 +103,7 @@ setup(
 
       # scripts should be declared using this entry:
       'console_scripts' : [
+        'baselines.py      = bob.bio.face.script.baselines:main'
       ],
 
       'bob.bio.database': [
@@ -127,12 +128,18 @@ setup(
       'bob.bio.preprocessor': [
         'base              = bob.bio.face.config.preprocessor.base:preprocessor', # simple color conversion
         'face-crop-eyes    = bob.bio.face.config.preprocessor.face_crop_eyes:preprocessor', # face crop
-        'inorm-lbp-eyes    = bob.bio.face.config.preprocessor.inorm_lbp_eyes:preprocessor', # face crop + inorm-lbp
-        'tan-triggs-eyes   = bob.bio.face.config.preprocessor.tan_triggs_eyes:preprocessor', # face crop + inorm-lbp
-        'histogram-eyes    = bob.bio.face.config.preprocessor.histogram_equalization_eyes:preprocessor', # face crop + inorm-lbp
-        'self-quotient-eyes= bob.bio.face.config.preprocessor.self_quotient_image_eyes:preprocessor', # face crop + inorm-lbp
+        'inorm-lbp-crop    = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor', # face crop + inorm-lbp
+        'tan-triggs-crop   = bob.bio.face.config.preprocessor.tan_triggs:preprocessor', # face crop + Tan&Triggs
+        'histogram-crop    = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor', # face crop + histogram equalization
+        'self-quotient-crop= bob.bio.face.config.preprocessor.self_quotient_image:preprocessor', # face crop + self quotient image
+        'landmark-detect   = bob.bio.face.config.preprocessor.face_detect:preprocessor', # face detection + landmark detection + cropping
+        'face-detect       = bob.bio.face.config.preprocessor.face_detect:preprocessor_no_eyes', # face detection + cropping
 
-        'face-detect-eyes  = bob.bio.face.config.preprocessor.face_detect_eyes:preprocessor', # face detection + cropping
+        'inorm-lbp         = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_no_crop', # inorm-lbp w/o face-crop
+        'tan-triggs        = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_no_crop', # Tan&Triggs w/o face-crop
+        'histogram         = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_no_crop', # histogram equalization w/o face-crop
+        'self-quotient     = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_no_crop', # self quotient image w/o face-crop
+
       ],
 
       'bob.bio.extractor': [
@@ -145,6 +152,7 @@ setup(
       'bob.bio.algorithm': [
         'gabor-jet         = bob.bio.face.config.algorithm.gabor_jet:algorithm', # Gabor jet comparison
         'lgbphs            = bob.bio.face.config.algorithm.lgbphs:algorithm', # LGBPHS histograms
+        'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm', # BIC on gabor jets
       ],
    },
 

@@ -30,6 +30,7 @@ regenerate_refs = False
 
 import bob.bio.base
 import bob.bio.face
+import bob.db.verification.utils
 
 
 def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load):
@@ -86,10 +87,11 @@ def test_face_crop():
 def test_face_detect():
   image, annotation = _image(), None
 
-  cropper = bob.bio.base.load_resource('face-detect-eyes', 'preprocessor')
+  cropper = bob.bio.base.load_resource('face-detect', 'preprocessor')
   assert isinstance(cropper, bob.bio.face.preprocessor.FaceDetect)
   assert isinstance(cropper, bob.bio.face.preprocessor.Base)
   assert isinstance(cropper, bob.bio.base.preprocessor.Preprocessor)
+  assert cropper.flandmark is None
 
   # execute face detector
   reference = pkg_resources.resource_filename('bob.bio.face.test', 'data/detected.hdf5')
@@ -103,11 +105,11 @@ def test_face_detect():
   assert abs(cropper.quality - 33.1136586) < 1e-5
 
   # execute face detector with tan-triggs
-  cropper = bob.bio.face.preprocessor.TanTriggs(face_cropper='face-detect-eyes')
+  cropper = bob.bio.face.preprocessor.TanTriggs(face_cropper='landmark-detect')
   preprocessed = cropper(image, annotation)
   # load reference and perform Tan-Triggs
-  detected = bob.bio.base.load(pkg_resources.resource_filename('bob.bio.face.test', 'data/detected.hdf5'))
-  tan_triggs = bob.bio.face.preprocessor.TanTriggs(face_cropper=None)
+  detected = bob.bio.base.load(pkg_resources.resource_filename('bob.bio.face.test', 'data/flandmark.hdf5'))
+  tan_triggs = bob.bio.base.load_resource('tan-triggs', 'preprocessor')
   reference = tan_triggs(detected)
   assert numpy.allclose(preprocessed, reference, atol=1e-5)
 
@@ -116,7 +118,7 @@ def test_tan_triggs():
   # read input
   image, annotation = _image(), _annotation()
 
-  preprocessor = bob.bio.base.load_resource('tan-triggs-eyes', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('tan-triggs-crop', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.face.preprocessor.TanTriggs)
   assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
   assert isinstance(preprocessor, bob.bio.base.preprocessor.Preprocessor)
@@ -135,7 +137,7 @@ def test_inorm_lbp():
   # read input
   image, annotation = _image(), _annotation()
 
-  preprocessor = bob.bio.base.load_resource('inorm-lbp-eyes', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('inorm-lbp-crop', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.face.preprocessor.INormLBP)
   assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
   assert isinstance(preprocessor, bob.bio.base.preprocessor.Preprocessor)
@@ -148,7 +150,7 @@ def test_heq():
   # read input
   image, annotation = _image(), _annotation()
 
-  preprocessor = bob.bio.base.load_resource('histogram-eyes', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('histogram-crop', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.face.preprocessor.HistogramEqualization)
   assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
   assert isinstance(preprocessor, bob.bio.base.preprocessor.Preprocessor)
@@ -161,7 +163,7 @@ def test_sqi():
   # read input
   image, annotation = _image(), _annotation()
 
-  preprocessor = bob.bio.base.load_resource('self-quotient-eyes', 'preprocessor')
+  preprocessor = bob.bio.base.load_resource('self-quotient-crop', 'preprocessor')
   assert isinstance(preprocessor, bob.bio.face.preprocessor.SelfQuotientImage)
   assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
   assert isinstance(preprocessor, bob.bio.base.preprocessor.Preprocessor)

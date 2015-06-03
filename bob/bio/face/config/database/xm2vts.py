@@ -3,7 +3,7 @@
 import bob.db.xm2vts
 import bob.bio.base
 
-xm2vts_directory = "[YOUR_XM2VTS_IMAGE_DIRECTORY]"
+xm2vts_directory = "[YOUR_XM2VTS_DIRECTORY]"
 
 # setup for XM2VTS
 database = bob.bio.base.database.DatabaseBob(

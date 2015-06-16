@@ -279,10 +279,16 @@ def main(command_line_parameters = None):
         logger.warn("Skipping algorithm '%s' since the results cannot be found.", algorithm)
         continue
       if len(protocols) > 1:
-        logger.warn("There are several protocols found in directory '%s'. Here, we use protocol '%s'.", os.path.join(result_dir, algorithm), protocols[0])
+        # load the default protocol of the database
+        protocol = bob.bio.base.load_resource(args.database, "database").protocol
+        if protocol not in protocols:
+          protocol = protocols[0]
+          logger.warn("There are several protocols found in directory '%s'. Here, we use protocol '%s'.", os.path.join(result_dir, algorithm), protocols[0])
+      else:
+        protocol = protocols[0]
 
-      nonorm_sub_dir = os.path.join(algorithm, protocols[0], 'nonorm')
-      ztnorm_sub_dir = os.path.join(algorithm, protocols[0], 'ztnorm')
+      nonorm_sub_dir = os.path.join(algorithm, protocol, 'nonorm')
+      ztnorm_sub_dir = os.path.join(algorithm, protocol, 'ztnorm')
 
       # collect the resulting files
       if os.path.exists(os.path.join(result_dir, nonorm_sub_dir, 'scores-dev')):

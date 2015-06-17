@@ -11,6 +11,8 @@ from .Base import Base
 from .utils import load_cropper_only
 from bob.bio.base.preprocessor import Preprocessor
 
+import logging
+logger = logging.getLogger("bob.bio.face")
 
 class FaceDetect (Base):
 
@@ -75,7 +77,7 @@ class FaceDetect (Base):
           'leye' : ((landmarks[2][0] + landmarks[6][0])/2., (landmarks[2][1] + landmarks[6][1])/2.)
         }
       else:
-        utils.warn("Could not detect landmarks -- using estimated landmarks")
+        logger.warn("Could not detect landmarks -- using estimated landmarks")
 
     # estimate from default locations
     return bob.ip.facedetect.expected_eye_positions(bounding_box)

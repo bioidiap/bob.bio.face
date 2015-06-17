@@ -122,24 +122,28 @@ setup(
         'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
         'scface            = bob.bio.face.config.database.scface:database',
         'xm2vts            = bob.bio.face.config.database.xm2vts:database',
-
       ],
 
       'bob.bio.preprocessor': [
         'base              = bob.bio.face.config.preprocessor.base:preprocessor', # simple color conversion
         'face-crop-eyes    = bob.bio.face.config.preprocessor.face_crop_eyes:preprocessor', # face crop
+        'landmark-detect   = bob.bio.face.config.preprocessor.face_detect:preprocessor', # face detection + landmark detection + cropping
+        'face-detect       = bob.bio.face.config.preprocessor.face_detect:preprocessor_no_eyes', # face detection + cropping
+
         'inorm-lbp-crop    = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor', # face crop + inorm-lbp
         'tan-triggs-crop   = bob.bio.face.config.preprocessor.tan_triggs:preprocessor', # face crop + Tan&Triggs
         'histogram-crop    = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor', # face crop + histogram equalization
         'self-quotient-crop= bob.bio.face.config.preprocessor.self_quotient_image:preprocessor', # face crop + self quotient image
-        'landmark-detect   = bob.bio.face.config.preprocessor.face_detect:preprocessor', # face detection + landmark detection + cropping
-        'face-detect       = bob.bio.face.config.preprocessor.face_detect:preprocessor_no_eyes', # face detection + cropping
+
+        'inorm-lbp-landmark = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_landmark', # face detection + landmark detection + cropping + inorm-lbp
+        'tan-triggs-landmark = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_landmark', # face detection + landmark detection + cropping + Tan&Triggs
+        'histogram-landmark = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_landmark', # face detection + landmark detection + cropping + histogram equalization
+        'self-quotient-landmark = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_landmark', # face detection + landmark detection + cropping + self quotient image
 
         'inorm-lbp         = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_no_crop', # inorm-lbp w/o face-crop
         'tan-triggs        = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_no_crop', # Tan&Triggs w/o face-crop
         'histogram         = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_no_crop', # histogram equalization w/o face-crop
         'self-quotient     = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_no_crop', # self quotient image w/o face-crop
-
       ],
 
       'bob.bio.extractor': [

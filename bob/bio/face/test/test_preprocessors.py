@@ -128,9 +128,14 @@ def test_tan_triggs():
   _compare(preprocessor(image, annotation), pkg_resources.resource_filename('bob.bio.face.test', 'data/tan_triggs_cropped.hdf5'), preprocessor.write_data, preprocessor.read_data)
 
   # test the preprocessor without cropping
-  preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=None)
+  preprocessor = bob.bio.base.load_resource('tan-triggs', 'preprocessor')
+  assert preprocessor.cropper is None
   # result must be identical to the original face cropper (same eyes are used)
   _compare(preprocessor(image, annotation), pkg_resources.resource_filename('bob.bio.face.test', 'data/tan_triggs_none.hdf5'), preprocessor.write_data, preprocessor.read_data)
+
+  preprocessor = bob.bio.base.load_resource('tan-triggs-landmark', 'preprocessor')
+  assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
+  assert preprocessor.cropper.flandmark is not None
 
 
 def test_inorm_lbp():
@@ -145,6 +150,13 @@ def test_inorm_lbp():
   # execute preprocessor
   _compare(preprocessor(image, annotation), pkg_resources.resource_filename('bob.bio.face.test', 'data/inorm_lbp_cropped.hdf5'), preprocessor.write_data, preprocessor.read_data)
 
+  # load the preprocessor without cropping
+  preprocessor = bob.bio.base.load_resource('inorm-lbp', 'preprocessor')
+  assert preprocessor.cropper is None
+  # load the preprocessor landmark detection
+  preprocessor = bob.bio.base.load_resource('inorm-lbp-landmark', 'preprocessor')
+  assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
+
 
 def test_heq():
   # read input
@@ -158,6 +170,13 @@ def test_heq():
   # execute preprocessor
   _compare(preprocessor(image, annotation), pkg_resources.resource_filename('bob.bio.face.test', 'data/histogram_cropped.hdf5'), preprocessor.write_data, preprocessor.read_data)
 
+  # load the preprocessor without cropping
+  preprocessor = bob.bio.base.load_resource('histogram', 'preprocessor')
+  assert preprocessor.cropper is None
+  # load the preprocessor landmark detection
+  preprocessor = bob.bio.base.load_resource('histogram-landmark', 'preprocessor')
+  assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
+
 
 def test_sqi():
   # read input
@@ -170,6 +189,13 @@ def test_sqi():
   assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
   # execute preprocessor
   _compare(preprocessor(image, annotation), pkg_resources.resource_filename('bob.bio.face.test', 'data/self_quotient_cropped.hdf5'), preprocessor.write_data, preprocessor.read_data)
+
+  # load the preprocessor without cropping
+  preprocessor = bob.bio.base.load_resource('self-quotient', 'preprocessor')
+  assert preprocessor.cropper is None
+  # load the preprocessor landmark detection
+  preprocessor = bob.bio.base.load_resource('self-quotient-landmark', 'preprocessor')
+  assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
 
 
 """

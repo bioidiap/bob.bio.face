@@ -6,6 +6,11 @@ preprocessor = bob.bio.face.preprocessor.INormLBP(
   dtype = numpy.float64
 )
 
+preprocessor_landmark = bob.bio.face.preprocessor.INormLBP(
+  face_cropper = 'landmark-detect',
+  dtype = numpy.float64
+)
+
 preprocessor_no_crop = bob.bio.face.preprocessor.INormLBP(
   face_cropper = None,
   dtype = numpy.float64

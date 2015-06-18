@@ -240,7 +240,6 @@ def main(command_line_parameters = None):
       # print the command so that it can easily be re-issued
       logger.info("Executing command:\n%s", bob.bio.base.tools.command_line(command))
 
-#      import ipdb; ipdb.set_trace()
       # run the command
       if not args.dry_run:
         subprocess.call(command)
@@ -305,7 +304,7 @@ def main(command_line_parameters = None):
             result_zt_eval.append(os.path.join(ztnorm_sub_dir, 'scores-eval'))
 
     # check if we have found some results
-    if not result_dev:
+    if not result_dev and not args.dry_run:
       logger.warn("No result files were detected -- skipping evaluation.")
       return
 

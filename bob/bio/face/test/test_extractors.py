@@ -33,14 +33,14 @@ import pkg_resources
 
 regenerate_refs = False
 
-def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load):
+def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load, atol = 1e-5, rtol = 1e-8):
   # write reference?
   if regenerate_refs:
     write_function(data, reference)
 
   # compare reference
   reference = read_function(reference)
-  assert numpy.allclose(data, reference, atol=1e-5)
+  assert numpy.allclose(data, reference, atol=atol, rtol=rtol)
 
 def _data():
   return bob.bio.base.load(pkg_resources.resource_filename('bob.bio.face.test', 'data/cropped.hdf5'))

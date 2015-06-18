@@ -19,7 +19,6 @@ bob.db.verification.utils
 bob.db.verification.filelist
 bob.db.atnt  # required for testing
 bob.bio.base
-bob.bio.gmm
 bob.learn.boosting 
 bob.ip.facedetect
 bob.ip.flandmark

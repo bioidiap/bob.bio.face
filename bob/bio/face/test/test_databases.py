@@ -96,13 +96,14 @@ def test_caspeal():
 
 
 def test_frgc():
+  import xml.sax
+  database = bob.bio.base.load_resource('frgc', 'database')
   try:
-    database = bob.bio.base.load_resource('frgc', 'database')
-  except ValueError as e:
+    _check_database(database, models_depend = True)
+    _check_database(database, protocol = '2.0.2', models_depend = True)
+    _check_annotations(database)
+  except xml.sax.SAXException as e:
     raise SkipTest("The database could not be opened, probably the original directory is wrong. Here is the value error: '%s'" % e)
-  _check_database(database, models_depend = True)
-  _check_database(database, protocol = '2.0.2', models_depend = True)
-  _check_annotations(database)
 
 
 def test_gbu():
@@ -144,7 +145,6 @@ def test_mobio():
 
 
 def test_multipie():
-#  raise SkipTest('This test definitely takes too much time. If you want the tests enabled, please disable this exception temporarily.')
   database = bob.bio.base.load_resource('multipie', 'database')
   try:
     _check_database_zt(database, training_depends = True)

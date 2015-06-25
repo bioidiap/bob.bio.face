@@ -45,6 +45,8 @@ class FaceDetect (Base):
       lowest_scale = lowest_scale
     )
 
+    assert face_cropper is not None
+
     self.sampler = bob.ip.facedetect.Sampler(scale_factor=scale_base, lowest_scale=lowest_scale, distance=distance)
     if cascade is None:
       self.cascade = bob.ip.facedetect.default_cascade()

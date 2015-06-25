@@ -58,8 +58,9 @@ def command_line_arguments(command_line_parameters):
   parser.add_argument('-d', '--database', choices = available_databases, default = 'atnt', help = 'The database on which the baseline algorithm is executed.')
   # - the database to choose
   parser.add_argument('-b', '--baseline-directory', default = 'baselines', help = 'The sub-directory, where the baseline results are stored.')
-  # - the directory to write
-  parser.add_argument('-f', '--directory', help = 'The directory to write the data of the experiment into. If not specified, the default directories of the verify.py script are used (see ./bin/verify.py --help).')
+  # - the directories to write to
+  parser.add_argument('-T', '--temp-directory', help = 'The directory to write temporary the data of the experiment into. If not specified, the default directory of the verify.py script is used (see ./bin/verify.py --help).')
+  parser.add_argument('-R', '--result-directory', help = 'The directory to write the resulting score files of the experiment into. If not specified, the default directories of the verify.py script are used (see ./bin/verify.py --help).')
 
   # - use the Idiap grid -- option is only useful if you are at Idiap
   parser.add_argument('-g', '--grid', action = 'store_true', help = 'Execute the algorithm in the SGE grid.')
@@ -225,9 +226,11 @@ def main(command_line_parameters = None):
       if has_eval:
         command += ['--groups', 'dev', 'eval']
 
-      # set the directories, if desired; we set both directories to be identical.
-      if args.directory is not None:
-        command += ['--temp-directory', os.path.join(args.directory, args.database), '--result-directory', os.path.join(args.directory, args.database)]
+      # set the directories, if desired
+      if args.temp_directory is not None:
+        command += ['--temp-directory', os.path.join(args.temp_directory)]
+      if args.result_directory is not None:
+        command += ['--result-directory', os.path.join(args.result_directory)]
 
       # set the verbosity level
       if args.verbose:
@@ -249,17 +252,17 @@ def main(command_line_parameters = None):
 
     # get the base directory of the results
     is_idiap = os.path.isdir("/idiap")
-    if args.directory is None:
-      args.directory = "/idiap/user/%s/%s" % (os.environ["USER"], args.database) if is_idiap else "results"
-    if not os.path.exists(args.directory):
+    if args.result_directory is None:
+      args.result_directory = "/idiap/user/%s/%s" % (os.environ["USER"], args.database) if is_idiap else "results"
+    if not os.path.exists(args.result_directory):
       if not args.dry_run:
-        raise IOError("The result directory '%s' cannot be found. Please specify the --directory as it was specified during execution of the algorithms." % args.directory)
+        raise IOError("The result directory '%s' cannot be found. Please specify the --result-directory as it was specified during execution of the algorithms." % args.result_directory)
 
     # get the result directory of the database
-    result_dir = os.path.join(args.directory, args.baseline_directory)
+    result_dir = os.path.join(args.result_directory, args.baseline_directory)
     if not os.path.exists(result_dir):
       if not args.dry_run:
-        raise IOError("The result directory '%s' for the desired database cannot be found. Did you already run the experiments for this database?" % result_dir)
+        raise IOError("The result directory '%s' for the desired experiment cannot be found. Did you already run the experiments?" % result_dir)
 
     # iterate over the algorithms and collect the result files
     result_dev = []

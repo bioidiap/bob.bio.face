@@ -36,7 +36,18 @@ class Eigenface (Extractor):
 
     logger.info("  -> Training LinearMachine using PCA (SVD)")
     t = bob.learn.linear.PCATrainer()
-    self.machine, __eig_vals = t.train(data)
+    self.machine, variances = t.train(data)
+
+    # compute variance percentage, if desired
+    if isinstance(self.subspace_dimension, float):
+      cummulated = numpy.cumsum(variances) / numpy.sum(variances)
+      for index in range(len(cummulated)):
+        if cummulated[index] > self.subspace_dimension:
+          self.subspace_dimension = index
+          break
+      self.subspace_dimension = index
+      logger.info("  -> Keeping %d eigenvectors" % self.subspace_dimension)
+
     # Machine: get shape, then resize
     self.machine.resize(self.machine.shape[0], self.subspace_dimension)
     self.machine.save(bob.io.base.HDF5File(extractor_file, "w"))

@@ -74,7 +74,7 @@ def test_graphs():
   assert not graph.requires_training
 
   # generate smaller extractor, using mixed tuple and int input for the node distance and first location
-  graph = bob.bio.face.extractor.GridGraph(node_distance = 24, image_resolution = data.shape)
+  graph = bob.bio.face.extractor.GridGraph(node_distance = 24)
 
   # extract features
   feature = graph(data)
@@ -104,7 +104,7 @@ def test_graphs():
     nodes_below_eyes = 7
   )
 
-  nodes = graph.graph.nodes
+  nodes = graph._extractor(data).nodes
   assert len(nodes) == 100
   assert numpy.allclose(nodes[22], eyes['reye'])
   assert numpy.allclose(nodes[27], eyes['leye'])

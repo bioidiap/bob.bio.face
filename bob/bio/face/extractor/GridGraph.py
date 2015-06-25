@@ -35,7 +35,6 @@ class GridGraph (Extractor):
 
       # setup of static grid
       node_distance = None,    # one or two integral values
-      image_resolution = None, # always two integral values
       first_node = None,       # one or two integral values, or None -> automatically determined
   ):
 
@@ -57,7 +56,6 @@ class GridGraph (Extractor):
         nodes_above_eyes = nodes_above_eyes,
         nodes_below_eyes = nodes_below_eyes,
         node_distance = node_distance,
-        image_resolution = image_resolution,
         first_node = first_node
     )
 
@@ -74,7 +72,7 @@ class GridGraph (Extractor):
 
     # create graph extractor
     if eyes is not None:
-      self.graph = bob.ip.gabor.Graph(
+      self._aligned_graph = bob.ip.gabor.Graph(
           righteye = [int(e) for e in eyes['reye']],
           lefteye = [int(e) for e in eyes['leye']],
           between = int(nodes_between_eyes),
@@ -83,43 +81,63 @@ class GridGraph (Extractor):
           below = int(nodes_below_eyes)
       )
     else:
-      if node_distance is None or image_resolution is None:
-        raise ValueError("Please specify either 'eyes' or the grid parameters 'first_node', 'last_node', and 'node_distance'!")
-      if isinstance(node_distance, (int, float)):
-         node_distance = (int(node_distance), int(node_distance))
-      if first_node is None:
-        first_node = [0,0]
-        for i in (0,1):
-          offset = int((image_resolution[i] - int(image_resolution[i]/node_distance[i])*node_distance[i]) / 2)
-          if offset < node_distance[i]//2: # This is not tested, but should ALWAYS be the case.
-            offset += node_distance[i]//2
-          first_node[i] = offset
-      last_node = tuple([int(image_resolution[i] - max(first_node[i],1)) for i in (0,1)])
-
-      # take the specified nodes
-      self.graph = bob.ip.gabor.Graph(
-          first = first_node,
-          last = last_node,
-          step = node_distance
-      )
+      if node_distance is None:
+        raise ValueError("Please specify either 'eyes' or the grid parameters 'node_distance' (and 'first_node')!")
+      self._aligned_graph = None
+      self._last_image_resolution = None
+      self.first_node = first_node
+      self.node_distance = node_distance
+      if isinstance(self.node_distance, (int, float)):
+         self.node_distance = (int(self.node_distance), int(self.node_distance))
 
     self.normalize_jets = normalize_gabor_jets
     self.trafo_image = None
+
+  def _extractor(self, image):
+    """Creates an extractor based on the given image."""
+
+    if self.trafo_image is None or self.trafo_image.shape[1:3] != image.shape:
+      # create trafo image
+      self.trafo_image = numpy.ndarray((self.gwt.number_of_wavelets, image.shape[0], image.shape[1]), numpy.complex128)
+
+    if self._aligned_graph is not None:
+      return self._aligned_graph
+
+    if self._last_image_resolution != image.shape:
+      self._last_image_resolution = image.shape
+      if self.first_node is None:
+        first_node = [0,0]
+        for i in (0,1):
+          offset = int((image.shape[i] - int(image.shape[i]/self.node_distance[i])*self.node_distance[i]) / 2)
+          if offset < self.node_distance[i]//2: # This is not tested, but should ALWAYS be the case.
+            offset += self.node_distance[i]//2
+          first_node[i] = offset
+      else:
+        first_node = self.first_node
+      last_node = tuple([int(image.shape[i] - max(first_node[i],1)) for i in (0,1)])
+
+      # take the specified nodes
+      self._graph = bob.ip.gabor.Graph(
+          first = first_node,
+          last = last_node,
+          step = self.node_distance
+      )
+
+    return self._graph
+
 
   def __call__(self, image):
     assert image.ndim == 2
     assert isinstance(image, numpy.ndarray)
     assert image.dtype == numpy.float64
 
-    if self.trafo_image is None or self.trafo_image.shape[1:3] != image.shape:
-      # create trafo image
-      self.trafo_image = numpy.ndarray((self.gwt.number_of_wavelets, image.shape[0], image.shape[1]), numpy.complex128)
+    extractor = self._extractor(image)
 
     # perform Gabor wavelet transform
     self.gwt.transform(image, self.trafo_image)
 
     # extract face graph
-    jets = self.graph.extract(self.trafo_image)
+    jets = extractor.extract(self.trafo_image)
 
     # normalize the Gabor jets of the graph only
     if self.normalize_jets:

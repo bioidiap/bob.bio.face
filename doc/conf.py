@@ -86,7 +86,7 @@ release = distribution.version
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-#exclude_patterns = ['**/links.rst']
+exclude_patterns = ['links.rst', 'references.rst']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -133,12 +133,12 @@ if sphinx.__version__ >= "1.0":
 
 # The name of an image file (relative to this directory) to place at the top
 # of the sidebar.
-html_logo = ''
+html_logo = 'img/logo.png'
 
 # The name of an image file (within the static path) to use as favicon of the
 # docs.  This file should be a Windows icon file (.ico) being 16x16 or 32x32
 # pixels large.
-html_favicon = ''
+html_favicon = 'img/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
@@ -246,7 +246,7 @@ autodoc_default_flags = ['members', 'undoc-members', 'inherited-members', 'show-
 
 # For inter-documentation mapping:
 from bob.extension.utils import link_documentation
-intersphinx_mapping = link_documentation(['python', 'numpy', 'bob.io.base', 'bob.db.verification.utils'])
+intersphinx_mapping = link_documentation(['python', 'numpy', 'bob.bio.gmm', 'bob.bio.csu'])
 
 
 def setup(app):

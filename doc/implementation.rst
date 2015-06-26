@@ -133,7 +133,7 @@ Here is the list of files and replacement strings for all databases that are reg
 
   - Images (taken from MBGC-V1): ``[YOUR_MBGC-V1_DIRECTORY]``
 
-* Labeled Faces in the Wild (LFW): ``'lfw-restricted'``, `'lfw-unrestricted'``
+* Labeled Faces in the Wild (LFW): ``'lfw-restricted'``, ``'lfw-unrestricted'``
 
   - Images (aligned with funneling): ``[YOUR_LFW_FUNNELED_DIRECTORY]``
 
@@ -170,7 +170,7 @@ Preprocessors
 ~~~~~~~~~~~~~
 
 Photometric enhancement algorithms are -- by default -- registered without face cropping, as ``'base'`` (no enhancement), ``'histogram'`` (histogram equalization), ``'tan-triggs'``, ``'self-quotient'`` (self quotient image) and ``'inorm-lbp'``.
-These resources should only be used, when original images are already cropped (such as in the `AT&T database`_.
+These resources should only be used, when original images are already cropped (such as in the `AT&T database`_).
 
 The default face cropping is performed by aligning the eye locations such that the eyes (in subject perspective) are located at: right eye: ``(16, 15)``, left eye: ``(16, 48)``, and the image is cropped to resolution ``(80, 64)`` pixels.
 This cropper is registered under the resource key ``'face-crop-eyes'``.
@@ -192,6 +192,19 @@ Only four types of features are registered as resources here:
 
 * ``'dct-blocks'``: DCT blocks with 12 pixels and full overlap, extracting 35 DCT features per block
 * ``'eigenface'``: Pixel vectors projected to face space keeping 95 % variance
-* ``'grid-graph'``: Gabor jets in grid graphs, with 4 pixels distance between nodes
+* ``'grid-graph'``: Gabor jets in grid graphs, with 8 pixels distance between nodes
+* ``'lgbphs'``: Local Gabor binary pattern histogram sequences with block-size of 8 and no overlap
+
+.. _bob.bio.face.algorithms:
+
+Face Recognition Algorithms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``'gabor-jet'``: Compares graphs of Gabor jets with using a dedicated Gabor jet similarity function [GHW12]_
+* ``'histogram'``: Compares histograms using histogram comparison functions
+* ``'bic-jet'``: Uses the :py:class:`bob.bio.base.algorithm.BIC` with vectors of Gabor jet similarities
+
+  .. note:: One particularity of this resource is that the function to compute the feature vectors to be classified in the BIC algorithm is actually implemented *in the configuration file*.
+
 
 .. include:: links.rst

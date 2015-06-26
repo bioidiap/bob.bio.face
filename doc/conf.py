@@ -246,8 +246,14 @@ autodoc_default_flags = ['members', 'undoc-members', 'inherited-members', 'show-
 
 # For inter-documentation mapping:
 from bob.extension.utils import link_documentation
-intersphinx_mapping = link_documentation(['python', 'numpy', 'bob.bio.gmm', 'bob.bio.csu'])
+intersphinx_mapping = link_documentation(['python', 'numpy', 'bob.bio.gmm', 'bob.bio.csu', 'bob.db.lfw'])
 
+
+def skip(app, what, name, obj, skip, options):
+  # Do not skip the __call__ function as we have special implementations for them.
+  if name in ("__call__"):
+    return False
+  return skip
 
 def setup(app):
-  pass
+  app.connect("autodoc-skip-member", skip)

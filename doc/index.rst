@@ -45,15 +45,8 @@ Reference Manual
    :maxdepth: 2
 
    implemented
-   py_api
 
 
 .. include:: references.rst
-
-ToDo-List
-=========
-
-This documentation is still under development.
-Here is a list of things that needs to be done:
 
 .. todolist::

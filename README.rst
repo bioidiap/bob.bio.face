@@ -21,6 +21,8 @@
  Run face recognition algorithms
 =================================
 
+This package is part of the ``bob.bio`` packages, which allow to run comparable and reproducible biometric recognition experiments on publicly available databases.
+
 This package contains functionality to run face recognition experiments.
 It is an extension to the `bob.bio.base <http://pypi.python.org/pypi/bob.bio.base>`_ package, which provides the basic scripts.
 In this package, utilities that are specific for face recognition are contained, such as:

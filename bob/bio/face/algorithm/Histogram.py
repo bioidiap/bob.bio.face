@@ -8,7 +8,7 @@ import numpy
 
 from bob.bio.base.algorithm import Algorithm
 
-class LGBPHS (Algorithm):
+class Histogram (Algorithm):
   """Tool chain for computing local Gabor binary pattern histogram sequences"""
 
   def __init__(

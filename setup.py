@@ -155,7 +155,7 @@ setup(
 
       'bob.bio.algorithm': [
         'gabor-jet         = bob.bio.face.config.algorithm.gabor_jet:algorithm', # Gabor jet comparison
-        'lgbphs            = bob.bio.face.config.algorithm.lgbphs:algorithm', # LGBPHS histograms
+        'histogram         = bob.bio.face.config.algorithm.histogram:algorithm', # LGBPHS histograms
         'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm', # BIC on gabor jets
       ],
    },

@@ -123,7 +123,7 @@ CONFIGURATIONS = {
   'lgbphs': dict(
     preprocessor = ('tan-triggs-crop', 'tan-triggs'),
     extractor    = 'lgbphs',
-    algorithm    = 'lgbphs',
+    algorithm    = 'histogram',
   ),
 
   'bic': dict(

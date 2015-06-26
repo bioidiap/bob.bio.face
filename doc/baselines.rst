@@ -2,7 +2,7 @@
 .. author: Manuel Günther <manuel.guenther@idiap.ch>
 .. date: Thu Sep 20 11:58:57 CEST 2012
 
-.. _baselines:
+.. _bob.bio.face.baselines:
 
 =============================
 Executing Baseline Algorithms
@@ -140,17 +140,17 @@ Additionally, the following algorithms can be executed, when the :ref:`bob.bio.c
   - feature : :py:class:`bob.bio.csu.extractor.LRPCA`
   - algorithm : :py:class:`bob.bio.csu.algorithm.LRPCA`
 
-* ``lda_ir``: The LDA-IR (a.k.a. CohortLDA [LBP+12]_) extracts color information from images after, and computes a PCA+LDA projection on two color layers.
+* ``lda-ir``: The LDA-IR (a.k.a. CohortLDA [LBP+12]_) extracts color information from images after, and computes a PCA+LDA projection on two color layers.
 
   - preprocessor : :py:class:`bob.bio.csu.preprocessor.LDAIR`
   - feature : :py:class:`bob.bio.csu.extractor.LDAIR`
   - algorithm : :py:class:`bob.bio.csu.algorithm.LDAIR`
 
 .. note::
-   The ``lrpca`` and ``ldair`` algorithms require hand-labeled eye locations.
+   The ``lrpca`` and ``lda-ir`` algorithms require hand-labeled eye locations.
    Therefore, they can not be run on the default ``atnt`` database.
 
-.. _baseline_results:
+.. _bob.bio.base.baseline_results:
 
 Baseline Results
 ----------------
@@ -183,12 +183,15 @@ For the `AT&T database`_ the results should be as follows:
   +-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
   |  eigenface  |     lda     |  gaborgraph |    lgbphs   |     gmm     |     isv     |    plda     |     bic     |
   +=============+=============+=============+=============+=============+=============+=============+=============+
-  |   8.368%    |    9.763%   |   4.579%    |    8.500%   |    1.237%   |    0.053%   |    7.921%   |    3.526%   |
+  |   8.368%    |    9.763%   |   4.579%    |    8.500%   |    0.684%   |    0.421%   |    7.921%   |    3.526%   |
   +-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
 
+.. note::
+   The results for ``gmm`` and ``isv`` were run with the parallelized scripts.
+   Though the results obtained with the sequential script should be similar, it might be that they are not identical.
 
 .. note::
-  The ``lrpca`` and ``lda_ir`` algorithms require hand-labeled eye positions to run.
+  The ``lrpca`` and ``lda-ir`` algorithms require hand-labeled eye positions to run.
   Since the AT&T database does not provide eye positions, it is not possible to provide baseline results on AT&T for these two algorithms.
 
 .. include:: links.rst

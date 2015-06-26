@@ -37,7 +37,7 @@ Face Recognition Algorithms
 
 .. autosummary::
    bob.bio.face.algorithm.GaborJet
-   bob.bio.face.algorithm.LGBPHS
+   bob.bio.face.algorithm.Histogram
 
 
 Preprocessors

@@ -15,6 +15,53 @@ import logging
 logger = logging.getLogger("bob.bio.face")
 
 class FaceDetect (Base):
+  """Performs a face detection (and facial landmark localization) in the given image and crops the face.
+
+  This class is designed to perform a geometric normalization of the face based on the detected face.
+  Face detection is performed using :ref:`bob.ip.facedetect <bob.ip.facedetect>`.
+  Particularly, the function :py:func:`bob.ip.facedetect.detect_single_face` is executed, which will *always* return *exactly one* bounding box, even if the image contains more than one face, or no face at all.
+  The speed of the face detector can be regulated using the ``cascade``, ``distance` ``scale_base`` and ``lowest_scale`` parameters.
+  The number of overlapping detected bounding boxes that should be joined can be selected by ``detection_overlap``.
+  Please see the documentation of :ref:`bob.ip.facedetect <bob.ip.facedetect>` for more details about these parameters.
+
+  Additionally, facial landmarks can be detected using the :ref:`bob.ip.flandmark`.
+  If enabled using ``use_flandmark = True`` in the constructor, it is tried to obtain the facial landmarks inside the detected facial area.
+  If landmarks are found, these are used to geometrically normalize the face.
+  Otherwise, the eye locations are estimated based on the bounding box.
+  This is also applied, when ``use_flandmark = False.``
+
+  The face cropping itself is done by the given ``face_cropper``.
+  This cropper can either be an instance of :py:class:`FaceCrop` (or any other class that provides a similar ``crop_face`` function), or it can be the resource name of a face cropper, such as ``'face-crop-eyes'``.
+
+  **Parameters:**
+
+  face_cropper : :py:class:`bob.bio.face.preprocessor.FaceCrop` or str
+    The face cropper to be used to crop the detected face.
+    Might be an instance of a :py:class:`FaceCrop` or the name of a face cropper resource.
+
+  cascade : str or ``None``
+    The file name, where a face detector cascade can be found.
+    If ``None``, the default cascade for frontal faces :py:func:`bob.ip.facedetect.default_cascade` is used.
+
+  use_flandmark : bool
+    If selected, :py:class:`bob.ip.flandmark.Flandmark` is used to detect the eye locations.
+    Otherwise, the eye locations are estimated based on the detected bounding box.
+
+  detection_overlap : float
+    See :py:func:`bob.ip.facedetect.detect_single_face`.
+
+  distance : int
+    See the Sampling section in the :ref:`Users Guide of bob.ip.facedetect <bob.ip.facedetect>`.
+
+  scale_base : float
+    See the Sampling section in the :ref:`Users Guide of bob.ip.facedetect <bob.ip.facedetect>`.
+
+  lowest_scale : float
+    See the Sampling section in the :ref:`Users Guide of bob.ip.facedetect <bob.ip.facedetect>`.
+
+  kwargs
+    Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+  """
 
   def __init__(
       self,
@@ -25,12 +72,8 @@ class FaceDetect (Base):
       distance = 2,
       scale_base = math.pow(2., -1./16.),
       lowest_scale = 0.125,
-      mask_sigma = None,         # The sigma for random values areas outside image
-      mask_neighbors = 5,        # The number of neighbors to consider while extrapolating
-      mask_seed = None,          # The seed for generating random values during extrapolation
       **kwargs
   ):
-    """Performs a face detection in the given image (ignoring any annotations)."""
     # call base class constructors
     Base.__init__(self, **kwargs)
 
@@ -60,6 +103,7 @@ class FaceDetect (Base):
 
 
   def _landmarks(self, image, bounding_box):
+    """Try to detect the landmarks in the given bounding box, and return the eye locations."""
     # get the landmarks in the face
     if self.flandmark is not None:
       # use the flandmark detector
@@ -86,6 +130,23 @@ class FaceDetect (Base):
 
 
   def crop_face(self, image, annotations=None):
+    """crop_face(image, annotations = None) -> face
+
+    Detects the face (and facial landmarks), and used the ``face_cropper`` given in the constructor to crop the face.
+
+    **Parameters:**
+
+    image : 2D :py:class:`numpy.ndarray`
+      The face image to be processed.
+
+    annotations : any
+      Ignored.
+
+    **Returns:**
+
+    face : 2D :py:class:`numpy.ndarray` (float)
+      The detected and cropped face.
+    """
     # detect the face
     bounding_box, self.quality = bob.ip.facedetect.detect_single_face(image, self.cascade, self.sampler, self.detection_overlap)
 
@@ -96,8 +157,28 @@ class FaceDetect (Base):
     return self.cropper.crop_face(image, annotations)
 
 
-
   def __call__(self, image, annotations=None):
+    """__call__(image, annotations = None) -> face
+
+    Aligns the given image according to the detected face bounding box or the detected facial features.
+
+    First, the desired color channel is extracted from the given image.
+    Afterward, the face is detected and cropped, see :py:meth:`crop_face`.
+    Finally, the resulting face is converted to the desired data type.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The face image to be processed.
+
+    annotations : any
+      Ignored.
+
+    **Returns:**
+
+    face : 2D :py:class:`numpy.ndarray`
+      The cropped face.
+    """
     # convert to the desired color channel
     image = self.color_channel(image)
 

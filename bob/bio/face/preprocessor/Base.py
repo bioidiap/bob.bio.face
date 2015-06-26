@@ -5,27 +5,39 @@ import bob.ip.color
 from bob.bio.base.preprocessor import Preprocessor
 
 class Base (Preprocessor):
-  """Performs color space adaptations and data type corrections for the given image"""
+  """Performs color space adaptations and data type corrections for the given image.
+
+  **Parameters:**
+
+  dtype : :py:class:`numpy.dtype` or convertible or ``None``
+    The data type that the resulting image will have.
+
+  color_channel : one of ``('gray', 'red', 'gren', 'blue')``
+    The specific color channel, which should be extracted from the image.
+  """
 
   def __init__(self, dtype = None, color_channel = 'gray'):
-    """Parameters of the constructor of this preprocessor:
-
-    dtype : :py:class:`numpy.dtype` or convertible or ``None``
-      The data type that the resulting image will have
-
-    color_channel : one of ``('gray', 'red', 'gren', 'blue')`` or ``None``
-      The specific color channel, which should be extracted from the image
-    """
     Preprocessor.__init__(self, dtype=str(dtype), color_channel=color_channel)
     self.channel = color_channel
     self.dtype = dtype
 
 
   def color_channel(self, image):
-    """Returns the desired channel of the given image. Currently, gray, red, green and blue channels are supported."""
-    if self.channel is None:
-      return image
+    """color_channel(image) -> channel
 
+    Returns the channel of the given image, which was selected in the constructor.
+    Currently, gray, red, green and blue channels are supported.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The image to get the specified channel from.
+
+    **Returns:**
+
+    channel : 2D :py:class:`numpy.ndarray`
+      The extracted color channel.
+    """
     if image.ndim == 2:
       if self.channel != 'gray':
         raise ValueError("There is no rule to extract a " + channel + " image from a gray level image!")
@@ -44,13 +56,44 @@ class Base (Preprocessor):
 
 
   def data_type(self, image):
+    """data_type(image) -> image
+
+    Converts the given image into the data type specified in the constructor of this class.
+    If no data type was specified, no conversion is performed.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The image to convert.
+
+    **Returns:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The image converted to the desired data type, if any.
+    """
     if self.dtype is not None:
       image = image.astype(self.dtype)
     return image
 
 
   def __call__(self, image, annotations = None):
-    """Just perform gray scale conversion, ignore the annotations."""
+    """__call__(image, annotations = None) -> image
+
+    Extracts the desired color channel and converts to the desired data type.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The image to preprocess.
+
+    annotations : any
+      Ignored.
+
+    **Returns:**
+
+    image : 2D :py:class:`numpy.ndarray`
+      The image converted converted to the desired color channel and type.
+    """
     assert isinstance(image, numpy.ndarray) and image.ndim in (2,3)
     # convert to grayscale
     image = self.color_channel(image)

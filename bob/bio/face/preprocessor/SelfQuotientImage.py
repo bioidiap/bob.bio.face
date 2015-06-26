@@ -26,7 +26,23 @@ from .utils import load_cropper
 from bob.bio.base.preprocessor import Preprocessor
 
 class SelfQuotientImage (Base):
-  """Crops the face according to the eye positions (if given), computes the self quotient image."""
+  """Crops the face (if desired) and applies self quotient image algorithm [WLW04]_ to photometrically enhance the image.
+
+  **Parameters:**
+
+  face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
+    The face image cropper that should be applied to the image.
+    If ``None`` is selected, no face cropping is performed.
+    Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
+
+    .. note:: The given class needs to contain a ``crop_face`` method.
+
+  sigma : float
+    Please refer to the [WLW04]_ original paper (see :py:class:`bob.ip.base.SelfQuotientImage` documentation).
+
+  kwargs
+    Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+  """
 
   def __init__(
       self,
@@ -47,15 +63,33 @@ class SelfQuotientImage (Base):
     self.cropper = load_cropper(face_cropper)
 
     size = max(1, int(3. * sigma))
-    self.sqi = bob.ip.base.SelfQuotientImage(size_min = size, sigma = sigma)
-
-
-  def self_quotient(self, image):
-    return self.sqi(image)
+    self.self_quotient = bob.ip.base.SelfQuotientImage(size_min = size, sigma = sigma)
 
 
   def __call__(self, image, annotations = None):
-    """Crops the face using the specified face cropper and performs Self-Quotient Image preprocessing."""
+    """__call__(image, annotations = None) -> face
+
+    Aligns the given image according to the given annotations.
+
+    First, the desired color channel is extracted from the given image.
+    Afterward, the face is eventually cropped using the ``face_cropper`` specified in the constructor.
+    Then, the image is photometrically enhanced using the self quotient image algorithm [WLW04]_.
+    Finally, the resulting face is converted to the desired data type.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The face image to be processed.
+
+    annotations : dict or ``None``
+      The annotations that fit to the given image.
+      Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
+
+    **Returns:**
+
+    face : 2D :py:class:`numpy.ndarray`
+      The cropped and photometrically enhanced face.
+    """
     image = self.color_channel(image)
     if self.cropper is not None:
       image = self.cropper.crop_face(image, annotations)

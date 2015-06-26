@@ -24,7 +24,63 @@ from .Base import Base
 from bob.bio.base.preprocessor import Preprocessor
 
 class FaceCrop (Base):
-  """Crops the face according to the given annotations"""
+  """Crops the face according to the given annotations.
+
+  This class is designed to perform a geometric normalization of the face based on the eye locations, using :py:class:`bob.ip.base.FaceEyesNorm`.
+  Usually, when executing the :py:meth:`crop_face` function, the image and the eye locations have to be specified.
+  There, the given image will be transformed such that the eye locations will be placed at specific locations in the resulting image.
+  These locations, as well as the size of the cropped image, need to be specified in the constructor of this class, as ``cropped_positions`` and ``cropped_image_size``.
+
+  Some image databases do not provide eye locations, but rather bounding boxes.
+  This is not a problem at all.
+  Simply define the coordinates, where you want your ``cropped_positions`` to be in the cropped image, by specifying the same keys in the dictionary that will be given as ``annotations`` to the :py:meth:`face_crop` function.
+
+  .. note;::
+    These locations can even be outside of the cropped image boundary, i.e., when the crop should be smaller than the annotated bounding boxes.
+
+  Sometimes, databases provide pre-cropped faces, where the eyes are located at (almost) the same position in all images.
+  Usually, the cropping does not conform with the cropping that you like (i.e., image resolution is wrong, or too much background information).
+  However, the database does not provide eye locations (since they are almost identical for all images).
+  In that case, you can specify the ``fixed_positions`` in the constructor, which will be taken instead of the ``annotations`` inside the :py:meth:`crop_face` function (in which case the ``annotations`` are ignored).
+
+  Sometimes, the crop of the face is outside of the original image boundaries.
+  Usually, these pixels will simply be left black, resulting in sharp edges in the image.
+  However, some feature extractors do not like these sharp edges.
+  In this case, you can set the ``mask_sigma`` to copy pixels from the valid border of the image and add random noise (see :py:func:`bob.ip.base.extrapolate_mask`).
+
+
+  **Parameters:**
+
+  cropped_image_size : (int, int)
+    The size of the resulting cropped images.
+
+  cropped_positions : dict
+    The coordinates in the cropped image, where the annotated points should be put to.
+    This parameter is a dictionary with usually two elements, e.g., ``{'reye':(RIGHT_EYE_Y, RIGHT_EYE_X) , 'leye':(LEFT_EYE_Y, LEFT_EYE_X)}``.
+    However, also other parameters, such as ``{'topleft' : ..., 'bottomright' : ...}`` are supported, as long as the ``annotations`` in the :py:meth:`__call__` function are present.
+
+  fixed_positions : dict or None
+    If specified, ignore the annotations from the database and use these fixed positions throughout.
+
+  mask_sigma : float or None
+    Fill the area outside of image boundaries with random pixels from the border, by adding noise to the pixel values.
+    To disable extrapolation, set this value to ``None``.
+    To disable adding random noise, set it to a negative value or 0.
+
+  mask_neighbors : int
+    The number of neighbors used during mask extrapolation.
+    See :py:func:`bob.ip.base.extrapolate_mask` for details.
+
+  mask_seed : int or None
+    The random seed to apply for mask extrapolation.
+
+    .. warning::
+       When run in parallel, the same random seed will be applied to all parallel processes.
+       Hence, results of parallel execution will differ from the results in serial execution.
+
+  kwargs
+    Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+  """
 
   def __init__(
       self,
@@ -36,38 +92,6 @@ class FaceCrop (Base):
       mask_seed = None,          # The seed for generating random values during extrapolation
       **kwargs                   # parameters to be written in the __str__ method
   ):
-    """Parameters of the constructor of this preprocessor:
-
-    cropped_image_size : (int, int)
-      The size of the resulting cropped images.
-
-    cropped_positions : dict
-      The coordinates in the cropped image, where the annotated points should be put to.
-      This parameter is a dictionary with usually two elements, e.g., ``{'reye':(RIGHT_EYE_Y, RIGHT_EYE_X) , 'leye':(LEFT_EYE_Y, LEFT_EYE_X)}``.
-      However, also other parameters, such as ``{'topleft' : ..., 'bottomright' : ...}`` are supported, as long as the ``annotations`` in the :py:meth:`__call__` function are present.
-
-    fixed_positions : dict or None
-      If specified, ignore the annotations from the database and use these fixed positions throughout.
-
-    mask_sigma : float or None
-      Fill the area outside of image boundaries with random pixels from the border, by adding noise to the pixel values.
-      To disable extrapolation, set this value to None.
-      To disable adding random noise, set it to a negative value or 0.
-
-    mask_neighbors : int
-      The number of neighbors used during mask extrapolation.
-      See :py:func:`bob.ip.base.extrapolate_mask` for details.
-
-    mask_seed : int or None
-      The random seed to apply for mask extrapolation.
-
-      .. warning::
-         When run in parallel, the same random seed will be applied to all parallel processes.
-         Hence, results of parallel execution will differ from the results in serial execution.
-
-    kwargs
-      Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
-    """
 
     Base.__init__(self, **kwargs)
 
@@ -102,7 +126,24 @@ class FaceCrop (Base):
 
 
   def crop_face(self, image, annotations = None):
-    """Executes the face cropping on the given image and returns the cropped version of it"""
+    """crop_face(image, annotations = None) -> face
+
+    Executes the face cropping on the given image and returns the cropped version of it.
+
+    **Parameters:**
+
+    image : 2D :py:class:`numpy.ndarray`
+      The face image to be processed.
+
+    annotations : dict or ``None``
+      The annotations that fit to the given image.
+      ``None`` is only accepted, when ``fixed_positions`` were specified in the constructor.
+
+    **Returns:**
+
+    face : 2D :py:class:`numpy.ndarray` (float)
+      The cropped face.
+    """
     if self.fixed_positions is not None:
       annotations = self.fixed_positions
     if annotations is None:
@@ -135,7 +176,27 @@ class FaceCrop (Base):
 
 
   def __call__(self, image, annotations = None):
-    """Aligns the given image according to the given annotations."""
+    """__call__(image, annotations = None) -> face
+
+    Aligns the given image according to the given annotations.
+
+    First, the desired color channel is extracted from the given image.
+    Afterward, the face is cropped, according to the given ``annotations`` (or to ``fixed_positions``, see :py:meth:`crop_face`).
+    Finally, the resulting face is converted to the desired data type.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The face image to be processed.
+
+    annotations : dict or ``None``
+      The annotations that fit to the given image.
+
+    **Returns:**
+
+    face : 2D :py:class:`numpy.ndarray`
+      The cropped face.
+    """
     # convert to the desired color channel
     image = self.color_channel(image)
     # crop face

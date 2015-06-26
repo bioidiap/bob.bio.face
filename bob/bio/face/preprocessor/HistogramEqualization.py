@@ -25,24 +25,26 @@ from .utils import load_cropper
 from bob.bio.base.preprocessor import Preprocessor
 
 class HistogramEqualization (Base):
-  """Crops the face according to the eye positions (if given), and performs histogram equalization on the resulting image"""
+  """Crops the face (if desired) and performs histogram equalization to photometrically enhance the image.
+
+  **Parameters:**
+
+  face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
+    The face image cropper that should be applied to the image.
+    If ``None`` is selected, no face cropping is performed.
+    Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
+
+    .. note:: The given class needs to contain a ``crop_face`` method.
+
+  kwargs
+    Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+  """
 
   def __init__(
       self,
       face_cropper,
       **kwargs
   ):
-    """Parameters of the constructor of this preprocessor:
-
-    face_cropper : str or `bob.bio.face.preprocessor.FaceCrop` or `bob.bio.face.preprocessor.FaceDetect`
-      The face image cropper that should be applied to the image.
-      It might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
-
-      .. note:: The given class needs to contain a ``crop_face`` method.
-
-    kwargs
-      Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
-    """
 
     Base.__init__(self, **kwargs)
 
@@ -56,14 +58,50 @@ class HistogramEqualization (Base):
 
 
   def equalize_histogram(self, image):
-    """Performs the histogram equalization"""
+    """equalize_histogram(image) -> equalized
+
+    Performs the histogram equalization on the given image.
+
+    **Parameters:**
+
+    image : 2D :py:class:`numpy.ndarray`
+      The image to berform histogram equalization with.
+      The image will be transformed to type ``uint8`` before computing the histogram.
+
+    **Returns:**
+
+    equalized : 2D :py:class:`numpy.ndarray` (float)
+      The photometrically enhanced image.
+    """
     heq = numpy.ndarray(image.shape)
     bob.ip.base.histogram_equalization(numpy.round(image).astype(numpy.uint8), heq)
     return heq
 
 
   def __call__(self, image, annotations = None):
-    """Crops the face using the specified face cropper and performs Histogram Equalization preprocessing."""
+    """__call__(image, annotations = None) -> face
+
+    Aligns the given image according to the given annotations.
+
+    First, the desired color channel is extracted from the given image.
+    Afterward, the face is eventually cropped using the ``face_cropper`` specified in the constructor.
+    Then, the image is photometrically enhanced using histogram equalization.
+    Finally, the resulting face is converted to the desired data type.
+
+    **Parameters:**
+
+    image : 2D or 3D :py:class:`numpy.ndarray`
+      The face image to be processed.
+
+    annotations : dict or ``None``
+      The annotations that fit to the given image.
+      Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
+
+    **Returns:**
+
+    face : 2D :py:class:`numpy.ndarray`
+      The cropped and photometrically enhanced face.
+    """
     image = self.color_channel(image)
     if self.cropper is not None:
       image = self.cropper.crop_face(image, annotations)

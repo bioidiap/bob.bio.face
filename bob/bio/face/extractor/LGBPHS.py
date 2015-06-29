@@ -11,7 +11,47 @@ import math
 from bob.bio.base.extractor import Extractor
 
 class LGBPHS (Extractor):
-  """Extractor for local Gabor binary pattern histogram sequences"""
+  """Extracts *Local Gabor Binary Pattern Histogram Sequences* (LGBPHS) [ZSG+05]_ from the images, using functionality from :ref:`bob.ip.base <bob.ip.base>` and :ref:`bob.ip.gabor <bob.ip.gabor>`.
+
+  The block size and the overlap of the blocks can be varied, as well as the parameters of the Gabor wavelet (:py:class:`bob.ip.gabor.Transform`) and the LBP extractor (:py:class:`bob.ip.base.LBP`).
+
+  **Parameters:**
+
+  block_size : int or (int, int)
+    The size of the blocks that will be extracted.
+    This parameter might be either a single integral value, or a pair ``(block_height, block_width)`` of integral values.
+
+  block_overlap : int or (int, int)
+    The overlap of the blocks in vertical and horizontal direction.
+    This parameter might be either a single integral value, or a pair ``(block_overlap_y, block_overlap_x)`` of integral values.
+    It needs to be smaller than the ``block_size``.
+
+  gabor_directions, gabor_scales, gabor_sigma, gabor_maximum_frequency, gabor_frequency_step, gabor_power_of_k, gabor_dc_free
+    The parameters of the Gabor wavelet family, with its default values set as given in [WFK97]_.
+    Please refer to :py:class:`bob.ip.gabor.Transform` for the documentation of these values.
+
+  use_gabor_phases : bool
+    Extract also the Gabor phases (inline) and not only the absolute values.
+    In this case, Extended LGBPHS features [ZSQ+09]_ will be extracted.
+
+  lbp_radius, lbp_neighbor_count, lbp_uniform, lbp_circular, lbp_rotation_invariant, lbp_compare_to_average, lbp_add_average
+    The parameters of the LBP.
+    Please see :py:class:`bob.ip.base.LBP` for the documentation of these values.
+
+    .. note::
+       The default values are as given in [ZSG+05]_ (the values of [ZSQ+09]_ might differ).
+
+  sparse_histogram : bool
+    If specified, the histograms will be handled in a sparse way.
+    This reduces the size of the extracted features, but the computation will take longer.
+
+    .. note::
+       Sparse histograms are only supported, when ``split_histogram = None``.
+
+  split_histogram : one of ``('blocks', 'wavelets', 'both')`` or ``None``
+    Defines, how the histogram sequence is split.
+    This could be interesting, if the histograms should be used in another way as simply concatenating them into a single histogram sequence (the default).
+  """
 
   def __init__(
       self,
@@ -39,8 +79,6 @@ class LGBPHS (Extractor):
       sparse_histogram = False,
       split_histogram = None
   ):
-    """Initializes the local Gabor binary pattern histogram sequence tool chain with the given file selector object"""
-
     # call base class constructor
     Extractor.__init__(
         self,
@@ -137,7 +175,22 @@ class LGBPHS (Extractor):
 
 
   def __call__(self, image):
-    """Extracts the local Gabor binary pattern histogram sequence from the given image"""
+    """__call__(image) -> feature
+
+    Extracts the local Gabor binary pattern histogram sequence from the given image.
+
+    **Parameters:**
+
+    image : 2D :py:class:`numpy.ndarray` (floats)
+      The image to extract the features from.
+
+    **Returns:**
+
+    feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
+      The list of Gabor jets extracted from the image.
+      The 2D location of the jet's nodes is not returned.
+    """
+    """"""
     assert image.ndim == 2
     assert isinstance(image, numpy.ndarray)
     assert image.dtype == numpy.float64
@@ -193,3 +246,7 @@ class LGBPHS (Extractor):
 
     # return the concatenated list of all histograms
     return self._sparsify(lgbphs_array)
+
+  # re-define the train function to get it non-documented
+  def train(*args,**kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
+  def load(*args,**kwargs) : pass

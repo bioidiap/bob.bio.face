@@ -99,12 +99,12 @@ class Eigenface (Extractor):
 
     **Parameters:**
 
-    image : 2D :py:class:`numpy.ndarray`
+    image : 2D :py:class:`numpy.ndarray` (floats)
       The image to extract the eigenface feature from.
 
     **Returns:**
 
-    feature : 1D :py:class:`numpy.ndarray`
+    feature : 1D :py:class:`numpy.ndarray` (floats)
       The extracted eigenface feature.
     """
     self._check_data(image)

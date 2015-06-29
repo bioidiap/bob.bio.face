@@ -26,6 +26,10 @@ import bob.bio.base
 def _check_database(database, groups = ('dev',), protocol = None, training_depends = False, models_depend = False):
   assert isinstance(database, bob.bio.base.database.DatabaseBob)
 
+  # load the directories
+  if 'HOME' in os.environ:
+    database.replace_directories(os.path.join(os.environ['HOME'], '.bob_bio_databases.txt'))
+
   if protocol: database.protocol = protocol
   assert len(database.all_files()) > 0
   assert len(database.training_files('train_extractor')) > 0

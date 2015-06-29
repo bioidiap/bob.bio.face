@@ -58,7 +58,7 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = u'Bob Example Project'
+project = u'Run Face Recognition Experiments with bob.bio'
 import time
 copyright = u'%s, Idiap Research Institute' % time.strftime('%Y')
 
@@ -187,7 +187,7 @@ html_favicon = 'img/favicon.ico'
 #html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'bob_example_project_doc'
+htmlhelp_basename = 'bob_bio_face_doc'
 
 
 # -- Options for LaTeX output --------------------------------------------------
@@ -201,7 +201,7 @@ latex_font_size = '10pt'
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
-  ('index', 'bob_example_project.tex', u'Bob',
+  ('index', 'bob_bio_face.tex', u'Bob',
    u'Biometrics Group, Idiap Research Institute', 'manual'),
 ]
 
@@ -236,13 +236,13 @@ rst_epilog = ''
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    ('index', 'bob.example.project', u'Bob Example Project Documentation', [u'Idiap Research Institute'], 1)
+    ('index', 'bob.bio.face', u'Run Face Recognition Experiments with bob.bio', [u'Idiap Research Institute'], 1)
 ]
 
 # Default processing flags for sphinx
 autoclass_content = 'both'
 autodoc_member_order = 'bysource'
-autodoc_default_flags = ['members', 'undoc-members', 'inherited-members', 'show-inheritance']
+autodoc_default_flags = ['members', 'inherited-members', 'show-inheritance']
 
 # For inter-documentation mapping:
 from bob.extension.utils import link_documentation

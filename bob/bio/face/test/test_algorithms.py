@@ -111,3 +111,11 @@ def test_histogram():
   reference *= 2.
   assert abs(histogram.score(model2, feature2) - reference) < 1e-5
   assert abs(histogram.score_for_multiple_probes(model2, [feature2, feature2]) - reference) < 1e-5
+
+
+def test_bic_jets():
+  bic = bob.bio.base.load_resource("bic-jets", "algorithm")
+  assert isinstance(bic, bob.bio.base.algorithm.BIC)
+  assert isinstance(bic, bob.bio.base.algorithm.Algorithm)
+
+  # TODO: add more tests for bic-jets

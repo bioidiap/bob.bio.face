@@ -22,6 +22,7 @@ import os
 from nose.plugins.skip import SkipTest
 
 import bob.bio.base
+from bob.bio.base.test.utils import db_available
 
 def _check_database(database, groups = ('dev',), protocol = None, training_depends = False, models_depend = False):
   assert isinstance(database, bob.bio.base.database.DatabaseBob)
@@ -66,7 +67,7 @@ def _check_annotations(database):
       assert 'leye' in annotations
 
 
-
+@db_available('arface')
 def test_arface():
   database = bob.bio.base.load_resource('arface', 'database', preferred_extension='bob.bio.face')
   try:
@@ -80,6 +81,7 @@ def test_atnt():
   _check_database(bob.bio.base.load_resource('atnt', 'database', preferred_extension='bob.bio.face'))
 
 
+@db_available('banca')
 def test_banca():
   database = bob.bio.base.load_resource('banca', 'database', preferred_extension='bob.bio.face')
   try:
@@ -89,6 +91,7 @@ def test_banca():
     raise SkipTest("The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
+@db_available('caspeal')
 def test_caspeal():
   database = bob.bio.base.load_resource('caspeal', 'database', preferred_extension='bob.bio.face')
   try:
@@ -99,6 +102,7 @@ def test_caspeal():
     raise SkipTest("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
+@db_available('frgc')
 def test_frgc():
   import xml.sax
   database = bob.bio.base.load_resource('frgc', 'database', preferred_extension='bob.bio.face')
@@ -110,6 +114,7 @@ def test_frgc():
     raise SkipTest("The database could not be opened, probably the original directory is wrong. Here is the error: '%s'" % e)
 
 
+@db_available('gbu')
 def test_gbu():
   database = bob.bio.base.load_resource('gbu', 'database', preferred_extension='bob.bio.face')
   try:
@@ -121,6 +126,7 @@ def test_gbu():
     raise SkipTest("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
+@db_available('lfw')
 def test_lfw():
   database = bob.bio.base.load_resource('lfw-restricted', 'database', preferred_extension='bob.bio.face')
   try:
@@ -132,6 +138,7 @@ def test_lfw():
     raise SkipTest("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
+@db_available('mobio')
 def test_mobio():
   database = bob.bio.base.load_resource('mobio-image', 'database', preferred_extension='bob.bio.face')
   try:
@@ -148,6 +155,7 @@ def test_mobio():
     raise SkipTest("The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
+@db_available('multipie')
 def test_multipie():
   database = bob.bio.base.load_resource('multipie', 'database', preferred_extension='bob.bio.face')
   try:
@@ -164,6 +172,7 @@ def test_multipie():
     raise SkipTest("The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
+@db_available('scface')
 def test_scface():
   database = bob.bio.base.load_resource('scface', 'database', preferred_extension='bob.bio.face')
   try:
@@ -173,6 +182,7 @@ def test_scface():
     raise SkipTest("The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
+@db_available('xm2vts')
 def test_xm2vts():
   database = bob.bio.base.load_resource('xm2vts', 'database', preferred_extension='bob.bio.face')
   try:

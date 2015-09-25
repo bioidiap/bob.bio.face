@@ -12,7 +12,7 @@ class Base (Preprocessor):
   dtype : :py:class:`numpy.dtype` or convertible or ``None``
     The data type that the resulting image will have.
 
-  color_channel : one of ``('gray', 'red', 'gren', 'blue')``
+  color_channel : one of ``('gray', 'red', 'gren', 'blue', 'rgb')``
     The specific color channel, which should be extracted from the image.
   """
 
@@ -35,14 +35,18 @@ class Base (Preprocessor):
 
     **Returns:**
 
-    channel : 2D :py:class:`numpy.ndarray`
+    channel : 2D or 3D :py:class:`numpy.ndarray`
       The extracted color channel.
     """
     if image.ndim == 2:
+      if self.channel == 'rgb':
+        return bob.ip.color.gray_to_rgb(image)
       if self.channel != 'gray':
         raise ValueError("There is no rule to extract a " + channel + " image from a gray level image!")
       return image
 
+    if self.channel == 'rgb':
+      return image
     if self.channel == 'gray':
       return bob.ip.color.rgb_to_gray(image)
     if self.channel == 'red':

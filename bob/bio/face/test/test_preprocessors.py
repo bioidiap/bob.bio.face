@@ -64,6 +64,23 @@ def test_base():
   assert preprocessed.dtype == numpy.float64
   assert numpy.allclose(preprocessed, bob.ip.color.rgb_to_gray(image))
 
+  # color output
+  base = bob.bio.face.preprocessor.Base(color_channel="rgb", dtype=numpy.uint8)
+  colored = base(bob.ip.color.rgb_to_gray(image))
+
+  assert colored.ndim == 3
+  assert colored.dtype == numpy.uint8
+  assert all(numpy.allclose(colored[c], bob.ip.color.rgb_to_gray(image)) for c in range(3))
+
+  colored = base(image)
+  assert colored.ndim == 3
+  assert colored.dtype == numpy.uint8
+  assert numpy.all(colored == image)
+
+
+
+
+
 
 def test_face_crop():
   # read input

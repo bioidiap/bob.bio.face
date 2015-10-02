@@ -30,7 +30,7 @@ try:
   # try if GMM-based algorithms are available
   bob.bio.base.load_resource('gmm', 'algorithm')
   bob.bio.base.load_resource('isv', 'algorithm')
-  bob.bio.base.load_resource('ivector', 'algorithm')
+  bob.bio.base.load_resource('ivector-cosine', 'algorithm')
   all_algorithms += ['gmm', 'isv', 'ivector']
 except:
   print("Could not load the GMM-based algorithms. Did you specify bob.bio.gmm in your config file?")
@@ -152,7 +152,7 @@ CONFIGURATIONS = {
   'ivector': dict(
     preprocessor = ('tan-triggs-crop', 'tan-triggs'),
     extractor    = 'dct-blocks',
-    algorithm    = 'ivector',
+    algorithm    = 'ivector-cosine',
     grid         = 'demanding',
     script       = './bin/verify_ivector.py'
   ),

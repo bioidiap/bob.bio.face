@@ -41,6 +41,7 @@ def _compare(data, reference, write_function = bob.bio.base.save, read_function 
   # compare reference
   reference = read_function(reference)
   assert numpy.allclose(data, reference, atol=atol, rtol=rtol)
+  return reference
 
 
 def _image():
@@ -65,7 +66,7 @@ def test_base():
   assert numpy.allclose(preprocessed, bob.ip.color.rgb_to_gray(image))
 
   # color output
-  base = bob.bio.face.preprocessor.Base(color_channel="rgb", dtype=numpy.uint8)
+  base = bob.bio.face.preprocessor.Base(color_channel='rgb', dtype=numpy.uint8)
   colored = base(bob.ip.color.rgb_to_gray(image))
 
   assert colored.ndim == 3
@@ -93,12 +94,21 @@ def test_face_crop():
 
   # execute face cropper
   reference = pkg_resources.resource_filename('bob.bio.face.test', 'data/cropped.hdf5')
-  _compare(cropper(image, annotation), reference, cropper.write_data, cropper.read_data)
+  ref_image = _compare(cropper(image, annotation), reference, cropper.write_data, cropper.read_data)
 
   # test the preprocessor with fixed eye positions (which correspond to th ones
   fixed_cropper = bob.bio.face.preprocessor.FaceCrop(cropper.cropped_image_size, cropper.cropped_positions, fixed_positions = {'reye' : annotation['reye'], 'leye' : annotation['leye']})
   # result must be identical to the original face cropper (same eyes are used)
   _compare(fixed_cropper(image), reference, cropper.write_data, cropper.read_data)
+
+  # check color cropping
+  cropper.channel = 'rgb'
+  cropped = cropper(image, annotation)
+  assert cropped.ndim == 3
+  assert cropped.shape[0] == 3
+  assert cropped.shape[1:] == ref_image.shape
+  assert numpy.allclose(bob.ip.color.rgb_to_gray(cropped), ref_image, atol = 1., rtol = 1.)
+
 
 
 def test_face_detect():
@@ -213,67 +223,3 @@ def test_sqi():
   # load the preprocessor landmark detection
   preprocessor = bob.bio.base.load_resource('self-quotient-landmark', 'preprocessor')
   assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
-
-
-"""
-def test06a_key_points(self):
-  # read input
-  data, annotation = self.input()
-  preprocessor = self.config('keypoints')
-
-  # execute preprocessor
-  preprocessed = preprocessor(data, annotation)
-  if regenerate_refs:
-    preprocessor.save_data(preprocessed, self.reference_dir('key_points.hdf5'))
-
-  reference = preprocessor.read_data(self.reference_dir('key_points.hdf5'))
-  # check if it is near the reference data and positions
-  data, annots = preprocessed
-  data2, annot2 = reference
-  self.assertTrue((numpy.abs(data - data2) < 1e-5).all())
-  self.assertTrue((annots == annot2).all())
-
-def test06b_key_points(self):
-  # read input
-  data, annotation = self.input()
-  preprocessor = self.config('keypoints_lfw')
-
-  # execute preprocessor
-  preprocessed = preprocessor(data, annotation)
-  if regenerate_refs:
-    preprocessor.save_data(preprocessed, self.reference_dir('key_points_cropped.hdf5'))
-
-  reference = preprocessor.read_data(self.reference_dir('key_points_cropped.hdf5'))
-  # check if it is near the reference data and positions
-  data, annots = preprocessed
-  data2, annot2 = reference
-  self.assertTrue((numpy.abs(data - data2) < 1e-5).all())
-  self.assertTrue((annots == annot2).all())
-
-
-def test10_facedetect(self):
-  # read input
-  data, annotation = self.input()
-  preprocessor = self.config('face-detect')
-  # execute preprocessor
-  self.execute(preprocessor, data, annotation, 'detected.hdf5')
-  self.assertAlmostEqual(preprocessor.quality(), 33.1136586)
-
-
-def test11_landmarkdetect(self):
-  # read input
-  data, annotation = self.input()
-  preprocessor = self.config('landmark-detect')
-  # execute preprocessor
-  self.execute(preprocessor, data, annotation, 'landmark.hdf5', 1e-3)
-  self.assertAlmostEqual(preprocessor.quality(), 33.1136586)
-
-
-def test20_compressed_io(self):
-  data = facereclib.utils.load(self.reference_dir('cropped.hdf5'))
-  compressed_file = self.reference_dir('compressed.hdf5')
-  if regenerate_refs:
-    facereclib.utils.save_compressed(data, compressed_file, create_link = True)
-  data2 = facereclib.utils.load_compressed(compressed_file)
-  self.assertTrue(numpy.alltrue(data == data2))
-"""

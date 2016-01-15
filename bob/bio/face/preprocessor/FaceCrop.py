@@ -154,8 +154,9 @@ class FaceCrop (Base):
       raise ValueError("At least one of the expected annotations '%s' are not given in '%s'." % (self.cropped_keys, annotations.keys()))
 
     # create output
-    mask = numpy.ones(image.shape, dtype=numpy.bool)
-    cropped_image = numpy.zeros(self.cropped_image_size)
+    mask = numpy.ones(image.shape[-2:], dtype=numpy.bool)
+    shape = self.cropped_image_size if image.ndim == 2 else [image.shape[0]] + list(self.cropped_image_size)
+    cropped_image = numpy.zeros(shape)
     self.cropped_mask[:] = False
 
     # perform the cropping

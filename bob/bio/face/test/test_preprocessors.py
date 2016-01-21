@@ -109,6 +109,8 @@ def test_face_crop():
   assert cropped.shape[1:] == ref_image.shape
   assert numpy.allclose(bob.ip.color.rgb_to_gray(cropped), ref_image, atol = 1., rtol = 1.)
 
+  # reset the configuration, so that later tests don't get screwed.
+  cropper.channel = 'gray'
 
 
 def test_face_detect():

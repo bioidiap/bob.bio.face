@@ -34,7 +34,7 @@ seed_value = 5489
 
 
 def test_gabor_jet():
-  jets = bob.bio.base.load_resource("gabor-jet", "algorithm")
+  jets = bob.bio.base.load_resource("gabor-jet", "algorithm", preferred_package='bob.bio.face')
   assert isinstance(jets, bob.bio.face.algorithm.GaborJet)
   assert isinstance(jets, bob.bio.base.algorithm.Algorithm)
   assert not jets.performs_projection
@@ -78,7 +78,7 @@ def test_gabor_jet():
 
 
 def test_histogram():
-  histogram = bob.bio.base.load_resource("histogram", "algorithm")
+  histogram = bob.bio.base.load_resource("histogram", "algorithm", preferred_package='bob.bio.face')
   assert isinstance(histogram, bob.bio.face.algorithm.Histogram)
   assert isinstance(histogram, bob.bio.base.algorithm.Algorithm)
   assert not histogram.performs_projection
@@ -114,7 +114,7 @@ def test_histogram():
 
 
 def test_bic_jets():
-  bic = bob.bio.base.load_resource("bic-jets", "algorithm")
+  bic = bob.bio.base.load_resource("bic-jets", "algorithm", preferred_package='bob.bio.face')
   assert isinstance(bic, bob.bio.base.algorithm.BIC)
   assert isinstance(bic, bob.bio.base.algorithm.Algorithm)
 

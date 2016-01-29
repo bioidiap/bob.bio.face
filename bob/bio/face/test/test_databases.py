@@ -69,7 +69,7 @@ def _check_annotations(database):
 
 @db_available('arface')
 def test_arface():
-  database = bob.bio.base.load_resource('arface', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('arface', 'database', preferred_package='bob.bio.face')
   try:
     _check_database(database, groups=('dev', 'eval'))
     _check_annotations(database)
@@ -78,12 +78,12 @@ def test_arface():
 
 
 def test_atnt():
-  _check_database(bob.bio.base.load_resource('atnt', 'database', preferred_extension='bob.bio.face'))
+  _check_database(bob.bio.base.load_resource('atnt', 'database', preferred_package='bob.bio.face'))
 
 
 @db_available('banca')
 def test_banca():
-  database = bob.bio.base.load_resource('banca', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('banca', 'database', preferred_package='bob.bio.face')
   try:
     _check_database_zt(database)
     _check_annotations(database)
@@ -93,7 +93,7 @@ def test_banca():
 
 @db_available('caspeal')
 def test_caspeal():
-  database = bob.bio.base.load_resource('caspeal', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('caspeal', 'database', preferred_package='bob.bio.face')
   try:
     _check_database(database)
     _check_database(database, protocol = 'aging')
@@ -105,7 +105,7 @@ def test_caspeal():
 @db_available('frgc')
 def test_frgc():
   import xml.sax
-  database = bob.bio.base.load_resource('frgc', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('frgc', 'database', preferred_package='bob.bio.face')
   try:
     _check_database(database, models_depend = True)
     _check_database(database, protocol = '2.0.2', models_depend = True)
@@ -116,7 +116,7 @@ def test_frgc():
 
 @db_available('gbu')
 def test_gbu():
-  database = bob.bio.base.load_resource('gbu', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('gbu', 'database', preferred_package='bob.bio.face')
   try:
     _check_database(database, models_depend=True)
     _check_database(database, protocol = 'Bad', models_depend=True)
@@ -128,11 +128,11 @@ def test_gbu():
 
 @db_available('lfw')
 def test_lfw():
-  database = bob.bio.base.load_resource('lfw-restricted', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('lfw-restricted', 'database', preferred_package='bob.bio.face')
   try:
     _check_database(database, training_depends = True, models_depend = True)
     _check_database(database, groups = ('dev', 'eval'), protocol = 'fold1', training_depends = True, models_depend = True)
-    _check_database(bob.bio.base.load_resource('lfw-unrestricted', 'database', preferred_extension='bob.bio.face'), training_depends = True, models_depend = True)
+    _check_database(bob.bio.base.load_resource('lfw-unrestricted', 'database', preferred_package='bob.bio.face'), training_depends = True, models_depend = True)
     _check_annotations(database)
   except IOError as e:
     raise SkipTest("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
@@ -140,12 +140,12 @@ def test_lfw():
 
 @db_available('mobio')
 def test_mobio():
-  database = bob.bio.base.load_resource('mobio-image', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('mobio-image', 'database', preferred_package='bob.bio.face')
   try:
     _check_database_zt(database, models_depend=True)
     _check_database_zt(database, protocol = 'female', models_depend=True)
-    _check_database_zt(bob.bio.base.load_resource('mobio-male', 'database', preferred_extension='bob.bio.face'), models_depend=True)
-    _check_database_zt(bob.bio.base.load_resource('mobio-female', 'database', preferred_extension='bob.bio.face'), models_depend=True)
+    _check_database_zt(bob.bio.base.load_resource('mobio-male', 'database', preferred_package='bob.bio.face'), models_depend=True)
+    _check_database_zt(bob.bio.base.load_resource('mobio-female', 'database', preferred_package='bob.bio.face'), models_depend=True)
   except IOError as e:
     raise SkipTest("The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
@@ -157,10 +157,10 @@ def test_mobio():
 
 @db_available('multipie')
 def test_multipie():
-  database = bob.bio.base.load_resource('multipie', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('multipie', 'database', preferred_package='bob.bio.face')
   try:
     _check_database_zt(database, training_depends = True)
-    _check_database_zt(bob.bio.base.load_resource('multipie-pose', 'database', preferred_extension='bob.bio.face'), training_depends = True)
+    _check_database_zt(bob.bio.base.load_resource('multipie-pose', 'database', preferred_package='bob.bio.face'), training_depends = True)
   except IOError as e:
     raise SkipTest("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
   except ValueError as e:
@@ -174,7 +174,7 @@ def test_multipie():
 
 @db_available('scface')
 def test_scface():
-  database = bob.bio.base.load_resource('scface', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('scface', 'database', preferred_package='bob.bio.face')
   try:
     _check_database_zt(database)
     _check_annotations(database)
@@ -184,7 +184,7 @@ def test_scface():
 
 @db_available('xm2vts')
 def test_xm2vts():
-  database = bob.bio.base.load_resource('xm2vts', 'database', preferred_extension='bob.bio.face')
+  database = bob.bio.base.load_resource('xm2vts', 'database', preferred_package='bob.bio.face')
   try:
     _check_database(database, groups=('dev', 'eval'))
     _check_database(database, groups=('dev', 'eval'), protocol = 'darkened-lp1')

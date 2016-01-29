@@ -49,7 +49,7 @@ def _data():
 def test_dct_blocks():
   # read input
   data = _data()
-  dct = bob.bio.base.load_resource('dct-blocks', 'extractor')
+  dct = bob.bio.base.load_resource('dct-blocks', 'extractor', preferred_package='bob.bio.face')
   assert isinstance(dct, bob.bio.face.extractor.DCTBlocks)
   assert isinstance(dct, bob.bio.base.extractor.Extractor)
   assert not dct.requires_training
@@ -68,7 +68,7 @@ def test_dct_blocks():
 
 def test_graphs():
   data = _data()
-  graph = bob.bio.base.load_resource('grid-graph', 'extractor')
+  graph = bob.bio.base.load_resource('grid-graph', 'extractor', preferred_package='bob.bio.face')
   assert isinstance(graph, bob.bio.face.extractor.GridGraph)
   assert isinstance(graph, bob.bio.base.extractor.Extractor)
   assert not graph.requires_training
@@ -92,7 +92,7 @@ def test_graphs():
 
 
   # get reference face graph extractor
-  cropper = bob.bio.base.load_resource('face-crop-eyes', 'preprocessor')
+  cropper = bob.bio.base.load_resource('face-crop-eyes', 'preprocessor', preferred_package='bob.bio.face')
   eyes = cropper.cropped_positions
   # generate aligned graph extractor
   graph = bob.bio.face.extractor.GridGraph(
@@ -115,7 +115,7 @@ def test_graphs():
 
 def test_lgbphs():
   data = _data()
-  lgbphs = bob.bio.base.load_resource('lgbphs', 'extractor')
+  lgbphs = bob.bio.base.load_resource('lgbphs', 'extractor', preferred_package='bob.bio.face')
   assert isinstance(lgbphs, bob.bio.face.extractor.LGBPHS)
   assert isinstance(lgbphs, bob.bio.base.extractor.Extractor)
   assert not lgbphs.requires_training
@@ -156,7 +156,7 @@ def test_lgbphs():
 def test_eigenface():
   temp_file = bob.io.base.test_utils.temporary_filename()
   data = _data()
-  eigen1 = bob.bio.base.load_resource('eigenface', 'extractor')
+  eigen1 = bob.bio.base.load_resource('eigenface', 'extractor', preferred_package='bob.bio.face')
   assert isinstance(eigen1, bob.bio.face.extractor.Eigenface)
   assert isinstance(eigen1, bob.bio.base.extractor.Extractor)
   assert eigen1.requires_training

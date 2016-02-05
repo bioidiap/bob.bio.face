@@ -81,7 +81,7 @@ Or simply (using the face detector :ref:`Resource <bob.bio.face.preprocessors>`)
 
 .. code-block:: py
 
-   preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper = 'face-crop-eyes')
+   preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper = 'landmark-detect')
 
 
 .. _bob.bio.face.resources:

@@ -107,7 +107,7 @@ class FaceDetect (Base):
     # get the landmarks in the face
     if self.flandmark is not None:
       # use the flandmark detector
-      uint8_image = image.astype(numpy.uint8)
+
       # make the bounding box square shape by extending the horizontal position by 2 pixels times width/20
       bb = bob.ip.facedetect.BoundingBox(topleft = (bounding_box.top_f, bounding_box.left_f - bounding_box.size[1] / 10.), size = bounding_box.size)
 
@@ -115,7 +115,7 @@ class FaceDetect (Base):
       left = max(bb.left, 0)
       bottom = min(bb.bottom, image.shape[0])
       right = min(bb.right, image.shape[1])
-      landmarks = self.flandmark.locate(uint8_image, top, left, bottom-top, right-left)
+      landmarks = self.flandmark.locate(image, top, left, bottom-top, right-left)
 
       if landmarks is not None and len(landmarks):
         return {
@@ -136,7 +136,7 @@ class FaceDetect (Base):
 
     **Parameters:**
 
-    image : 2D :py:class:`numpy.ndarray`
+    image : 2D or 3D :py:class:`numpy.ndarray`
       The face image to be processed.
 
     annotations : any
@@ -144,14 +144,18 @@ class FaceDetect (Base):
 
     **Returns:**
 
-    face : 2D :py:class:`numpy.ndarray` (float)
+    face : 2D or 3D :py:class:`numpy.ndarray` (float)
       The detected and cropped face.
     """
+    uint8_image = image.astype(numpy.uint8)
+    if uint8_image.ndim == 3:
+      uint8_image = bob.ip.color.rgb_to_gray(uint8_image)
+
     # detect the face
-    bounding_box, self.quality = bob.ip.facedetect.detect_single_face(image, self.cascade, self.sampler, self.detection_overlap)
+    bounding_box, self.quality = bob.ip.facedetect.detect_single_face(uint8_image, self.cascade, self.sampler, self.detection_overlap)
 
     # get the eye landmarks
-    annotations = self._landmarks(image, bounding_box)
+    annotations = self._landmarks(uint8_image, bounding_box)
 
     # apply face cropping
     return self.cropper.crop_face(image, annotations)

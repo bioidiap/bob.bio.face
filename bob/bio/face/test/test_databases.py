@@ -34,7 +34,7 @@ def _check_database(database, groups = ('dev',), protocol = None, training_depen
   if protocol: database.protocol = protocol
   assert len(database.all_files()) > 0
   assert len(database.training_files('train_extractor')) > 0
-  assert len(database.training_files('train_enroller', arrange_by_client = True)) > 0
+  assert len(database.arrange_by_client(database.training_files('train_enroller'))) > 0
 
   for group in groups:
     model_ids = database.model_ids(group)

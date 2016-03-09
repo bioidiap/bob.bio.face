@@ -171,7 +171,11 @@ class FaceCrop (Base):
 
     if self.mask_sigma is not None:
       # extrapolate the mask so that pixels outside of the image original image region are filled with border pixels
-      bob.ip.base.extrapolate_mask(self.cropped_mask, cropped_image, self.mask_sigma, self.mask_neighbors, self.mask_rng)
+      if cropped_image.ndim == 2:
+        bob.ip.base.extrapolate_mask(self.cropped_mask, cropped_image, self.mask_sigma, self.mask_neighbors, self.mask_rng)
+      else:
+        [bob.ip.base.extrapolate_mask(self.cropped_mask, cropped_image_channel, self.mask_sigma, self.mask_neighbors, self.mask_rng) for cropped_image_channel in cropped_image]
+
 
     return cropped_image
 

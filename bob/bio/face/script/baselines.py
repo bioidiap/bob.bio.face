@@ -177,8 +177,8 @@ def main(command_line_parameters = None):
 
   # Check the database configuration file
   has_eyes = args.database != 'atnt'
-  has_zt_norm = args.database in ('banca', 'mobio', 'multipie', 'scface')
-  has_eval = args.database in ('banca', 'mobio', 'multipie', 'scface', 'xm2vts')
+  has_zt_norm = args.database in ('banca', 'mobio-female', 'mobio-image', 'mobio-male', 'multipie', 'scface')
+  has_eval = args.database in ('banca', 'mobio-female', 'mobio-image', 'mobio-male', 'multipie', 'scface', 'xm2vts')
 
   if not args.evaluate:
 
@@ -330,24 +330,24 @@ def main(command_line_parameters = None):
 
     # first, run the nonorm evaluation
     if result_zt_dev:
-      command = [cmd.replace('xxx','_dev') for cmd in base_command]
+      command = [cmd.replace('xxx','_nonorm') for cmd in base_command]
     else:
       command = [cmd.replace('xxx','') for cmd in base_command]
     command += ['--dev-files'] + result_dev
     if result_eval:
       command += ['--eval-files'] + result_eval
 
-    logger.info("Executing command:\n%s", bob.bio.base.tools.command_line(command))
+    logger.info("Executing command (nonorm):\n%s", bob.bio.base.tools.command_line(command))
     if not args.dry_run:
       subprocess.call(command)
 
     # now, also run the ZT norm evaluation, if available
     if result_zt_dev:
-      command = [cmd.replace('xxx','_eval') for cmd in base_command]
+      command = [cmd.replace('xxx','_ztnorm') for cmd in base_command]
       command += ['--dev-files'] + result_zt_dev
       if result_zt_eval:
         command += ['--eval-files'] + result_zt_eval
 
-      logger.info("Executing command:\n%s", bob.bio.base.tools.command_line(command))
+      logger.info("Executing command (ztnorm):\n%s", bob.bio.base.tools.command_line(command))
       if not args.dry_run:
         subprocess.call(command)

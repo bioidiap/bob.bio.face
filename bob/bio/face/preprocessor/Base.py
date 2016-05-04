@@ -63,7 +63,7 @@ class Base (Preprocessor):
     """data_type(image) -> image
 
     Converts the given image into the data type specified in the constructor of this class.
-    If no data type was specified, no conversion is performed.
+    If no data type was specified, or the ``image`` is ``None``, no conversion is performed.
 
     **Parameters:**
 
@@ -75,7 +75,7 @@ class Base (Preprocessor):
     image : 2D or 3D :py:class:`numpy.ndarray`
       The image converted to the desired data type, if any.
     """
-    if self.dtype is not None:
+    if self.dtype is not None and image is not None:
       image = image.astype(self.dtype)
     return image
 

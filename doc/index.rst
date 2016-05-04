@@ -20,6 +20,7 @@ This includes:
 Additionally, a set of baseline algorithms are defined, which integrate well with the two other ``bob.bio`` packages:
 
 * :ref:`bob.bio.gmm <bob.bio.gmm>` defines algorithms based on Gaussian mixture models
+* :ref:`bob.bio.video <bob.bio.video>` uses face recognition algorithms in video frames
 * :ref:`bob.bio.csu <bob.bio.csu>` provides wrapper classes of the `CSU Face Recognition Resources <http://www.cs.colostate.edu/facerec>`_ (only Python 2.7 compatible)
 
 For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.

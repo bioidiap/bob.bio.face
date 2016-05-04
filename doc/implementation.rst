@@ -163,6 +163,9 @@ Here is the list of files and replacement strings for all databases that are reg
 
 You can use the ``./bin/databases.py`` script to list, which data directories are correctly set up.
 
+In order to view the annotations inside your database on top of the images, you can use the ``./bin/display_face_annotations.py`` script that is provided.
+Please see ``./bin/display_face_annotations.py --help`` for more details and a list of options.
+
 
 .. _bob.bio.face.preprocessors:
 

@@ -22,3 +22,11 @@ def test_baselines():
       main(parameters)
       parameters.extend(['-e', 'HTER'])
       main(parameters)
+
+def test_display_annotations():
+
+  from bob.bio.face.script.display_face_annotations import main
+
+  with bob.bio.base.test.utils.Quiet():
+    parameters = ['-d', 'atnt', '-a', '/very/unlikely/directory', '--self-test']
+    main(parameters)

@@ -101,7 +101,8 @@ setup(
 
       # scripts should be declared using this entry:
       'console_scripts' : [
-        'baselines.py      = bob.bio.face.script.baselines:main'
+        'baselines.py      = bob.bio.face.script.baselines:main',
+        'display_face_annotations.py = bob.bio.face.script.display_face_annotations:main'
       ],
 
       'bob.bio.database': [

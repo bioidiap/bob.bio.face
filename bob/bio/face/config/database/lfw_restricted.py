@@ -1,22 +1,19 @@
 #!/usr/bin/env python
 
-import bob.db.lfw
-import bob.bio.base
+from bob.bio.db import LFWBioDatabase
 
 lfw_directory = "[YOUR_LFW_FUNNELED_DIRECTORY]"
 
-database = bob.bio.base.database.DatabaseBob(
-    database = bob.db.lfw.Database(
-        original_directory = lfw_directory,
-        annotation_type = 'funneled'
-    ),
-    name = 'lfw',
-    protocol = 'view1',
-    training_depends_on_protocol = True,
-    models_depend_on_protocol = True,
+database = LFWBioDatabase(
+    original_directory=lfw_directory,
+    annotation_type='funneled',
 
-    all_files_options = { 'world_type' : 'restricted' },
-    extractor_training_options = { 'world_type' : 'restricted' }, # 'subworld' : 'twofolds'
-    projector_training_options = { 'world_type' : 'restricted' }, # 'subworld' : 'twofolds'
-    enroller_training_options =  { 'world_type' : 'restricted' } # 'subworld' : 'twofolds'
+    protocol='view1',
+    training_depends_on_protocol=True,
+    models_depend_on_protocol=True,
+
+    all_files_options={'world_type': 'restricted'},
+    extractor_training_options={'world_type': 'restricted'},  # 'subworld' : 'twofolds'
+    projector_training_options={'world_type': 'restricted'},  # 'subworld' : 'twofolds'
+    enroller_training_options={'world_type': 'restricted'}  # 'subworld' : 'twofolds'
 )

@@ -1,13 +1,9 @@
 #!/usr/bin/env python
 
-import bob.db.atnt
-import bob.bio.base
+from bob.bio.db import AtntBioDatabase
 
-atnt_directory = "[YOUR_ATNT_DIRECTORY]"
+atnt_directory = "[YOUR_CAS-PEAL_DIRECTORY]"
 
-database = bob.bio.base.database.DatabaseBob(
-    database = bob.db.atnt.Database(
-        original_directory = atnt_directory
-    ),
-    name = 'atnt'
+database = AtntBioDatabase(
+    original_directory=atnt_directory,
 )

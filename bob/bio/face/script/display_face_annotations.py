@@ -55,7 +55,7 @@ def main(command_line_parameters=None):
   # load database
   database = bob.bio.base.load_resource("".join(args.database), "database")
   # replace directories
-  if isinstance(database, bob.bio.base.database.DatabaseBob):
+  if isinstance(database, bob.bio.db.BioDatabase):
     database.replace_directories(args.database_directories_file)
 
   # get all files

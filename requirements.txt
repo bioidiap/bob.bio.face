@@ -15,8 +15,6 @@ bob.learn.linear
 bob.learn.em 
 bob.measure 
 bob.db.base
-bob.db.verification.utils 
-bob.db.verification.filelist
 bob.db.atnt  # required for testing
 bob.bio.base
 bob.learn.boosting 

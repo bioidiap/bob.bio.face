@@ -31,7 +31,7 @@ def command_line_arguments(command_line_parameters):
   parser.add_argument('-f', '--file-ids', nargs = '+', help = 'If given, only the images of the --database with the given file id are shown (non-existing IDs will be silently skipped).')
   parser.add_argument('-a', '--annotation-directory', help = 'If given, use the annotations stored in the given annotation directory (this might be required for some databases).')
   parser.add_argument('-x', '--annotation-file-extension', default = '.pos', help = 'Annotation files have the given filename extension.')
-  parser.add_argument('-t', '--annotation-file-type', default = 'named', help = 'Select the annotation file style, see bob.db.verification.utils documentation for valid types.')
+  parser.add_argument('-t', '--annotation-file-type', default = 'named', help = 'Select the annotation file style, see bob.db.base documentation for valid types.')
   parser.add_argument('-n', '--annotate-names', action = 'store_true', help = 'Plot the names of the annotations, too.')
   parser.add_argument('-m', '--marker-style', default='rx', help = 'Select the marker style')
   parser.add_argument('-M', '--marker-size', type=float, default=10., help = 'Select the marker size')
@@ -84,7 +84,7 @@ def main(command_line_parameters=None):
       annotation_file = f.make_path(args.annotation_directory, args.annotation_file_extension)
       if os.path.exists(annotation_file):
         logger.info("Loading annotations from file %s", annotation_file)
-        annotations = bob.db.verification.utils.read_annotation_file(annotation_file, args.annotation_file_type)
+        annotations = bob.db.base.read_annotation_file(annotation_file, args.annotation_file_type)
       else:
         logger.warn("Could not find annotation file %s", annotation_file)
     else:

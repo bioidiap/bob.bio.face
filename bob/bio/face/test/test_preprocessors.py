@@ -19,10 +19,7 @@
 
 
 import unittest
-import os
 import numpy
-
-from nose.plugins.skip import SkipTest
 
 import pkg_resources
 
@@ -30,7 +27,7 @@ regenerate_refs = False
 
 import bob.bio.base
 import bob.bio.face
-import bob.db.verification.utils
+import bob.db.base
 
 
 def _compare(data, reference, write_function = bob.bio.base.save, read_function = bob.bio.base.load, atol = 1e-5, rtol = 1e-8):
@@ -48,7 +45,7 @@ def _image():
   return bob.io.base.load(pkg_resources.resource_filename('bob.bio.face.test', 'data/testimage.jpg'))
 
 def _annotation():
-  return bob.db.verification.utils.read_annotation_file(pkg_resources.resource_filename('bob.bio.face.test', 'data/testimage.pos'), 'named')
+  return bob.db.base.read_annotation_file(pkg_resources.resource_filename('bob.bio.face.test', 'data/testimage.pos'), 'named')
 
 
 def test_base():

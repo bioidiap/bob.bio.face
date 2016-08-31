@@ -108,7 +108,6 @@ setup(
         ],
 
         'bob.bio.database': [
-            'atnt              = bob.bio.face.config.database.atnt:database',
             'arface            = bob.bio.face.config.database.arface:database',
             'banca             = bob.bio.face.config.database.banca_english:database',
             'caspeal           = bob.bio.face.config.database.caspeal:database',

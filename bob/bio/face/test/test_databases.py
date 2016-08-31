@@ -81,10 +81,6 @@ def test_arface():
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
-def test_atnt():
-    _check_database(bob.bio.base.load_resource('atnt', 'database', preferred_package='bob.bio.face'))
-
-
 @db_available('banca')
 def test_banca():
     database = bob.bio.base.load_resource('banca', 'database', preferred_package='bob.bio.face')

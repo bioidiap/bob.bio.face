@@ -40,7 +40,7 @@ def _check_database(database, groups=('dev',), protocol=None, training_depends=F
     assert len(database.arrange_by_client(database.training_files('train_enroller'))) > 0
 
     for group in groups:
-        model_ids = database.model_ids(group, protocol=protocol)
+        model_ids = database.model_ids_with_protocol(group, protocol=protocol)
         assert len(model_ids) > 0
         assert database.client_id_from_model_id(model_ids[0]) is not None
         assert len(database.enroll_files(model_ids[0], group)) > 0
@@ -160,7 +160,7 @@ def test_mobio():
 
     try:
         _check_annotations(database)
-    except IOError as e:
+    except Exception as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
@@ -181,7 +181,7 @@ def test_multipie():
 
     try:
         _check_annotations(database)
-    except IOError as e:
+    except Exception as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 

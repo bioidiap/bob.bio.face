@@ -108,19 +108,19 @@ setup(
         ],
 
         'bob.bio.database': [
-            'arface            = bob.bio.db.default_configs.arface:database',
-            'banca             = bob.bio.db.default_configs.banca_english:database',
-            'caspeal           = bob.bio.db.default_configs.caspeal:database',
-            'frgc              = bob.bio.db.default_configs.frgc:database',
-            'gbu               = bob.bio.db.default_configs.gbu:database',
-            'lfw-restricted    = bob.bio.db.default_configs.lfw_restricted:database',
-            'lfw-unrestricted  = bob.bio.db.default_configs.lfw_unrestricted:database',
-            'mobio-male        = bob.bio.db.default_configs.mobio_male:database',  # MOBIO gender-dependent training
-            'mobio-female      = bob.bio.db.default_configs.mobio_female:database',  # MOBIO gender-dependent training
-            'multipie          = bob.bio.db.default_configs.multipie:database',
-            'multipie-pose     = bob.bio.db.default_configs.multipie_pose:database',
-            'scface            = bob.bio.db.default_configs.scface:database',
-            'xm2vts            = bob.bio.db.default_configs.xm2vts:database',
+            'arface            = bob.bio.face.config.database.arface:database',
+            'banca             = bob.bio.face.config.database.banca_english:database',
+            'caspeal           = bob.bio.face.config.database.caspeal:database',
+            'frgc              = bob.bio.face.config.database.frgc:database',
+            'gbu               = bob.bio.face.config.database.gbu:database',
+            'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
+            'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
+            'mobio-male        = bob.bio.face.config.database.mobio_male:database',  # MOBIO gender-dependent training
+            'mobio-female      = bob.bio.face.config.database.mobio_female:database',  # MOBIO gender-dependent training
+            'multipie          = bob.bio.face.config.database.multipie:database',
+            'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
+            'scface            = bob.bio.face.config.database.scface:database',
+            'xm2vts            = bob.bio.face.config.database.xm2vts:database',
         ],
 
         'bob.bio.preprocessor': [

@@ -26,7 +26,7 @@ from bob.bio.base.test.utils import db_available
 
 
 def _check_database(database, groups=('dev',), protocol=None, training_depends=False, models_depend=False):
-    assert isinstance(database, bob.bio.db.BioDatabase)
+    assert isinstance(database, bob.bio.base.database.BioDatabase)
 
     # load the directories
     if 'HOME' in os.environ:
@@ -52,7 +52,7 @@ def _check_database(database, groups=('dev',), protocol=None, training_depends=F
 
 def _check_database_zt(database, groups=('dev', 'eval'), protocol=None, training_depends=False, models_depend=False):
     _check_database(database, groups, protocol, training_depends, models_depend)
-    assert isinstance(database, bob.bio.db.ZTBioDatabase)
+    assert isinstance(database, bob.bio.base.database.ZTBioDatabase)
     for group in groups:
         t_model_ids = database.t_model_ids(group)
         assert len(t_model_ids) > 0

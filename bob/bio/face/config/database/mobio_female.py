@@ -9,6 +9,7 @@ database = MobioBioDatabase(
     original_directory=mobio_image_directory,
     original_extension=".png",
     annotation_directory=mobio_annotation_directory,
+    annotation_type="eyecenter",
 
     protocol = 'female',
     models_depend_on_protocol=True,

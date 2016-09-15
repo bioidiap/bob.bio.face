@@ -21,3 +21,4 @@ bob.learn.boosting
 bob.ip.facedetect
 bob.ip.flandmark
 matplotlib   # for plotting
+gridtk

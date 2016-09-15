@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import LFWBioDatabase
+from bob.bio.face.database import LFWBioDatabase
 
 lfw_directory = "[YOUR_LFW_FUNNELED_DIRECTORY]"
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import MultipieBioDatabase
+from bob.bio.face.database import MultipieBioDatabase
 
 multipie_image_directory = "[YOUR_MULTI-PIE_IMAGE_DIRECTORY]"
 multipie_annotation_directory = "[YOUR_MULTI-PIE_ANNOTATION_DIRECTORY]"

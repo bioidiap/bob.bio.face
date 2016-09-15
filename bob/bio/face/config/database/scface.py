@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import SCFaceBioDatabase
+from bob.bio.face.database import SCFaceBioDatabase
 
 scface_directory = "[YOUR_SC_FACE_DIRECTORY]"
 

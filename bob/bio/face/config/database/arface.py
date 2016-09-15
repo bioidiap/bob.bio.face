@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import ARFaceBioDatabase
+from bob.bio.face.database import ARFaceBioDatabase
 
 arface_directory = "[YOUR_ARFACE_DIRECTORY]"
 

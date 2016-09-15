@@ -109,13 +109,13 @@ setup(
 
         'bob.bio.database': [
             'arface            = bob.bio.face.config.database.arface:database',
+            'atnt              = bob.bio.face.config.database.atnt:database',            
             'banca             = bob.bio.face.config.database.banca_english:database',
             'caspeal           = bob.bio.face.config.database.caspeal:database',
             'frgc              = bob.bio.face.config.database.frgc:database',
             'gbu               = bob.bio.face.config.database.gbu:database',
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
-            'mobio-image       = bob.bio.face.config.database.mobio_image:database',
             'mobio-male        = bob.bio.face.config.database.mobio_male:database',  # MOBIO gender-dependent training
             'mobio-female      = bob.bio.face.config.database.mobio_female:database',  # MOBIO gender-dependent training
             'multipie          = bob.bio.face.config.database.multipie:database',

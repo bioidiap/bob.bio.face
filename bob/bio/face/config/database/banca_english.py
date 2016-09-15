@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import BancaBioDatabase
+from bob.bio.face.database import BancaBioDatabase
 
 banca_directory = "[YOUR_BANCA_DIRECTORY]"
 

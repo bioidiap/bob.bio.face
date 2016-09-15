@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import CaspealBioDatabase
+from bob.bio.face.database import CaspealBioDatabase
 
 caspeal_directory = "[YOUR_CAS-PEAL_DIRECTORY]"
 

@@ -1,13 +1,11 @@
 #!/usr/bin/env python
 
-import bob.db.frgc
-import bob.bio.base
+from bob.bio.face.database import FRGCBioDatabase
 
 frgc_directory = "[YOUR_FRGC_DIRECTORY]"
 
-database = bob.bio.base.database.DatabaseBob(
-    database = bob.db.frgc.Database(frgc_directory),
-    name = "frgc",
-    protocol = '2.0.1',
-    models_depend_on_protocol = True
+database = FRGCBioDatabase(
+    original_directory=frgc_directory,
+    protocol='2.0.1',
+    models_depend_on_protocol=True
 )

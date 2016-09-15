@@ -26,7 +26,7 @@ from bob.bio.base.test.utils import db_available
 
 
 def _check_database(database, groups=('dev',), protocol=None, training_depends=False, models_depend=False):
-    assert isinstance(database, bob.bio.db.BioDatabase)
+    assert isinstance(database, bob.bio.base.database.BioDatabase)
 
     # load the directories
     if 'HOME' in os.environ:
@@ -40,7 +40,7 @@ def _check_database(database, groups=('dev',), protocol=None, training_depends=F
     assert len(database.arrange_by_client(database.training_files('train_enroller'))) > 0
 
     for group in groups:
-        model_ids = database.model_ids(group, protocol=protocol)
+        model_ids = database.model_ids_with_protocol(group, protocol=protocol)
         assert len(model_ids) > 0
         assert database.client_id_from_model_id(model_ids[0]) is not None
         assert len(database.enroll_files(model_ids[0], group)) > 0
@@ -52,7 +52,7 @@ def _check_database(database, groups=('dev',), protocol=None, training_depends=F
 
 def _check_database_zt(database, groups=('dev', 'eval'), protocol=None, training_depends=False, models_depend=False):
     _check_database(database, groups, protocol, training_depends, models_depend)
-    assert isinstance(database, bob.bio.db.ZTBioDatabase)
+    assert isinstance(database, bob.bio.base.database.ZTBioDatabase)
     for group in groups:
         t_model_ids = database.t_model_ids(group)
         assert len(t_model_ids) > 0
@@ -160,7 +160,7 @@ def test_mobio():
 
     try:
         _check_annotations(database)
-    except IOError as e:
+    except Exception as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
@@ -181,7 +181,7 @@ def test_multipie():
 
     try:
         _check_annotations(database)
-    except IOError as e:
+    except Exception as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 

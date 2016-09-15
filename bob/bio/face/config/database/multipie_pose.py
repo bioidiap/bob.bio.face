@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 
-from bob.bio.db import MultipieBioDatabase
+from bob.bio.face.database import MultipieBioDatabase
 
 # here, we only want to have the cameras that are used in the P protocol
 cameras = ('24_0', '01_0', '20_0', '19_0', '04_1', '05_0', '05_1', '14_0', '13_0', '08_0', '09_0', '12_0', '11_0')

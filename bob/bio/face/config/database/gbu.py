@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.db import GBUBioDatabase
+from bob.bio.face.database import GBUBioDatabase
 
 mbgc_v1_directory = "[YOUR_MBGC-V1_DIRECTORY]"
 

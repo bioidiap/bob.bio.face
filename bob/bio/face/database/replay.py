@@ -106,9 +106,9 @@ class ReplayBioDatabase(BioDatabase):
         retval = []
         for f in objects:
             if f.is_real():
-                retval.append(FaceBioFile(f))
+                retval.append(FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id))
             else:
-                temp = FaceBioFile(f)
+                temp = FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id)
                 temp.client_id = 'attack'
                 retval.append(temp)
         return retval

@@ -33,4 +33,4 @@ class AtntBioDatabase(BioDatabase):
 
     def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
         retval = self.__db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [FaceBioFile(f) for f in retval]
+        return [FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]

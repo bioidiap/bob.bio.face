@@ -40,9 +40,9 @@ class MultipieBioDatabase(ZTBioDatabase):
 
     def tobjects(self, groups=None, protocol=None, model_ids=None, **kwargs):
         retval = self.__db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
-        return [FaceBioFile(BioFile(client_id=f.client_id, path=f.path, file_id=f.id)) for f in retval]
+        return [FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
 
     def zobjects(self, groups=None, protocol=None, **kwargs):
         retval = self.__db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [FaceBioFile(BioFile(client_id=f.client_id, path=f.path, file_id=f.id)) for f in retval]
+        return [FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
 

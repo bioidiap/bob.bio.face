@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-
+from .database import FaceBioFile
 from .mobio import MobioBioDatabase
 from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase

@@ -16,4 +16,4 @@ class FaceBioFile(BioFile):
         Initializes this File object with an File equivalent for
         VoxForge database.
         """
-        super(FaceBioFile, self).__init__(client_id=client_id, path=path, file_id=id)
+        super(FaceBioFile, self).__init__(client_id=client_id, path=path, file_id=file_id)

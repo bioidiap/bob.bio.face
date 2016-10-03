@@ -36,7 +36,7 @@ class GridGraph (Extractor):
   nodes_between_eyes, nodes_along_eyes, nodes_above_eyes, nodes_below_eyes : int
     Only used when ``eyes`` is not ``None``.
     The number of nodes to be placed between, along, above or below the eyes.
-    The final number of nodes will be: :math:`(above + below + 1) \\times (between + 2*along + 2)`.
+    The final number of nodes will be: `(above + below + 1)` \\times (between + 2*along + 2).
 
   node_distance : (int, int)
     Only used when ``eyes`` is ``None``.

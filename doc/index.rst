@@ -37,6 +37,7 @@ Users Guide
 
    baselines
    implementation
+   references
 
 ================
 Reference Manual
@@ -47,7 +48,5 @@ Reference Manual
 
    implemented
 
-
-.. include:: references.rst
 
 .. todolist::

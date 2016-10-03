@@ -122,6 +122,8 @@ setup(
             'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
             'scface            = bob.bio.face.config.database.scface:database',
             'xm2vts            = bob.bio.face.config.database.xm2vts:database',
+            'replay-img-licit  = bob.bio.face.config.database.replay:replay_licit',
+            'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
         ],
 
         'bob.bio.preprocessor': [

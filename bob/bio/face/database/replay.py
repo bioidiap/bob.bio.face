@@ -11,12 +11,25 @@
 """
 
 from .database import FaceBioFile
-from bob.bio.base.database import BioDatabase, BioFile
+from bob.bio.base.database import BioDatabase
+
+
+class ReplayBioFile(FaceBioFile):
+    """docstring for ReplayBioFile"""
+    def __init__(self, f):
+        super(FaceBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
+        self._f = f
+
+    def load(self, directory=None, extension=None):
+        video = self._f.load(directory, extension)
+        # just return the 10th frame.
+        return video[10]
 
 
 class ReplayBioDatabase(BioDatabase):
     """
     Implements verification API for querying Replay database.
+    This database only loads the 10th image from the video files
     """
     __doc__ = __doc__
 
@@ -44,15 +57,13 @@ class ReplayBioDatabase(BioDatabase):
             self.__db.groups(), self.low_level_group_names, self.high_level_group_names)
 
     def annotations(self, file):
-        """Will return the bounding box annotation of all frames of the video."""
-        # fn = 10  # 10th frame number
-        annots = file.bbx(directory=self.original_directory)
+        """Will return the bounding box annotation of 10th frame of the video."""
+        fn = 10  # 10th frame number
+        annots = file._f.bbx(directory=self.original_directory)
         # bob uses the (y, x) format
-        annotations = dict()
-        for i in range(annots.shape[0]):
-            topleft = (annots[i][2], annots[i][1])
-            bottomright = (annots[i][2] + annots[i][4], annots[i][1] + annots[i][3])
-            annotations[str(i)] = {'topleft': topleft, 'bottomright': bottomright}
+        topleft = (annots[fn][2], annots[fn][1])
+        bottomright = (annots[fn][2] + annots[fn][4], annots[fn][1] + annots[fn][3])
+        annotations = {'topleft': topleft, 'bottomright': bottomright}
         return annotations
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
@@ -106,9 +117,9 @@ class ReplayBioDatabase(BioDatabase):
         retval = []
         for f in objects:
             if f.is_real():
-                retval.append(FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id))
+                retval.append(ReplayBioFile(f))
             else:
-                temp = FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id)
+                temp = ReplayBioFile(f)
                 temp.client_id = 'attack'
                 retval.append(temp)
         return retval

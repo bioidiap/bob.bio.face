@@ -151,6 +151,10 @@ Here is the list of files and replacement strings for all databases that are reg
   - Images: ``[YOUR_MULTI-PIE_IMAGE_DIRECTORY]``
   - Annotations: ``[YOUR_MULTI-PIE_ANNOTATION_DIRECTORY]``
 
+* Replay Attack ``'replay-img-licit'``, ``'replay-img-spoof'``
+
+  - Complete directory: ``[YOUR_REPLAY_ATTACK_DIRECTORY]``
+
 * SC face: ``'scface'``
 
   - Images: ``[YOUR_SC_FACE_DIRECTORY]``
@@ -158,7 +162,6 @@ Here is the list of files and replacement strings for all databases that are reg
 * XM2VTS: ``'xm2vts'``
 
   - Images: ``[YOUR_XM2VTS_DIRECTORY]``
-
 
 You can use the ``./bin/databases.py`` script to list, which data directories are correctly set up.
 

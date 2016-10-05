@@ -68,7 +68,7 @@ class ReplayBioDatabase(BioDatabase):
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         # since the low-level API does not support verification straight-forward-ly, we improvise.
-        files = self.objects(groups=groups, protocol=protocol)
+        files = self.objects(groups=groups, protocol=protocol, purposes='enroll', **kwargs)
         return sorted(set(f.client_id for f in files))
 
     def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
@@ -104,7 +104,8 @@ class ReplayBioDatabase(BioDatabase):
         elif '-spoof' in protocol:
             protocol = protocol.replace('-spoof', '')
             # you need to replace probe with attack and real for the spoof protocols.
-            # I am adding the real here also to create positives scores also.
+            # You can add the real here also to create positives scores also
+            # but usually you get these scores when you run the licit protocol
             if 'probe' in purposes:
                 purposes.remove('probe')
                 purposes.append('attack')

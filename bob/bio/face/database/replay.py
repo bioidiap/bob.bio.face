@@ -15,7 +15,8 @@ from bob.bio.base.database import BioDatabase
 
 
 class ReplayBioFile(FaceBioFile):
-    """docstring for ReplayBioFile"""
+    """BioFile implementation for the bob.db.replay database"""
+
     def __init__(self, f):
         super(FaceBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self._f = f
@@ -124,3 +125,15 @@ class ReplayBioDatabase(BioDatabase):
                 temp.client_id = 'attack'
                 retval.append(temp)
         return retval
+
+    def arrange_by_client(self, files):
+        client_files = {}
+        for file in files:
+            if str(file.client_id) not in client_files:
+                client_files[str(file.client_id)] = []
+            client_files[str(file.client_id)].append(file)
+
+        files_by_clients = []
+        for client in sorted(client_files.keys()):
+            files_by_clients.append(client_files[client])
+        return files_by_clients

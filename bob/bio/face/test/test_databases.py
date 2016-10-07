@@ -80,7 +80,7 @@ def test_caspeal():
 
 
 #@db_available('frgc')
-#def test_frgc():
+# def test_frgc():
 #    import xml.sax
 #    database = bob.bio.base.load_resource('frgc', 'database', preferred_package='bob.bio.face')
 #    try:
@@ -108,7 +108,7 @@ def test_gbu():
     try:
         check_database(database, models_depend=True)
         check_database(database, protocol='Bad', models_depend=True)
-        check_database(database, protocol = 'Ugly', models_depend=True)
+        check_database(database, protocol='Ugly', models_depend=True)
         _check_annotations(database)
     except IOError as e:
         raise SkipTest(
@@ -206,8 +206,19 @@ def test_xm2vts():
 
 
 @db_available('replay')
-def test_replay():
-    database = bob.bio.base.load_resource('replay', 'database', preferred_package='bob.bio.face')
+def test_replay_licit():
+    database = bob.bio.base.load_resource('replay-img-licit', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database, groups=('dev', 'eval'))
+        _check_annotations(database)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+
+@db_available('replay')
+def test_replay_spoof():
+    database = bob.bio.base.load_resource('replay-img-spoof', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
         _check_annotations(database)
@@ -217,8 +228,19 @@ def test_replay():
 
 
 @db_available('replaymobile')
-def test_replaymobile():
-    database = bob.bio.base.load_resource('replaymobile', 'database', preferred_package='bob.bio.face')
+def test_replaymobile_licit():
+    database = bob.bio.base.load_resource('replaymobile-img-licit', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database, groups=('dev', 'eval'))
+        _check_annotations(database)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+
+@db_available('replaymobile')
+def test_replaymobile_spoof():
+    database = bob.bio.base.load_resource('replaymobile-img-spoof', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
         _check_annotations(database)

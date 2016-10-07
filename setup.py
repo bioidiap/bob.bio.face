@@ -124,6 +124,8 @@ setup(
             'xm2vts            = bob.bio.face.config.database.xm2vts:database',
             'replay-img-licit  = bob.bio.face.config.database.replay:replay_licit',
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
+            'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
+            'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof',
         ],
 
         'bob.bio.preprocessor': [

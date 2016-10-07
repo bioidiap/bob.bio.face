@@ -214,3 +214,14 @@ def test_replay():
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+
+
+@db_available('replaymobile')
+def test_replaymobile():
+    database = bob.bio.base.load_resource('replaymobile', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database, groups=('dev', 'eval'))
+        _check_annotations(database)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)

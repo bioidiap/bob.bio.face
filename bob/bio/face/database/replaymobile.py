@@ -46,11 +46,12 @@ class ReplayMobileBioDatabase(BioDatabase):
 
     def annotations(self, myfile):
         """Will return the bounding box annotation of nth frame of the video."""
-        fn = myfile._f.framen  # 10th frame number
+        fn = myfile._f.framen
         annots = myfile._f._f.bbx(directory=self.original_directory)
+        # convert width and height to bottomright coordinates
         # bob uses the (y, x) format
-        topleft = (annots[fn][2], annots[fn][1])
-        bottomright = (annots[fn][2] + annots[fn][4], annots[fn][1] + annots[fn][3])
+        topleft = (annots[fn][1], annots[fn][0])
+        bottomright = (annots[fn][1] + annots[fn][3], annots[fn][0] + annots[fn][2])
         annotations = {'topleft': topleft, 'bottomright': bottomright}
         return annotations
 

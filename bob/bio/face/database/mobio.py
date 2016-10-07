@@ -11,7 +11,7 @@
 
 
 from .database import FaceBioFile
-from bob.bio.base.database import ZTBioDatabase, BioFile
+from bob.bio.base.database import ZTBioDatabase
 
 
 class MobioBioDatabase(ZTBioDatabase):

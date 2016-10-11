@@ -122,13 +122,13 @@ def test_face_detect():
   # execute face detector
   reference = pkg_resources.resource_filename('bob.bio.face.test', 'data/detected.hdf5')
   _compare(cropper(image, annotation), reference, cropper.write_data, cropper.read_data)
-  assert abs(cropper.quality - 33.1136586) < 1e-5
+  assert abs(cropper.quality - 39.209601948013685) < 1e-5
 
   # execute face detector with flandmark
   cropper = bob.bio.face.preprocessor.FaceDetect(face_cropper='face-crop-eyes', use_flandmark=True)
   reference = pkg_resources.resource_filename('bob.bio.face.test', 'data/flandmark.hdf5')
   _compare(cropper(image, annotation), reference, cropper.write_data, cropper.read_data)
-  assert abs(cropper.quality - 33.1136586) < 1e-5
+  assert abs(cropper.quality - 39.209601948013685) < 1e-5
 
   # execute face detector with tan-triggs
   cropper = bob.bio.face.preprocessor.TanTriggs(face_cropper='landmark-detect')

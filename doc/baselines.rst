@@ -85,12 +85,6 @@ The algorithms present an (incomplete) set of state-of-the-art face recognition 
   - algorithm : :py:class:`bob.bio.face.algorithm.GaborJet`
 
 
-* ``lgbphs``: *Local Gabor Binary Pattern Histogram Sequences* (LGBPHS) [ZSG+05]_ are extracted from the images and compares using the histogram intersection measure:
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.TanTriggs`
-  - feature : :py:class:`bob.bio.face.extractor.LGBPHS`
-  - algorithm : :py:class:`bob.bio.face.algorithm.LGBPHS`
-
 * ``plda``: *Probabilistic LDA* (PLDA) [Pri07]_ is a probabilistic generative version of the LDA, in its scalable formulation of [ESM+13]_.
   Here, we also apply it on pixel-based representations of the image, though also other features should be possible.
 

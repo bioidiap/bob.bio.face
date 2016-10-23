@@ -94,7 +94,7 @@ Databases
 ~~~~~~~~~
 
 One important aspect of :ref:`bob.bio.face <bob.bio.face>` is the relatively large list of supported image data sets, including well-defined evaluation protocols.
-All databases rely on the :py:class:`bob.bio.base.database.DatabaseBob` interface, which in turn uses the `verification_databases <https://gitlab.idiap.ch/bob/bob/wikis/Packages>`_.
+All databases rely on the :py:class:`bob.bio.base.database.BioDatabase` interface, which in turn uses the `verification_databases <https://gitlab.idiap.ch/bob/bob/wikis/Packages>`_.
 Please check the link above for information on how to obtain the original data of those data sets.
 
 After downloading and extracting the original data of the data sets, it is necessary that the scripts know, where the data was installed.

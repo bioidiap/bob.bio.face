@@ -33,7 +33,7 @@ class FaceCrop (Base):
 
   Some image databases do not provide eye locations, but rather bounding boxes.
   This is not a problem at all.
-  Simply define the coordinates, where you want your ``cropped_positions`` to be in the cropped image, by specifying the same keys in the dictionary that will be given as ``annotations`` to the :py:meth:`face_crop` function.
+  Simply define the coordinates, where you want your ``cropped_positions`` to be in the cropped image, by specifying the same keys in the dictionary that will be given as ``annotations`` to the :py:meth:`crop_face` function.
 
   .. note;::
     These locations can even be outside of the cropped image boundary, i.e., when the crop should be smaller than the annotated bounding boxes.
@@ -57,7 +57,7 @@ class FaceCrop (Base):
   cropped_positions : dict
     The coordinates in the cropped image, where the annotated points should be put to.
     This parameter is a dictionary with usually two elements, e.g., ``{'reye':(RIGHT_EYE_Y, RIGHT_EYE_X) , 'leye':(LEFT_EYE_Y, LEFT_EYE_X)}``.
-    However, also other parameters, such as ``{'topleft' : ..., 'bottomright' : ...}`` are supported, as long as the ``annotations`` in the :py:meth:`__call__` function are present.
+    However, also other parameters, such as ``{'topleft' : ..., 'bottomright' : ...}`` are supported, as long as the ``annotations`` in the `__call__` function are present.
 
   fixed_positions : dict or None
     If specified, ignore the annotations from the database and use these fixed positions throughout.

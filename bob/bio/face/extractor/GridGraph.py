@@ -204,7 +204,7 @@ class GridGraph (Extractor):
 
 
   def write_feature(self, feature, feature_file):
-    """Writes the feature extracted by the :py:meth:`__call__` function to the given file.
+    """Writes the feature extracted by the `__call__` function to the given file.
 
     **Parameters:**
 

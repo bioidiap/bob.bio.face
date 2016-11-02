@@ -165,12 +165,12 @@ def test_ijba():
     database = bob.bio.base.load_resource(
         'ijba', 'database', preferred_package='bob.bio.face')
     try:
-        check_database(database)
+        check_database(database,models_depend=True, training_depends=True)
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
     try:
-        _check_annotations(database, limit_files=1000)
+        _check_annotations(database, topleft=True, limit_files=1000)
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)

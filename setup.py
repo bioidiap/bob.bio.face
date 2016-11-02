@@ -114,6 +114,7 @@ setup(
             'caspeal           = bob.bio.face.config.database.caspeal:database',
             'frgc              = bob.bio.face.config.database.frgc:database',
             'gbu               = bob.bio.face.config.database.gbu:database',
+            'ijba              = bob.bio.face.config.database.ijba:database',
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
             'mobio-image       = bob.bio.face.config.database.mobio:mobio_image',

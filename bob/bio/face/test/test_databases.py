@@ -25,13 +25,14 @@ from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database, check_database_zt
 
 
-def _check_annotations(database):
+def _check_annotations(database, require_eyes=True):
     for file in database.all_files():
         annotations = database.annotations(file)
         if annotations is not None:
             assert isinstance(annotations, dict)
-            assert 'reye' in annotations
-            assert 'leye' in annotations
+            if require_eyes:
+              assert 'reye' in annotations
+              assert 'leye' in annotations
 
 
 @db_available('arface')
@@ -119,8 +120,8 @@ def test_gbu():
 def test_ijba():
     database = bob.bio.base.load_resource('ijba', 'database', preferred_package='bob.bio.face')
     try:
-        check_database(database)
-        _check_annotations(database)
+        check_database(database,models_depend=True, training_depends=True)
+        _check_annotations(database, require_eyes=False)
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)

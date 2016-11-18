@@ -34,4 +34,4 @@ class FaceBioDatabaseWithAnnotations(BioDatabase):
     self._database = database
 
   def annotations(self, file):
-    return self._database.annotations(file)
+    return self._database.annotations(file._f)

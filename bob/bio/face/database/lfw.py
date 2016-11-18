@@ -23,7 +23,6 @@ class LFWBioDatabase(FaceBioDatabaseWithAnnotations):
     from bob.db.lfw.query import Database as LowLevelDatabase
     super(LFWBioDatabase, self).__init__(name='lfw', database = LowLevelDatabase(), **kwargs)
 
-
   def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
     return self._database.model_ids(groups=groups, protocol=protocol)
 

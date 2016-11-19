@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-from .database import FaceBioFile
+from .database import FaceBioFile, FaceBioFileWithAnnotations, FaceBioDatabaseWithAnnotations
 from .mobio import MobioBioDatabase
 from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase
@@ -33,6 +33,8 @@ def __appropriate__(*args):
 
 __appropriate__(
     FaceBioFile,
+    FaceBioFileWithAnnotations,
+    FaceBioDatabaseWithAnnotations,
     MobioBioDatabase,
     ReplayBioDatabase,
     AtntBioDatabase,

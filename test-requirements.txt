@@ -13,3 +13,4 @@ bob.db.multipie
 bob.db.replay
 bob.db.scface
 bob.db.xm2vts
+bob.db.fargo

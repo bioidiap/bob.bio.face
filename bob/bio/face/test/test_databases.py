@@ -25,9 +25,15 @@ from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database, check_database_zt
 
 
-def _check_annotations(database, topleft=False):
-    for file in database.all_files():
+def _check_annotations(database, topleft=False, required=True, limit_files=None):
+    files = database.all_files()
+    if limit_files is not None:
+        import random
+        files = random.sample(files, limit_files)
+    for file in files:
         annotations = database.annotations(file)
+        if required:
+            assert annotations is not None
         if annotations is not None:
             assert isinstance(annotations, dict)
             if topleft:
@@ -54,7 +60,6 @@ def test_atnt():
     database = bob.bio.base.load_resource('atnt', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database)
-        _check_annotations(database)
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
@@ -113,7 +118,7 @@ def test_gbu():
         check_database(database, models_depend=True)
         check_database(database, protocol='Bad', models_depend=True)
         check_database(database, protocol='Ugly', models_depend=True)
-        _check_annotations(database)
+        _check_annotations(database, limit_files=1000)
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
@@ -124,7 +129,7 @@ def test_ijba():
     database = bob.bio.base.load_resource('ijba', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database)
-        _check_annotations(database)
+        _check_annotations(database, limit_files=1000)
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
@@ -138,7 +143,7 @@ def test_lfw():
         check_database(database, groups=('dev', 'eval'), protocol='fold1', training_depends=True, models_depend=True)
         check_database(bob.bio.base.load_resource('lfw-unrestricted', 'database', preferred_package='bob.bio.face'),
                        training_depends=True, models_depend=True)
-        _check_annotations(database)
+        _check_annotations(database, limit_files=1000)
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
@@ -159,7 +164,7 @@ def test_mobio():
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
     try:
-        _check_annotations(database)
+        _check_annotations(database, limit_files=1000)
     except Exception as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
@@ -191,10 +196,14 @@ def test_scface():
     database = bob.bio.base.load_resource('scface', 'database', preferred_package='bob.bio.face')
     try:
         check_database_zt(database)
-        _check_annotations(database)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database)
+    except Exception as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
 @db_available('xm2vts')
@@ -203,10 +212,14 @@ def test_xm2vts():
     try:
         check_database(database, groups=('dev', 'eval'))
         check_database(database, groups=('dev', 'eval'), protocol='darkened-lp1')
-        _check_annotations(database)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database)
+    except Exception as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
 @db_available('replay')
@@ -214,10 +227,14 @@ def test_replay_licit():
     database = bob.bio.base.load_resource('replay-img-licit', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
-        _check_annotations(database, topleft=True)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database)
+    except Exception as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
 @db_available('replay')
@@ -225,10 +242,14 @@ def test_replay_spoof():
     database = bob.bio.base.load_resource('replay-img-spoof', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
-        _check_annotations(database, topleft=True)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database)
+    except Exception as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
 @db_available('replaymobile')
@@ -236,10 +257,14 @@ def test_replaymobile_licit():
     database = bob.bio.base.load_resource('replaymobile-img-licit', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
-        _check_annotations(database, topleft=True)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database)
+    except Exception as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
 @db_available('replaymobile')
@@ -247,7 +272,11 @@ def test_replaymobile_spoof():
     database = bob.bio.base.load_resource('replaymobile-img-spoof', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
-        _check_annotations(database, topleft=True)
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database)
+    except Exception as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)

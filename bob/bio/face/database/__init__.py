@@ -48,5 +48,6 @@ __appropriate__(
     FRGCBioDatabase,
     CUHK_CUFSBioDatabase,
     SCFaceBioDatabase,
+    ReplayMobileBioDatabase,
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

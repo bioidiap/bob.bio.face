@@ -12,7 +12,7 @@ class ReplayMobileBioFile(FaceBioFile):
     """FaceBioFile implementation of the Replay Mobile Database"""
 
     def __init__(self, f):
-        super(FaceBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
+        super(ReplayMobileBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self._f = f
 
     def load(self, directory=None, extension=None):
@@ -24,10 +24,10 @@ class ReplayMobileBioFile(FaceBioFile):
 
 class ReplayMobileBioDatabase(BioDatabase):
     """
-    Implements verification API for querying Replay Mobile database.
-    Please refer to low-level db self._db for more documentation
+    ReplayMobile database implementation of :py:class:`bob.bio.base.database.BioDatabase` interface.
+    It is an extension of an SQL-based database interface, which directly talks to ReplayMobile database, for
+    verification experiments (good to use in bob.bio.base framework).
     """
-    __doc__ = __doc__
 
     def __init__(self, max_number_of_frames=None, **kwargs):
         # call base class constructors to open a session to the database

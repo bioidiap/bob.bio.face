@@ -18,7 +18,7 @@ class MobioBioFile(FaceBioFile):
     """FaceBioFile implementation of the Replay Mobile Database"""
 
     def __init__(self, f):
-        super(FaceBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
+        super(MobioBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self._f = f
 
 

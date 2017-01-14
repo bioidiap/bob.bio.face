@@ -9,4 +9,3 @@ database = BancaBioDatabase(
     original_extension=".ppm",
     protocol='P'
 )
-

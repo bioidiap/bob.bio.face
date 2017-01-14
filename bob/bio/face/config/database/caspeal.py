@@ -8,4 +8,3 @@ database = CaspealBioDatabase(
     original_directory=caspeal_directory,
     protocol='lighting'
 )
-

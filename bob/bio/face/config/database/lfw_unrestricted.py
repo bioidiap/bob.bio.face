@@ -12,9 +12,8 @@ database = LFWBioDatabase(
     training_depends_on_protocol=True,
     models_depend_on_protocol=True,
 
-    all_files_options = { 'world_type' : 'unrestricted' },
-    extractor_training_options = { 'world_type' : 'unrestricted' }, # 'subworld' : 'twofolds'
-    projector_training_options = { 'world_type' : 'unrestricted' }, # 'subworld' : 'twofolds'
-    enroller_training_options =  { 'world_type' : 'unrestricted' } # 'subworld' : 'twofolds'
+    all_files_options={'world_type': 'unrestricted'},
+    extractor_training_options={'world_type': 'unrestricted'},  # 'subworld' : 'twofolds'
+    projector_training_options={'world_type': 'unrestricted'},  # 'subworld' : 'twofolds'
+    enroller_training_options={'world_type': 'unrestricted'}  # 'subworld' : 'twofolds'
 )
-

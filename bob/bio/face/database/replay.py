@@ -15,9 +15,10 @@ from bob.bio.base.database import BioDatabase
 
 
 class ReplayBioFile(FaceBioFile):
-    """docstring for ReplayBioFile"""
+    """BioFile implementation for the bob.db.replay database"""
+
     def __init__(self, f):
-        super(FaceBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
+        super(ReplayBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
         self._f = f
 
     def load(self, directory=None, extension=None):
@@ -28,8 +29,10 @@ class ReplayBioFile(FaceBioFile):
 
 class ReplayBioDatabase(BioDatabase):
     """
-    Implements verification API for querying Replay database.
-    This database only loads the 10th image from the video files
+    Replay attack database implementation of bob.bio.base.database.BioDatabase interface.
+    It is an extension of an SQL-based database interface, which directly talks to Replay database, for
+    verification experiments (good to use in bob.bio.base framework).
+    It also implements a kind of hack so that you can run vulnerability analysis with it.
     """
     __doc__ = __doc__
 
@@ -38,7 +41,7 @@ class ReplayBioDatabase(BioDatabase):
         super(ReplayBioDatabase, self).__init__(name='replay', **kwargs)
 
         from bob.db.replay import Database as LowLevelDatabase
-        self.__db = LowLevelDatabase()
+        self._db = LowLevelDatabase()
 
         self.low_level_group_names = ('train', 'devel', 'test')
         self.high_level_group_names = ('world', 'dev', 'eval')
@@ -48,13 +51,13 @@ class ReplayBioDatabase(BioDatabase):
         Here I am going to hack and double the number of protocols
         with -licit and -spoof. This is done for running vulnerability
         analysis"""
-        names = [p.name + '-licit' for p in self.__db.protocols()]
-        names += [p.name + '-spoof' for p in self.__db.protocols()]
+        names = [p.name + '-licit' for p in self._db.protocols()]
+        names += [p.name + '-spoof' for p in self._db.protocols()]
         return names
 
     def groups(self):
         return self.convert_names_to_highlevel(
-            self.__db.groups(), self.low_level_group_names, self.high_level_group_names)
+            self._db.groups(), self.low_level_group_names, self.high_level_group_names)
 
     def annotations(self, file):
         """Will return the bounding box annotation of 10th frame of the video."""
@@ -111,7 +114,7 @@ class ReplayBioDatabase(BioDatabase):
                 purposes.append('attack')
 
         # now, query the actual Replay database
-        objects = self.__db.objects(groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs)
+        objects = self._db.objects(groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs)
 
         # make sure to return BioFile representation of a file, not the database one
         # also make sure you replace client ids with spoof/metatdata1/metadata2/...
@@ -124,3 +127,15 @@ class ReplayBioDatabase(BioDatabase):
                 temp.client_id = 'attack'
                 retval.append(temp)
         return retval
+
+    def arrange_by_client(self, files):
+        client_files = {}
+        for file in files:
+            if str(file.client_id) not in client_files:
+                client_files[str(file.client_id)] = []
+            client_files[str(file.client_id)].append(file)
+
+        files_by_clients = []
+        for client in sorted(client_files.keys()):
+            files_by_clients.append(client_files[client])
+        return files_by_clients

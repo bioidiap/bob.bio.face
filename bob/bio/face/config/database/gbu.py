@@ -14,4 +14,3 @@ database = GBUBioDatabase(
     projector_training_options={'subworld': 'x2'},
     enroller_training_options={'subworld': 'x2'}
 )
-

@@ -9,5 +9,5 @@ database = MultipieBioDatabase(
     original_directory=multipie_image_directory,
     annotation_directory=multipie_annotation_directory,
     protocol='U',
-    training_depends_on_protocol = True
+    training_depends_on_protocol=True
 )

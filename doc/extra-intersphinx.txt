@@ -4,7 +4,6 @@ bob.bio.base
 bob.io.base
 bob.ip.gabor
 bob.ip.base
-bob.bio.face
 bob.bio.speaker
 bob.bio.gmm
 bob.bio.video

@@ -21,7 +21,7 @@ class IJBABioFile(FaceBioFile):
 
   def make_path(self, directory, extension):
     # add file ID to the path, so that a unique path is generated (there might be several identities in each physical file)
-    return str(os.path.join(directory or '', self.path + "-" + str(self.id) + (extension or '')))
+    return str(os.path.join(directory or '', self.path + "-" + str(self.client_id) + (extension or '')))
 
 
 class IJBABioFileSet(BioFileSet):

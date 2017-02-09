@@ -82,7 +82,7 @@ setup(
     #
     # Our database packages are good examples of namespace implementations
     # using several layers. You can check them out here:
-    # https://gitlab.idiap.ch/bob/bob/wikis/Packages
+    # https://www.idiap.ch/software/bob/packages
 
 
     # This entry defines which scripts you will have inside the 'bin' directory
@@ -117,14 +117,17 @@ setup(
             'ijba              = bob.bio.face.config.database.ijba:database',
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
-            'mobio-male        = bob.bio.face.config.database.mobio_male:database',  # MOBIO gender-dependent training
-            'mobio-female      = bob.bio.face.config.database.mobio_female:database',  # MOBIO gender-dependent training
+            'mobio-image       = bob.bio.face.config.database.mobio:mobio_image',
+            'mobio-male        = bob.bio.face.config.database.mobio:mobio_male',  # MOBIO gender-dependent training
+            'mobio-female      = bob.bio.face.config.database.mobio:mobio_female',  # MOBIO gender-dependent training
             'multipie          = bob.bio.face.config.database.multipie:database',
             'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
             'scface            = bob.bio.face.config.database.scface:database',
             'xm2vts            = bob.bio.face.config.database.xm2vts:database',
             'replay-img-licit  = bob.bio.face.config.database.replay:replay_licit',
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
+            'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
+            'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof',
         ],
 
         'bob.bio.preprocessor': [

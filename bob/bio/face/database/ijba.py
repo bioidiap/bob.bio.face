@@ -31,19 +31,31 @@ class IJBABioFileSet(BioFileSet):
 
 class IJBABioDatabase(BioDatabase):
   """
-  Implements verification API for querying IJBA database.
+    IJBA database implementation of :py:class:`bob.bio.base.database.BioDatabase` interface.
+    It is an extension of an SQL-based database interface, which directly talks to IJBA database, for
+    verification experiments (good to use in bob.bio.base framework).
   """
 
   def __init__(
       self,
+      original_directory=None,
+      annotations_directory=None,
+      original_extension=None,
       **kwargs
   ):
     # call base class constructors to open a session to the database
-    super(IJBABioDatabase, self).__init__(name='ijba', models_depend_on_protocol=True, training_depends_on_protocol=True, **kwargs)
+        super(IJBABioDatabase, self).__init__(
+            name='ijba',
+            models_depend_on_protocol=True,
+            training_depends_on_protocol=True,
+            original_directory=original_directory,
+            annotations_directory=annotations_directory,
+            original_extension=original_extension,
+            **kwargs)
 
-    import bob.db.ijba
-    self._db = bob.db.ijba.Database()
-
+        from bob.db.ijba.query import Database as LowLevelDatabase
+        self._db = LowLevelDatabase(original_directory, annotations_directory,
+                                    original_extension)
   def uses_probe_file_sets(self):
     return True
 

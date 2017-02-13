@@ -155,6 +155,14 @@ Here is the list of files and replacement strings for all databases that are reg
 
   - Complete directory: ``[YOUR_REPLAY_ATTACK_DIRECTORY]``
 
+* Replay Mobile ``'replaymobile-img-licit'``, ``'replaymobile-img-spoof'``
+
+  - Complete directory: ``[YOUR_REPLAY_MOBILE_DIRECTORY]``
+
+* MSU MFSD Modified ``'msu-mfsd-mod-licit'``, ``'msu-mfsd-mod-spoof'``
+
+  - Complete directory: ``[YOUR_MSU_MFSD_MOD_DIRECTORY]``
+
 * SC face: ``'scface'``
 
   - Images: ``[YOUR_SC_FACE_DIRECTORY]``

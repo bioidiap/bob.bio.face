@@ -17,8 +17,11 @@ from .frgc import FRGCBioDatabase
 from .cuhk_cufs import CUHK_CUFSBioDatabase
 from .scface import SCFaceBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
+from .msu_mfsd_mod import MsuMfsdModBioDatabase
 
 # gets sphinx autodoc done right - don't remove it
+
+
 def __appropriate__(*args):
   """Says object was actually declared here, and not in the import module.
   Fixing sphinx warnings of not being able to find classes, when path is shortened.
@@ -30,24 +33,26 @@ def __appropriate__(*args):
   <https://github.com/sphinx-doc/sphinx/issues/3048>`
   """
 
-  for obj in args: obj.__module__ = __name__
+  for obj in args:
+    obj.__module__ = __name__
 
 __appropriate__(
-    FaceBioFile,
-    MobioBioDatabase,
-    ReplayBioDatabase,
-    AtntBioDatabase,
-    BancaBioDatabase,
-    GBUBioDatabase,
-    ARFaceBioDatabase,
-    CaspealBioDatabase,
-    LFWBioDatabase,
-    MultipieBioDatabase,
-    IJBABioDatabase,
-    XM2VTSBioDatabase,
-    FRGCBioDatabase,
-    CUHK_CUFSBioDatabase,
-    SCFaceBioDatabase,
-    ReplayMobileBioDatabase,
-    )
+  FaceBioFile,
+  MobioBioDatabase,
+  ReplayBioDatabase,
+  AtntBioDatabase,
+  BancaBioDatabase,
+  GBUBioDatabase,
+  ARFaceBioDatabase,
+  CaspealBioDatabase,
+  LFWBioDatabase,
+  MultipieBioDatabase,
+  IJBABioDatabase,
+  XM2VTSBioDatabase,
+  FRGCBioDatabase,
+  CUHK_CUFSBioDatabase,
+  SCFaceBioDatabase,
+  ReplayMobileBioDatabase,
+  MsuMfsdModBioDatabase,
+)
 __all__ = [_ for _ in dir() if not _.startswith('_')]

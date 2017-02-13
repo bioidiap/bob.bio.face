@@ -4,7 +4,7 @@
 # Wed 13 Jul 16:43:22 CEST 2016
 
 """
-  MOBIO database implementation of bob.bio.base.database.ZTDatabase interface.
+  MOBIO database implementation of bob.bio.base.database.ZTBioDatabase interface.
   It is an extension of an SQL-based database interface, which directly talks to Mobio database, for
   verification experiments (good to use in bob.bio.base framework).
 """
@@ -15,7 +15,7 @@ from bob.bio.base.database import ZTBioDatabase
 
 
 class MobioBioFile(FaceBioFile):
-    """FaceBioFile implementation of the Replay Mobile Database"""
+    """FaceBioFile implementation of the Mobio Database"""
 
     def __init__(self, f):
         super(MobioBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
@@ -24,7 +24,9 @@ class MobioBioFile(FaceBioFile):
 
 class MobioBioDatabase(ZTBioDatabase):
     """
-    Implements verification API for querying Mobio database.
+    MOBIO database implementation of bob.bio.base.database.ZTBioDatabase interface.
+    It is an extension of an SQL-based database interface, which directly talks to Mobio database, for
+    verification experiments (good to use in bob.bio.base framework).
     """
 
     def __init__(

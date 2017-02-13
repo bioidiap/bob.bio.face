@@ -9,6 +9,7 @@ bob.db.gbu
 bob.db.ijba
 bob.db.lfw
 bob.db.mobio
+bob.db.msu_mfsd_mod
 bob.db.multipie
 bob.db.replay
 bob.db.replaymobile

@@ -56,7 +56,8 @@ def _check_annotations(database, topleft=False, required=True, limit_files=None,
 
 @db_available('arface')
 def test_arface():
-    database = bob.bio.base.load_resource('arface', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'arface', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
     except IOError as e:
@@ -71,7 +72,8 @@ def test_arface():
 
 @db_available('atnt')
 def test_atnt():
-    database = bob.bio.base.load_resource('atnt', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'atnt', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database)
     except IOError as e:
@@ -81,7 +83,8 @@ def test_atnt():
 
 @db_available('banca')
 def test_banca():
-    database = bob.bio.base.load_resource('banca', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'banca', 'database', preferred_package='bob.bio.face')
     try:
         check_database_zt(database)
     except IOError as e:
@@ -96,7 +99,8 @@ def test_banca():
 
 @db_available('caspeal')
 def test_caspeal():
-    database = bob.bio.base.load_resource('caspeal', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'caspeal', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database)
         check_database(database, protocol='aging')
@@ -124,7 +128,8 @@ def test_caspeal():
 
 @db_available('cuhk_cufs')
 def test_cuhk_cufs():
-    database = bob.bio.base.load_resource('cuhk_cufs', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'cuhk_cufs', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database)
     except IOError as e:
@@ -139,7 +144,8 @@ def test_cuhk_cufs():
 
 @db_available('gbu')
 def test_gbu():
-    database = bob.bio.base.load_resource('gbu', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'gbu', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, models_depend=True)
         check_database(database, protocol='Bad', models_depend=True)
@@ -156,7 +162,8 @@ def test_gbu():
 
 @db_available('ijba')
 def test_ijba():
-    database = bob.bio.base.load_resource('ijba', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'ijba', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database)
     except IOError as e:
@@ -171,10 +178,12 @@ def test_ijba():
 
 @db_available('lfw')
 def test_lfw():
-    database = bob.bio.base.load_resource('lfw-restricted', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'lfw-restricted', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, training_depends=True, models_depend=True)
-        check_database(database, groups=('dev', 'eval'), protocol='fold1', training_depends=True, models_depend=True)
+        check_database(database, groups=('dev', 'eval'),
+                       protocol='fold1', training_depends=True, models_depend=True)
         check_database(bob.bio.base.load_resource('lfw-unrestricted', 'database', preferred_package='bob.bio.face'),
                        training_depends=True, models_depend=True)
     except IOError as e:
@@ -189,7 +198,8 @@ def test_lfw():
 
 @db_available('mobio')
 def test_mobio():
-    database = bob.bio.base.load_resource('mobio-image', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'mobio-image', 'database', preferred_package='bob.bio.face')
     try:
         check_database_zt(database, models_depend=True)
         check_database_zt(database, protocol='female', models_depend=True)
@@ -210,7 +220,8 @@ def test_mobio():
 
 @db_available('multipie')
 def test_multipie():
-    database = bob.bio.base.load_resource('multipie', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'multipie', 'database', preferred_package='bob.bio.face')
     try:
         check_database_zt(database, training_depends=True)
         check_database_zt(bob.bio.base.load_resource('multipie-pose', 'database', preferred_package='bob.bio.face'),
@@ -231,7 +242,8 @@ def test_multipie():
 
 @db_available('scface')
 def test_scface():
-    database = bob.bio.base.load_resource('scface', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'scface', 'database', preferred_package='bob.bio.face')
     try:
         check_database_zt(database)
     except IOError as e:
@@ -246,10 +258,12 @@ def test_scface():
 
 @db_available('xm2vts')
 def test_xm2vts():
-    database = bob.bio.base.load_resource('xm2vts', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'xm2vts', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
-        check_database(database, groups=('dev', 'eval'), protocol='darkened-lp1')
+        check_database(database, groups=('dev', 'eval'),
+                       protocol='darkened-lp1')
     except IOError as e:
         raise SkipTest(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
@@ -262,7 +276,8 @@ def test_xm2vts():
 
 @db_available('replay')
 def test_replay_licit():
-    database = bob.bio.base.load_resource('replay-img-licit', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'replay-img-licit', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
     except IOError as e:
@@ -277,7 +292,8 @@ def test_replay_licit():
 
 @db_available('replay')
 def test_replay_spoof():
-    database = bob.bio.base.load_resource('replay-img-spoof', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'replay-img-spoof', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
     except IOError as e:
@@ -292,7 +308,8 @@ def test_replay_spoof():
 
 @db_available('replaymobile')
 def test_replaymobile_licit():
-    database = bob.bio.base.load_resource('replaymobile-img-licit', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'replaymobile-img-licit', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
     except IOError as e:
@@ -307,7 +324,8 @@ def test_replaymobile_licit():
 
 @db_available('replaymobile')
 def test_replaymobile_spoof():
-    database = bob.bio.base.load_resource('replaymobile-img-spoof', 'database', preferred_package='bob.bio.face')
+    database = bob.bio.base.load_resource(
+        'replaymobile-img-spoof', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, groups=('dev', 'eval'))
     except IOError as e:
@@ -318,3 +336,39 @@ def test_replaymobile_spoof():
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
+
+
+@db_available('msu_mfsd_mod')
+def test_msu_mfsd_mod_licit():
+    database = bob.bio.base.load_resource(
+        'msu-mfsd-mod-licit', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database, groups=('dev', 'eval'))
+    except IOError as e:
+        raise SkipTest(
+            "The database could not be queried; probably the db.sql3 file is "
+            "missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database, topleft=True, limit_files=20)
+    except IOError as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation "
+            "files are missing. Here is the error: '%s'" % e)
+
+
+@db_available('msu_mfsd_mod')
+def test_msu_mfsd_mod_spoof():
+    database = bob.bio.base.load_resource(
+        'msu-mfsd-mod-spoof', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database, groups=('dev', 'eval'))
+    except IOError as e:
+        raise SkipTest(
+            "The database could not be queried; probably the db.sql3 file is "
+            "missing. Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database, topleft=True, limit_files=20)
+    except IOError as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation "
+            "files are missing. Here is the error: '%s'" % e)

@@ -119,6 +119,8 @@ setup(
             'mobio-image       = bob.bio.face.config.database.mobio:mobio_image',
             'mobio-male        = bob.bio.face.config.database.mobio:mobio_male',  # MOBIO gender-dependent training
             'mobio-female      = bob.bio.face.config.database.mobio:mobio_female',  # MOBIO gender-dependent training
+            'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_licit',
+            'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_spoof',
             'multipie          = bob.bio.face.config.database.multipie:database',
             'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
             'scface            = bob.bio.face.config.database.scface:database',

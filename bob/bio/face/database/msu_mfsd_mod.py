@@ -52,13 +52,12 @@ class MsuMfsdModBioDatabase(BioDatabase):
         Will return the bounding box annotation of nth frame of the video.
         """
         fn = myfile._f.framen
+        # Frame index, 4 coordinates of the face rectangle (left, top, right,
+        # bottom), 4 coordinates of the left and right eyes (xleft, yleft
+        # xright, yright).
         annots = myfile._f._f.bbx(directory=self.original_directory)
-        # convert width and height to bottomright coordinates
-        # bob uses the (y, x) format
-        topleft = (annots[fn][1], annots[fn][0])
-        bottomright = (annots[fn][1] + annots[fn][3],
-                       annots[fn][0] + annots[fn][2])
-        annotations = {'topleft': topleft, 'bottomright': bottomright}
+        annotations = {'reye': (annots[fn][8], annots[fn][7]),
+                       'leye': (annots[fn][6], annots[fn][5])}
         return annotations
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):

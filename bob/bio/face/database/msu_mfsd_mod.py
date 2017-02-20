@@ -56,8 +56,8 @@ class MsuMfsdModBioDatabase(BioDatabase):
         # bottom), 4 coordinates of the left and right eyes (xleft, yleft
         # xright, yright).
         annots = myfile._f._f.bbx(directory=self.original_directory)
-        annotations = {'reye': (annots[fn][8], annots[fn][7]),
-                       'leye': (annots[fn][6], annots[fn][5])}
+        annotations = {'leye': (annots[fn][8], annots[fn][7]),
+                       'reye': (annots[fn][6], annots[fn][5])}
         return annotations
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):

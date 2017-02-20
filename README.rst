@@ -5,8 +5,8 @@
    :target: http://pythonhosted.org/bob.bio.face/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
    :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.bio.face/master/index.html
-.. image:: https://gitlab.idiap.ch/bob/bob.bio.face/badges/master/build.svg
-   :target: https://gitlab.idiap.ch/bob/bob.bio.face/commits/master
+.. image:: https://gitlab.idiap.ch/bob/bob.bio.face/badges/v3.1.0/build.svg
+   :target: https://gitlab.idiap.ch/bob/bob.bio.face/commits/v3.1.0
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.face
 .. image:: http://img.shields.io/pypi/v/bob.bio.face.svg

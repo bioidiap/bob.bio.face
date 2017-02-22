@@ -55,3 +55,13 @@ class LFWBioDatabase(BioDatabase):
 
     def annotations(self, myfile):
         return self._db.annotations(myfile._f)
+        
+    def client_id_from_model_id(self, model_id, group='dev'):
+        """Return the client id associated with the given model id.
+        In this base class implementation, it is assumed that only one model is enrolled for each client and, thus, client id and model id are identical.
+        All key word arguments are ignored.
+        Please override this function in derived class implementations to change this behavior."""
+        
+       # since there is one model per file, we can re-use the function above.
+        return self._db.get_client_id_from_file_id(model_id)        
+

@@ -38,16 +38,16 @@ class IJBABioDatabase(BioDatabase):
 
   def __init__(
       self,
-            original_directory=None,
-            annotations_directory=None,
-            original_extension=None,
+      original_directory=None,
+      annotations_directory=None,
+      original_extension=None,
       **kwargs
   ):
     # call base class constructors to open a session to the database
     super(IJBABioDatabase, self).__init__(
+            name='ijba',
             models_depend_on_protocol=True,
             training_depends_on_protocol=True,
-            name='ijba',
             original_directory=original_directory,
             annotations_directory=annotations_directory,
             original_extension=original_extension,

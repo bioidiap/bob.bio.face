@@ -26,7 +26,6 @@ Databases
    bob.bio.face.database.XM2VTSBioDatabase
    bob.bio.face.database.FRGCBioDatabase
    bob.bio.face.database.SCFaceBioDatabase
-   bob.bio.face.database.CUHK_CUFSBioDatabase
 
 Image Preprocessors
 ~~~~~~~~~~~~~~~~~~~

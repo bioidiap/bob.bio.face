@@ -126,21 +126,6 @@ def test_caspeal():
 #        raise SkipTest(
 #            "The database could not be opened, probably the original directory is wrong. Here is the error: '%s'" % e)
 
-@db_available('cuhk_cufs')
-def test_cuhk_cufs():
-    database = bob.bio.base.load_resource(
-        'cuhk_cufs', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
-
 
 @db_available('gbu')
 def test_gbu():

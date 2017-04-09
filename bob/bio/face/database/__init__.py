@@ -14,7 +14,6 @@ from .multipie import MultipieBioDatabase
 from .ijba import IJBABioDatabase
 from .xm2vts import XM2VTSBioDatabase
 from .frgc import FRGCBioDatabase
-from .cuhk_cufs import CUHK_CUFSBioDatabase
 from .scface import SCFaceBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .msu_mfsd_mod import MsuMfsdModBioDatabase
@@ -50,7 +49,6 @@ __appropriate__(
   IJBABioDatabase,
   XM2VTSBioDatabase,
   FRGCBioDatabase,
-  CUHK_CUFSBioDatabase,
   SCFaceBioDatabase,
   ReplayMobileBioDatabase,
   MsuMfsdModBioDatabase,

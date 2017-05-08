@@ -24,14 +24,14 @@ How this is done is explained in more detail in the :ref:`bob.bio.base.installat
 Running Baseline Experiments
 ----------------------------
 
-To run the baseline experiments, you can use the ``./bin/baselines.py`` script by just going to the console and typing:
+To run the baseline experiments, you can use the ``baselines.py`` script by just going to the console and typing:
 
 .. code-block:: sh
 
-   $ ./bin/baselines.py
+   $ baselines.py
 
-This script is a simple wrapper for the ``./bin/verify.py`` script that is explained in more detail in :ref:`bob.bio.base.experiments`.
-The ``./bin/baselines.py --help`` option shows you, which other options you have.
+This script is a simple wrapper for the ``verify.py`` script that is explained in more detail in :ref:`bob.bio.base.experiments`.
+The ``baselines.py --help`` option shows you, which other options you have.
 Here is an almost complete extract:
 
 * ``--database``: The database and protocol you want to use.
@@ -47,13 +47,13 @@ Here is an almost complete extract:
   By default, only the commands that are executed are printed, and the rest of the calculation runs quietly.
   You can increase the verbosity by adding the ``--verbose`` parameter repeatedly (up to three times).
 
-Usually it is a good idea to have at least verbose level 2 (i.e., calling ``./bin/baselines.py --verbose --verbose``, or the short version ``./bin/baselines.py -vv``).
+Usually it is a good idea to have at least verbose level 2 (i.e., calling ``baselines.py --verbose --verbose``, or the short version ``baselines.py -vv``).
 
 Running in Parallel
 ~~~~~~~~~~~~~~~~~~~
 
 To run the experiments in parallel, as usual you can define an SGE grid configuration, or run with parallel threads on the local machine.
-For the ``./bin/baselines.py`` script, the grid configuration is adapted to each of the algorithms.
+For the ``baselines.py`` script, the grid configuration is adapted to each of the algorithms.
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option, without parameters.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
 
@@ -149,14 +149,14 @@ Additionally, the following algorithms can be executed, when the :ref:`bob.bio.c
 Baseline Results
 ----------------
 
-To evaluate the results, a wrapper call to ``./bin/evaluate.py`` is produced by the ``./bin/baselines.py --evaluate`` command.
+To evaluate the results, a wrapper call to ``evaluate.py`` is produced by the ``baselines.py --evaluate`` command.
 Several types of evaluation can be achieved, see :ref:`bob.bio.base.evaluate` for details.
 Particularly, here we can enable ROC curves, DET plots, CMC curves and the computation of EER/HTER.
 Hence, the complete set of results of the baseline experiments are generated using:
 
 .. code-block:: sh
 
-  $ ./bin/baselines.py --all -vv --evaluate ROC DET CMC HTER
+  $ baselines.py --all -vv --evaluate ROC DET CMC HTER
 
 If you specified other parameters for the execution of the algorithms, e.g., the ``--directory`` flag, you have to add these options here as well.
 If you ran only a sub-set of the available, the missing algorithms will just be skipped.

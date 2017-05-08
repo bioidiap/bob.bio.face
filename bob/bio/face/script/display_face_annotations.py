@@ -1,7 +1,7 @@
 #!../bin/python
 
 """This script displays the iamges with annotations provided by any face database.
-Basically, anything that can be used as a --database for .bin/verify.py can be specified here as well, including configuration files and ``database`` resources: ``./bin/resources.py -d database``.
+Basically, anything that can be used as a --database for verify.py can be specified here as well, including configuration files and ``database`` resources: ``resources.py -d database``.
 
 By default, all images and their corresponding annotations are displayed, and you have to press ``Enter`` after each image.
 If the database does not include annotations, or you want to display a different set of annotations, you can specify the ``--annotation-directory`` (and if required modify the ``--annotation-file-extension`` and ``--annotation-file-type``.

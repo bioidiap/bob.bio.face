@@ -98,7 +98,7 @@ All databases rely on the :py:class:`bob.bio.base.database.BioDatabase` interfac
 Please check the link above for information on how to obtain the original data of those data sets.
 
 After downloading and extracting the original data of the data sets, it is necessary that the scripts know, where the data was installed.
-For this purpose, the ``./bin/verify.py`` script can read a special file, where those directories are stored, see :ref:`bob.bio.base.installation`.
+For this purpose, the ``verify.py`` script can read a special file, where those directories are stored, see :ref:`bob.bio.base.installation`.
 By default, this file is located in your home directory, but you can specify another file on command line.
 
 The other option is to change the directories directly inside the configuration files.
@@ -171,10 +171,10 @@ Here is the list of files and replacement strings for all databases that are reg
 
   - Images: ``[YOUR_XM2VTS_DIRECTORY]``
 
-You can use the ``./bin/databases.py`` script to list, which data directories are correctly set up.
+You can use the ``databases.py`` script to list, which data directories are correctly set up.
 
-In order to view the annotations inside your database on top of the images, you can use the ``./bin/display_face_annotations.py`` script that is provided.
-Please see ``./bin/display_face_annotations.py --help`` for more details and a list of options.
+In order to view the annotations inside your database on top of the images, you can use the ``display_face_annotations.py`` script that is provided.
+Please see ``display_face_annotations.py --help`` for more details and a list of options.
 
 
 .. _bob.bio.face.preprocessors:

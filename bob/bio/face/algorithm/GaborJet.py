@@ -201,24 +201,6 @@ class GaborJet (Algorithm):
     return model
 
 
-  def read_probe(self, probe_file):
-    """read_probe(probe_file) -> probe
-
-    Reads the probe file, e.g., as written by the :py:meth:`bob.bio.face.extractor.GridGraph.write_feature` function from the given file.
-
-    **Parameters:**
-
-    probe_file : str or :py:class:`bob.io.base.HDF5File`
-      The name of the file or the file opened for reading.
-
-    **Returns:**
-
-    probe : [:py:class:`bob.ip.gabor.Jet`]
-      The list of Gabor jets read from file.
-    """
-    return bob.ip.gabor.load_jets(bob.io.base.HDF5File(probe_file))
-
-
   def score(self, model, probe):
     """score(model, probe) -> score
 
@@ -230,7 +212,7 @@ class GaborJet (Algorithm):
       The model enrolled by the :py:meth:`enroll` function.
 
     probe : [:py:class:`bob.ip.gabor.Jet`]
-      The probe read by the :py:meth:`read_probe` function.
+      The probe, e.g., read by the :py:meth:`bob.bio.face.extractor.GridGraph.read_feature` function.
 
     **Returns:**
 

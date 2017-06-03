@@ -115,23 +115,6 @@ class Histogram (Algorithm):
     return model
 
 
-  def read_probe(self, probe_file):
-    """read_probe(probe_file) -> probe
-
-    Reads the probe feature from the given file.
-
-    **Parameters:**
-
-    probe_file : str or :py:class:`bob.io.base.HDF5File`
-      The file (open for reading) or the name of an existing file to read from.
-
-    **Returns:**
-
-    probe : 1D or 2D :py:class:`numpy.ndarray`
-      The probe read by the :py:meth:`read_probe` function.
-    """
-    return bob.bio.base.load(probe_file)
-
 
   def score(self, model, probe):
     """score(model, probe) -> score
@@ -146,7 +129,7 @@ class Histogram (Algorithm):
       The model enrolled by the :py:meth:`enroll` function.
 
     probe : 1D or 2D :py:class:`numpy.ndarray`
-      The probe read by the :py:meth:`read_probe` function.
+      The probe histograms, which can be specified sparse (2D) or non-sparse (1D)
 
     **Returns:**
 

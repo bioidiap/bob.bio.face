@@ -1,4 +1,3 @@
-#!../bin/python
 from __future__ import print_function
 
 import subprocess
@@ -7,6 +6,7 @@ import sys
 import argparse
 
 import bob.bio.base
+import bob.extension
 
 import bob.core
 logger = bob.core.log.setup("bob.bio.face")
@@ -138,7 +138,7 @@ CONFIGURATIONS = {
     extractor    = 'dct-blocks',
     algorithm    = 'gmm',
     grid         = 'demanding',
-    script       = './bin/verify_gmm.py'
+    script       = 'verify_gmm.py'
   ),
 
   'isv': dict(
@@ -146,7 +146,7 @@ CONFIGURATIONS = {
     extractor    = 'dct-blocks',
     algorithm    = 'isv',
     grid         = 'demanding',
-    script       = './bin/verify_isv.py'
+    script       = 'verify_isv.py'
   ),
 
   'ivector': dict(
@@ -154,7 +154,7 @@ CONFIGURATIONS = {
     extractor    = 'dct-blocks',
     algorithm    = 'ivector-cosine',
     grid         = 'demanding',
-    script       = './bin/verify_ivector.py'
+    script       = 'verify_ivector.py'
   ),
 
   'lrpca': dict(
@@ -169,6 +169,15 @@ CONFIGURATIONS = {
     algorithm    = 'lda-ir'
   )
 }
+
+def _get_executable(script):
+  executables = bob.extension.find_executable(script, prefixes = [os.path.dirname(sys.argv[0]), 'bin'])
+  if not len(executables):
+    raise IOError("Could not find the '%s' executable." % script)
+  executable = executables[0]
+  assert os.path.isfile(executable)
+  return executable
+
 
 def main(command_line_parameters = None):
 
@@ -190,7 +199,7 @@ def main(command_line_parameters = None):
       import copy
       setup = copy.deepcopy(CONFIGURATIONS[algorithm])
       if 'grid' not in setup: setup['grid'] = 'grid'
-      if 'script' not in setup or (not args.grid and args.parallel is None): setup['script'] = './bin/verify.py'
+      if 'script' not in setup or (not args.grid and args.parallel is None): setup['script'] = 'verify.py'
 
       # select the preprocessor
       setup['preprocessor'] = setup['preprocessor'][0 if has_eyes else 1]
@@ -201,9 +210,11 @@ def main(command_line_parameters = None):
       # this is the default sub-directory that is used
       sub_directory = os.path.join(args.baseline_directory, algorithm)
 
+      executable = _get_executable(setup['script'])
+
       # create the command to the faceverify script
       command = [
-          setup['script'],
+          executable,
           '--database', args.database,
           '--preprocessor', setup['preprocessor'],
           '--extractor', setup['extractor'],
@@ -311,8 +322,10 @@ def main(command_line_parameters = None):
       logger.warn("No result files were detected -- skipping evaluation.")
       return
 
+    executable = _get_executable('evaluate.py')
+
     # call the evaluate script
-    base_command = ['./bin/evaluate.py', '--directory', result_dir, '--legends'] + legends
+    base_command = [executable, '--directory', result_dir, '--legends'] + legends
     if 'EER' in args.evaluate:
       base_command += ['--criterion', 'EER']
     elif 'HTER' in args.evaluate:

@@ -2,9 +2,9 @@
 .. Sat Aug 20 07:33:55 CEST 2016
 
 .. image:: http://img.shields.io/badge/docs-stable-yellow.svg
-   :target: http://pythonhosted.org/bob.bio.face/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.face/stable/index.html
 .. image:: http://img.shields.io/badge/docs-latest-orange.svg
-   :target: https://www.idiap.ch/software/bob/docs/latest/bob/bob.bio.face/master/index.html
+   :target: https://www.idiap.ch/software/bob/docs/bob/bob.bio.face/master/index.html
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.face/badges/master/build.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.face/commits/master
 .. image:: https://gitlab.idiap.ch/bob/bob.bio.face/badges/master/coverage.svg
@@ -12,8 +12,6 @@
 .. image:: https://img.shields.io/badge/gitlab-project-0000c0.svg
    :target: https://gitlab.idiap.ch/bob/bob.bio.face
 .. image:: http://img.shields.io/pypi/v/bob.bio.face.svg
-   :target: https://pypi.python.org/pypi/bob.bio.face
-.. image:: http://img.shields.io/pypi/dm/bob.bio.face.svg
    :target: https://pypi.python.org/pypi/bob.bio.face
 
 
@@ -39,7 +37,7 @@ In this package, utilities that are specific for face recognition are contained,
 Installation
 ------------
 
-Complete Bob's `installation`_ instructions. Then, to install this pacakge,
+Complete Bob's `installation`_ instructions. Then, to install this package,
 run::
 
   $ conda install bob.bio.face

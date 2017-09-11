@@ -25,6 +25,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
+    #'matplotlib.sphinxext.plot_directive'
     ]
 
 import sphinx
@@ -231,7 +232,6 @@ autodoc_member_order = 'bysource'
 autodoc_default_flags = [
   'members',
   'undoc-members',
-  'inherited-members',
   'show-inheritance',
   ]
 
@@ -239,9 +239,12 @@ autodoc_default_flags = [
 from bob.extension.utils import link_documentation, load_requirements
 sphinx_requirements = "extra-intersphinx.txt"
 if os.path.exists(sphinx_requirements):
-    intersphinx_mapping = link_documentation(additional_packages=load_requirements(sphinx_requirements))
+  intersphinx_mapping = link_documentation(
+      additional_packages=['python','numpy'] + \
+          load_requirements(sphinx_requirements)
+          )
 else:
-    intersphinx_mapping = link_documentation()
+  intersphinx_mapping = link_documentation()
 
 
 # We want to remove all private (i.e. _. or __.__) members

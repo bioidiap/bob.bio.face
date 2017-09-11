@@ -124,7 +124,7 @@ class ReplayBioDatabase(BioDatabase):
                 retval.append(ReplayBioFile(f))
             else:
                 temp = ReplayBioFile(f)
-                temp.client_id = 'attack'
+                temp.client_id = 'attack/{}'.format(f.get_attack().attack_device)
                 retval.append(temp)
         return retval
 

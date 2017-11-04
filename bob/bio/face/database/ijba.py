@@ -12,6 +12,7 @@
 from .database import FaceBioFile
 from bob.bio.base.database import BioDatabase, BioFileSet
 import os
+import bob.io.image
 
 
 class IJBABioFile(FaceBioFile):
@@ -19,9 +20,18 @@ class IJBABioFile(FaceBioFile):
     super(IJBABioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
     self.f = f
 
-  def make_path(self, directory, extension):
-    # add file ID to the path, so that a unique path is generated (there might be several identities in each physical file)
-    return str(os.path.join(directory or '', self.path + "-" + str(self.client_id) + (extension or '')))
+  def load(self, directory, extension=None, add_client_id=False):
+    return bob.io.image.load(self.make_path(directory, self.f.extension, add_client_id))
+
+  def make_path(self, directory, extension, add_client_id=True):
+    if add_client_id:
+      # add client ID to the path, so that a unique path is generated
+      # (there might be several identities in each physical file)
+      path = "%s-%s%s" % (self.path, self.client_id, extension or '')
+    else:
+      # do not add the client ID to be able to obtain the original image file
+      path = "%s%s" % (self.path,  extension or '')
+    return str(os.path.join(directory or '', path))
 
 
 class IJBABioFileSet(BioFileSet):
@@ -73,3 +83,6 @@ class IJBABioDatabase(BioDatabase):
 
   def client_id_from_model_id(self, model_id, group='dev'):
     return self._db.get_client_id_from_model_id(model_id)
+
+  def original_file_names(self, files):
+    return [f.make_path(self.original_directory, f.f.extension, False) for f in files]

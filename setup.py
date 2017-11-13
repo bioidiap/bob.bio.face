@@ -163,6 +163,8 @@ setup(
             # histogram equalization w/o face-crop
             'self-quotient     = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_no_crop',
             # self quotient image w/o face-crop
+            
+            'drgan     = bob.bio.face.config.preprocessor.luan:preprocessor',
         ],
 
         'bob.bio.extractor': [
@@ -170,6 +172,7 @@ setup(
             'grid-graph        = bob.bio.face.config.extractor.grid_graph:extractor',  # Grid graph
             'lgbphs            = bob.bio.face.config.extractor.lgbphs:extractor',  # LGBPHS
             'eigenface         = bob.bio.face.config.extractor.eigenface:extractor',  # Eigenface
+            'luan              = bob.bio.face.config.extractor.luan:extractor',
         ],
 
         'bob.bio.algorithm': [

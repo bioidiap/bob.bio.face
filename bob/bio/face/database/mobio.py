@@ -37,6 +37,10 @@ class MobioBioDatabase(ZTBioDatabase):
             annotation_extension='.pos',
             **kwargs
     ):
+        from bob.db.mobio.query import Database as LowLevelDatabase
+        self._db = LowLevelDatabase(original_directory, original_extension,
+                                    annotation_directory, annotation_extension)
+
         # call base class constructors to open a session to the database
         super(MobioBioDatabase, self).__init__(
             name='mobio',
@@ -46,9 +50,21 @@ class MobioBioDatabase(ZTBioDatabase):
             annotation_extension=annotation_extension,
             **kwargs)
 
-        from bob.db.mobio.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory, original_extension,
-                                    annotation_directory, annotation_extension)
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
+
+    @property
+    def annotation_directory(self):
+        return self._db.annotation_directory
+
+    @annotation_directory.setter
+    def annotation_directory(self, value):
+        self._db.annotation_directory = value
 
     def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
         return self._db.model_ids(groups=groups, protocol=protocol, gender=gender)

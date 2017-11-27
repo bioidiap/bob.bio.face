@@ -334,7 +334,7 @@ def test_msu_mfsd_mod_licit():
             "The database could not be queried; probably the db.sql3 file is "
             "missing. Here is the error: '%s'" % e)
     try:
-        _check_annotations(database, topleft=True, limit_files=20)
+        _check_annotations(database, topleft=False, limit_files=20)
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation "
@@ -352,7 +352,7 @@ def test_msu_mfsd_mod_spoof():
             "The database could not be queried; probably the db.sql3 file is "
             "missing. Here is the error: '%s'" % e)
     try:
-        _check_annotations(database, topleft=True, limit_files=20)
+        _check_annotations(database, topleft=False, limit_files=20)
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation "

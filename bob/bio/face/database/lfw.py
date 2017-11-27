@@ -35,6 +35,9 @@ class LFWBioDatabase(BioDatabase):
             annotation_type=None,
             **kwargs
     ):
+        from bob.db.lfw.query import Database as LowLevelDatabase
+        self._db = LowLevelDatabase(original_directory, original_extension, annotation_type)
+
         # call base class constructors to open a session to the database
         super(LFWBioDatabase, self).__init__(
             name='lfw',
@@ -43,8 +46,13 @@ class LFWBioDatabase(BioDatabase):
             annotation_type=annotation_type,
             **kwargs)
 
-        from bob.db.lfw.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory, original_extension, annotation_type)
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         return self._db.model_ids(groups=groups, protocol=protocol)
@@ -55,13 +63,13 @@ class LFWBioDatabase(BioDatabase):
 
     def annotations(self, myfile):
         return self._db.annotations(myfile._f)
-        
+
     def client_id_from_model_id(self, model_id, group='dev'):
         """Return the client id associated with the given model id.
         In this base class implementation, it is assumed that only one model is enrolled for each client and, thus, client id and model id are identical.
         All key word arguments are ignored.
         Please override this function in derived class implementations to change this behavior."""
-        
+
        # since there is one model per file, we can re-use the function above.
-        return self._db.get_client_id_from_file_id(model_id)        
+        return self._db.get_client_id_from_file_id(model_id)
 

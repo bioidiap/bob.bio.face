@@ -35,6 +35,12 @@ class MultipieBioDatabase(ZTBioDatabase):
             annotation_extension='.pos',
             **kwargs
     ):
+        from bob.db.multipie.query import Database as LowLevelDatabase
+        self._db = LowLevelDatabase(original_directory,
+                                    original_extension,
+                                    annotation_directory,
+                                    annotation_extension)
+
         # call base class constructors to open a session to the database
         super(MultipieBioDatabase, self).__init__(
             name='multipie',
@@ -44,11 +50,13 @@ class MultipieBioDatabase(ZTBioDatabase):
             annotation_extension=annotation_extension,
             **kwargs)
 
-        from bob.db.multipie.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory,
-                                    original_extension,
-                                    annotation_directory,
-                                    annotation_extension)
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         return self._db.model_ids(groups=groups, protocol=protocol)

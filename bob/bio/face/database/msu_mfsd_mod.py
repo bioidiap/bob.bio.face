@@ -32,14 +32,22 @@ class MsuMfsdModBioDatabase(BioDatabase):
     """
 
     def __init__(self, max_number_of_frames=None, **kwargs):
-        # call base class constructors to open a session to the database
-        super(MsuMfsdModBioDatabase, self).__init__(
-            name='msu-mfsd-mod',
-            max_number_of_frames=max_number_of_frames, **kwargs)
-
         from bob.db.msu_mfsd_mod.verificationprotocol import Database \
             as LowLevelDatabase
         self._db = LowLevelDatabase(max_number_of_frames)
+
+        # call base class constructors to open a session to the database
+        super(MsuMfsdModBioDatabase, self).__init__(
+            name='msu-mfsd-mod', **kwargs)
+        self._kwargs['max_number_of_frames'] = max_number_of_frames
+
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
 
     def protocol_names(self):
         return self._db.protocols()

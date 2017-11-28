@@ -33,6 +33,9 @@ class CaspealBioDatabase(BioDatabase):
             original_extension='.tif',
             **kwargs
     ):
+        from bob.db.caspeal.query import Database as LowLevelDatabase
+        self._db = LowLevelDatabase(original_directory, original_extension)
+
         # call base class constructors to open a session to the database
         super(CaspealBioDatabase, self).__init__(
             name='caspeal',
@@ -40,8 +43,13 @@ class CaspealBioDatabase(BioDatabase):
             original_extension=original_extension,
             **kwargs)
 
-        from bob.db.caspeal.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory, original_extension)
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         return self._db.model_ids(groups=groups, protocol=protocol)

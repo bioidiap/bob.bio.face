@@ -37,14 +37,22 @@ class ReplayBioDatabase(BioDatabase):
     __doc__ = __doc__
 
     def __init__(self, **kwargs):
-        # call base class constructors to open a session to the database
-        super(ReplayBioDatabase, self).__init__(name='replay', **kwargs)
-
         from bob.db.replay import Database as LowLevelDatabase
         self._db = LowLevelDatabase()
 
+        # call base class constructors to open a session to the database
+        super(ReplayBioDatabase, self).__init__(name='replay', **kwargs)
+
         self.low_level_group_names = ('train', 'devel', 'test')
         self.high_level_group_names = ('world', 'dev', 'eval')
+
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
 
     def protocol_names(self):
         """Returns all registered protocol names

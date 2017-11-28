@@ -30,13 +30,21 @@ class ReplayMobileBioDatabase(BioDatabase):
     """
 
     def __init__(self, max_number_of_frames=None, **kwargs):
-        # call base class constructors to open a session to the database
-        super(ReplayMobileBioDatabase, self).__init__(
-            name='replay-mobile',
-            max_number_of_frames=max_number_of_frames, **kwargs)
-
         from bob.db.replaymobile.verificationprotocol import Database as LowLevelDatabase
         self._db = LowLevelDatabase(max_number_of_frames)
+
+        # call base class constructors to open a session to the database
+        super(ReplayMobileBioDatabase, self).__init__(
+            name='replay-mobile', **kwargs)
+        self._kwargs['max_number_of_frames'] = max_number_of_frames
+
+    @property
+    def original_directory(self):
+        return self._db.original_directory
+
+    @original_directory.setter
+    def original_directory(self, value):
+        self._db.original_directory = value
 
     def protocol_names(self):
         return self._db.protocols()

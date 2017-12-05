@@ -101,7 +101,7 @@ class IJBBBioDatabase(BioDatabase):
         return self._db.annotations(biofile.f)
 
     def client_id_from_model_id(self, model_id, group='dev'):
-        return self._db.get_client_id_from_model_id(model_id)
+        return self._db.get_client_id_from_model_id(self.protocol, model_id)
 
     def original_file_names(self, files):
         return [f.make_path(self.original_directory, f.f.extension, False) for f in files]

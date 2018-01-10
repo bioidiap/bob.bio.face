@@ -11,9 +11,9 @@ from bob.bio.base.database.file import BioFile
 
 
 class FaceBioFile(BioFile):
-    def __init__(self, client_id, path, file_id):
+    def __init__(self, client_id, path, file_id, **kwargs):
         """
         Initializes this File object with an File equivalent for
         VoxForge database.
         """
-        super(FaceBioFile, self).__init__(client_id=client_id, path=path, file_id=file_id)
+        super(FaceBioFile, self).__init__(client_id=client_id, path=path, file_id=file_id, **kwargs)

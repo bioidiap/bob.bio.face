@@ -3,6 +3,7 @@ from .GridGraph import GridGraph
 from .LGBPHS import LGBPHS
 from .Eigenface import Eigenface
 from .DRGANLight import DRGANLight 
+from .DRGANOriginal import DRGANOriginal 
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):

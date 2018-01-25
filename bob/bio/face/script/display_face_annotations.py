@@ -14,6 +14,7 @@ from __future__ import print_function
 
 import os
 import argparse
+import sys
 
 import bob.bio.base
 
@@ -28,6 +29,7 @@ def command_line_arguments(command_line_parameters):
 
   # add parameters
   parser.add_argument('-d', '--database', nargs = '+', help = 'Select the database for which the images plus annotations should be shown.')
+  parser.add_argument('-V', '--video', action = 'store_true', help = 'Provide this flag if your database is a video database. For video databases, the annotations for the first frame is shown.')
   parser.add_argument('-f', '--file-ids', nargs = '+', help = 'If given, only the images of the --database with the given file id are shown (non-existing IDs will be silently skipped).')
   parser.add_argument('-a', '--annotation-directory', help = 'If given, use the annotations stored in the given annotation directory (this might be required for some databases).')
   parser.add_argument('-x', '--annotation-file-extension', default = '.pos', help = 'Annotation files have the given filename extension.')
@@ -67,12 +69,16 @@ def main(command_line_parameters=None):
   # open figure
   if not args.self_test:
     from matplotlib import pyplot
+    pyplot.ion()
+    pyplot.show()
     figure = pyplot.figure()
 
   for f in files:
     # load image
     logger.info("loading image for file %s", f.id)
-    image = bob.io.base.load(database.original_file_names([f])[0])
+    image = f.load(database.original_directory, database.original_extension)
+    if args.video:
+      frame_id, image, _ = image[0]
     # convert to color if it is not
     if image.ndim == 2:
       image = bob.ip.color.gray_to_rgb(image)
@@ -94,6 +100,10 @@ def main(command_line_parameters=None):
     if not annotations:
       logger.warn("Could not find annotations for file %s", f.id)
 
+    if args.video:
+      assert frame_id in annotations, annotations
+      annotations = annotations[frame_id]
+
     if not args.self_test:
       pyplot.clf()
       pyplot.imshow(image.transpose(1,2,0))
@@ -112,5 +122,10 @@ def main(command_line_parameters=None):
 
       pyplot.gca().set_aspect("equal")
       pyplot.gca().autoscale(tight=True)
+      pyplot.pause(0.001)
 
-      raw_input("Press Enter to continue to the next image (or Ctrl-C + Enter to exit)")
+      input_text = "Press Enter to continue to the next image (or Ctrl-C + Enter to exit)"
+      if sys.version_info >= (3, 0):
+        input(input_text)
+      else:
+        raw_input(input_text)

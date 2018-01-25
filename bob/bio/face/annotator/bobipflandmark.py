@@ -1,4 +1,5 @@
 from . import Base
+from bob.ip.color import rgb_to_gray
 from bob.ip.flandmark import Flandmark
 
 
@@ -16,7 +17,7 @@ class BobIpFlandmark(Base):
         Parameters
         ----------
         image : array
-            Image in gray-scale.
+            Image in Bob format RGB.
         annotations : dict
             The topleft and bottomright annotations are required.
         **kwargs
@@ -27,11 +28,13 @@ class BobIpFlandmark(Base):
         dict
             Annotations with reye and leye keys or an empty dict if it fails.
         """
+        image = rgb_to_gray(image)
         top, left = annotations['topleft']
-        top, left = max(top, 0), max(left, 0)
+        top, left = int(max(top, 0)), int(max(left, 0))
         height = annotations['bottomright'][0] - top
         width = annotations['bottomright'][1] - left
         height, width = min(height, image.shape[0]), min(width, image.shape[1])
+        height, width = int(height), int(width)
 
         landmarks = self.flandmark.locate(image, top, left, height, width)
 

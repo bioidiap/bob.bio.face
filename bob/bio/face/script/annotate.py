@@ -3,7 +3,7 @@
 import logging
 import json
 import click
-from os.path import dirname
+from os.path import dirname, isfile
 from bob.extension.scripts.click_helper import (
     verbosity_option, Command, Option)
 from bob.io.base import create_directories_safe
@@ -61,20 +61,26 @@ def annotate(database, annotator, output_dir, force, jobs, **kwargs):
     logger.debug('output_dir: %s', output_dir)
     logger.debug('jobs: %s', jobs)
     logger.debug('kwargs: %s', kwargs)
-    biofiles = database.all_files(groups=None)
+    biofiles = database.objects(groups=None, protocol=database.protocol)
     if jobs > 1:
         start, end = indices(biofiles, jobs)
         biofiles = biofiles[start:end]
     logger.info("Saving annotations in %s", output_dir)
     total = len(biofiles)
-    logger.info("Processing %d files ...", total)
+    logger.info("Annotating %d samples ...", total)
     for i, biofile in enumerate(biofiles):
         logger.info(
-            "Extracting annotations for file %d out of %d", i + 1, total)
+            "Extracting annotations for sample %d out of %d", i + 1, total)
+        outpath = biofile.make_path(output_dir, '.json')
+        if isfile(outpath):
+            if force:
+                logger.debug("Overwriting the annotations file `%s'", outpath)
+            else:
+                logger.debug("The annotation `%s' already exists", outpath)
+                continue
         data = annotator.read_original_data(
             biofile, database.original_directory, database.original_extension)
         annot = annotator(data, annotations=database.annotations(biofile))
-        outpath = biofile.make_path(output_dir, '.json')
         create_directories_safe(dirname(outpath))
         with open(outpath, 'w') as f:
-            json.dump(annot, f)
+            json.dump(annot, f, indent=1, allow_nan=False)

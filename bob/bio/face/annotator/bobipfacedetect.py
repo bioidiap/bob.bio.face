@@ -1,13 +1,16 @@
 import math
 from bob.io.base import HDF5File
+from bob.ip.color import rgb_to_gray
 from bob.ip.facedetect import (
     detect_single_face, Sampler, default_cascade, Cascade,
-    expected_eye_positions)
+    bounding_box_from_annotation, expected_eye_positions)
 from . import Base, bounding_box_to_annotations
 
 
 class BobIpFacedetect(Base):
-    """Annotator using bob.ip.facedetect"""
+    """Annotator using bob.ip.facedetect
+    Provides topleft and bottomright annoations.
+    """
 
     def __init__(self, cascade=None,
                  detection_overlap=0.2, distance=2,
@@ -29,7 +32,7 @@ class BobIpFacedetect(Base):
         Parameters
         ----------
         image : array
-            Image gray scale.
+            Image is Bob format RGB image.
         **kwargs
             Ignored.
 
@@ -39,11 +42,21 @@ class BobIpFacedetect(Base):
             The annotations in a dictionary. The keys are topleft, bottomright,
             quality, leye, reye.
         """
-        if image.ndim != 2:
-            raise ValueError("The image must be gray scale (two dimensions).")
+        image = rgb_to_gray(image)
         bounding_box, quality = detect_single_face(
             image, self.cascade, self.sampler, self.detection_overlap)
-        landmarks = expected_eye_positions(bounding_box)
-        landmarks.update(bounding_box_to_annotations(bounding_box))
+        landmarks = bounding_box_to_annotations(bounding_box)
         landmarks['quality'] = quality
         return landmarks
+
+
+class BoundingBoxToEyes(Base):
+    """Converts bounding box annotations to eye locations. The bounding box's
+    annotations is expected to have come from :any:`BobIpFacedetect`.
+    """
+
+    def annotate(self, image, annotations, **kwargs):
+        bbx = bounding_box_from_annotation(source='direct', **annotations)
+        annotations = dict(annotations)
+        annotations.update(expected_eye_positions(bbx))
+        return annotations

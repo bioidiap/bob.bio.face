@@ -9,17 +9,20 @@ class Base(object):
         self.read_original_data = read_original_data or base_read
 
     def annotate(self, image, **kwargs):
-        """Annotates an image and returns annotations in a dictionary
+        """Annotates an image and returns annotations in a dictionary.
+        All annotator should return at least the topleft and bottomright
+        coordinates.
 
         Parameters
         ----------
-        image : object
-            The image is what comes out of ``read_original_data``.
+        image : array
+            The image should be a Bob format (#Channels, Height, Width) RGB
+            image.
         **kwargs
             The extra arguments that may be passed.
         """
         raise NotImplementedError()
 
     # Alisa call to annotate
-    __call__ = annotate
-    __call__.__doc__ = annotate.__doc__
+    def __call__(self, image, **kwargs):
+        return self.annotate(image, **kwargs)

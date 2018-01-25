@@ -17,7 +17,7 @@ class FailSafe(Base):
         self.required_keys = list(required_keys)
 
     def annotate(self, image, **kwargs):
-        if 'annotations' not in kwargs:
+        if 'annotations' not in kwargs or kwargs['annotations'] is None:
             kwargs['annotations'] = {}
         for annotator in self.annotators:
             try:
@@ -27,6 +27,9 @@ class FailSafe(Base):
                     "The annotator `%s' failed to annotate!", annotator,
                     exc_info=True)
                 annotations = {}
+            if not annotations:
+                logger.debug(
+                    "Annotator `%s' returned empty annotations.", annotator)
             kwargs['annotations'].update(annotations)
             # check if we have all the required annotations
             if all(key in kwargs['annotations'] for key in self.required_keys):

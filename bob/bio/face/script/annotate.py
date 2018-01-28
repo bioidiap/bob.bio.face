@@ -80,7 +80,7 @@ def annotate(database, annotator, output_dir, force, jobs, **kwargs):
                 continue
         data = annotator.read_original_data(
             biofile, database.original_directory, database.original_extension)
-        annot = annotator(data, annotations=database.annotations(biofile))
+        annot = annotator(data)
         create_directories_safe(dirname(outpath))
         with open(outpath, 'w') as f:
             json.dump(annot, f, indent=1, allow_nan=False)

@@ -3,7 +3,8 @@ from .FailSafe import FailSafe
 
 
 def bounding_box_to_annotations(bbx):
-    landmarks = {}
-    landmarks['topleft'] = bbx.topleft_f
-    landmarks['bottomright'] = bbx.bottomright_f
+    landmarks = {
+        'topleft': bbx.topleft,
+        'bottomright': bbx.bottomright,
+    }
     return landmarks

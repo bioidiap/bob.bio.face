@@ -62,6 +62,7 @@ def annotate(database, annotator, output_dir, force, jobs, **kwargs):
     logger.debug('jobs: %s', jobs)
     logger.debug('kwargs: %s', kwargs)
     biofiles = database.objects(groups=None, protocol=database.protocol)
+    biofiles = sorted(biofiles)
     if jobs > 1:
         start, end = indices(biofiles, jobs)
         biofiles = biofiles[start:end]

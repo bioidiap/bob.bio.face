@@ -13,7 +13,7 @@ class DCTBlocks (Extractor):
 
   """Extracts *Discrete Cosine Transform* (DCT) features from (overlapping) image blocks.
   These features are based on the :py:class:`bob.ip.base.DCTFeatures` class.
-  The default parametrization is the one that performed best on the BANCA database in [WMM+11]_.
+  The default parametrization is the one that performed best on the BANCA database in [WMM11]_.
 
   Usually, these features are used in combination with the algorithms defined in :ref:`bob.bio.gmm <bob.bio.gmm>`.
   However, you can try to use them with other algorithms.

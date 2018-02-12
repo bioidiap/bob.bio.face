@@ -45,7 +45,6 @@ requirements:
     - bob.ip.facedetect
     - bob.ip.flandmark
     - matplotlib {{ matplotlib }}
-    - gridtk
   run:
     - python
     - setuptools
@@ -68,7 +67,6 @@ test:
     - coverage
     - sphinx
     - sphinx_rtd_theme
-    - gridtk
     - bob.db.arface
     - bob.db.atnt
     - bob.db.banca
@@ -85,6 +83,7 @@ test:
     - bob.db.scface
     - bob.db.xm2vts
     - bob.bio.gmm
+    - gridtk
 
 about:
   home: https://www.idiap.ch/software/bob/

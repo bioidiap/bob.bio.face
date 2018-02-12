@@ -72,7 +72,7 @@ The algorithms present an (incomplete) set of state-of-the-art face recognition 
   - feature : :py:class:`bob.bio.base.extractor.Linearize`
   - algorithm : :py:class:`bob.bio.base.algorithm.PCA`
 
-* ``lda``: The LDA algorithm applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC+98]_:
+* ``lda``: The LDA algorithm applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_:
 
   - preprocessor : :py:class:`bob.bio.face.preprocessor.FaceCrop`
   - feature : :py:class:`bob.bio.face.extractor.Eigenface`
@@ -85,7 +85,7 @@ The algorithms present an (incomplete) set of state-of-the-art face recognition 
   - algorithm : :py:class:`bob.bio.face.algorithm.GaborJet`
 
 
-* ``plda``: *Probabilistic LDA* (PLDA) [Pri07]_ is a probabilistic generative version of the LDA, in its scalable formulation of [ESM+13]_.
+* ``plda``: *Probabilistic LDA* (PLDA) [Pri07]_ is a probabilistic generative version of the LDA, in its scalable formulation of [ESM13]_.
   Here, we also apply it on pixel-based representations of the image, though also other features should be possible.
 
   - preprocessor : :py:class:`bob.bio.face.preprocessor.FaceCrop`
@@ -110,7 +110,7 @@ Further algorithms are available, when the :ref:`bob.bio.gmm <bob.bio.gmm>` pack
   - feature : :py:class:`bob.bio.face.extractor.DCTBlocks`
   - algorithm : :py:class:`bob.bio.gmm.algorithm.GMM`
 
-* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [WMM+11]_ is used to learn what variations in images are introduced by identity changes and which not.
+* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [WMM11]_ is used to learn what variations in images are introduced by identity changes and which not.
 
   - preprocessor : :py:class:`bob.bio.face.preprocessor.TanTriggs`
   - feature : :py:class:`bob.bio.face.extractor.DCTBlocks`
@@ -128,13 +128,13 @@ Further algorithms are available, when the :ref:`bob.bio.gmm <bob.bio.gmm>` pack
 
 Additionally, the following algorithms can be executed, when the :ref:`bob.bio.csu <bob.bio.csu>` package is installed.
 
-* ``lrpca``: In Local Region PCA [PBD+11]_, the face is sub-divided into local regions and a PCA is performed for each local region.
+* ``lrpca``: In Local Region PCA [PBD11]_, the face is sub-divided into local regions and a PCA is performed for each local region.
 
   - preprocessor : :py:class:`bob.bio.csu.preprocessor.LRPCA`
   - feature : :py:class:`bob.bio.csu.extractor.LRPCA`
   - algorithm : :py:class:`bob.bio.csu.algorithm.LRPCA`
 
-* ``lda-ir``: The LDA-IR (a.k.a. CohortLDA [LBP+12]_) extracts color information from images after, and computes a PCA+LDA projection on two color layers.
+* ``lda-ir``: The LDA-IR (a.k.a. CohortLDA [LBP12]_) extracts color information from images after, and computes a PCA+LDA projection on two color layers.
 
   - preprocessor : :py:class:`bob.bio.csu.preprocessor.LDAIR`
   - feature : :py:class:`bob.bio.csu.extractor.LDAIR`

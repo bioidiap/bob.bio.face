@@ -11,7 +11,7 @@ import math
 from bob.bio.base.extractor import Extractor
 
 class LGBPHS (Extractor):
-  """Extracts *Local Gabor Binary Pattern Histogram Sequences* (LGBPHS) [ZSG+05]_ from the images, using functionality from :ref:`bob.ip.base <bob.ip.base>` and :ref:`bob.ip.gabor <bob.ip.gabor>`.
+  """Extracts *Local Gabor Binary Pattern Histogram Sequences* (LGBPHS) [ZSG05]_ from the images, using functionality from :ref:`bob.ip.base <bob.ip.base>` and :ref:`bob.ip.gabor <bob.ip.gabor>`.
 
   The block size and the overlap of the blocks can be varied, as well as the parameters of the Gabor wavelet (:py:class:`bob.ip.gabor.Transform`) and the LBP extractor (:py:class:`bob.ip.base.LBP`).
 
@@ -32,14 +32,14 @@ class LGBPHS (Extractor):
 
   use_gabor_phases : bool
     Extract also the Gabor phases (inline) and not only the absolute values.
-    In this case, Extended LGBPHS features [ZSQ+09]_ will be extracted.
+    In this case, Extended LGBPHS features [ZSQ09]_ will be extracted.
 
   lbp_radius, lbp_neighbor_count, lbp_uniform, lbp_circular, lbp_rotation_invariant, lbp_compare_to_average, lbp_add_average
     The parameters of the LBP.
     Please see :py:class:`bob.ip.base.LBP` for the documentation of these values.
 
     .. note::
-       The default values are as given in [ZSG+05]_ (the values of [ZSQ+09]_ might differ).
+       The default values are as given in [ZSG05]_ (the values of [ZSQ09]_ might differ).
 
   sparse_histogram : bool
     If specified, the histograms will be handled in a sparse way.

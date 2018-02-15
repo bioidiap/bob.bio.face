@@ -1,7 +1,7 @@
-from bob.bio.base.annotator import Base as __Base
+from bob.bio.base.annotator import Annotator
 
 
-class Base(__Base):
+class Base(Annotator):
     """Base class for all face annotators"""
 
     def __init__(self, **kwargs):

@@ -28,7 +28,7 @@ Particularly, the installation of this and other ``bob.bio`` packages, please re
 
 In the following, we provide more detailed information about the particularities of this package only.
 
-===========
+
 Users Guide
 ===========
 
@@ -39,7 +39,7 @@ Users Guide
    implementation
    references
 
-================
+
 Reference Manual
 ================
 

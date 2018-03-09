@@ -1,4 +1,5 @@
 from bob.bio.base.annotator import Annotator
+from bob.bio.face.preprocessor import FaceCrop  # import for documentation
 
 
 class Base(Annotator):
@@ -8,9 +9,11 @@ class Base(Annotator):
         super(Base, self).__init__(**kwargs)
 
     def annotate(self, sample, **kwargs):
-        """Annotates an image and returns annotations in a dictionary.
-        All annotator should return at least the topleft and bottomright
-        coordinates.
+        """Annotates an image and returns annotations in a dictionary. All
+        annotator should return at least the ``topleft`` and ``bottomright``
+        coordinates. Some currently known annotation points such as ``reye``
+        and ``leye`` are formalized in
+        :any:`FaceCrop`.
 
         Parameters
         ----------

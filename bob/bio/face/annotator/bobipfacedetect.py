@@ -57,6 +57,5 @@ class BoundingBoxToEyes(Base):
 
     def annotate(self, image, annotations, **kwargs):
         bbx = bounding_box_from_annotation(source='direct', **annotations)
-        annotations = dict(annotations)
         annotations.update(expected_eye_positions(bbx))
         return annotations

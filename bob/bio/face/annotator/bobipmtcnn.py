@@ -1,5 +1,4 @@
 from . import Base, bounding_box_to_annotations
-from bob.ip.mtcnn import FaceDetector
 
 
 class BobIpMTCNN(Base):
@@ -7,6 +6,7 @@ class BobIpMTCNN(Base):
 
     def __init__(self, **kwargs):
         super(BobIpMTCNN, self).__init__(**kwargs)
+        from bob.ip.mtcnn import FaceDetector
         self.detector = FaceDetector()
 
     def annotate(self, image, **kwargs):

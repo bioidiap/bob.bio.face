@@ -12,8 +12,7 @@ class Base(Annotator):
         """Annotates an image and returns annotations in a dictionary. All
         annotator should return at least the ``topleft`` and ``bottomright``
         coordinates. Some currently known annotation points such as ``reye``
-        and ``leye`` are formalized in
-        :any:`FaceCrop`.
+        and ``leye`` are formalized in :any:`FaceCrop`.
 
         Parameters
         ----------
@@ -24,7 +23,3 @@ class Base(Annotator):
             The extra arguments that may be passed.
         """
         raise NotImplementedError()
-
-    # Alisa call to annotate
-    def __call__(self, sample, **kwargs):
-        return self.annotate(sample, **kwargs)

@@ -19,9 +19,13 @@
 
 import bob.ip.base
 import numpy
+import logging
 
 from .Base import Base
 from bob.bio.base.preprocessor import Preprocessor
+
+logger = logging.getLogger('bob.bio.face')
+
 
 class FaceCrop (Base):
   """Crops the face according to the given annotations.
@@ -202,6 +206,9 @@ class FaceCrop (Base):
     face : 2D :py:class:`numpy.ndarray`
       The cropped face.
     """
+    if not annotations and not self.fixed_positions:
+      logger.warn("Cannot crop face without annotations or fixed_positions. Returning None.")
+      return None
     # convert to the desired color channel
     image = self.color_channel(image)
     # crop face

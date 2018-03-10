@@ -24,7 +24,7 @@ import logging
 from .Base import Base
 from bob.bio.base.preprocessor import Preprocessor
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('bob.bio.face')
 
 
 class FaceCrop (Base):
@@ -148,6 +148,8 @@ class FaceCrop (Base):
     face : 2D :py:class:`numpy.ndarray` (float)
       The cropped face.
     """
+    if self.fixed_positions is not None:
+      annotations = self.fixed_positions
     if annotations is None:
       raise ValueError("Cannot perform image cropping since annotations are not given, and no fixed annotations are specified.")
 
@@ -204,11 +206,8 @@ class FaceCrop (Base):
     face : 2D :py:class:`numpy.ndarray`
       The cropped face.
     """
-    if self.fixed_positions is not None:
-      annotations = self.fixed_positions
-
-    if not annotations:
-      logger.warn("Cannot crop face without annotations. Returning None.")
+    if not annotations and not self.fixed_positions:
+      logger.warn("Cannot crop face without annotations or fixed_positions. Returning None.")
       return None
     # convert to the desired color channel
     image = self.color_channel(image)

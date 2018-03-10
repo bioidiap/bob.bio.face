@@ -1,4 +1,3 @@
-from __future__ import print_function
 import bob.io.base
 import bob.io.base.test_utils
 import bob.io.image

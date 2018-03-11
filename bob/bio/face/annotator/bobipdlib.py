@@ -11,6 +11,21 @@ class BobIpDlib(Base):
         self.detector = DlibLandmarkExtraction(bob_landmark_format=True)
 
     def annotate(self, image, **kwargs):
+        """Annotates an image using bob.ip.dlib
+
+        Parameters
+        ----------
+        image : numpy.array
+            An RGB image in Bob format.
+        **kwargs
+            Ignored.
+
+        Returns
+        -------
+        dict
+            Annotations contain: (topleft, bottomright, leye, reye, nose,
+            mouthleft, mouthright).
+        """
         landmarks = self.detector(image)
         if not landmarks:
             return None

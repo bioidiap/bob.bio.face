@@ -10,6 +10,21 @@ class BobIpMTCNN(Base):
         self.detector = FaceDetector()
 
     def annotate(self, image, **kwargs):
+        """Annotates an image using bob.ip.mtcnn
+
+        Parameters
+        ----------
+        image : numpy.array
+            An RGB image in Bob format.
+        **kwargs
+            Ignored.
+
+        Returns
+        -------
+        dict
+            Annotations contain: (topleft, bottomright, leye, reye, nose,
+            mouthleft, mouthright).
+        """
         bounding_box, landmarks = self.detector.detect_single_face(image)
         if not landmarks:
             return None

@@ -26,7 +26,7 @@ class BobIpFlandmark(Base):
         Returns
         -------
         dict
-            Annotations with reye and leye keys or an empty dict if it fails.
+            Annotations with reye and leye keys or None if it fails.
         """
         image = rgb_to_gray(image)
         top, left = annotations['topleft']

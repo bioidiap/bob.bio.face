@@ -32,7 +32,7 @@ class BobIpFacedetect(Base):
         Parameters
         ----------
         image : array
-            Image is Bob format RGB image.
+            Image in Bob format RGB image.
         **kwargs
             Ignored.
 
@@ -56,6 +56,24 @@ class BoundingBoxToEyes(Base):
     """
 
     def annotate(self, image, annotations, **kwargs):
+        """Converts bounding boxes of bob.ip.facedetect to eye locations.
+
+        Parameters
+        ----------
+        image : numpy.array
+            Ignored.
+        annotations : dict
+            The annotations that are given by :any:`BobIpFacedetect`.
+        **kwargs
+            Ignored.
+
+        Returns
+        -------
+        dict
+            The annotations with reye and leye locations added.
+        """
         bbx = bounding_box_from_annotation(source='direct', **annotations)
+        # make a copy of the annotations
+        annotations = dict(annotations)
         annotations.update(expected_eye_positions(bbx))
         return annotations

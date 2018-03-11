@@ -12,7 +12,7 @@ class BobIpFlandmark(Base):
         self.flandmark = Flandmark()
 
     def annotate(self, image, annotations, **kwargs):
-        """Annotates a gray-scale image
+        """Annotates an image.
 
         Parameters
         ----------
@@ -46,4 +46,4 @@ class BobIpFlandmark(Base):
                          (landmarks[2][1] + landmarks[6][1]) / 2.)
             }
         else:
-            return {}
+            return None

@@ -12,6 +12,6 @@ class BobIpMTCNN(Base):
     def annotate(self, image, **kwargs):
         bounding_box, landmarks = self.detector.detect_single_face(image)
         if not landmarks:
-            return {}
+            return None
         landmarks.update(bounding_box_to_annotations(bounding_box))
         return landmarks

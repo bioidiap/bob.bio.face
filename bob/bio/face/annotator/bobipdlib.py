@@ -1,5 +1,5 @@
 from . import Base, bounding_box_to_annotations
-from bob.ip.facedetect import bounding_box_from_annotation
+import bob.ip.facedetect
 
 
 class BobIpDlib(Base):
@@ -13,7 +13,8 @@ class BobIpDlib(Base):
     def annotate(self, image, **kwargs):
         landmarks = self.detector(image)
         if not landmarks:
-            return {}
-        bounding_box = bounding_box_from_annotation(source='eyes', **landmarks)
+            return None
+        bounding_box = bob.ip.facedetect.bounding_box_from_annotation(
+            source='eyes', **landmarks)
         landmarks.update(bounding_box_to_annotations(bounding_box))
         return landmarks

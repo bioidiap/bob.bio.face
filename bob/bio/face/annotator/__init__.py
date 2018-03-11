@@ -1,8 +1,19 @@
-from bob.ip.facedetect import bounding_box_from_annotation
-from .Base import Base
+import bob.ip.facedetect
 
 
 def bounding_box_to_annotations(bbx):
+    """Converts :any:`bob.ip.facedetect.BoundingBox` to dictionary annotations.
+
+    Parameters
+    ----------
+    bbx : :any:`bob.ip.facedetect.BoundingBox`
+        The given bounding box.
+
+    Returns
+    -------
+    dict
+        A dictionary with topleft and bottomright keys.
+    """
     landmarks = {
         'topleft': bbx.topleft,
         'bottomright': bbx.bottomright,
@@ -17,7 +28,7 @@ def min_face_size_validator(annotations, min_face_size=(32, 32)):
     ----------
     annotations : dict
         The annotations in dictionary format.
-    min_face_size : (int, int), optional
+    min_face_size : (:obj:`int`, :obj:`int`), optional
         The minimal size of a face.
 
     Returns
@@ -25,10 +36,19 @@ def min_face_size_validator(annotations, min_face_size=(32, 32)):
     bool
         True, if the face is large enough.
     """
-    bbx = bounding_box_from_annotation(source='direct', **annotations)
+    bbx = bob.ip.facedetect.bounding_box_from_annotations(
+        source='direct', **annotations)
     if bbx.size < min_face_size:
         return False
     return True
+
+
+# These imports should be here to avoid circular dependencies
+from .Base import Base
+from .bobipfacedetect import BobIpFacedetect, BoundingBoxToEyes
+from .bobipflandmark import BobIpFlandmark
+from .bobipdlib import BobIpDlib
+from .bobipmtcnn import BobIpMTCNN
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -52,6 +72,11 @@ def __appropriate__(*args):
 
 __appropriate__(
     Base,
+    BobIpFacedetect,
+    BoundingBoxToEyes,
+    BobIpFlandmark,
+    BobIpDlib,
+    BobIpMTCNN,
 )
 
 __all__ = [_ for _ in dir() if not _.startswith('_')]

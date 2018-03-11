@@ -27,6 +27,19 @@ Databases
    bob.bio.face.database.FRGCBioDatabase
    bob.bio.face.database.SCFaceBioDatabase
 
+
+Face Image Annotators
+~~~~~~~~~~~~~~~~~~~~~
+
+.. autosummary::
+   bob.bio.face.annotator.Base
+   bob.bio.face.annotator.BobIpFacedetect
+   bob.bio.face.annotator.BoundingBoxToEyes
+   bob.bio.face.annotator.BobIpFlandmark
+   bob.bio.face.annotator.BobIpDlib
+   bob.bio.face.annotator.BobIpMTCNN
+
+
 Image Preprocessors
 ~~~~~~~~~~~~~~~~~~~
 
@@ -39,7 +52,6 @@ Image Preprocessors
    bob.bio.face.preprocessor.HistogramEqualization
    bob.bio.face.preprocessor.SelfQuotientImage
    bob.bio.face.preprocessor.INormLBP
-
 
 
 Image Feature Extractors
@@ -59,9 +71,15 @@ Face Recognition Algorithms
    bob.bio.face.algorithm.GaborJet
    bob.bio.face.algorithm.Histogram
 
+
 Databases
 ---------
 .. automodule:: bob.bio.face.database
+
+Annotators
+----------
+
+.. automodule:: bob.bio.face.annotator
 
 Preprocessors
 -------------
@@ -77,5 +95,6 @@ Algorithms
 ----------
 
 .. automodule:: bob.bio.face.algorithm
+
 
 .. include:: links.rst

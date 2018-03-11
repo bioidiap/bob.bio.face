@@ -42,7 +42,8 @@ class BobIpFacedetect(Base):
             The annotations in a dictionary. The keys are topleft, bottomright,
             quality, leye, reye.
         """
-        image = rgb_to_gray(image)
+        if image.ndim == 3:
+            image = rgb_to_gray(image)
         bounding_box, quality = detect_single_face(
             image, self.cascade, self.sampler, self.detection_overlap)
         landmarks = bounding_box_to_annotations(bounding_box)
@@ -53,6 +54,17 @@ class BobIpFacedetect(Base):
 class BoundingBoxToEyes(Base):
     """Converts bounding box annotations to eye locations. The bounding box's
     annotations is expected to have come from :any:`BobIpFacedetect`.
+
+    Example usage:
+
+    .. doctest::
+
+        >>> from bob.bio.base.annotator import FailSafe
+        >>> from bob.bio.face.annotator import (
+        ...     BobIpFacedetect, BoundingBoxToEyes)
+        >>> annotator = FailSafe(
+        ...     [BobIpFacedetect(), BoundingBoxToEyes()],
+        ...     required_keys=('reye', 'leye'))
     """
 
     def annotate(self, image, annotations, **kwargs):
@@ -73,7 +85,5 @@ class BoundingBoxToEyes(Base):
             The annotations with reye and leye locations added.
         """
         bbx = bounding_box_from_annotation(source='direct', **annotations)
-        # make a copy of the annotations
-        annotations = dict(annotations)
         annotations.update(expected_eye_positions(bbx))
         return annotations

@@ -37,6 +37,7 @@ Users Guide
    baselines
    implementation
    references
+   annotators
 
 Reference Manual
 ================

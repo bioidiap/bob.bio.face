@@ -5,7 +5,19 @@ from bob.ip.flandmark import Flandmark
 
 class BobIpFlandmark(Base):
     """Annotator using bob.ip.flandmark.
-    This annotator needs the topleft and bottomright annotations provided."""
+    This annotator needs the topleft and bottomright annotations provided.
+
+    Example usage:
+
+    .. doctest::
+
+        >>> from bob.bio.base.annotator import FailSafe
+        >>> from bob.bio.face.annotator import (
+        ...     BobIpFacedetect, BobIpFlandmark)
+        >>> annotator = FailSafe(
+        ...     [BobIpFacedetect(), BobIpFlandmark()],
+        ...     required_keys=('reye', 'leye'))
+    """
 
     def __init__(self, **kwargs):
         super(BobIpFlandmark, self).__init__(**kwargs)
@@ -28,7 +40,8 @@ class BobIpFlandmark(Base):
         dict
             Annotations with reye and leye keys or None if it fails.
         """
-        image = rgb_to_gray(image)
+        if image.ndim == 3:
+            image = rgb_to_gray(image)
         top, left = annotations['topleft']
         top, left = int(max(top, 0)), int(max(left, 0))
         height = annotations['bottomright'][0] - top

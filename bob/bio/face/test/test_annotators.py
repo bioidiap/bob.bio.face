@@ -2,7 +2,8 @@ import bob.io.base
 import bob.io.base.test_utils
 import bob.io.image
 from bob.bio.face.annotator import (
-    BobIpFacedetect, BoundingBoxToEyes, BobIpFlandmark)
+    BobIpFacedetect, BoundingBoxToEyes, BobIpFlandmark,
+    min_face_size_validator)
 from bob.bio.base.annotator import FailSafe
 import numpy
 
@@ -46,3 +47,20 @@ def test_bob_ip_flandmark():
     _assert_bob_ip_facedetect(annot)
     assert [int(x) for x in annot['reye']] == [183, 127], annot
     assert [int(x) for x in annot['leye']] == [174, 223], annot
+
+
+def test_min_face_size_validator():
+    valid = {
+        'topleft': (0, 0),
+        'bottomright': (32, 32),
+    }
+    assert min_face_size_validator(valid)
+
+    not_valid = {
+        'topleft': (0, 0),
+        'bottomright': (28, 32),
+    }
+    assert not min_face_size_validator(not_valid)
+
+    assert not min_face_size_validator(None)
+    assert not min_face_size_validator({})

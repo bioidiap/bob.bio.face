@@ -61,7 +61,11 @@ def main(command_line_parameters=None):
     database.replace_directories(args.database_directories_file)
 
   # get all files
-  files = database.all_files()
+  if bob.bio.base.utils.is_argument_available('flat', database.all_files):
+    files = database.all_files(flat=True)
+  else:
+    files = database.all_files()
+
   # filter file ids; convert them to str first
   if args.file_ids is not None:
     files = [f for f in files if str(f.id) in args.file_ids]

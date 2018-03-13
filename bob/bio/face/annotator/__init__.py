@@ -47,7 +47,7 @@ def min_face_size_validator(annotations, min_face_size=(32, 32)):
 
 # These imports should be here to avoid circular dependencies
 from .Base import Base
-from .bobipfacedetect import BobIpFacedetect, BoundingBoxToEyes
+from .bobipfacedetect import BobIpFacedetect
 from .bobipflandmark import BobIpFlandmark
 from .bobipdlib import BobIpDlib
 from .bobipmtcnn import BobIpMTCNN
@@ -75,7 +75,6 @@ def __appropriate__(*args):
 __appropriate__(
     Base,
     BobIpFacedetect,
-    BoundingBoxToEyes,
     BobIpFlandmark,
     BobIpDlib,
     BobIpMTCNN,

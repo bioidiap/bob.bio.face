@@ -1,6 +1,3 @@
-from bob.bio.base.annotator import FailSafe
-from bob.bio.face.annotator import BobIpFacedetect, BoundingBoxToEyes
+from bob.bio.face.annotator import BobIpFacedetect
 
-annotator = FailSafe(
-    [BobIpFacedetect(), BoundingBoxToEyes()],
-    required_keys=('reye', 'leye'))
+annotator = BobIpFacedetect(eye_estimate=True)

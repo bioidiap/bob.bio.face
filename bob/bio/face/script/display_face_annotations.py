@@ -40,6 +40,7 @@ def command_line_arguments(command_line_parameters):
   parser.add_argument('-F', '--font-size', type=int, default=16, help = 'Select the font size for the annotation names')
   parser.add_argument('-C', '--font-color', default = 'b', help = 'Select the color for the annotation names')
   parser.add_argument('--database-directories-file', metavar = 'FILE', default = "%s/.bob_bio_databases.txt" % os.environ["HOME"], help = 'An optional file, where database directories are stored (to avoid changing the database configurations)')
+  parser.add_argument('-o', '--output', help = "If given, it will save the plots in this output file instead of showing them. This option is useful when you don't have a display server (ssh).")
 
   parser.add_argument('--self-test', action='store_true', help=argparse.SUPPRESS)
 
@@ -73,9 +74,10 @@ def main(command_line_parameters=None):
   # open figure
   if not args.self_test:
     from matplotlib import pyplot
-    pyplot.ion()
-    pyplot.show()
-    figure = pyplot.figure()
+    if args.output is None:
+      pyplot.ion()
+      pyplot.show()
+    pyplot.figure()
 
   for f in files:
     # load image
@@ -126,7 +128,10 @@ def main(command_line_parameters=None):
 
       pyplot.gca().set_aspect("equal")
       pyplot.gca().autoscale(tight=True)
-      pyplot.pause(0.001)
+      if args.output is None:
+        pyplot.pause(0.001)
+      else:
+        pyplot.savefig(args.output)
 
       input_text = "Press Enter to continue to the next image (or Ctrl-C + Enter to exit)"
       if sys.version_info >= (3, 0):

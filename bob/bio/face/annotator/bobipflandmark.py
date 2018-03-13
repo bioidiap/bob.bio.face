@@ -1,6 +1,6 @@
 from . import Base
-from bob.ip.color import rgb_to_gray
-from bob.ip.flandmark import Flandmark
+import bob.ip.color
+import bob.ip.flandmark
 
 
 class BobIpFlandmark(Base):
@@ -21,7 +21,7 @@ class BobIpFlandmark(Base):
 
     def __init__(self, **kwargs):
         super(BobIpFlandmark, self).__init__(**kwargs)
-        self.flandmark = Flandmark()
+        self.flandmark = bob.ip.flandmark.Flandmark()
 
     def annotate(self, image, annotations, **kwargs):
         """Annotates an image.
@@ -41,7 +41,7 @@ class BobIpFlandmark(Base):
             Annotations with reye and leye keys or None if it fails.
         """
         if image.ndim == 3:
-            image = rgb_to_gray(image)
+            image = bob.ip.color.rgb_to_gray(image)
         top, left = annotations['topleft']
         top, left = int(max(top, 0)), int(max(left, 0))
         height = annotations['bottomright'][0] - top

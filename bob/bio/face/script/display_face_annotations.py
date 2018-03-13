@@ -77,6 +77,8 @@ def main(command_line_parameters=None):
     if args.output is None:
       pyplot.ion()
       pyplot.show()
+    else:
+      pyplot.ioff()
     pyplot.figure()
 
   for f in files:

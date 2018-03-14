@@ -45,10 +45,12 @@ requirements:
     - bob.ip.facedetect
     - bob.ip.flandmark
     - matplotlib {{ matplotlib }}
+    - six {{ six }}
   run:
     - python
     - setuptools
     - matplotlib
+    - six
 
 test:
   imports:

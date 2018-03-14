@@ -134,6 +134,14 @@ setup(
             'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof',
         ],
 
+        'bob.bio.annotator': [
+            'facedetect               = bob.bio.face.config.annotator.facedetect:annotator',
+            'facedetect-eye-estimate  = bob.bio.face.config.annotator.facedetect_eye_estimate:annotator',
+            'flandmark                = bob.bio.face.config.annotator.flandmark:annotator',
+            'dlib                     = bob.bio.face.config.annotator.dlib:annotator',
+            'mtcnn                    = bob.bio.face.config.annotator.mtcnn:annotator',
+        ],
+
         'bob.bio.preprocessor': [
             'base              = bob.bio.face.config.preprocessor.base:preprocessor',  # simple color conversion
             'face-crop-eyes    = bob.bio.face.config.preprocessor.face_crop_eyes:preprocessor',  # face crop

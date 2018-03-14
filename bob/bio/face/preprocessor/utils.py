@@ -1,4 +1,5 @@
 import bob.bio.base
+import six
 
 
 def load_cropper(face_cropper):
@@ -6,7 +7,7 @@ def load_cropper(face_cropper):
   from .FaceDetect import FaceDetect
   if face_cropper is None:
     cropper = None
-  elif isinstance(face_cropper, str):
+  elif isinstance(face_cropper, six.string_types):
     cropper = bob.bio.base.load_resource(face_cropper, 'preprocessor')
   elif isinstance(face_cropper, (FaceCrop, FaceDetect)):
     cropper = face_cropper
@@ -21,7 +22,7 @@ def load_cropper_only(face_cropper):
   from .FaceCrop import FaceCrop
   if face_cropper is None:
     cropper = None
-  elif isinstance(face_cropper, str):
+  elif isinstance(face_cropper, six.string_types):
     cropper = bob.bio.base.load_resource(face_cropper, 'preprocessor')
   elif isinstance(face_cropper, FaceCrop):
     cropper = face_cropper

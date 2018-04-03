@@ -13,6 +13,7 @@ from .lfw import LFWBioDatabase
 from .multipie import MultipieBioDatabase
 from .ijba import IJBABioDatabase
 from .ijbb import IJBBBioDatabase
+from .ijbc import IJBCBioDatabase
 from .xm2vts import XM2VTSBioDatabase
 from .frgc import FRGCBioDatabase
 from .scface import SCFaceBioDatabase
@@ -49,6 +50,7 @@ __appropriate__(
   MultipieBioDatabase,
   IJBABioDatabase,
   IJBBBioDatabase,
+  IJBCBioDatabase, 
   XM2VTSBioDatabase,
   FRGCBioDatabase,
   SCFaceBioDatabase,

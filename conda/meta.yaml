@@ -76,6 +76,7 @@ test:
     - bob.db.frgc
     - bob.db.gbu
     - bob.db.ijba
+    - bob.db.ijbc
     - bob.db.lfw
     - bob.db.mobio
     - bob.db.msu_mfsd_mod

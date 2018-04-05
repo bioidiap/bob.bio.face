@@ -38,8 +38,16 @@ def min_face_size_validator(annotations, min_face_size=(32, 32)):
     """
     if not annotations:
         return False
-    bbx = bob.ip.facedetect.bounding_box_from_annotation(
-        source='direct', **annotations)
+    for source in ('direct', 'eyes', None):
+        try:
+            bbx = bob.ip.facedetect.bounding_box_from_annotation(
+                source=source, **annotations)
+            break
+        except Exception:
+            if source is None:
+                raise
+            else:
+                pass
     if bbx.size < min_face_size:
         return False
     return True

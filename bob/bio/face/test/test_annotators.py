@@ -51,7 +51,13 @@ def test_min_face_size_validator():
 
     not_valid = {
         'topleft': (0, 0),
-        'bottomright': (28, 32),
+        'bottomright': (28, 33),
+    }
+    assert not min_face_size_validator(not_valid)
+
+    not_valid = {
+        'topleft': (0, 0),
+        'bottomright': (33, 28),
     }
     assert not min_face_size_validator(not_valid)
 

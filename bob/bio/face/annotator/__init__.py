@@ -48,7 +48,7 @@ def min_face_size_validator(annotations, min_face_size=(32, 32)):
                 raise
             else:
                 pass
-    if bbx.size < min_face_size:
+    if bbx.size[0] < min_face_size[0] or bbx.size[1] < min_face_size[1]:
         return False
     return True
 

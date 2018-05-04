@@ -109,7 +109,7 @@ class FaceCrop (Base):
       mask_neighbors=5,
       mask_seed=None,
       annotator=None,
-      **kwargs,
+      **kwargs
   ):
 
     Base.__init__(self, **kwargs)

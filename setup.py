@@ -188,6 +188,11 @@ setup(
             'histogram         = bob.bio.face.config.algorithm.histogram:algorithm',  # LGBPHS histograms
             'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm',  # BIC on gabor jets
         ],
+
+      # main entry for bob bio cli
+      'bob.bio.cli': [
+                      'face = bob.bio.face.script.face:face',
+                     ],
     },
 
     # Classifiers are important if you plan to distribute this package through

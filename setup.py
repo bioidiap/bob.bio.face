@@ -189,10 +189,19 @@ setup(
             'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm',  # BIC on gabor jets
         ],
 
-      # main entry for bob bio cli
-      'bob.bio.cli': [
-                      'face = bob.bio.face.script.face:face',
-                     ],
+        #baselines
+        'bob.bio.baseline':[
+          'eigenface = bob.bio.face.baseline.baseline:eigenface',
+          'lda = bob.bio.face.baseline.baseline:lda',
+          'plda = bob.bio.face.baseline.baseline:plda',
+          'gabor_graph = bob.bio.face.baseline.baseline:gabor_graph',
+          'lgbphs = bob.bio.face.baseline.baseline:lgbphs',
+          'gmm = bob.bio.face.baseline.baseline:gmm',
+          'isv = bob.bio.face.baseline.baseline:isv',
+          'ivector = bob.bio.face.baseline.baseline:ivector',
+          'bic = bob.bio.face.baseline.baseline:bic',
+        ],
+
     },
 
     # Classifiers are important if you plan to distribute this package through

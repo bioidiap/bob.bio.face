@@ -125,25 +125,6 @@ Further algorithms are available, when the :ref:`bob.bio.gmm <bob.bio.gmm>` pack
 .. note::
   The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `AT&T database`_.
 
-
-Additionally, the following algorithms can be executed, when the :ref:`bob.bio.csu <bob.bio.csu>` package is installed.
-
-* ``lrpca``: In Local Region PCA [PBD11]_, the face is sub-divided into local regions and a PCA is performed for each local region.
-
-  - preprocessor : :py:class:`bob.bio.csu.preprocessor.LRPCA`
-  - feature : :py:class:`bob.bio.csu.extractor.LRPCA`
-  - algorithm : :py:class:`bob.bio.csu.algorithm.LRPCA`
-
-* ``lda-ir``: The LDA-IR (a.k.a. CohortLDA [LBP12]_) extracts color information from images after, and computes a PCA+LDA projection on two color layers.
-
-  - preprocessor : :py:class:`bob.bio.csu.preprocessor.LDAIR`
-  - feature : :py:class:`bob.bio.csu.extractor.LDAIR`
-  - algorithm : :py:class:`bob.bio.csu.algorithm.LDAIR`
-
-.. note::
-   The ``lrpca`` and ``lda-ir`` algorithms require hand-labeled eye locations.
-   Therefore, they can not be run on the default ``atnt`` database.
-
 .. _bob.bio.base.baseline_results:
 
 Baseline Results

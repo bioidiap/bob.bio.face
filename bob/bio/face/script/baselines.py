@@ -35,14 +35,6 @@ try:
 except:
   print("Could not load the GMM-based algorithms. Did you specify bob.bio.gmm in your config file?")
 
-try:
-  # try if the CSU extension is enabled
-  bob.bio.base.load_resource('lrpca', 'algorithm')
-  bob.bio.base.load_resource('lda-ir', 'algorithm')
-  all_algorithms += ['lrpca', 'lda-ir']
-except:
-  print("Could not load the algorithms from the CSU resources. Did you specify bob.bio.csu in your config file?")
-
 
 def command_line_arguments(command_line_parameters):
   """Defines the command line parameters that are accepted."""

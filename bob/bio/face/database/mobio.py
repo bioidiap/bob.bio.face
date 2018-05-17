@@ -86,3 +86,7 @@ class MobioBioDatabase(ZTBioDatabase):
 
     def annotations(self, myfile):
         return self._db.annotations(myfile._f)
+
+    def groups(self, protocol=None, **kwargs):
+        return self._db.groups(protocol=protocol)
+

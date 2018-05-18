@@ -117,6 +117,10 @@ setup(
             'gbu               = bob.bio.face.config.database.gbu:database',
             'ijba              = bob.bio.face.config.database.ijba:database',
             'ijbb              = bob.bio.face.config.database.ijbb:database',
+            
+            'ijbc-11              = bob.bio.face.config.database.ijbc:ijbc_11',
+            'ijbc-covariates      = bob.bio.face.config.database.ijbc:ijbc_covariates',
+
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
             'mobio-image       = bob.bio.face.config.database.mobio:mobio_image',

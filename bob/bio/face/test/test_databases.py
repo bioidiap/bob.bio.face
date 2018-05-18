@@ -373,3 +373,20 @@ def test_ijbb():
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
+            
+
+@db_available('ijbc')
+def test_ijbc():
+    database = bob.bio.base.load_resource(
+        'ijbc-11', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database, models_depend=True, training_depends=True)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; Here is the error: '%s'" % e)
+    try:
+        _check_annotations(database, topleft=True, limit_files=1000)
+    except IOError as e:
+        raise SkipTest(
+            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
+

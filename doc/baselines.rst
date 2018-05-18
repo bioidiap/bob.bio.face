@@ -24,41 +24,41 @@ How this is done is explained in more detail in the :ref:`bob.bio.base.installat
 Running Baseline Experiments
 ----------------------------
 
-To run the baseline experiments, you can use the ``baselines.py`` script by just going to the console and typing:
+To run the baseline experiments, you can use the ``bob bio baseline`` script by just going to the console and typing:
 
 .. code-block:: sh
 
-   $ baselines.py
+   $ bob bio baseline <baseline> <database>
 
 This script is a simple wrapper for the ``verify.py`` script that is explained in more detail in :ref:`bob.bio.base.experiments`.
-The ``baselines.py --help`` option shows you, which other options you have.
+The ``bob bio baseline --help`` option shows you, which other options you have.
 Here is an almost complete extract:
 
-* ``--database``: The database and protocol you want to use.
-  By default this is set to the image database *atnt*.
-* ``--algorithms``: The recognition algorithms that you want to execute.
-  By default, only the *eigenface* algorithm is executed.
-* ``--all``: Execute all algorithms that are implemented.
+* ``<baseline>``: The recognition algorithms that you want to execute.  
+* ``<database>``: The database and protocol you want to use.
 * ``--temp-directory``: The directory where temporary files of the experiments are put to.
 * ``--result-directory``: The directory where resulting score files of the experiments are put to.
-* ``--evaluate``: After running the experiments, the resulting score files will be evaluated, and the result is written to console.
-* ``--dry-run``: Instead of executing the algorithm (or the evaluation), only print the command that would have been executed.
 * ``--verbose``: Increase the verbosity level of the script.
   By default, only the commands that are executed are printed, and the rest of the calculation runs quietly.
   You can increase the verbosity by adding the ``--verbose`` parameter repeatedly (up to three times).
 
-Usually it is a good idea to have at least verbose level 2 (i.e., calling ``baselines.py --verbose --verbose``, or the short version ``baselines.py -vv``).
+Usually it is a good idea to have at least verbose level 2 (i.e., calling ``bob bio baseline --verbose --verbose``, or the short version ``bob bio baseline -vv``).
+
+
+You can find the list of readily available baselines using the ``resources.py``
+command:
+
+.. code-block:: sh
+
+    $ resources.py --types baseline
+
 
 Running in Parallel
 ~~~~~~~~~~~~~~~~~~~
 
 To run the experiments in parallel, as usual you can define an SGE grid configuration, or run with parallel threads on the local machine.
-For the ``baselines.py`` script, the grid configuration is adapted to each of the algorithms.
 Hence, to run in the SGE grid, you can simply add the ``--grid`` command line option, without parameters.
 Similarly, to run the experiments in parallel on the local machine, simply add a ``--parallel <N>`` option, where ``<N>`` specifies the number of parallel jobs you want to execute.
-
-When running the algorithms from the :ref:`bob.bio.gmm <bob.bio.gmm>` package in parallel, the specialized scripts are executed.
-This will speed up the training of the UBM (and possible additional steps) tremendously.
 
 
 The Algorithms
@@ -98,9 +98,6 @@ The algorithms present an (incomplete) set of state-of-the-art face recognition 
   - feature : :py:class:`bob.bio.face.extractor.GridGraph`
   - algorithm : :py:class:`bob.bio.base.algorithm.BIC`
 
-.. note::
-  The ``plda`` algorithm is currently under construction and the setup is not yet useful.
-
 
 Further algorithms are available, when the :ref:`bob.bio.gmm <bob.bio.gmm>` package is installed:
 
@@ -125,67 +122,94 @@ Further algorithms are available, when the :ref:`bob.bio.gmm <bob.bio.gmm>` pack
 .. note::
   The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `AT&T database`_.
 
-
-Additionally, the following algorithms can be executed, when the :ref:`bob.bio.csu <bob.bio.csu>` package is installed.
-
-* ``lrpca``: In Local Region PCA [PBD11]_, the face is sub-divided into local regions and a PCA is performed for each local region.
-
-  - preprocessor : :py:class:`bob.bio.csu.preprocessor.LRPCA`
-  - feature : :py:class:`bob.bio.csu.extractor.LRPCA`
-  - algorithm : :py:class:`bob.bio.csu.algorithm.LRPCA`
-
-* ``lda-ir``: The LDA-IR (a.k.a. CohortLDA [LBP12]_) extracts color information from images after, and computes a PCA+LDA projection on two color layers.
-
-  - preprocessor : :py:class:`bob.bio.csu.preprocessor.LDAIR`
-  - feature : :py:class:`bob.bio.csu.extractor.LDAIR`
-  - algorithm : :py:class:`bob.bio.csu.algorithm.LDAIR`
-
-.. note::
-   The ``lrpca`` and ``lda-ir`` algorithms require hand-labeled eye locations.
-   Therefore, they can not be run on the default ``atnt`` database.
-
 .. _bob.bio.base.baseline_results:
 
 Baseline Results
 ----------------
 
-To evaluate the results, a wrapper call to ``evaluate.py`` is produced by the ``baselines.py --evaluate`` command.
-Several types of evaluation can be achieved, see :ref:`bob.bio.base.evaluate` for details.
-Particularly, here we can enable ROC curves, DET plots, CMC curves and the computation of EER/HTER.
-Hence, the complete set of results of the baseline experiments are generated using:
+Let's trigger the ``bob bio baseline`` script to run the baselines on the ATnT dataset:
 
 .. code-block:: sh
 
-  $ baselines.py --all -vv --evaluate ROC DET CMC HTER
+  $ bob bio baseline eigenface atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
+  $ bob bio baseline lda atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
+  $ bob bio baseline gabor_graph atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
+  $ bob bio baseline gmm atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
+  $ bob bio baseline isv atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
+  $ bob bio baseline plda atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
+  $ bob bio baseline bic atnt -vv -T <TEMP_DIR> -R <RESULT_DIR>
 
-If you specified other parameters for the execution of the algorithms, e.g., the ``--directory`` flag, you have to add these options here as well.
-If you ran only a sub-set of the available, the missing algorithms will just be skipped.
-The resulting files will be ``ROC.pdf``, ``DET.pdf`` and ``CMC.pdf``, and the HTER results are simply written to console.
 
-For the `AT&T database`_ the results should be as follows:
+Then, to evaluate the results, in terms of HTER, the script ``bob bio metrics`` should be executed as the following.
 
-.. image:: img/ROC.png
-  :width: 35%
-.. image:: img/DET.png
-  :width: 27%
-.. image:: img/CMC.png
-  :width: 35%
 
+.. code-block:: sh
+
+  $ bob bio metrics <RESULT_DIR>/atnt/eigenface/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/lda/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/gabor_graph/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/lgbphs/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/gmm/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/isv/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/plda/Default/nonorm/scores-dev \
+                    <RESULT_DIR>/atnt/bic/Default/nonorm/scores-dev --no-evaluation
+
+
+The aforementioned script will produce in the console the HTERs below for each baseline under the ATnT database:
 
 .. table:: The HTER results of the baseline algorithms on the AT&T database
 
   +-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
   |  eigenface  |     lda     |  gaborgraph |    lgbphs   |     gmm     |     isv     |    plda     |     bic     |
   +=============+=============+=============+=============+=============+=============+=============+=============+
-  |   8.368%    |    9.763%   |   4.579%    |    8.500%   |    0.684%   |    0.421%   |    7.921%   |    3.526%   |
+  |   9.0%      |    12.8%    |   6.0%      |    9.0%     |    1.0%     |    0.1%     |    10.8%    |    4.0%     |
   +-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
 
-.. note::
-   The results for ``gmm`` and ``isv`` were run with the parallelized scripts.
-   Though the results obtained with the sequential script should be similar, it might be that they are not identical.
 
-.. note::
-  The ``lrpca`` and ``lda-ir`` algorithms require hand-labeled eye positions to run.
-  Since the AT&T database does not provide eye positions, it is not possible to provide baseline results on AT&T for these two algorithms.
+Several types of evaluation can be executed, see ``bob bio --help`` for details.
+Particularly, here we can enable ROC curves, DET plots and CMC curves.
+
+.. code-block:: sh
+
+  $ bob bio roc <RESULT_DIR>/atnt/eigenface/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/lda/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/gabor_graph/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/lgbphs/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/gmm/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/isv/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/plda/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/bic/Default/nonorm/scores-dev --no-evaluation \
+                -o ROC.pdf
+                
+  $ bob bio det <RESULT_DIR>/atnt/eigenface/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/lda/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/gabor_graph/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/lgbphs/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/gmm/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/isv/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/plda/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/bic/Default/nonorm/scores-dev --no-evaluation \
+                -o DET.pdf
+
+  $ bob bio cmc <RESULT_DIR>/atnt/eigenface/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/lda/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/gabor_graph/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/lgbphs/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/gmm/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/isv/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/plda/Default/nonorm/scores-dev \
+                <RESULT_DIR>/atnt/bic/Default/nonorm/scores-dev --no-evaluation \
+                -o CMC.pdf
+               
+
+For the `AT&T database`_ the results should be as follows:
+
+.. image:: img/ROC.png
+   :width: 35%
+.. image:: img/DET.png
+   :width: 27%
+.. image:: img/CMC.png
+   :width: 35%
+
 
 .. include:: links.rst

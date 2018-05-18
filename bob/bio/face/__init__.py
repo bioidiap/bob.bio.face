@@ -4,6 +4,7 @@ from . import algorithm
 from . import script
 from . import database
 from . import annotator
+from . import baseline
 
 from . import test
 

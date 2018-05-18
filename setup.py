@@ -189,6 +189,20 @@ setup(
             'histogram         = bob.bio.face.config.algorithm.histogram:algorithm',  # LGBPHS histograms
             'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm',  # BIC on gabor jets
         ],
+
+        #baselines
+        'bob.bio.baseline':[
+          'eigenface = bob.bio.face.baseline.baseline:eigenface',
+          'lda = bob.bio.face.baseline.baseline:lda',
+          'plda = bob.bio.face.baseline.baseline:plda',
+          'gabor_graph = bob.bio.face.baseline.baseline:gabor_graph',
+          'lgbphs = bob.bio.face.baseline.baseline:lgbphs',
+          'gmm = bob.bio.face.baseline.baseline:gmm',
+          'isv = bob.bio.face.baseline.baseline:isv',
+          'ivector = bob.bio.face.baseline.baseline:ivector',
+          'bic = bob.bio.face.baseline.baseline:bic',
+        ],
+
     },
 
     # Classifiers are important if you plan to distribute this package through

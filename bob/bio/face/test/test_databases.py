@@ -378,7 +378,7 @@ def test_ijbb():
 @db_available('ijbc')
 def test_ijbc():
     database = bob.bio.base.load_resource(
-        'ijbc', 'database', preferred_package='bob.bio.face')
+        'ijbc-11', 'database', preferred_package='bob.bio.face')
     try:
         check_database(database, models_depend=True, training_depends=True)
     except IOError as e:

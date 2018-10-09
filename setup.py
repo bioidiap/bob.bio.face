@@ -136,6 +136,8 @@ setup(
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
             'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
             'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof',
+            
+            'fargo  = bob.bio.face.config.database.fargo:database',
         ],
 
         'bob.bio.annotator': [

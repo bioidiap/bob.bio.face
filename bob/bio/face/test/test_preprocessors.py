@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-import unittest
 import numpy
 
 import pkg_resources
@@ -105,6 +104,14 @@ def test_face_crop():
   assert cropped.shape[0] == 3
   assert cropped.shape[1:] == ref_image.shape
   assert numpy.allclose(bob.ip.color.rgb_to_gray(cropped), ref_image, atol = 1., rtol = 1.)
+
+  # test a ValueError is raised if eye annotations are swapped
+  try:
+    annot = dict(reye=annotation['leye'], leye=annotation['reye'])
+    cropper(image, annot)
+    assert 0, 'FaceCrop did not raise a ValueError for swapped eye annotations'
+  except ValueError:
+    pass
 
   # reset the configuration, so that later tests don't get screwed.
   cropper.channel = 'gray'

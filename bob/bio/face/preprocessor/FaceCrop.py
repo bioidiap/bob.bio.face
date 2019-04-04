@@ -85,6 +85,12 @@ class FaceCrop (Base):
   mask_seed : int or None
     The random seed to apply for mask extrapolation.
 
+  allow_upside_down_normalized_faces: bool, optional
+    If ``False`` (default), a ValueError is raised when normalized faces are going to be
+    upside down compared to input image. This allows you to catch wrong annotations in
+    your database easily. If you are sure about your input, you can set this flag to
+    ``True``.
+
     .. warning::
 
        When run in parallel, the same random seed will be applied to all
@@ -109,6 +115,7 @@ class FaceCrop (Base):
       mask_neighbors=5,
       mask_seed=None,
       annotator=None,
+      allow_upside_down_normalized_faces=False,
       **kwargs
   ):
 
@@ -140,6 +147,7 @@ class FaceCrop (Base):
     self.mask_rng = bob.core.random.mt19937(
         mask_seed) if mask_seed is not None else bob.core.random.mt19937()
     self.annotator = annotator
+    self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
 
     # create objects required for face cropping
     self.cropper = bob.ip.base.FaceEyesNorm(
@@ -185,6 +193,22 @@ class FaceCrop (Base):
           "At least one of the expected annotations '%s' are not given "
           "in '%s'." % (self.cropped_keys, annotations.keys()))
 
+    reye = self.cropped_keys[0]
+    leye = self.cropped_keys[1]
+    reye_desired_width = self.cropped_positions[reye][1]
+    leye_desired_width = self.cropped_positions[leye][1]
+    right_eye = annotations[reye]
+    left_eye = annotations[leye]
+    if not self.allow_upside_down_normalized_faces:
+      if (reye_desired_width > leye_desired_width and right_eye[1] < left_eye[1]) or \
+         (reye_desired_width < leye_desired_width and right_eye[1] > left_eye[1]):
+        raise ValueError(
+            "Looks like {leye} and {reye} in annotations: {annot} are swapped. "
+            "This will make the normalized face upside down (compared to the original "
+            "image). Most probably your annotations are wrong. Otherwise, you can set "
+            "the ``allow_upside_down_normalized_faces`` parameter to "
+            "True.".format(leye=leye, reye=reye, annot=annotations))
+
     # create output
     mask = numpy.ones(image.shape[-2:], dtype=numpy.bool)
     shape = self.cropped_image_size if image.ndim == 2 else [
@@ -199,9 +223,9 @@ class FaceCrop (Base):
         cropped_image,  # cropped image
         self.cropped_mask,  # cropped mask
         # position of first annotation, usually right eye
-        right_eye=annotations[self.cropped_keys[0]],
+        right_eye=right_eye,
         # position of second annotation, usually left eye
-        left_eye=annotations[self.cropped_keys[1]]
+        left_eye=left_eye,
     )
 
     if self.mask_sigma is not None:

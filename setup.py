@@ -117,7 +117,7 @@ setup(
             'gbu               = bob.bio.face.config.database.gbu:database',
             'ijba              = bob.bio.face.config.database.ijba:database',
             'ijbb              = bob.bio.face.config.database.ijbb:database',
-            
+
             'ijbc-11              = bob.bio.face.config.database.ijbc:ijbc_11',
             'ijbc-covariates      = bob.bio.face.config.database.ijbc:ijbc_covariates',
 
@@ -142,7 +142,6 @@ setup(
             'facedetect               = bob.bio.face.config.annotator.facedetect:annotator',
             'facedetect-eye-estimate  = bob.bio.face.config.annotator.facedetect_eye_estimate:annotator',
             'flandmark                = bob.bio.face.config.annotator.flandmark:annotator',
-            'dlib                     = bob.bio.face.config.annotator.dlib:annotator',
             'mtcnn                    = bob.bio.face.config.annotator.mtcnn:annotator',
         ],
 

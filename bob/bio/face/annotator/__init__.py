@@ -57,7 +57,6 @@ def min_face_size_validator(annotations, min_face_size=(32, 32)):
 from .Base import Base
 from .bobipfacedetect import BobIpFacedetect
 from .bobipflandmark import BobIpFlandmark
-from .bobipdlib import BobIpDlib
 from .bobipmtcnn import BobIpMTCNN
 
 
@@ -84,7 +83,6 @@ __appropriate__(
     Base,
     BobIpFacedetect,
     BobIpFlandmark,
-    BobIpDlib,
     BobIpMTCNN,
 )
 

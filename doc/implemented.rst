@@ -35,7 +35,6 @@ Face Image Annotators
    bob.bio.face.annotator.Base
    bob.bio.face.annotator.BobIpFacedetect
    bob.bio.face.annotator.BobIpFlandmark
-   bob.bio.face.annotator.BobIpDlib
    bob.bio.face.annotator.BobIpMTCNN
 
 

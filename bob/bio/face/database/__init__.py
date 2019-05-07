@@ -20,6 +20,9 @@ from .scface import SCFaceBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .msu_mfsd_mod import MsuMfsdModBioDatabase
 
+from .fargo import FargoBioDatabase
+
+
 # gets sphinx autodoc done right - don't remove it
 
 

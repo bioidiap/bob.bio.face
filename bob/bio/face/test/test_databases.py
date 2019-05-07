@@ -390,3 +390,13 @@ def test_ijbc():
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
+@db_available('fargo')
+def test_fargo():
+    database = bob.bio.base.load_resource(
+        'fargo', 'database', preferred_package='bob.bio.face')
+    try:
+        check_database(database)
+    except IOError as e:
+        raise SkipTest(
+            "The database could not queried; Here is the error: '%s'" % e)
+

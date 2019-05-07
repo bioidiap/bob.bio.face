@@ -171,6 +171,10 @@ Here is the list of files and replacement strings for all databases that are reg
 
   - Images: ``[YOUR_XM2VTS_DIRECTORY]``
 
+* FARGO: ``'fargo'``
+
+  - Images: ``[YOUR_FARGO_DIRECTORY]``
+
 You can use the ``databases.py`` script to list, which data directories are correctly set up.
 
 In order to view the annotations inside your database on top of the images, you can use the ``display_face_annotations.py`` script that is provided.

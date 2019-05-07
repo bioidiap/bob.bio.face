@@ -19,7 +19,6 @@ from .frgc import FRGCBioDatabase
 from .scface import SCFaceBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .msu_mfsd_mod import MsuMfsdModBioDatabase
-
 from .fargo import FargoBioDatabase
 
 
@@ -59,5 +58,6 @@ __appropriate__(
   SCFaceBioDatabase,
   ReplayMobileBioDatabase,
   MsuMfsdModBioDatabase,
+  FargoBioDatabase
 )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

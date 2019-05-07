@@ -15,4 +15,5 @@ bob.db.replay
 bob.db.replaymobile
 bob.db.scface
 bob.db.xm2vts
+bob.db.fargo
 bob.bio.gmm

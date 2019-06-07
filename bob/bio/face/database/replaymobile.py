@@ -6,6 +6,7 @@ bob.bio.base.database.BioDatabase interface."""
 
 from .database import FaceBioFile
 from bob.bio.base.database import BioDatabase
+from bob.extension import rc
 
 
 class ReplayMobileBioFile(FaceBioFile):
@@ -21,6 +22,10 @@ class ReplayMobileBioFile(FaceBioFile):
         else:
             return super(ReplayMobileBioFile, self).load(directory, extension)
 
+    @property
+    def annotations(self):
+        return self._f.annotations
+
 
 class ReplayMobileBioDatabase(BioDatabase):
     """
@@ -29,13 +34,33 @@ class ReplayMobileBioDatabase(BioDatabase):
     verification experiments (good to use in bob.bio.base framework).
     """
 
-    def __init__(self, max_number_of_frames=None, **kwargs):
+    def __init__(self, max_number_of_frames=None,
+                 annotation_directory=None,
+                 annotation_extension='.json',
+                 annotation_type='json',
+                 original_directory=rc['bob.db.replaymobile.directory'],
+                 original_extension='.mov',
+                 name='replay-mobile',
+                 **kwargs):
         from bob.db.replaymobile.verificationprotocol import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(max_number_of_frames)
+        self._db = LowLevelDatabase(
+            max_number_of_frames,
+            original_directory=original_directory,
+            original_extension=original_extension,
+            annotation_directory=annotation_directory,
+            annotation_extension=annotation_extension,
+            annotation_type=annotation_type,
+        )
 
         # call base class constructors to open a session to the database
         super(ReplayMobileBioDatabase, self).__init__(
-            name='replay-mobile', **kwargs)
+            name=name,
+            original_directory=original_directory,
+            original_extension=original_extension,
+            annotation_directory=annotation_directory,
+            annotation_extension=annotation_extension,
+            annotation_type=annotation_type,
+            **kwargs)
         self._kwargs['max_number_of_frames'] = max_number_of_frames
 
     @property
@@ -46,6 +71,38 @@ class ReplayMobileBioDatabase(BioDatabase):
     def original_directory(self, value):
         self._db.original_directory = value
 
+    @property
+    def original_extension(self):
+        return self._db.original_extension
+
+    @original_extension.setter
+    def original_extension(self, value):
+        self._db.original_extension = value
+
+    @property
+    def annotation_directory(self):
+        return self._db.annotation_directory
+
+    @annotation_directory.setter
+    def annotation_directory(self, value):
+        self._db.annotation_directory = value
+
+    @property
+    def annotation_extension(self):
+        return self._db.annotation_extension
+
+    @annotation_extension.setter
+    def annotation_extension(self, value):
+        self._db.annotation_extension = value
+
+    @property
+    def annotation_type(self):
+        return self._db.annotation_type
+
+    @annotation_type.setter
+    def annotation_type(self, value):
+        self._db.annotation_type = value
+
     def protocol_names(self):
         return self._db.protocols()
 
@@ -54,14 +111,7 @@ class ReplayMobileBioDatabase(BioDatabase):
 
     def annotations(self, myfile):
         """Will return the bounding box annotation of nth frame of the video."""
-        fn = myfile._f.framen
-        annots = myfile._f._f.bbx(directory=self.original_directory)
-        # convert width and height to bottomright coordinates
-        # bob uses the (y, x) format
-        topleft = (annots[fn][1], annots[fn][0])
-        bottomright = (annots[fn][1] + annots[fn][3], annots[fn][0] + annots[fn][2])
-        annotations = {'topleft': topleft, 'bottomright': bottomright}
-        return annotations
+        return myfile.annotations
 
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         return self._db.model_ids_with_protocol(groups, protocol, **kwargs)

@@ -273,8 +273,9 @@ class FaceCrop (Base):
     if not self.is_annotations_valid(annotations) and \
        not self.fixed_positions and \
        self.annotator is None:
-      logger.warn("Cannot crop face without annotations or fixed_positions "
-                  "or an annotator. Returning None.")
+      logger.warn("Cannot crop face without valid annotations or "
+                  "fixed_positions or an annotator. Returning None. "
+                  "The annotations were: {}".format(annotations))
       return None
 
     # convert to the desired color channel

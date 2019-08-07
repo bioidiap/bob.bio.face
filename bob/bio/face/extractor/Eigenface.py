@@ -41,7 +41,7 @@ class Eigenface (Extractor):
     assert data.dtype == numpy.float64
 
 
-  def train(self, training_images, extractor_file):
+  def train(self, training_images):
     """Generates the PCA covariance matrix and writes it into the given extractor_file.
 
     Beforehand, all images are turned into a 1D pixel vector.
@@ -51,8 +51,6 @@ class Eigenface (Extractor):
     training_images : [2D :py:class:`numpy.ndarray`]
       A list of 2D training images to train the PCA projection matrix with.
 
-    extractor_file : str
-      A writable file, into which the PCA projection matrix (as a :py:class:`bob.learn.linear.Machine`) will be written.
     """
     [self._check_data(image) for image in training_images]
 
@@ -75,8 +73,16 @@ class Eigenface (Extractor):
 
     # Machine: get shape, then resize
     self.machine.resize(self.machine.shape[0], self.subspace_dimension)
-    self.machine.save(bob.io.base.HDF5File(extractor_file, "w"))
 
+    return self.machine
+
+  def save(self, extractor_file):
+    """
+    extractor_file : str
+      A writable file, into which the PCA projection matrix (as a :py:class:`bob.learn.linear.Machine`) will be written.
+    """      
+    self.machine.save(bob.io.base.HDF5File(extractor_file, "w"))
+   
 
   def load(self, extractor_file):
     """Reads the PCA projection matrix from file.

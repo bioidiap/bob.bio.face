@@ -25,5 +25,13 @@ class BobIpMTCNN(Base):
             Annotations contain: (topleft, bottomright, leye, reye, nose,
             mouthleft, mouthright, quality).
         """
-        # return the annotations for the first/largest face.
-        return self.detector.annotations(image)[0]
+        # return the annotations for the first/largest face
+
+
+
+        annotations = self.detector.annotations(image)
+
+        if annotations:
+            return annotations[0]
+        else:
+            return None

@@ -112,7 +112,8 @@ class GaborJet (Algorithm):
 
 
   def _check_feature(self, feature):
-    assert isinstance(feature, list)
+    # import ipdb; ipdb.set_trace()
+    assert isinstance(feature, list) or isinstance(feature, numpy.ndarray)
     assert len(feature)
     assert all(isinstance(f, bob.ip.gabor.Jet) for f in feature)
 

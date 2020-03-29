@@ -261,6 +261,20 @@ class GaborJet (Algorithm):
     local_scores = [jet_scoring([self.similarity_function(m, probe[n]) for m in model[n] for probe in probes]) for n in range(len(model))]
     return graph_scoring(local_scores)
 
+  def score_for_multiple_models(self, models, probe):
+
+    self._check_feature(probe)
+    [self._check_feature(m) for model in models for m in model]
+
+    jet_scoring = numpy.average if self.jet_scoring is None else self.jet_scoring
+    graph_scoring = numpy.average if self.graph_scoring is None else self.graph_scoring
+    scores = []
+    for model in models:
+      local_scores = local_scores = [jet_scoring([self.similarity_function(m, pro) for m in mod]) for mod, pro in zip(model, probe)]
+      scores.append(graph_scoring(local_scores))
+
+    return scores
+
 
   # overwrite functions to avoid them being documented.
   def train_projector(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
@@ -270,4 +284,3 @@ class GaborJet (Algorithm):
   def read_feature(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
   def train_enroller(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
   def load_enroller(*args, **kwargs) : pass
-  def score_for_multiple_models(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")

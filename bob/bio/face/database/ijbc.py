@@ -32,6 +32,7 @@ class IJBCBioFile(FaceBioFile):
         else:
             # do not add the client ID to be able to obtain the original image file
             path = "%s%s" % (self.path,  extension or '')
+
         return str(os.path.join(directory or '', path))
 
 

@@ -103,12 +103,6 @@ class TanTriggs (Base):
     image = self.color_channel(image)
     if self.cropper is not None:
       image = self.cropper.crop_face(image, annotations)
-    
-    import numpy
-    if numpy.all(numpy.isnan(self.tan_triggs(image))):
-        import ipdb; ipdb.set_trace()
-        pass
-
     image = self.tan_triggs(image)
 
     return self.data_type(image)

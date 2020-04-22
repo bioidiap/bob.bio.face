@@ -13,7 +13,7 @@ from bob.bio.base.preprocessor import Preprocessor
 logger = logging.getLogger('bob.bio.face')
 
 
-class FaceCrop (Base):
+class FaceCrop(Base):
   """Crops the face according to the given annotations.
 
   This class is designed to perform a geometric normalization of the face based
@@ -144,17 +144,22 @@ class FaceCrop (Base):
     self.fixed_positions = fixed_positions
     self.mask_sigma = mask_sigma
     self.mask_neighbors = mask_neighbors
-    self.mask_rng = bob.core.random.mt19937(
-        mask_seed) if mask_seed is not None else bob.core.random.mt19937()
+    self.mask_seed = mask_seed
     self.annotator = annotator
     self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
 
     # create objects required for face cropping
-    self.cropper = bob.ip.base.FaceEyesNorm(
-        crop_size=cropped_image_size,
-        right_eye=cropped_positions[self.cropped_keys[0]],
-        left_eye=cropped_positions[self.cropped_keys[1]])
     self.cropped_mask = numpy.ndarray(cropped_image_size, numpy.bool)
+
+    self._init_non_pickables()
+
+  def _init_non_pickables(self):
+    self.mask_rng = bob.core.random.mt19937(
+        self.mask_seed) if self.mask_seed is not None else bob.core.random.mt19937()
+    self.cropper = bob.ip.base.FaceEyesNorm(
+        crop_size=self.cropped_image_size,
+        right_eye=self.cropped_positions[self.cropped_keys[0]],
+        left_eye=self.cropped_positions[self.cropped_keys[1]])
 
   def crop_face(self, image, annotations=None):
     """Crops the face.
@@ -296,3 +301,13 @@ class FaceCrop (Base):
 
     # convert data type
     return self.data_type(image)
+
+  def __getstate__(self):
+    d = dict(self.__dict__)
+    d.pop("mask_rng")
+    d.pop("cropper")
+    return d
+
+  def __setstate__(self, d):
+    self.__dict__ = d
+    self._init_non_pickables()

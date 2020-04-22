@@ -32,7 +32,7 @@ class MobioBioDatabase(ZTBioDatabase):
     def __init__(
             self,
             original_directory=None,
-            original_extension=None,
+            original_extension=".png",
             annotation_directory=None,
             annotation_extension='.pos',
             **kwargs

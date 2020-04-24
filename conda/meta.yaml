@@ -43,6 +43,7 @@ requirements:
     - bob.learn.boosting
     - bob.ip.facedetect
     - bob.ip.flandmark
+    - bob.pipelines
     - matplotlib {{ matplotlib }}
     - six {{ six }}
   run:

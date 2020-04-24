@@ -10,11 +10,11 @@ import logging
 from .Base import Base
 from bob.bio.base.preprocessor import Preprocessor
 
-logger = logging.getLogger('bob.bio.face')
+logger = logging.getLogger("bob.bio.face")
 
 
-class FaceCrop (Base):
-  """Crops the face according to the given annotations.
+class FaceCrop(Base):
+    """Crops the face according to the given annotations.
 
   This class is designed to perform a geometric normalization of the face based
   on the eye locations, using :py:class:`bob.ip.base.FaceEyesNorm`. Usually,
@@ -106,58 +106,72 @@ class FaceCrop (Base):
     such as ``color_channel`` or ``dtype``.
   """
 
-  def __init__(
-      self,
-      cropped_image_size,
-      cropped_positions,
-      fixed_positions=None,
-      mask_sigma=None,
-      mask_neighbors=5,
-      mask_seed=None,
-      annotator=None,
-      allow_upside_down_normalized_faces=False,
-      **kwargs
-  ):
-
-    Base.__init__(self, **kwargs)
-
-    # call base class constructor
-    Preprocessor.__init__(
+    def __init__(
         self,
-        cropped_image_size=cropped_image_size,
-        cropped_positions=cropped_positions,
-        fixed_positions=fixed_positions,
-        mask_sigma=mask_sigma,
-        mask_neighbors=mask_neighbors,
-        mask_seed=mask_seed
-    )
+        cropped_image_size,
+        cropped_positions,
+        fixed_positions=None,
+        mask_sigma=None,
+        mask_neighbors=5,
+        mask_seed=None,
+        annotator=None,
+        allow_upside_down_normalized_faces=False,
+        **kwargs
+    ):
 
-    # check parameters
-    assert len(cropped_positions) == 2
-    if fixed_positions:
-      assert len(fixed_positions) == 2
+        Base.__init__(self, **kwargs)
 
-    # copy parameters
-    self.cropped_image_size = cropped_image_size
-    self.cropped_positions = cropped_positions
-    self.cropped_keys = sorted(cropped_positions.keys())
-    self.fixed_positions = fixed_positions
-    self.mask_sigma = mask_sigma
-    self.mask_neighbors = mask_neighbors
-    self.mask_rng = bob.core.random.mt19937(
-        mask_seed) if mask_seed is not None else bob.core.random.mt19937()
-    self.annotator = annotator
-    self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
+        # call base class constructor
+        Preprocessor.__init__(
+            self,
+            cropped_image_size=cropped_image_size,
+            cropped_positions=cropped_positions,
+            fixed_positions=fixed_positions,
+            mask_sigma=mask_sigma,
+            mask_neighbors=mask_neighbors,
+            mask_seed=mask_seed,
+        )
 
-    # create objects required for face cropping
-    self.cropper = bob.ip.base.FaceEyesNorm(
-        crop_size=cropped_image_size,
-        right_eye=cropped_positions[self.cropped_keys[0]],
-        left_eye=cropped_positions[self.cropped_keys[1]])
-    self.cropped_mask = numpy.ndarray(cropped_image_size, numpy.bool)
+        # check parameters
+        assert len(cropped_positions) == 2
+        if fixed_positions:
+            assert len(fixed_positions) == 2
 
-  def crop_face(self, image, annotations=None):
-    """Crops the face.
+        # copy parameters
+        self.cropped_image_size = cropped_image_size
+        self.cropped_positions = cropped_positions
+        self.cropped_keys = sorted(cropped_positions.keys())
+        self.fixed_positions = fixed_positions
+        self.mask_sigma = mask_sigma
+        self.mask_neighbors = mask_neighbors
+        self.mask_seed = mask_seed
+        self.annotator = annotator
+        self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
+
+        # create objects required for face cropping
+        self.cropper = bob.ip.base.FaceEyesNorm(
+            crop_size=cropped_image_size,
+            right_eye=cropped_positions[self.cropped_keys[0]],
+            left_eye=cropped_positions[self.cropped_keys[1]],
+        )
+        self.cropped_mask = numpy.ndarray(cropped_image_size, numpy.bool)
+
+        self._init_non_pickables()
+
+    def _init_non_pickables(self):
+        self.mask_rng = (
+            bob.core.random.mt19937(self.mask_seed)
+            if self.mask_seed is not None
+            else bob.core.random.mt19937()
+        )
+        self.cropper = bob.ip.base.FaceEyesNorm(
+            crop_size=self.cropped_image_size,
+            right_eye=self.cropped_positions[self.cropped_keys[0]],
+            left_eye=self.cropped_positions[self.cropped_keys[1]],
+        )
+
+    def crop_face(self, image, annotations=None):
+        """Crops the face.
     Executes the face cropping on the given image and returns the cropped
     version of it.
 
@@ -180,77 +194,96 @@ class FaceCrop (Base):
     ValueError
         If the annotations is None.
     """
-    if self.fixed_positions is not None:
-      annotations = self.fixed_positions
-    if annotations is None:
-      raise ValueError(
-          "Cannot perform image cropping since annotations are not given, and "
-          "no fixed annotations are specified.")
+        if self.fixed_positions is not None:
+            annotations = self.fixed_positions
+        if annotations is None:
+            raise ValueError(
+                "Cannot perform image cropping since annotations are not given, and "
+                "no fixed annotations are specified."
+            )
 
-    assert isinstance(annotations, dict)
-    if not all(k in annotations for k in self.cropped_keys):
-      raise ValueError(
-          "At least one of the expected annotations '%s' are not given "
-          "in '%s'." % (self.cropped_keys, annotations.keys()))
+        assert isinstance(annotations, dict)
+        if not all(k in annotations for k in self.cropped_keys):
+            raise ValueError(
+                "At least one of the expected annotations '%s' are not given "
+                "in '%s'." % (self.cropped_keys, annotations.keys())
+            )
 
-    reye = self.cropped_keys[0]
-    leye = self.cropped_keys[1]
-    reye_desired_width = self.cropped_positions[reye][1]
-    leye_desired_width = self.cropped_positions[leye][1]
-    right_eye = annotations[reye]
-    left_eye = annotations[leye]
-    if not self.allow_upside_down_normalized_faces:
-      if (reye_desired_width > leye_desired_width and right_eye[1] < left_eye[1]) or \
-         (reye_desired_width < leye_desired_width and right_eye[1] > left_eye[1]):
-        raise ValueError(
-            "Looks like {leye} and {reye} in annotations: {annot} are swapped. "
-            "This will make the normalized face upside down (compared to the original "
-            "image). Most probably your annotations are wrong. Otherwise, you can set "
-            "the ``allow_upside_down_normalized_faces`` parameter to "
-            "True.".format(leye=leye, reye=reye, annot=annotations))
+        reye = self.cropped_keys[0]
+        leye = self.cropped_keys[1]
+        reye_desired_width = self.cropped_positions[reye][1]
+        leye_desired_width = self.cropped_positions[leye][1]
+        right_eye = annotations[reye]
+        left_eye = annotations[leye]
+        if not self.allow_upside_down_normalized_faces:
+            if (
+                reye_desired_width > leye_desired_width and right_eye[1] < left_eye[1]
+            ) or (
+                reye_desired_width < leye_desired_width and right_eye[1] > left_eye[1]
+            ):
+                raise ValueError(
+                    "Looks like {leye} and {reye} in annotations: {annot} are swapped. "
+                    "This will make the normalized face upside down (compared to the original "
+                    "image). Most probably your annotations are wrong. Otherwise, you can set "
+                    "the ``allow_upside_down_normalized_faces`` parameter to "
+                    "True.".format(leye=leye, reye=reye, annot=annotations)
+                )
 
-    # create output
-    mask = numpy.ones(image.shape[-2:], dtype=numpy.bool)
-    shape = self.cropped_image_size if image.ndim == 2 else [
-        image.shape[0]] + list(self.cropped_image_size)
-    cropped_image = numpy.zeros(shape)
-    self.cropped_mask[:] = False
+        # create output
+        mask = numpy.ones(image.shape[-2:], dtype=numpy.bool)
+        shape = (
+            self.cropped_image_size
+            if image.ndim == 2
+            else [image.shape[0]] + list(self.cropped_image_size)
+        )
+        cropped_image = numpy.zeros(shape)
+        self.cropped_mask[:] = False
 
-    # perform the cropping
-    self.cropper(
-        image,  # input image
-        mask,   # full input mask
-        cropped_image,  # cropped image
-        self.cropped_mask,  # cropped mask
-        # position of first annotation, usually right eye
-        right_eye=right_eye,
-        # position of second annotation, usually left eye
-        left_eye=left_eye,
-    )
+        # perform the cropping
+        self.cropper(
+            image,  # input image
+            mask,  # full input mask
+            cropped_image,  # cropped image
+            self.cropped_mask,  # cropped mask
+            # position of first annotation, usually right eye
+            right_eye=right_eye,
+            # position of second annotation, usually left eye
+            left_eye=left_eye,
+        )
 
-    if self.mask_sigma is not None:
-      # extrapolate the mask so that pixels outside of the image original image
-      # region are filled with border pixels
-      if cropped_image.ndim == 2:
-        bob.ip.base.extrapolate_mask(
-            self.cropped_mask, cropped_image, self.mask_sigma,
-            self.mask_neighbors, self.mask_rng)
-      else:
-        [bob.ip.base.extrapolate_mask(
-            self.cropped_mask, cropped_image_channel, self.mask_sigma,
-            self.mask_neighbors, self.mask_rng)
-         for cropped_image_channel in cropped_image]
+        if self.mask_sigma is not None:
+            # extrapolate the mask so that pixels outside of the image original image
+            # region are filled with border pixels
+            if cropped_image.ndim == 2:
+                bob.ip.base.extrapolate_mask(
+                    self.cropped_mask,
+                    cropped_image,
+                    self.mask_sigma,
+                    self.mask_neighbors,
+                    self.mask_rng,
+                )
+            else:
+                [
+                    bob.ip.base.extrapolate_mask(
+                        self.cropped_mask,
+                        cropped_image_channel,
+                        self.mask_sigma,
+                        self.mask_neighbors,
+                        self.mask_rng,
+                    )
+                    for cropped_image_channel in cropped_image
+                ]
 
-    return cropped_image
+        return cropped_image
 
-  def is_annotations_valid(self, annotations):
-    if not annotations:
-      return False
-    # check if the required keys are available
-    return all(key in annotations for key in self.cropped_keys)
+    def is_annotations_valid(self, annotations):
+        if not annotations:
+            return False
+        # check if the required keys are available
+        return all(key in annotations for key in self.cropped_keys)
 
-  def __call__(self, image, annotations=None):
-    """Aligns the given image according to the given annotations.
+    def __call__(self, image, annotations=None):
+        """Aligns the given image according to the given annotations.
 
     First, the desired color channel is extracted from the given image.
     Afterward, the face is cropped, according to the given ``annotations`` (or
@@ -269,30 +302,48 @@ class FaceCrop (Base):
     face : 2D :py:class:`numpy.ndarray`
         The cropped face.
     """
-    # if annotations are missing and cannot do anything else return None.
-    if not self.is_annotations_valid(annotations) and \
-       not self.fixed_positions and \
-       self.annotator is None:
-      logger.warn("Cannot crop face without valid annotations or "
-                  "fixed_positions or an annotator. Returning None. "
-                  "The annotations were: {}".format(annotations))
-      return None
+        # if annotations are missing and cannot do anything else return None.
+        if (
+            not self.is_annotations_valid(annotations)
+            and not self.fixed_positions
+            and self.annotator is None
+        ):
+            logger.warn(
+                "Cannot crop face without valid annotations or "
+                "fixed_positions or an annotator. Returning None. "
+                "The annotations were: {}".format(annotations)
+            )
+            return None
 
-    # convert to the desired color channel
-    image = self.color_channel(image)
+        # convert to the desired color channel
+        image = self.color_channel(image)
 
-    # annotate the image if annotations are missing
-    if not self.is_annotations_valid(annotations) and \
-       not self.fixed_positions and \
-       self.annotator is not None:
-      annotations = self.annotator(image, annotations=annotations)
-      if not self.is_annotations_valid(annotations):
-        logger.warn("The annotator failed and the annotations are missing too"
-                    ". Returning None.")
-        return None
+        # annotate the image if annotations are missing
+        if (
+            not self.is_annotations_valid(annotations)
+            and not self.fixed_positions
+            and self.annotator is not None
+        ):
+            annotations = self.annotator(image, annotations=annotations)
+            if not self.is_annotations_valid(annotations):
+                logger.warn(
+                    "The annotator failed and the annotations are missing too"
+                    ". Returning None."
+                )
+                return None
 
-    # crop face
-    image = self.crop_face(image, annotations)
+        # crop face
+        image = self.crop_face(image, annotations)
 
-    # convert data type
-    return self.data_type(image)
+        # convert data type
+        return self.data_type(image)
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        d.pop("mask_rng")
+        d.pop("cropper")
+        return d
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+        self._init_non_pickables()

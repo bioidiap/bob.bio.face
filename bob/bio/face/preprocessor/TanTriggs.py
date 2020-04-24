@@ -24,8 +24,9 @@ from .Base import Base
 from .utils import load_cropper
 from bob.bio.base.preprocessor import Preprocessor
 
-class TanTriggs (Base):
-  """Crops the face (if desired) and applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image.
+
+class TanTriggs(Base):
+    """Crops the face (if desired) and applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image.
 
   **Parameters:**
 
@@ -43,38 +44,49 @@ class TanTriggs (Base):
     Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
   """
 
-  def __init__(
-      self,
-      face_cropper,
-      gamma = 0.2,
-      sigma0 = 1,
-      sigma1 = 2,
-      size = 5,
-      threshold = 10.,
-      alpha = 0.1,
-      **kwargs
-  ):
-
-    Base.__init__(self, **kwargs)
-
-    # call base class constructor with its set of parameters
-    Preprocessor.__init__(
+    def __init__(
         self,
-        face_cropper = face_cropper,
-        gamma = gamma,
-        sigma0 = sigma0,
-        sigma1 = sigma1,
-        size = size,
-        threshold = threshold,
-        alpha = alpha
-    )
+        face_cropper,
+        gamma=0.2,
+        sigma0=1,
+        sigma1=2,
+        size=5,
+        threshold=10.0,
+        alpha=0.1,
+        **kwargs
+    ):
 
-    self.cropper = load_cropper(face_cropper)
-    self.tan_triggs = bob.ip.base.TanTriggs(gamma, sigma0, sigma1, size, threshold, alpha)
+        Base.__init__(self, **kwargs)
 
+        # call base class constructor with its set of parameters
+        Preprocessor.__init__(
+            self,
+            face_cropper=face_cropper,
+            gamma=gamma,
+            sigma0=sigma0,
+            sigma1=sigma1,
+            size=size,
+            threshold=threshold,
+            alpha=alpha,
+        )
 
-  def __call__(self, image, annotations = None):
-    """__call__(image, annotations = None) -> face
+        self.gamma = gamma
+        self.sigma0 = sigma0
+        self.sigma1 = sigma1
+        self.size = size
+        self.threshold = threshold
+        self.alpha = alpha
+
+        self.cropper = load_cropper(face_cropper)
+        self._init_non_pickables()
+
+    def _init_non_pickables(self):
+        self.tan_triggs = bob.ip.base.TanTriggs(
+            self.gamma, self.sigma0, self.sigma1, self.size, self.threshold, self.alpha
+        )
+
+    def __call__(self, image, annotations=None):
+        """__call__(image, annotations = None) -> face
 
     Aligns the given image according to the given annotations.
 
@@ -97,12 +109,19 @@ class TanTriggs (Base):
     face : 2D :py:class:`numpy.ndarray`
       The cropped and photometrically enhanced face.
     """
-    if not isinstance(self.cropper, bob.bio.face.preprocessor.FaceCrop):
-        self.cropper = self.cropper()
-    
-    image = self.color_channel(image)
-    if self.cropper is not None:
-      image = self.cropper.crop_face(image, annotations)
-    image = self.tan_triggs(image)
 
-    return self.data_type(image)
+        image = self.color_channel(image)
+        if self.cropper is not None:
+            image = self.cropper.crop_face(image, annotations)
+        image = self.tan_triggs(image)
+
+        return self.data_type(image)
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        d.pop("tan_triggs")
+        return d
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+        self._init_non_pickables()

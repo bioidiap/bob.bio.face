@@ -25,8 +25,9 @@ from .Base import Base
 from .utils import load_cropper
 from bob.bio.base.preprocessor import Preprocessor
 
-class SelfQuotientImage (Base):
-  """Crops the face (if desired) and applies self quotient image algorithm [WLW04]_ to photometrically enhance the image.
+
+class SelfQuotientImage(Base):
+    """Crops the face (if desired) and applies self quotient image algorithm [WLW04]_ to photometrically enhance the image.
 
   **Parameters:**
 
@@ -44,30 +45,28 @@ class SelfQuotientImage (Base):
     Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
   """
 
-  def __init__(
-      self,
-      face_cropper,
-      sigma = math.sqrt(2.),
-      **kwargs
-  ):
+    def __init__(self, face_cropper, sigma=math.sqrt(2.0), **kwargs):
 
-    Base.__init__(self, **kwargs)
+        Base.__init__(self, **kwargs)
 
-    # call base class constructor with its set of parameters
-    Preprocessor.__init__(
-        self,
-        face_cropper = face_cropper,
-        sigma = sigma
-    )
+        # call base class constructor with its set of parameters
+        Preprocessor.__init__(self, face_cropper=face_cropper, sigma=sigma)
 
-    self.cropper = load_cropper(face_cropper)
+        self.cropper = load_cropper(face_cropper)
 
-    size = max(1, int(3. * sigma))
-    self.self_quotient = bob.ip.base.SelfQuotientImage(size_min = size, sigma = sigma)
+        size = max(1, int(3.0 * sigma))
 
+        self.size = size
+        self.sigma = sigma
+        self._init_non_pickables()
 
-  def __call__(self, image, annotations = None):
-    """__call__(image, annotations = None) -> face
+    def _init_non_pickables(self):
+        self.self_quotient = bob.ip.base.SelfQuotientImage(
+            size_min=self.size, sigma=self.sigma
+        )
+
+    def __call__(self, image, annotations=None):
+        """__call__(image, annotations = None) -> face
 
     Aligns the given image according to the given annotations.
 
@@ -90,8 +89,18 @@ class SelfQuotientImage (Base):
     face : 2D :py:class:`numpy.ndarray`
       The cropped and photometrically enhanced face.
     """
-    image = self.color_channel(image)
-    if self.cropper is not None:
-      image = self.cropper.crop_face(image, annotations)
-    image = self.self_quotient(image)
-    return self.data_type(image)
+        image = self.color_channel(image)
+        if self.cropper is not None:
+            image = self.cropper.crop_face(image, annotations)
+        image = self.self_quotient(image)
+        return self.data_type(image)
+
+
+    def __getstate__(self):
+        d = dict(self.__dict__)
+        d.pop("self_quotient")
+        return d
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+        self._init_non_pickables()

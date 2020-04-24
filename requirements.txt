@@ -20,5 +20,6 @@ bob.bio.base
 bob.learn.boosting
 bob.ip.facedetect
 bob.ip.flandmark
+bob.pipelines
 matplotlib   # for plotting
 six

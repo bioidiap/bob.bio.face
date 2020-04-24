@@ -1,7 +1,6 @@
 from .DCTBlocks import DCTBlocks
 from .GridGraph import GridGraph
 from .LGBPHS import LGBPHS
-from .Eigenface import Eigenface
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -21,6 +20,5 @@ __appropriate__(
     DCTBlocks,
     GridGraph,
     LGBPHS,
-    Eigenface,
     )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

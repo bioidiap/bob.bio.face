@@ -208,7 +208,6 @@ Feature extractors
 Only four types of features are registered as resources here:
 
 * ``'dct-blocks'``: DCT blocks with 12 pixels and full overlap, extracting 35 DCT features per block
-* ``'eigenface'``: Pixel vectors projected to face space keeping 95 % variance
 * ``'grid-graph'``: Gabor jets in grid graphs, with 8 pixels distance between nodes
 * ``'lgbphs'``: Local Gabor binary pattern histogram sequences with block-size of 8 and no overlap
 

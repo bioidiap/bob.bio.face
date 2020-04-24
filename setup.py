@@ -104,19 +104,15 @@ setup(
         # scripts should be declared using this entry:
         'console_scripts': [
             'baselines.py      = bob.bio.face.script.baselines:main',
-            'display_face_annotations.py = bob.bio.face.script.display_face_annotations:main',
-            'bob_ijba_collect_results.py = bob.bio.face.script.ijba_collect_results:main',
+            'display_face_annotations.py = bob.bio.face.script.display_face_annotations:main',            
         ],
 
         'bob.bio.database': [
             'arface            = bob.bio.face.config.database.arface:database',
             'atnt              = bob.bio.face.config.database.atnt:database',
-            'banca             = bob.bio.face.config.database.banca_english:database',
             'caspeal           = bob.bio.face.config.database.caspeal:database',
             'frgc              = bob.bio.face.config.database.frgc:database',
             'gbu               = bob.bio.face.config.database.gbu:database',
-            'ijba              = bob.bio.face.config.database.ijba:database',
-            'ijbb              = bob.bio.face.config.database.ijbb:database',
 
             'ijbc-11              = bob.bio.face.config.database.ijbc:ijbc_11',
             'ijbc-covariates      = bob.bio.face.config.database.ijbc:ijbc_covariates',

@@ -5,14 +5,11 @@ from .database import FaceBioFile
 from .mobio import MobioBioDatabase
 from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase
-from .banca import BancaBioDatabase
 from .gbu import GBUBioDatabase
 from .arface import ARFaceBioDatabase
 from .caspeal import CaspealBioDatabase
 from .lfw import LFWBioDatabase
 from .multipie import MultipieBioDatabase
-from .ijba import IJBABioDatabase
-from .ijbb import IJBBBioDatabase
 from .ijbc import IJBCBioDatabase
 from .xm2vts import XM2VTSBioDatabase
 from .frgc import FRGCBioDatabase
@@ -43,15 +40,12 @@ __appropriate__(
   FaceBioFile,
   MobioBioDatabase,
   ReplayBioDatabase,
-  AtntBioDatabase,
-  BancaBioDatabase,
+  AtntBioDatabase,  
   GBUBioDatabase,
   ARFaceBioDatabase,
   CaspealBioDatabase,
   LFWBioDatabase,
   MultipieBioDatabase,
-  IJBABioDatabase,
-  IJBBBioDatabase,
   IJBCBioDatabase, 
   XM2VTSBioDatabase,
   FRGCBioDatabase,

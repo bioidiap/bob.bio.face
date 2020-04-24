@@ -13,7 +13,6 @@ Databases
 .. autosummary::
    bob.bio.face.database.ARFaceBioDatabase
    bob.bio.face.database.AtntBioDatabase
-   bob.bio.face.database.BancaBioDatabase
    bob.bio.face.database.MobioBioDatabase
    bob.bio.face.database.CaspealBioDatabase
    bob.bio.face.database.ReplayBioDatabase
@@ -22,7 +21,6 @@ Databases
    bob.bio.face.database.GBUBioDatabase
    bob.bio.face.database.LFWBioDatabase
    bob.bio.face.database.MultipieBioDatabase
-   bob.bio.face.database.IJBABioDatabase
    bob.bio.face.database.XM2VTSBioDatabase
    bob.bio.face.database.FRGCBioDatabase
    bob.bio.face.database.SCFaceBioDatabase
@@ -57,7 +55,6 @@ Image Feature Extractors
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autosummary::
-   bob.bio.face.extractor.Eigenface
    bob.bio.face.extractor.DCTBlocks
    bob.bio.face.extractor.GridGraph
    bob.bio.face.extractor.LGBPHS

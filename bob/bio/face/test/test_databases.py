@@ -81,22 +81,6 @@ def test_atnt():
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
 
 
-@db_available('banca')
-def test_banca():
-    database = bob.bio.base.load_resource(
-        'banca', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database_zt(database)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
-
-
 @db_available('caspeal')
 def test_caspeal():
     database = bob.bio.base.load_resource(
@@ -140,22 +124,6 @@ def test_gbu():
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
     try:
         _check_annotations(database, limit_files=1000)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
-
-
-@db_available('ijba')
-def test_ijba():
-    database = bob.bio.base.load_resource(
-        'ijba', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database, models_depend=True, training_depends=True)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database, topleft=True, limit_files=1000)
     except IOError as e:
         raise SkipTest(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
@@ -357,22 +325,6 @@ def test_msu_mfsd_mod_spoof():
         raise SkipTest(
             "The annotations could not be queried; probably the annotation "
             "files are missing. Here is the error: '%s'" % e)
-
-
-@db_available('ijbb')
-def test_ijbb():
-    database = bob.bio.base.load_resource(
-        'ijbb', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database, models_depend=True, training_depends=True)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database, topleft=True, limit_files=1000)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
             
 
 @db_available('ijbc')

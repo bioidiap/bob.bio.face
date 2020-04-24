@@ -119,7 +119,6 @@ def test_face_crop():
 
 def test_face_detect():
   image, annotation = _image(), None
-
   cropper = bob.bio.base.load_resource('face-detect', 'preprocessor', preferred_package='bob.bio.face')
   assert isinstance(cropper, bob.bio.face.preprocessor.FaceDetect)
   assert isinstance(cropper, bob.bio.face.preprocessor.Base)

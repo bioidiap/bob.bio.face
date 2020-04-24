@@ -8,11 +8,6 @@ Defining some face recognition baselines
 
 from bob.bio.base.baseline import Baseline
 
-eigenface = Baseline(name="eigenface",
-                     preprocessors={'default': 'face-crop-eyes', 'atnt': 'base'},
-                     extractor='linearize',
-                     algorithm='pca')
-
 lda = Baseline(name="lda",
                preprocessors={'default': 'face-crop-eyes', 'atnt': 'base'},
                extractor='eigenface',

@@ -153,44 +153,6 @@ def test_lgbphs():
   _compare(feature, reference, lgbphs.write_feature, lgbphs.read_feature)
 
 
-def test_eigenface():
-  temp_file = bob.io.base.test_utils.temporary_filename()
-  data = _data()
-  eigen1 = bob.bio.base.load_resource('eigenface', 'extractor', preferred_package='bob.bio.face')
-  assert isinstance(eigen1, bob.bio.face.extractor.Eigenface)
-  assert isinstance(eigen1, bob.bio.base.extractor.Extractor)
-  assert eigen1.requires_training
-
-  # create extractor with a smaller number of kept eigenfaces
-  train_data = utils.random_training_set(data.shape, 400, 0., 255.)
-  eigen2 = bob.bio.face.extractor.Eigenface(subspace_dimension = 5)
-  reference = pkg_resources.resource_filename('bob.bio.face.test', 'data/eigenface_extractor.hdf5')
-  try:
-    # train the projector
-    eigen2.train(train_data, temp_file)
-
-    assert os.path.exists(temp_file)
-
-    if regenerate_refs: shutil.copy(temp_file, reference_file)
-
-    # check projection matrix
-    eigen1.load(reference)
-    eigen2.load(temp_file)
-
-    assert eigen1.machine.shape == eigen2.machine.shape
-    for i in range(5):
-      assert numpy.abs(eigen1.machine.weights[:,i] - eigen2.machine.weights[:,i] < 1e-5).all() or numpy.abs(eigen1.machine.weights[:,i] + eigen2.machine.weights[:,i] < 1e-5).all()
-
-  finally:
-    if os.path.exists(temp_file): os.remove(temp_file)
-
-  # now, we can execute the extractor and check that the feature is still identical
-  feature = eigen1(data)
-  assert feature.ndim == 1
-  reference = pkg_resources.resource_filename('bob.bio.face.test', 'data/eigenface_feature.hdf5')
-  _compare(feature, reference, eigen1.write_feature, eigen1.read_feature)
-
-
 """
   def test05_sift_key_points(self):
     # check if VLSIFT is available

@@ -185,7 +185,6 @@ setup(
             'dct-blocks        = bob.bio.face.config.extractor.dct_blocks:extractor',  # DCT blocks
             'grid-graph        = bob.bio.face.config.extractor.grid_graph:extractor',  # Grid graph
             'lgbphs            = bob.bio.face.config.extractor.lgbphs:extractor',  # LGBPHS
-            'eigenface         = bob.bio.face.config.extractor.eigenface:extractor',  # Eigenface
         ],
 
         'bob.bio.algorithm': [
@@ -196,7 +195,6 @@ setup(
 
         #baselines
         'bob.bio.baseline':[
-          'eigenface = bob.bio.face.baseline.baseline:eigenface',
           'lda = bob.bio.face.baseline.baseline:lda',
           'plda = bob.bio.face.baseline.baseline:plda',
           'gabor_graph = bob.bio.face.baseline.baseline:gabor_graph',

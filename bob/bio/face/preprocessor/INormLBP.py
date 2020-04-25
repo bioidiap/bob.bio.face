@@ -77,7 +77,7 @@ class INormLBP(Base):
         self.radius = radius
         self.is_circular = is_circular
         self.compare_to_average = compare_to_average
-        self.elbp_type = elbp_type
+        self.elbp_type = elbp_type        
         self.cropper = load_cropper(face_cropper)
 
         self._init_non_pickables()

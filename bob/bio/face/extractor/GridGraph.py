@@ -140,7 +140,7 @@ class GridGraph(Extractor):
                     "Please specify either 'eyes' or the grid parameters 'node_distance' (and 'first_node')!"
                 )
             self._aligned_graph = None
-            self._last_image_resolution = None            
+            self._last_image_resolution = None
             if isinstance(self.node_distance, (int, float)):
                 self.node_distance = (int(self.node_distance), int(self.node_distance))
 
@@ -229,7 +229,7 @@ class GridGraph(Extractor):
             [j.normalize() for j in jets]
 
         # return the extracted face graph
-        return jets
+        return self.__class__.serialize_jets(jets)
 
     def write_feature(self, feature, feature_file):
         """Writes the feature extracted by the `__call__` function to the given file.
@@ -264,7 +264,9 @@ class GridGraph(Extractor):
     feature : [:py:class:`bob.ip.gabor.Jet`]
       The list of Gabor jets read from file.
     """
-        return bob.ip.gabor.load_jets(bob.io.base.HDF5File(feature_file))
+        return self.__class__.serialize_jets(
+            bob.ip.gabor.load_jets(bob.io.base.HDF5File(feature_file))
+        )
 
     # re-define the train function to get it non-documented
     def train(*args, **kwargs):
@@ -279,8 +281,19 @@ class GridGraph(Extractor):
         d = dict(self.__dict__)
         d.pop("gwt")
         d.pop("_aligned_graph")
+        if "_graph" in d:
+            d.pop("_graph")
         return d
 
     def __setstate__(self, d):
         self.__dict__ = d
         self._init_non_pickables()
+
+    @staticmethod
+    def serialize_jets(jets):
+        serialize_jets = []
+        for jet in jets:
+            sj = bob.ip.gabor.Jet(jet.length)
+            sj.jet = jet.jet
+            serialize_jets.append(sj)
+        return serialize_jets

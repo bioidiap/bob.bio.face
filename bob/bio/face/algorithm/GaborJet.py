@@ -9,6 +9,7 @@ import numpy
 import math
 
 from bob.bio.base.algorithm import Algorithm
+from bob.bio.face.extractor import GridGraph
 
 
 class GaborJet(Algorithm):
@@ -72,20 +73,19 @@ class GaborJet(Algorithm):
             multiple_probe_scoring=None,
         )
 
-        self.gabor_jet_similarity_type=gabor_jet_similarity_type
-        self.multiple_feature_scoring=multiple_feature_scoring
-        self.gabor_directions=gabor_directions
-        self.gabor_scales=gabor_scales
-        self.gabor_sigma=gabor_sigma
-        self.gabor_maximum_frequency=gabor_maximum_frequency
-        self.gabor_frequency_step=gabor_frequency_step
-        self.gabor_power_of_k=gabor_power_of_k
-        self.gabor_dc_free=gabor_dc_free
+        self.gabor_jet_similarity_type = gabor_jet_similarity_type
+        self.multiple_feature_scoring = multiple_feature_scoring
+        self.gabor_directions = gabor_directions
+        self.gabor_scales = gabor_scales
+        self.gabor_sigma = gabor_sigma
+        self.gabor_maximum_frequency = gabor_maximum_frequency
+        self.gabor_frequency_step = gabor_frequency_step
+        self.gabor_power_of_k = gabor_power_of_k
+        self.gabor_dc_free = gabor_dc_free
 
         self.gabor_jet_similarity_type = gabor_jet_similarity_type
 
         self._init_non_pickables()
-
 
     def _init_non_pickables(self):
         # the Gabor wavelet transform; used by (some of) the Gabor jet similarities
@@ -128,9 +128,10 @@ class GaborJet(Algorithm):
         }[self.multiple_feature_scoring]
 
     def _check_feature(self, feature):
-        # import ipdb; ipdb.set_trace()
+
         assert isinstance(feature, list) or isinstance(feature, numpy.ndarray)
         assert len(feature)
+        feature = GridGraph.serialize_jets(feature)
         assert all(isinstance(f, bob.ip.gabor.Jet) for f in feature)
 
     def enroll(self, enroll_features):
@@ -216,7 +217,7 @@ class GaborJet(Algorithm):
         for g in range(count):
             name = "Node-" + str(g + 1)
             f.cd(name)
-            model.append(bob.ip.gabor.load_jets(f))
+            model.append(GridGraph.serialize_jets(bob.ip.gabor.load_jets(f)))
             f.cd("..")
         return model
 
@@ -354,4 +355,3 @@ class GaborJet(Algorithm):
     def __setstate__(self, d):
         self.__dict__ = d
         self._init_non_pickables()
-

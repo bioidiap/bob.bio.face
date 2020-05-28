@@ -10,6 +10,7 @@ from bob.extension import rc
 from sklearn.base import TransformerMixin, BaseEstimator
 
 import logging
+
 logger = logging.getLogger(__name__)
 
 
@@ -56,7 +57,10 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         if not self.loaded:
             self.load_model()
 
-        return self.session.run(self.embedding, feed_dict={self.input_tensor: data.reshape(self.input_shape)})
+        return self.session.run(
+            self.embedding,
+            feed_dict={self.input_tensor: data.reshape(self.input_shape)},
+        )
 
     def load_model(self):
         logger.info(f"Loading model `{self.checkpoint_filename}`")
@@ -82,14 +86,16 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         self.session.run(tf.compat.v1.global_variables_initializer())
 
         # Loading the last checkpoint and overwriting the current variables
-        saver = tf.compat.v1.train.Saver()        
+        saver = tf.compat.v1.train.Saver()
         if os.path.splitext(self.checkpoint_filename)[1] == ".meta":
             saver.restore(
                 self.session,
                 tf.train.latest_checkpoint(os.path.dirname(self.checkpoint_filename)),
             )
         elif os.path.isdir(self.checkpoint_filename):
-            saver.restore(self.session, tf.train.latest_checkpoint(self.checkpoint_filename))
+            saver.restore(
+                self.session, tf.train.latest_checkpoint(self.checkpoint_filename)
+            )
         else:
             saver.restore(self.session, self.checkpoint_filename)
 
@@ -109,7 +115,7 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         tf.compat.v1.reset_default_graph()
         return d
 
-    #def __del__(self):
+    # def __del__(self):
     #    tf.compat.v1.reset_default_graph()
 
     def get_modelpath(self, bob_rc_variable, model_subdirectory):

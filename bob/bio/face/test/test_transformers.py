@@ -51,3 +51,13 @@ def test_idiap_inceptionv1_casia():
     data = np.random.rand(3, 160, 160).astype("uint8")
     output = transformer.transform(data)
     assert output.size == 128, output.shape
+
+
+def test_arface_insight_tf():
+    from bob.bio.face.transformers import ArcFace_InsightFaceTF
+
+    np.random.seed(10)
+    transformer = ArcFace_InsightFaceTF()
+    data = np.random.rand(3, 112, 112).astype("uint8")
+    output = transformer.transform(data)
+    assert output.size == 512, output.shape

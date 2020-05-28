@@ -3,8 +3,10 @@ from .idiap_inception_resnet import (
     InceptionResnetv2_MsCeleb,
     InceptionResnetv2_CasiaWebFace,
     InceptionResnetv1_MsCeleb,
-    InceptionResnetv1_CasiaWebFace,
+    InceptionResnetv1_CasiaWebFace
 )
+
+from .arface import ArcFace_InsightFaceTF
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -29,5 +31,6 @@ __appropriate__(
     InceptionResnetv2_CasiaWebFace,
     InceptionResnetv1_MsCeleb,
     InceptionResnetv1_CasiaWebFace,
+    ArcFace_InsightFaceTF
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

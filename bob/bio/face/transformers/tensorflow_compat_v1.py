@@ -160,3 +160,11 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
             bob.io.base.create_directories_safe(model_path)
             zip_file = os.path.join(model_path, zip_file)
             bob.extension.download.download_and_unzip(urls, zip_file)
+
+
+    def fit(self, X, y=None):
+        return self
+
+    def _more_tags(self):
+        return {"stateless": True, "requires_fit": False}
+

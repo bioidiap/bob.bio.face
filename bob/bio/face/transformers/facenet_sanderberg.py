@@ -165,17 +165,25 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         logger.info("Successfully loaded the model.")
         self.loaded = True
 
-    def transform(self, img):
-        images = self._check_feature(img)
-        if not self.loaded:
-            self.load_model()
+    def transform(self, X):
+        def _transform(X):
+        
+            import ipdb; ipdb.set_trace()
+            images = self._check_feature(X)
+            if not self.loaded:
+                self.load_model()
 
-        feed_dict = {
-            self.images_placeholder: images,
-            self.phase_train_placeholder: False,
-        }
-        features = self.session.run(self.embeddings, feed_dict=feed_dict)
-        return features.flatten()
+            feed_dict = {
+                self.images_placeholder: images,
+                self.phase_train_placeholder: False,
+            }
+            features = self.session.run(self.embeddings, feed_dict=feed_dict)
+            return features.flatten()
+
+        if isinstance(X, list):
+            return [_transform(i) for i in X]
+        else:
+            return _transform(X)
 
     @staticmethod
     def get_modelpath():
@@ -214,3 +222,9 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         d.pop("phase_train_placeholder") if "phase_train_placeholder" in d else None
         tf.compat.v1.reset_default_graph()
         return d
+
+    def _more_tags(self):
+        return {"stateless": True, "requires_fit": False}
+
+    def fit(self, X, y=None):
+        return self

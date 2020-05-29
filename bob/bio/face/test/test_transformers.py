@@ -1,15 +1,24 @@
 import bob.bio.face
 import numpy as np
-
+from bob.pipelines import Sample, wrap
 
 def test_facenet():
     from bob.bio.face.transformers import FaceNetSanderberg
 
     np.random.seed(10)
 
-    transformer = FaceNetSanderberg()
+    transformer = FaceNetSanderberg()    
+    # Raw data
     data = np.random.rand(3, 160, 160).astype("uint8")
     output = transformer.transform(data)
+    assert output.size == 128, output.shape
+    
+
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+
     assert output.size == 128, output.shape
 
 

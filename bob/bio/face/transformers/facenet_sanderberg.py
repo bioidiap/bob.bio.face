@@ -16,7 +16,7 @@ from sklearn.base import TransformerMixin, BaseEstimator
 import os
 import re
 import logging
-import numpy
+import numpy as np
 import tensorflow as tf
 from bob.ip.color import gray_to_rgb
 from bob.io.image import to_matplotlib
@@ -30,10 +30,10 @@ FACENET_MODELPATH_KEY = "bob.bio.face.facenet_sanderberg_modelpath"
 
 
 def prewhiten(img):
-    mean = numpy.mean(img)
-    std = numpy.std(img)
-    std_adj = numpy.maximum(std, 1.0 / numpy.sqrt(img.size))
-    y = numpy.multiply(numpy.subtract(img, mean), 1 / std_adj)
+    mean = np.mean(img)
+    std = np.std(img)
+    std_adj = np.maximum(std, 1.0 / np.sqrt(img.size))
+    y = np.multiply(np.subtract(img, mean), 1 / std_adj)
     return y
 
 
@@ -87,7 +87,7 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         model_path=rc[FACENET_MODELPATH_KEY],
         image_size=160,
         layer_name="embeddings:0",
-        **kwargs
+        **kwargs,
     ):
         super(FaceNetSanderberg, self).__init__()
         self.model_path = model_path
@@ -104,14 +104,22 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         self.phase_train_placeholder = None
 
     def _check_feature(self, img):
-        img = numpy.ascontiguousarray(img)
-        if img.ndim == 2:
-            img = gray_to_rgb(img)
-        assert img.shape[-1] == self.image_size
-        assert img.shape[-2] == self.image_size
-        img = to_matplotlib(img)
-        img = prewhiten(img)
-        return img[None, ...]
+        img = np.asarray(img)
+
+        def _convert(img):
+            assert img.shape[-2] == self.image_size
+            assert img.shape[-3] == self.image_size
+            img = prewhiten(img)
+            return img
+
+        if img.ndim == 3:
+            img = np.moveaxis(img, 0, -1)
+            return _convert(img)[None, ...]  # Adding another axis
+        elif img.ndim == 4:
+            img = np.moveaxis(img, 1, -1)
+            return _convert(img)
+        else:
+            raise ValueError(f"Image shape {img.shape} not supported")
 
     def load_model(self):
         tf.compat.v1.reset_default_graph()
@@ -126,7 +134,9 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
             self.model_path = self.get_modelpath()
         if not os.path.exists(self.model_path):
             bob.io.base.create_directories_safe(FaceNetSanderberg.get_modelpath())
-            zip_file = os.path.join(FaceNetSanderberg.get_modelpath(), "20170512-110547.zip")
+            zip_file = os.path.join(
+                FaceNetSanderberg.get_modelpath(), "20170512-110547.zip"
+            )
             urls = [
                 # This link only works in Idiap CI to save bandwidth.
                 "http://www.idiap.ch/private/wheels/gitlab/"
@@ -165,10 +175,9 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         logger.info("Successfully loaded the model.")
         self.loaded = True
 
-    def transform(self, X):
+    def transform(self, X, **kwargs):
         def _transform(X):
-        
-            import ipdb; ipdb.set_trace()
+
             images = self._check_feature(X)
             if not self.loaded:
                 self.load_model()
@@ -178,7 +187,7 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
                 self.phase_train_placeholder: False,
             }
             features = self.session.run(self.embeddings, feed_dict=feed_dict)
-            return features.flatten()
+            return features
 
         if isinstance(X, list):
             return [_transform(i) for i in X]

@@ -167,4 +167,3 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}
-

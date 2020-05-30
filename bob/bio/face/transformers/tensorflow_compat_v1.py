@@ -8,7 +8,7 @@ import pkg_resources
 import bob.extension.download
 from bob.extension import rc
 from sklearn.base import TransformerMixin, BaseEstimator
-
+import numpy as np
 import logging
 
 logger = logging.getLogger(__name__)
@@ -54,13 +54,35 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
             The features.
 
         """
+
+        data = np.asarray(data)
+
+        # THE INPUT SHAPE FOR THESE MODELS
+        # ARE `N x C x H x W`
+
+        # If ndim==3 we add another axis
+        if data.ndim==3:
+            data = data[None, ...]
+
+        
+        # Making sure it's channels last and has three chanbels
+        if data.ndim==4:
+            # Just swiping the second dimention
+            if data.shape[1] == 3:
+                data = np.moveaxis(data, 1, -1)
+
+        if data.shape != self.input_shape:
+            raise ValueError(f"Image shape {data.shape} not supported. Expected {self.input_shape}")
+
+
         if not self.loaded:
             self.load_model()
 
         return self.session.run(
             self.embedding,
-            feed_dict={self.input_tensor: data.reshape(self.input_shape)},
+            feed_dict={self.input_tensor: data},
         )
+
 
     def load_model(self):
         logger.info(f"Loading model `{self.checkpoint_filename}`")
@@ -115,7 +137,7 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         tf.compat.v1.reset_default_graph()
         return d
 
-    # def __del__(self):
+    #def __del__(self):
     #    tf.compat.v1.reset_default_graph()
 
     def get_modelpath(self, bob_rc_variable, model_subdirectory):

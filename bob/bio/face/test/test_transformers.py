@@ -31,6 +31,13 @@ def test_idiap_inceptionv2_msceleb():
     output = transformer.transform(data)
     assert output.size == 128, output.shape
 
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+
+    assert output.size == 128, output.shape
+
 
 def test_idiap_inceptionv2_casia():
     from bob.bio.face.transformers import InceptionResnetv2_CasiaWebFace
@@ -39,6 +46,14 @@ def test_idiap_inceptionv2_casia():
     transformer = InceptionResnetv2_CasiaWebFace()
     data = np.random.rand(3, 160, 160).astype("uint8")
     output = transformer.transform(data)
+    assert output.size == 128, output.shape
+
+
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+
     assert output.size == 128, output.shape
 
 
@@ -51,6 +66,13 @@ def test_idiap_inceptionv1_msceleb():
     output = transformer.transform(data)
     assert output.size == 128, output.shape
 
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+
+    assert output.size == 128, output.shape
+
 
 def test_idiap_inceptionv1_casia():
     from bob.bio.face.transformers import InceptionResnetv1_CasiaWebFace
@@ -61,6 +83,13 @@ def test_idiap_inceptionv1_casia():
     output = transformer.transform(data)
     assert output.size == 128, output.shape
 
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+
+    assert output.size == 128, output.shape
+
 
 def test_arface_insight_tf():
     from bob.bio.face.transformers import ArcFace_InsightFaceTF
@@ -69,4 +98,10 @@ def test_arface_insight_tf():
     transformer = ArcFace_InsightFaceTF()
     data = np.random.rand(3, 112, 112).astype("uint8")
     output = transformer.transform(data)
+    assert output.size == 512, output.shape
+
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
     assert output.size == 512, output.shape

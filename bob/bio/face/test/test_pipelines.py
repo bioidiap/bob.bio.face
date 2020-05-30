@@ -22,7 +22,7 @@ def test_facenet_pipeline():
 
     #transformed_sample = transformer.transform([fake_sample])[0].data
 
-    #import ipdb; ipdb.set_trace()    
+    #import ipdb; ipdb.set_trace()
     transformed_sample = transformer.transform([fake_sample])[0]
     assert transformed_sample.data.size == 160
 

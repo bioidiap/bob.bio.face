@@ -1,15 +1,14 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-import tensorflow as tf
 import os
-from tensorflow.python import debug as tf_debug
 import pkg_resources
 import bob.extension.download
 from bob.extension import rc
 from sklearn.base import TransformerMixin, BaseEstimator
 import numpy as np
 import logging
+from sklearn.utils import check_array
 
 logger = logging.getLogger(__name__)
 
@@ -55,36 +54,34 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
 
         """
 
-        data = np.asarray(data)
+        data = check_array(data, allow_nd=True)
 
         # THE INPUT SHAPE FOR THESE MODELS
         # ARE `N x C x H x W`
 
         # If ndim==3 we add another axis
-        if data.ndim==3:
+        if data.ndim == 3:
             data = data[None, ...]
 
-        
         # Making sure it's channels last and has three chanbels
-        if data.ndim==4:
+        if data.ndim == 4:
             # Just swiping the second dimention
             if data.shape[1] == 3:
                 data = np.moveaxis(data, 1, -1)
 
         if data.shape != self.input_shape:
-            raise ValueError(f"Image shape {data.shape} not supported. Expected {self.input_shape}")
-
+            raise ValueError(
+                f"Image shape {data.shape} not supported. Expected {self.input_shape}"
+            )
 
         if not self.loaded:
             self.load_model()
 
-        return self.session.run(
-            self.embedding,
-            feed_dict={self.input_tensor: data},
-        )
-
+        return self.session.run(self.embedding, feed_dict={self.input_tensor: data},)
 
     def load_model(self):
+        import tensorflow as tf
+
         logger.info(f"Loading model `{self.checkpoint_filename}`")
 
         tf.compat.v1.reset_default_graph()
@@ -129,6 +126,8 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         self.loaded = False
 
     def __getstate__(self):
+        import tensorflow as tf
+
         # Handling unpicklable objects
         d = self.__dict__
         d.pop("session", None)
@@ -137,7 +136,7 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         tf.compat.v1.reset_default_graph()
         return d
 
-    #def __del__(self):
+    # def __del__(self):
     #    tf.compat.v1.reset_default_graph()
 
     def get_modelpath(self, bob_rc_variable, model_subdirectory):
@@ -182,7 +181,6 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
             bob.io.base.create_directories_safe(model_path)
             zip_file = os.path.join(model_path, zip_file)
             bob.extension.download.download_and_unzip(urls, zip_file)
-
 
     def fit(self, X, y=None):
         return self

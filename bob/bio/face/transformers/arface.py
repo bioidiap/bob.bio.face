@@ -6,6 +6,7 @@ from sklearn.base import TransformerMixin, BaseEstimator
 from .tensorflow_compat_v1 import TensorflowCompatV1
 from bob.io.image import to_matplotlib
 import numpy as np
+from sklearn.utils import check_array
 
 
 class ArcFace_InsightFaceTF(TensorflowCompatV1):
@@ -37,7 +38,7 @@ class ArcFace_InsightFaceTF(TensorflowCompatV1):
     def transform(self, data):
 
         # https://github.com/luckycallor/InsightFace-tensorflow/blob/master/evaluate.py#L42
-        data = np.asarray(data)
+        data = check_array(data, allow_nd=True)
         data = data / 127.5 - 1.0
 
         return super().transform(data)
@@ -45,14 +46,11 @@ class ArcFace_InsightFaceTF(TensorflowCompatV1):
     def load_model(self):
 
         self.input_tensor = tf.compat.v1.placeholder(
-            dtype=tf.float32,
-            shape=self.input_shape,
-            name="input_image",
+            dtype=tf.float32, shape=self.input_shape, name="input_image",
         )
 
         prelogits = self.architecture_fn(self.input_tensor)
         self.embedding = prelogits
-
 
         # Initializing the variables of the current graph
         self.session = tf.compat.v1.Session()
@@ -67,7 +65,9 @@ class ArcFace_InsightFaceTF(TensorflowCompatV1):
                 tf.train.latest_checkpoint(os.path.dirname(self.checkpoint_filename)),
             )
         elif os.path.isdir(self.checkpoint_filename):
-            saver.restore(self.session, tf.train.latest_checkpoint(self.checkpoint_filename))
+            saver.restore(
+                self.session, tf.train.latest_checkpoint(self.checkpoint_filename)
+            )
         else:
             saver.restore(self.session, self.checkpoint_filename)
 

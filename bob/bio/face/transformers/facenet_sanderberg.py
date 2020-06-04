@@ -17,12 +17,12 @@ import os
 import re
 import logging
 import numpy as np
-import tensorflow as tf
 from bob.ip.color import gray_to_rgb
 from bob.io.image import to_matplotlib
 from bob.extension import rc
 import bob.extension.download
 import bob.io.base
+from sklearn.utils import check_array
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +104,7 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         self.phase_train_placeholder = None
 
     def _check_feature(self, img):
-        img = np.asarray(img)
+        img = check_array(img, allow_nd=True)
 
         def _convert(img):
             assert img.shape[-2] == self.image_size
@@ -122,6 +122,8 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
             raise ValueError(f"Image shape {img.shape} not supported")
 
     def load_model(self):
+        import tensorflow as tf
+
         tf.compat.v1.reset_default_graph()
 
         session_conf = tf.compat.v1.ConfigProto(
@@ -222,6 +224,8 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         self.loaded = False
 
     def __getstate__(self):
+        import tensorflow as tf
+
         # Handling unpicklable objects
         d = self.__dict__
         d.pop("session") if "session" in d else None

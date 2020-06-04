@@ -92,6 +92,9 @@ def test_idiap_inceptionv1_casia():
 
 
 def test_arface_insight_tf():
+    import tensorflow as tf
+    tf.compat.v1.reset_default_graph()
+
     from bob.bio.face.transformers import ArcFace_InsightFaceTF
 
     np.random.seed(10)

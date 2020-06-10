@@ -40,7 +40,6 @@ class ArcFace_InsightFaceTF(TensorflowCompatV1):
         # https://github.com/luckycallor/InsightFace-tensorflow/blob/master/evaluate.py#L42
         data = check_array(data, allow_nd=True)
         data = data / 127.5 - 1.0
-
         return super().transform(data)
 
     def load_model(self):

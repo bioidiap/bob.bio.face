@@ -74,3 +74,19 @@ def test_inception_resnetv1_casiawebface():
     transformed_sample = transformer.transform([fake_sample])[0]
     transformed_data = transformed_sample.data
     assert transformed_sample.data.size == 128
+
+
+def test_arcface_insight_tf():
+    import tensorflow as tf
+    tf.compat.v1.reset_default_graph()
+    
+    config_name = pkg_resources.resource_filename(
+        "bob.bio.face", "config/baseline/arcface_insight_tf.py"
+    )
+    transformer = load([config_name]).transformer
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 512

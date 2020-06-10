@@ -103,8 +103,6 @@ setup(
 
         # scripts should be declared using this entry:
         'console_scripts': [
-            'baselines.py      = bob.bio.face.script.baselines:main',
-            'display_face_annotations.py = bob.bio.face.script.display_face_annotations:main',            
         ],
 
         'bob.bio.database': [
@@ -143,62 +141,14 @@ setup(
             'mtcnn                    = bob.bio.face.config.annotator.mtcnn:annotator',
         ],
 
-        'bob.bio.preprocessor': [
-            'base              = bob.bio.face.config.preprocessor.base:preprocessor',  # simple color conversion
-            'face-crop-eyes    = bob.bio.face.config.preprocessor.face_crop_eyes:preprocessor',  # face crop
-            'landmark-detect   = bob.bio.face.config.preprocessor.face_detect:preprocessor',
-            # face detection + landmark detection + cropping
-            'face-detect       = bob.bio.face.config.preprocessor.face_detect:preprocessor_no_eyes',
-            # face detection + cropping
-
-            'inorm-lbp-crop    = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor',  # face crop + inorm-lbp
-            'tan-triggs-crop   = bob.bio.face.config.preprocessor.tan_triggs:preprocessor',  # face crop + Tan&Triggs
-            'histogram-crop    = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor',
-            # face crop + histogram equalization
-            'self-quotient-crop= bob.bio.face.config.preprocessor.self_quotient_image:preprocessor',
-            # face crop + self quotient image
-
-            'inorm-lbp-landmark = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_landmark',
-            # face detection + landmark detection + cropping + inorm-lbp
-            'tan-triggs-landmark = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_landmark',
-            # face detection + landmark detection + cropping + Tan&Triggs
-            'histogram-landmark = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_landmark',
-            # face detection + landmark detection + cropping + histogram equalization
-            'self-quotient-landmark = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_landmark',
-            # face detection + landmark detection + cropping + self quotient image
-
-            'inorm-lbp         = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_no_crop',
-            # inorm-lbp w/o face-crop
-            'tan-triggs        = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_no_crop',
-            # Tan&Triggs w/o face-crop
-            'histogram         = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_no_crop',
-            # histogram equalization w/o face-crop
-            'self-quotient     = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_no_crop',
-            # self quotient image w/o face-crop
-        ],
-
-        'bob.bio.extractor': [
-            'dct-blocks        = bob.bio.face.config.extractor.dct_blocks:extractor',  # DCT blocks
-            'grid-graph        = bob.bio.face.config.extractor.grid_graph:extractor',  # Grid graph
-            'lgbphs            = bob.bio.face.config.extractor.lgbphs:extractor',  # LGBPHS
-        ],
-
-        'bob.bio.algorithm': [
-            'gabor-jet         = bob.bio.face.config.algorithm.gabor_jet:algorithm',  # Gabor jet comparison
-            'histogram         = bob.bio.face.config.algorithm.histogram:algorithm',  # LGBPHS histograms
-            'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm',  # BIC on gabor jets
-        ],
-
         #baselines
         'bob.bio.baseline':[
-          'lda = bob.bio.face.baseline.baseline:lda',
-          'plda = bob.bio.face.baseline.baseline:plda',
-          'gabor_graph = bob.bio.face.baseline.baseline:gabor_graph',
-          'lgbphs = bob.bio.face.baseline.baseline:lgbphs',
-          'gmm = bob.bio.face.baseline.baseline:gmm',
-          'isv = bob.bio.face.baseline.baseline:isv',
-          'ivector = bob.bio.face.baseline.baseline:ivector',
-          'bic = bob.bio.face.baseline.baseline:bic',
+          'facenet_sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:transformer',
+          'inception_resnetv1_casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:transformer',
+          'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:transformer',
+          'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:transformer',
+          'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
+          'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
         ],
 
     },

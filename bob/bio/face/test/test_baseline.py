@@ -2,7 +2,7 @@ from bob.extension.config import load
 import pkg_resources
 import numpy as np
 from bob.pipelines import Sample, SampleSet
-
+from bob.bio.base import load_resource
 
 def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 53)}):
 
@@ -12,10 +12,7 @@ def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 
 
 
 def test_facenet_baseline():
-    config_name = pkg_resources.resource_filename(
-        "bob.bio.face", "config/baseline/facenet.py"
-    )
-    transformer = load([config_name]).transformer
+    transformer = load_resource("facenet_sanderberg", "baseline")
 
     fake_sample = get_fake_sample()
 
@@ -25,10 +22,7 @@ def test_facenet_baseline():
 
 
 def test_inception_resnetv2_msceleb():
-    config_name = pkg_resources.resource_filename(
-        "bob.bio.face", "config/baseline/inception_resnetv2_msceleb.py"
-    )
-    transformer = load([config_name]).transformer
+    transformer = load_resource("inception_resnetv2_msceleb", "baseline")
 
     fake_sample = get_fake_sample()
 
@@ -38,10 +32,7 @@ def test_inception_resnetv2_msceleb():
 
 
 def test_inception_resnetv2_casiawebface():
-    config_name = pkg_resources.resource_filename(
-        "bob.bio.face", "config/baseline/inception_resnetv2_casiawebface.py"
-    )
-    transformer = load([config_name]).transformer
+    transformer = load_resource("inception_resnetv2_casiawebface", "baseline")
 
     fake_sample = get_fake_sample()
 
@@ -51,10 +42,7 @@ def test_inception_resnetv2_casiawebface():
 
 
 def test_inception_resnetv1_msceleb():
-    config_name = pkg_resources.resource_filename(
-        "bob.bio.face", "config/baseline/inception_resnetv1_msceleb.py"
-    )
-    transformer = load([config_name]).transformer
+    transformer = load_resource("inception_resnetv1_msceleb", "baseline")
 
     fake_sample = get_fake_sample()
 
@@ -64,10 +52,7 @@ def test_inception_resnetv1_msceleb():
 
 
 def test_inception_resnetv1_casiawebface():
-    config_name = pkg_resources.resource_filename(
-        "bob.bio.face", "config/baseline/inception_resnetv1_casiawebface.py"
-    )
-    transformer = load([config_name]).transformer
+    transformer = load_resource("inception_resnetv1_casiawebface", "baseline")
 
     fake_sample = get_fake_sample()
 
@@ -79,11 +64,7 @@ def test_inception_resnetv1_casiawebface():
 def test_arcface_insight_tf():
     import tensorflow as tf
     tf.compat.v1.reset_default_graph()
-    
-    config_name = pkg_resources.resource_filename(
-        "bob.bio.face", "config/baseline/arcface_insight_tf.py"
-    )
-    transformer = load([config_name]).transformer
+    transformer = load_resource("arcface_insight_tf", "baseline")
 
     fake_sample = get_fake_sample()
 

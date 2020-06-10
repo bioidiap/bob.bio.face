@@ -46,6 +46,7 @@ requirements:
     - bob.pipelines
     - matplotlib {{ matplotlib }}
     - six {{ six }}
+    - scikit-image
   run:
     - python
     - setuptools

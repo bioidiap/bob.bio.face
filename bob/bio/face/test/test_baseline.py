@@ -19,10 +19,58 @@ def test_facenet_baseline():
 
     fake_sample = get_fake_sample()
 
-    # transformed_sample = transformer.transform([fake_sample])[0].data
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
+
+
+def test_inception_resnetv2_msceleb():
+    config_name = pkg_resources.resource_filename(
+        "bob.bio.face", "config/baseline/inception_resnetv2_msceleb.py"
+    )
+    transformer = load([config_name]).transformer
+
+    fake_sample = get_fake_sample()
 
     transformed_sample = transformer.transform([fake_sample])[0]
     transformed_data = transformed_sample.data
     assert transformed_sample.data.size == 128
 
-    pass
+
+def test_inception_resnetv2_casiawebface():
+    config_name = pkg_resources.resource_filename(
+        "bob.bio.face", "config/baseline/inception_resnetv2_casiawebface.py"
+    )
+    transformer = load([config_name]).transformer
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
+
+
+def test_inception_resnetv1_msceleb():
+    config_name = pkg_resources.resource_filename(
+        "bob.bio.face", "config/baseline/inception_resnetv1_msceleb.py"
+    )
+    transformer = load([config_name]).transformer
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
+
+
+def test_inception_resnetv1_casiawebface():
+    config_name = pkg_resources.resource_filename(
+        "bob.bio.face", "config/baseline/inception_resnetv1_casiawebface.py"
+    )
+    transformer = load([config_name]).transformer
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128

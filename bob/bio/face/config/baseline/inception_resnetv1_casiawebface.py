@@ -1,4 +1,4 @@
-from bob.bio.face.embeddings import FaceNetSanderberg
+from bob.bio.face.embeddings import InceptionResnetv1_CasiaWebFace
 from bob.bio.face.config.baseline.helpers import embedding_transformer_160x160
 
 
@@ -10,4 +10,4 @@ else:
     fixed_positions = None
 
 
-transformer = embedding_transformer_160x160(FaceNetSanderberg(), annotation_type, fixed_positions)
+transformer = embedding_transformer_160x160(InceptionResnetv1_CasiaWebFace(), annotation_type, fixed_positions)

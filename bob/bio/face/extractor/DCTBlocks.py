@@ -8,9 +8,12 @@ import bob.ip.base
 import numpy
 
 from bob.bio.base.extractor import Extractor
+from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.utils import check_array
+from bob.pipelines.sample import SampleBatch
 
 
-class DCTBlocks(Extractor):
+class DCTBlocks(TransformerMixin, BaseEstimator):
 
     """Extracts *Discrete Cosine Transform* (DCT) features from (overlapping) image blocks.
   These features are based on the :py:class:`bob.ip.base.DCTFeatures` class.
@@ -51,16 +54,12 @@ class DCTBlocks(Extractor):
         auto_reduce_coefficients=False,
     ):
 
-        # call base class constructor
-        Extractor.__init__(
-            self,
-            block_size=block_size,
-            block_overlap=block_overlap,
-            number_of_dct_coefficients=number_of_dct_coefficients,
-            normalize_blocks=normalize_blocks,
-            normalize_dcts=normalize_dcts,
-            auto_reduce_coefficients=auto_reduce_coefficients,
-        )
+        self.block_size = (block_size,)
+        self.block_overlap = block_overlap
+        self.number_of_dct_coefficients = number_of_dct_coefficients
+        self.normalize_blocks = normalize_blocks
+        self.normalize_dcts = normalize_dcts
+        self.auto_reduce_coefficients = auto_reduce_coefficients
 
         # block parameters
         block_size = (
@@ -89,12 +88,11 @@ class DCTBlocks(Extractor):
                 )
 
         self.number_of_dct_coefficients = number_of_dct_coefficients
-        self.block_size = block_size 
+        self.block_size = block_size
         self.block_overlap = block_overlap
         self.normalize_blocks = normalize_blocks
         self.normalize_dcts = normalize_dcts
         self._init_non_pickables()
-
 
     def _init_non_pickables(self):
         self.dct_features = bob.ip.base.DCTFeatures(
@@ -105,7 +103,7 @@ class DCTBlocks(Extractor):
             self.normalize_dcts,
         )
 
-    def __call__(self, image):
+    def transform(self, X):
         """__call__(image) -> feature
 
     Computes and returns DCT blocks for the given input image.
@@ -121,21 +119,29 @@ class DCTBlocks(Extractor):
       The extracted DCT features for all blocks inside the image.
       The first index is the block index, while the second index is the DCT coefficient.
     """
-        assert isinstance(image, numpy.ndarray)
-        assert image.ndim == 2
-        assert image.dtype == numpy.float64
 
-        # Computes DCT features
-        return self.dct_features(image)
+        def _extract(image):
+            assert isinstance(image, numpy.ndarray)
+            assert image.ndim == 2
+            assert image.dtype == numpy.float64
 
-    # re-define the train function to get it non-documented
-    def train(*args, **kwargs):
-        raise NotImplementedError(
-            "This function is not implemented and should not be called."
-        )
+            # Computes DCT features
+            return self.dct_features(image)
 
-    def load(*args, **kwargs):
-        pass
+        if isinstance(X, SampleBatch):
+            extracted = []
+            X = check_array(X, allow_nd=True)
+            for x in X:
+                extracted.append(_extract(x))
+            return extracted
+        else:
+            return _extract(X)
+
+    def _more_tags(self):
+        return {"stateless": True, "requires_fit": False}
+
+    def fit(self, X, y=None):
+        return self
 
     def __getstate__(self):
         d = dict(self.__dict__)

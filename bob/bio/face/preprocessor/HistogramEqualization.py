@@ -22,88 +22,87 @@ import bob.ip.base
 import numpy
 from .Base import Base
 from .utils import load_cropper
-from bob.bio.base.preprocessor import Preprocessor
-
-class HistogramEqualization (Base):
-  """Crops the face (if desired) and performs histogram equalization to photometrically enhance the image.
-
-  **Parameters:**
-
-  face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
-    The face image cropper that should be applied to the image.
-    If ``None`` is selected, no face cropping is performed.
-    Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
-
-    .. note:: The given class needs to contain a ``crop_face`` method.
-
-  kwargs
-    Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
-  """
-
-  def __init__(
-      self,
-      face_cropper,
-      **kwargs
-  ):
-
-    Base.__init__(self, **kwargs)
-
-    # call base class constructor with its set of parameters
-    Preprocessor.__init__(
-        self,
-        face_cropper = face_cropper,
-    )
-
-    self.cropper = load_cropper(face_cropper)
 
 
-  def equalize_histogram(self, image):
-    """equalize_histogram(image) -> equalized
+class HistogramEqualization(Base):
+    """Crops the face (if desired) and performs histogram equalization to photometrically enhance the image.
 
-    Performs the histogram equalization on the given image.
+      Parameters:
+      -----------
 
-    **Parameters:**
+      face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
+        The face image cropper that should be applied to the image.
+        If ``None`` is selected, no face cropping is performed.
+        Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
 
-    image : 2D :py:class:`numpy.ndarray`
-      The image to berform histogram equalization with.
-      The image will be transformed to type ``uint8`` before computing the histogram.
+        .. note:: The given class needs to contain a ``crop_face`` method.
 
-    **Returns:**
+      kwargs
+        Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+      """
 
-    equalized : 2D :py:class:`numpy.ndarray` (float)
-      The photometrically enhanced image.
-    """
-    heq = numpy.ndarray(image.shape)
-    bob.ip.base.histogram_equalization(numpy.round(image).astype(numpy.uint8), heq)
-    return heq
+    def __init__(self, face_cropper, **kwargs):
 
+        Base.__init__(self, **kwargs)
 
-  def __call__(self, image, annotations = None):
-    """__call__(image, annotations = None) -> face
+        self.face_cropper = (face_cropper,)
+        self.cropper = load_cropper(face_cropper)
 
-    Aligns the given image according to the given annotations.
+    def equalize_histogram(self, image):
+        """equalize_histogram(image) -> equalized
 
-    First, the desired color channel is extracted from the given image.
-    Afterward, the face is eventually cropped using the ``face_cropper`` specified in the constructor.
-    Then, the image is photometrically enhanced using histogram equalization.
-    Finally, the resulting face is converted to the desired data type.
+            Performs the histogram equalization on the given image.
 
-    **Parameters:**
+            **Parameters:**
 
-    image : 2D or 3D :py:class:`numpy.ndarray`
-      The face image to be processed.
+            image : 2D :py:class:`numpy.ndarray`
+              The image to berform histogram equalization with.
+              The image will be transformed to type ``uint8`` before computing the histogram.
 
-    annotations : dict or ``None``
-      The annotations that fit to the given image.
-      Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
+            **Returns:**
 
-    **Returns:**
+            equalized : 2D :py:class:`numpy.ndarray` (float)
+              The photometrically enhanced image.
+            """
+        heq = numpy.ndarray(image.shape)
+        bob.ip.base.histogram_equalization(numpy.round(image).astype(numpy.uint8), heq)
+        return heq
 
-    face : 2D :py:class:`numpy.ndarray`
-      The cropped and photometrically enhanced face.
-    """
-    image = self.color_channel(image)
-    if self.cropper is not None:
-      image = self.cropper.crop_face(image, annotations)
-    image = self.equalize_histogram(image)
-    return self.data_type(image)
+    def transform(self, X, annotations=None):
+        """
+        Aligns the given image according to the given annotations.
+
+        First, the desired color channel is extracted from the given image.
+        Afterward, the face is eventually cropped using the ``face_cropper`` specified in the constructor.
+        Then, the image is photometrically enhanced using histogram equalization.
+        Finally, the resulting face is converted to the desired data type.
+
+        **Parameters:**
+
+        X : 2D or 3D :py:class:`numpy.ndarray`
+          The face image to be processed.
+
+        annotations : dict or ``None``
+          The annotations that fit to the given image.
+          Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
+
+        **Returns:**
+
+        face : 2D :py:class:`numpy.ndarray`
+          The cropped and photometrically enhanced face.
+        """
+
+        def _crop(image, annotations):
+            image = self.color_channel(image)
+            if self.cropper is not None:
+                image = self.cropper.crop_face(image, annotations)
+            image = self.equalize_histogram(image)
+            return self.data_type(image)
+
+        if isinstance(annotations, list):
+            cropped_images = []
+            for img, annot in zip(X, annotations):
+                cropped_images.append(_crop(img, annot))
+            return cropped_images
+        else:
+            return _crop(X, annotations)

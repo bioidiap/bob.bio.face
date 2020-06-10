@@ -8,9 +8,9 @@ import numpy
 import logging
 
 from .Base import Base
-from bob.bio.base.preprocessor import Preprocessor
 
 logger = logging.getLogger("bob.bio.face")
+from sklearn.utils import check_array
 
 
 class FaceCrop(Base):
@@ -122,15 +122,12 @@ class FaceCrop(Base):
         Base.__init__(self, **kwargs)
 
         # call base class constructor
-        Preprocessor.__init__(
-            self,
-            cropped_image_size=cropped_image_size,
-            cropped_positions=cropped_positions,
-            fixed_positions=fixed_positions,
-            mask_sigma=mask_sigma,
-            mask_neighbors=mask_neighbors,
-            mask_seed=mask_seed,
-        )
+        self.cropped_image_size = cropped_image_size
+        self.cropped_positions = cropped_positions
+        self.fixed_positions = fixed_positions
+        self.mask_sigma = mask_sigma
+        self.mask_neighbors = mask_neighbors
+        self.mask_seed = mask_seed
 
         # check parameters
         assert len(cropped_positions) == 2
@@ -282,61 +279,71 @@ class FaceCrop(Base):
         # check if the required keys are available
         return all(key in annotations for key in self.cropped_keys)
 
-    def __call__(self, image, annotations=None):
+    def transform(self, X, annotations=None):
         """Aligns the given image according to the given annotations.
 
-    First, the desired color channel is extracted from the given image.
-    Afterward, the face is cropped, according to the given ``annotations`` (or
-    to ``fixed_positions``, see :py:meth:`crop_face`). Finally, the resulting
-    face is converted to the desired data type.
+            First, the desired color channel is extracted from the given image.
+            Afterward, the face is cropped, according to the given ``annotations`` (or
+            to ``fixed_positions``, see :py:meth:`crop_face`). Finally, the resulting
+            face is converted to the desired data type.
 
-    Parameters
-    ----------
-    image : 2D or 3D :py:class:`numpy.ndarray`
-        The face image to be processed.
-    annotations : dict or ``None``
-        The annotations that fit to the given image.
+            Parameters
+            ----------
+            image : 2D or 3D :py:class:`numpy.ndarray`
+                The face image to be processed.
+            annotations : dict or ``None``
+                The annotations that fit to the given image.
 
-    Returns
-    -------
-    face : 2D :py:class:`numpy.ndarray`
-        The cropped face.
-    """
-        # if annotations are missing and cannot do anything else return None.
-        if (
-            not self.is_annotations_valid(annotations)
-            and not self.fixed_positions
-            and self.annotator is None
-        ):
-            logger.warn(
-                "Cannot crop face without valid annotations or "
-                "fixed_positions or an annotator. Returning None. "
-                "The annotations were: {}".format(annotations)
-            )
-            return None
+            Returns
+            -------
+            face : 2D :py:class:`numpy.ndarray`
+                The cropped face.
+            """
 
-        # convert to the desired color channel
-        image = self.color_channel(image)
+        def _crop(image, annot):
 
-        # annotate the image if annotations are missing
-        if (
-            not self.is_annotations_valid(annotations)
-            and not self.fixed_positions
-            and self.annotator is not None
-        ):
-            annotations = self.annotator(image, annotations=annotations)
-            if not self.is_annotations_valid(annotations):
+            # if annotations are missing and cannot do anything else return None.
+            if (
+                not self.is_annotations_valid(annot)
+                and not self.fixed_positions
+                and self.annotator is None
+            ):
                 logger.warn(
-                    "The annotator failed and the annotations are missing too"
-                    ". Returning None."
+                    "Cannot crop face without valid annotations or "
+                    "fixed_positions or an annotator. Returning None. "
+                    "The annotations were: {}".format(annot)
                 )
                 return None
 
-        # crop face
-        image = self.crop_face(image, annotations)
+            # convert to the desired color channel
+            image = self.color_channel(image)
 
-        # convert data type
-        return self.data_type(image)
+            # annotate the image if annotations are missing
+            if (
+                not self.is_annotations_valid(annot)
+                and not self.fixed_positions
+                and self.annotator is not None
+            ):
+                annot = self.annotator(image, annotations=annot)
+                if not self.is_annotations_valid(annot):
+                    logger.warn(
+                        "The annotator failed and the annot are missing too"
+                        ". Returning None."
+                    )
+                    return None
+
+            # crop face
+            return self.data_type(self.crop_face(image, annot))
+
+        X = check_array(X, allow_nd=True)
+
+        if isinstance(annotations, list):
+            cropped_images = []
+            for image, annot in zip(X, annotations):
+                cropped_images.append(_crop(image, annot))
+            return cropped_images
+        else:
+            return _crop(X, annotations)
 
     def __getstate__(self):
         d = dict(self.__dict__)

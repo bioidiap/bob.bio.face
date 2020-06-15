@@ -141,8 +141,7 @@ setup(
             'mtcnn                    = bob.bio.face.config.annotator.mtcnn:annotator',
         ],
 
-        #baselines
-        'bob.bio.baseline':[
+        'bob.bio.transformer':[
           'facenet_sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:transformer',
           'inception_resnetv1_casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:transformer',
           'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:transformer',
@@ -150,6 +149,17 @@ setup(
           'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
           'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
         ],
+
+        #baselines
+        'bob.bio.baseline':[
+          'facenet_sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:pipeline',
+          'inception_resnetv1_casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:pipeline',
+          'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline',
+          'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline',
+          'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline',
+          'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
+        ],
+
 
     },
 

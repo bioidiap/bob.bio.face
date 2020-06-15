@@ -148,6 +148,7 @@ setup(
           'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:transformer',
           'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
           'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
+          'gabor_graph = bob.bio.face.config.baseline.gabor_graph:transformer',
         ],
 
         #baselines
@@ -157,7 +158,7 @@ setup(
           'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline',
           'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline',
           'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline',
-          'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
+          'gabor_graph = bob.bio.face.config.baseline.gabor_graph:pipeline',
         ],
 
 

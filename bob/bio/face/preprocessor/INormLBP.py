@@ -22,7 +22,8 @@ import bob.ip.base
 import numpy
 from .Base import Base
 from .utils import load_cropper
-
+from sklearn.utils import check_array
+from bob.pipelines.sample import SampleBatch
 
 class INormLBP(Base):
     """Performs I-Norm LBP on the given image"""
@@ -116,22 +117,20 @@ class INormLBP(Base):
       The cropped and photometrically enhanced face.
     """
 
-        def _crop(image, annotations):
+        def _crop(image, annotations=None):
             image = self.color_channel(image)
             if self.cropper is not None:
-
-                if not isinstance(self.cropper, bob.bio.face.preprocessor.FaceCrop):
-                    self.cropper = self.cropper()
-
-                image = self.cropper.crop_face(image, annotations)
+                image = self.cropper.transform(image, annotations=annotations)
             image = self.lbp_extractor(image)
             return self.data_type(image)
+                
+        if isinstance(X, SampleBatch):
 
-        if isinstance(annotations, list):
-            cropped_images = []
-            for img, annot in zip(X, annotations):
-                cropped_images.append(_crop(img, annot))
-            return cropped_images
+            if annotations is None:
+                return [_crop(data) for data in X]
+            else:
+                return [_crop(data, annot) for data, annot in zip(X, annotations)]
+
         else:
             return _crop(X, annotations)
 

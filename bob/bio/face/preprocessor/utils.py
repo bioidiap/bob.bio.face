@@ -10,16 +10,11 @@ def load_cropper(face_cropper):
         cropper = None
     elif isinstance(face_cropper, six.string_types):
         cropper = bob.bio.base.load_resource(face_cropper, "preprocessor")
-    elif isinstance(face_cropper, (FaceCrop, FaceDetect)):
-        cropper = face_cropper
+    # elif isinstance(face_cropper, (FaceCrop, FaceDetect)):
+    #    cropper = face_cropper
     else:
-        raise ValueError("The given face cropper type is not understood")
+        cropper = face_cropper
 
-    assert (
-        cropper is None
-        or isinstance(cropper, (FaceCrop, FaceDetect))
-        or isinstance(cropper, functools.partial)
-    )
     return cropper
 
 

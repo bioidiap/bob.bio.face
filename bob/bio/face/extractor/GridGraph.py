@@ -73,7 +73,6 @@ class GridGraph(TransformerMixin, BaseEstimator):
         first_node=None,  # one or two integral values, or None -> automatically determined
     ):
 
-
         self.gabor_directions = gabor_directions
         self.gabor_scales = gabor_scales
         self.gabor_sigma = gabor_sigma
@@ -152,7 +151,7 @@ class GridGraph(TransformerMixin, BaseEstimator):
             return self._aligned_graph
 
         # check if a new extractor needs to be created
-        if self._last_image_resolution != image.shape:
+        if self._graph is None or self._last_image_resolution != image.shape:
             self._last_image_resolution = image.shape
             if self.first_node is None:
                 # automatically compute the first node
@@ -203,6 +202,8 @@ class GridGraph(TransformerMixin, BaseEstimator):
     """
 
         def _extract(image):
+            import ipdb; ipdb.set_trace()
+
             assert image.ndim == 2
             assert isinstance(image, numpy.ndarray)
             image = image.astype(numpy.float64)
@@ -223,13 +224,9 @@ class GridGraph(TransformerMixin, BaseEstimator):
             return self.__class__.serialize_jets(jets)
 
         if isinstance(X, SampleBatch):
-            extracted = []
-            X = check_array(X, allow_nd=True)
-            for x in X:
-                extracted.append(_extract(x))
-            return extracted
+            return [_extract(x) for x in X]
         else:
-            return _extract(X)            
+            return _extract(X)
 
     def write_feature(self, feature, feature_file):
         """Writes the feature extracted by the `__call__` function to the given file.

@@ -11,8 +11,8 @@ def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 
     return Sample(data, key="1", annotations=annotations)
 
 
-def test_facenet_baseline():    
-    transformer = load_resource("facenet_sanderberg", "baseline")
+def test_facenet():    
+    transformer = load_resource("facenet_sanderberg", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -22,7 +22,7 @@ def test_facenet_baseline():
 
 
 def test_inception_resnetv2_msceleb():
-    transformer = load_resource("inception_resnetv2_msceleb", "baseline")
+    transformer = load_resource("inception_resnetv2_msceleb", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -32,7 +32,7 @@ def test_inception_resnetv2_msceleb():
 
 
 def test_inception_resnetv2_casiawebface():
-    transformer = load_resource("inception_resnetv2_casiawebface", "baseline")
+    transformer = load_resource("inception_resnetv2_casiawebface", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -42,7 +42,7 @@ def test_inception_resnetv2_casiawebface():
 
 
 def test_inception_resnetv1_msceleb():
-    transformer = load_resource("inception_resnetv1_msceleb", "baseline")
+    transformer = load_resource("inception_resnetv1_msceleb", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -52,7 +52,7 @@ def test_inception_resnetv1_msceleb():
 
 
 def test_inception_resnetv1_casiawebface():
-    transformer = load_resource("inception_resnetv1_casiawebface", "baseline")
+    transformer = load_resource("inception_resnetv1_casiawebface", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -64,10 +64,21 @@ def test_inception_resnetv1_casiawebface():
 def test_arcface_insight_tf():
     import tensorflow as tf
     tf.compat.v1.reset_default_graph()
-    transformer = load_resource("arcface_insight_tf", "baseline")
+    transformer = load_resource("arcface_insight_tf", "transformer")
 
     fake_sample = get_fake_sample()
 
     transformed_sample = transformer.transform([fake_sample])[0]
     transformed_data = transformed_sample.data
     assert transformed_sample.data.size == 512
+
+
+def test_gabor_graph():
+    transformer = load_resource("gabor_graph", "transformer")
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+
+    assert len(transformed_sample.data) == 80

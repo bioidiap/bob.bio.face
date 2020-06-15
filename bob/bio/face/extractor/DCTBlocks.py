@@ -129,11 +129,7 @@ class DCTBlocks(TransformerMixin, BaseEstimator):
             return self.dct_features(image)
 
         if isinstance(X, SampleBatch):
-            extracted = []
-            X = check_array(X, allow_nd=True)
-            for x in X:
-                extracted.append(_extract(x))
-            return extracted
+            return [_extract(x) for x in X]
         else:
             return _extract(X)
 

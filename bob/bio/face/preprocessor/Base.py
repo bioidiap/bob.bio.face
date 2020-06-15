@@ -44,6 +44,7 @@ class Base(TransformerMixin, BaseEstimator):
     channel : 2D or 3D :py:class:`numpy.ndarray`
       The extracted color channel.
     """
+
         if image.ndim == 2:
             if self.channel == "rgb":
                 return bob.ip.color.gray_to_rgb(image)

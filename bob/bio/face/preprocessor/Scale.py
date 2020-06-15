@@ -31,7 +31,7 @@ class Scale(TransformerMixin, BaseEstimator):
     def fit(self, X, y=None):
         return self
 
-    def transform(self, X):
+    def transform(self, X, annotations=None):
         """
         Resize an image given a shape
 
@@ -44,15 +44,18 @@ class Scale(TransformerMixin, BaseEstimator):
           target_img_size: tuple
              Target image size
 
-        """
-
+        """        
         def _resize(x):
             return resize(x, self.target_img_size, anti_aliasing=True)
 
         X = check_array(X, allow_nd=True)
 
-        if X.ndim <= 3 and X.ndim >= 4:
+        if X.ndim < 2 or X.ndim > 4:
             raise ValueError(f"Invalid image shape {X.shape}")
+
+        if X.ndim == 2:
+            # Checking if it's bob format CxHxW
+            return _resize(X)
 
         if X.ndim == 3:
             # Checking if it's bob format CxHxW

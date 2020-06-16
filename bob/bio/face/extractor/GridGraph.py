@@ -7,12 +7,10 @@ import bob.io.base
 
 import numpy
 import math
-from sklearn.base import TransformerMixin, BaseEstimator
-from sklearn.utils import check_array
-from bob.pipelines.sample import SampleBatch
+from bob.bio.base.extractor import Extractor
 
 
-class GridGraph(TransformerMixin, BaseEstimator):
+class GridGraph(Extractor):
     """Extracts Gabor jets in a grid structure [GHW12]_ using functionalities from :ref:`bob.ip.gabor <bob.ip.gabor>`.
 
   The grid can be either aligned to the eye locations (in which case the grid might be rotated), or a fixed grid graph can be extracted.
@@ -73,6 +71,26 @@ class GridGraph(TransformerMixin, BaseEstimator):
         first_node=None,  # one or two integral values, or None -> automatically determined
     ):
 
+        # call base class constructor
+        Extractor.__init__(
+            self,
+            gabor_directions=gabor_directions,
+            gabor_scales=gabor_scales,
+            gabor_sigma=gabor_sigma,
+            gabor_maximum_frequency=gabor_maximum_frequency,
+            gabor_frequency_step=gabor_frequency_step,
+            gabor_power_of_k=gabor_power_of_k,
+            gabor_dc_free=gabor_dc_free,
+            normalize_gabor_jets=normalize_gabor_jets,
+            eyes=eyes,
+            nodes_between_eyes=nodes_between_eyes,
+            nodes_along_eyes=nodes_along_eyes,
+            nodes_above_eyes=nodes_above_eyes,
+            nodes_below_eyes=nodes_below_eyes,
+            node_distance=node_distance,
+            first_node=first_node,
+        )
+
         self.gabor_directions = gabor_directions
         self.gabor_scales = gabor_scales
         self.gabor_sigma = gabor_sigma
@@ -121,17 +139,10 @@ class GridGraph(TransformerMixin, BaseEstimator):
                 raise ValueError(
                     "Please specify either 'eyes' or the grid parameters 'node_distance' (and 'first_node')!"
                 )
-
-            if not hasattr(self, "_last_image_resolution"):
-                self._last_image_resolution = None
-
-            if not hasattr(self, "_aligned_graph"):
-                self._aligned_graph = None
-
+            self._aligned_graph = None
+            self._last_image_resolution = None
             if isinstance(self.node_distance, (int, float)):
                 self.node_distance = (int(self.node_distance), int(self.node_distance))
-
-        self._graph = None
 
     def _extractor(self, image):
         """Creates an extractor based on the given image.
@@ -151,7 +162,7 @@ class GridGraph(TransformerMixin, BaseEstimator):
             return self._aligned_graph
 
         # check if a new extractor needs to be created
-        if self._graph is None or self._last_image_resolution != image.shape:
+        if self._last_image_resolution != image.shape:
             self._last_image_resolution = image.shape
             if self.first_node is None:
                 # automatically compute the first node
@@ -184,7 +195,7 @@ class GridGraph(TransformerMixin, BaseEstimator):
 
         return self._graph
 
-    def transform(self, X):
+    def __call__(self, image):
         """__call__(image) -> feature
 
     Returns a list of Gabor jets extracted from the given image.
@@ -201,32 +212,24 @@ class GridGraph(TransformerMixin, BaseEstimator):
       The 2D location of the jet's nodes is not returned.
     """
 
-        def _extract(image):
-            import ipdb; ipdb.set_trace()
+        assert image.ndim == 2
+        assert isinstance(image, numpy.ndarray)
+        image = image.astype(numpy.float64)
+        assert image.dtype == numpy.float64
 
-            assert image.ndim == 2
-            assert isinstance(image, numpy.ndarray)
-            image = image.astype(numpy.float64)
-            assert image.dtype == numpy.float64
+        extractor = self._extractor(image)
 
-            extractor = self._extractor(image)
+        # perform Gabor wavelet transform
+        self.gwt.transform(image, self.trafo_image)
+        # extract face graph
+        jets = extractor.extract(self.trafo_image)
 
-            # perform Gabor wavelet transform
-            self.gwt.transform(image, self.trafo_image)
-            # extract face graph
-            jets = extractor.extract(self.trafo_image)
+        # normalize the Gabor jets of the graph only
+        if self.normalize_jets:
+            [j.normalize() for j in jets]
 
-            # normalize the Gabor jets of the graph only
-            if self.normalize_jets:
-                [j.normalize() for j in jets]
-
-            # return the extracted face graph
-            return self.__class__.serialize_jets(jets)
-
-        if isinstance(X, SampleBatch):
-            return [_extract(x) for x in X]
-        else:
-            return _extract(X)
+        # return the extracted face graph
+        return self.__class__.serialize_jets(jets)
 
     def write_feature(self, feature, feature_file):
         """Writes the feature extracted by the `__call__` function to the given file.
@@ -265,6 +268,15 @@ class GridGraph(TransformerMixin, BaseEstimator):
             bob.ip.gabor.load_jets(bob.io.base.HDF5File(feature_file))
         )
 
+    # re-define the train function to get it non-documented
+    def train(*args, **kwargs):
+        raise NotImplementedError(
+            "This function is not implemented and should not be called."
+        )
+
+    def load(*args, **kwargs):
+        pass
+
     def __getstate__(self):
         d = dict(self.__dict__)
         d.pop("gwt")
@@ -285,9 +297,3 @@ class GridGraph(TransformerMixin, BaseEstimator):
             sj.jet = jet.jet
             serialize_jets.append(sj)
         return serialize_jets
-
-    def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
-
-    def fit(self, X, y=None):
-        return self

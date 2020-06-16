@@ -33,6 +33,14 @@ import pkg_resources
 
 regenerate_refs = False
 
+# Cropping
+CROPPED_IMAGE_HEIGHT = 80
+CROPPED_IMAGE_WIDTH = CROPPED_IMAGE_HEIGHT * 4 // 5
+
+# eye positions for frontal images
+RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
+LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
+
 
 def _compare(
     data,
@@ -60,9 +68,10 @@ def _data():
 def test_dct_blocks():
     # read input
     data = _data()
-    dct = bob.bio.base.load_resource(
-        "dct-blocks", "extractor", preferred_package="bob.bio.face"
+    dct = bob.bio.face.extractor.DCTBlocks(
+        block_size=12, block_overlap=11, number_of_dct_coefficients=45
     )
+
     assert isinstance(dct, bob.bio.face.extractor.DCTBlocks)
 
     # generate smaller extractor, using mixed tuple and int input for the block size and overlap
@@ -81,8 +90,13 @@ def test_dct_blocks():
 
 def test_graphs():
     data = _data()
-    graph = bob.bio.base.load_resource(
-        "grid-graph", "extractor", preferred_package="bob.bio.face"
+    graph = bob.bio.face.extractor.GridGraph(
+        # Gabor parameters
+        gabor_sigma=math.sqrt(2.0) * math.pi,
+        # what kind of information to extract
+        normalize_gabor_jets=True,
+        # setup of the fixed grid
+        node_distance=(8, 8),
     )
     assert isinstance(graph, bob.bio.face.extractor.GridGraph)
 
@@ -90,7 +104,7 @@ def test_graphs():
     graph = bob.bio.face.extractor.GridGraph(node_distance=24)
 
     # extract features
-    feature = graph.transform(data)
+    feature = graph(data)
 
     reference = pkg_resources.resource_filename(
         "bob.bio.face.test", "data/graph_regular.hdf5"
@@ -106,8 +120,9 @@ def test_graphs():
     assert all(numpy.allclose(r.jet, f.jet) for r, f in zip(reference, feature))
 
     # get reference face graph extractor
-    cropper = bob.bio.base.load_resource(
-        "face-crop-eyes", "preprocessor", preferred_package="bob.bio.face"
+    cropper = bob.bio.face.preprocessor.FaceCrop(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
     eyes = cropper.cropped_positions
     # generate aligned graph extractor
@@ -131,10 +146,6 @@ def test_graphs():
 
 def test_lgbphs():
     data = _data()
-    lgbphs = bob.bio.base.load_resource(
-        "lgbphs", "extractor", preferred_package="bob.bio.face"
-    )
-    assert isinstance(lgbphs, bob.bio.face.extractor.LGBPHS)
 
     # in this test, we use a smaller setup of the LGBPHS features
     lgbphs = bob.bio.face.extractor.LGBPHS(
@@ -171,22 +182,3 @@ def test_lgbphs():
         "bob.bio.face.test", "data/lgbphs_with_phase.hdf5"
     )
     _compare(feature, reference)
-
-
-"""
-  def test05_sift_key_points(self):
-    # check if VLSIFT is available
-    import bob.ip.base
-    if not hasattr(bob.ip.base, "VLSIFT"):
-      raise SkipTest("VLSIFT is not part of bob.ip.base; maybe SIFT headers aren't installed in your system?")
-
-    # we need the preprocessor tool to actually read the data
-    preprocessor = facereclib.preprocessing.Keypoints()
-    data = preprocessor.read_data(self.input_dir('key_points.hdf5'))
-    # now, we extract features from it
-    extractor = self.config('sift')
-    feature = self.execute(extractor, data, 'sift.hdf5', epsilon=1e-4)
-    self.assertEqual(len(feature.shape), 1)
-
-
-"""

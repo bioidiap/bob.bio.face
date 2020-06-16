@@ -278,7 +278,7 @@ class LGBPHS(TransformerMixin, BaseEstimator):
         if isinstance(X, SampleBatch):
             return [_extract(x) for x in X]
         else:
-            return _extract(X) 
+            return _extract(X)
 
     def __getstate__(self):
         d = dict(self.__dict__)

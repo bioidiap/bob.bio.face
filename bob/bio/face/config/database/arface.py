@@ -1,11 +1,13 @@
 #!/usr/bin/env python
 
+from bob.bio.base.pipelines.vanilla_biometrics import DatabaseConnector
+from bob.extension import rc
 from bob.bio.face.database import ARFaceBioDatabase
 
-arface_directory = "[YOUR_ARFACE_DIRECTORY]"
+arface_directory = rc["bob.db.arface.directory"]
 
-database = ARFaceBioDatabase(
-    original_directory=arface_directory,
-    original_extension=".png",
-    protocol='all'
+database = DatabaseConnector(
+    ARFaceBioDatabase(
+        original_directory=arface_directory, original_extension=".png", protocol="all"
+    )
 )

@@ -108,8 +108,6 @@ setup(
         'bob.bio.database': [
             'arface            = bob.bio.face.config.database.arface:database',
             'atnt              = bob.bio.face.config.database.atnt:database',
-            'caspeal           = bob.bio.face.config.database.caspeal:database',
-            'frgc              = bob.bio.face.config.database.frgc:database',
             'gbu               = bob.bio.face.config.database.gbu:database',
 
             'ijbc-11              = bob.bio.face.config.database.ijbc:ijbc_11',
@@ -124,8 +122,6 @@ setup(
             'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_spoof',
             'multipie          = bob.bio.face.config.database.multipie:database',
             'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
-            'scface            = bob.bio.face.config.database.scface:database',
-            'xm2vts            = bob.bio.face.config.database.xm2vts:database',
             'replay-img-licit  = bob.bio.face.config.database.replay:replay_licit',
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
             'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
@@ -149,6 +145,7 @@ setup(
           'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
           'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
           'gabor_graph = bob.bio.face.config.baseline.gabor_graph:transformer',
+          'lgbphs = bob.bio.face.config.baseline.lgbphs:transformer',
         ],
 
         #baselines
@@ -159,6 +156,9 @@ setup(
           'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline',
           'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline',
           'gabor_graph = bob.bio.face.config.baseline.gabor_graph:pipeline',
+          'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
+          'lgbphs = bob.bio.face.config.baseline.lgbphs:pipeline',
+          'lda = bob.bio.face.config.baseline.lda:pipeline',
         ],
 
 

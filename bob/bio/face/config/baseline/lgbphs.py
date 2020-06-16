@@ -10,6 +10,8 @@ import bob.bio.face
 from sklearn.pipeline import make_pipeline
 from bob.pipelines import wrap
 import tempfile
+import bob.math
+
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
 if "database" in locals():
@@ -27,42 +29,42 @@ face_cropper, transform_extra_arguments = crop_80x64(
     annotation_type, fixed_positions, color_channel="gray"
 )
 
-preprocessor = bob.bio.face.preprocessor.INormLBP(
+preprocessor = bob.bio.face.preprocessor.TanTriggs(
     face_cropper=face_cropper, dtype=np.float64
 )
 
 
 #### FEATURE EXTRACTOR ######
 
-# legacy objects needs to be wrapped with legacy transformers
-from bob.bio.base.transformers import ExtractorTransformer
+lgbphs = bob.bio.face.extractor.LGBPHS(
+    # block setup
+    block_size = 8,
+    block_overlap = 0,
+    # Gabor parameters
+    gabor_sigma = math.sqrt(2.) * math.pi,
+    # LBP setup (we use the defaults)
 
-gabor_graph = ExtractorTransformer(
-    bob.bio.face.extractor.GridGraph(
-        # Gabor parameters
-        gabor_sigma=math.sqrt(2.0) * math.pi,
-        # what kind of information to extract
-        normalize_gabor_jets=True,
-        # setup of the fixed grid
-        node_distance=(8, 8),
-    )
+    # histogram setup
+    sparse_histogram = True
 )
 
 transformer = make_pipeline(
     wrap(
         ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
     ),
-    wrap(["sample"], gabor_graph),
+    wrap(["sample"], lgbphs),
 )
 
 
-gabor_jet = bob.bio.face.algorithm.GaborJet(
-    gabor_jet_similarity_type="PhaseDiffPlusCanberra",
-    multiple_feature_scoring="max_jet",
-    gabor_sigma=math.sqrt(2.0) * math.pi,
+
+### BIOMETRIC ALGORITHM
+histogram = bob.bio.face.algorithm.Histogram(
+    distance_function = bob.math.histogram_intersection,
+    is_distance_function = False
 )
+
 
 tempdir = tempfile.TemporaryDirectory()
-algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir.name)
+algorithm = BioAlgorithmLegacy(histogram, base_dir=tempdir.name)
 
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)

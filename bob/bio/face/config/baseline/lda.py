@@ -4,12 +4,14 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     BioAlgorithmLegacy,
 )
 from bob.bio.face.config.baseline.helpers import crop_80x64
-import math
 import numpy as np
 import bob.bio.face
 from sklearn.pipeline import make_pipeline
 from bob.pipelines import wrap
 import tempfile
+from bob.bio.base.transformers import AlgorithmTransformer
+from bob.pipelines.transformers import SampleLinearize
+import os
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
 if "database" in locals():
@@ -27,42 +29,36 @@ face_cropper, transform_extra_arguments = crop_80x64(
     annotation_type, fixed_positions, color_channel="gray"
 )
 
-preprocessor = bob.bio.face.preprocessor.INormLBP(
+preprocessor = bob.bio.face.preprocessor.TanTriggs(
     face_cropper=face_cropper, dtype=np.float64
 )
 
 
 #### FEATURE EXTRACTOR ######
 
-# legacy objects needs to be wrapped with legacy transformers
-from bob.bio.base.transformers import ExtractorTransformer
+tempdir = tempfile.TemporaryDirectory()
+lda = bob.bio.base.algorithm.LDA(use_pinv=True, pca_subspace_dimension=0.90)
 
-gabor_graph = ExtractorTransformer(
-    bob.bio.face.extractor.GridGraph(
-        # Gabor parameters
-        gabor_sigma=math.sqrt(2.0) * math.pi,
-        # what kind of information to extract
-        normalize_gabor_jets=True,
-        # setup of the fixed grid
-        node_distance=(8, 8),
-    )
+lda_transformer = AlgorithmTransformer(
+    lda, projector_file=os.path.join(tempdir.name, "Projector.hdf5")
 )
+
 
 transformer = make_pipeline(
     wrap(
         ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
     ),
-    wrap(["sample"], gabor_graph),
+    SampleLinearize(),
+    wrap(["sample"], lda_transformer),
 )
 
 
-gabor_jet = bob.bio.face.algorithm.GaborJet(
-    gabor_jet_similarity_type="PhaseDiffPlusCanberra",
-    multiple_feature_scoring="max_jet",
-    gabor_sigma=math.sqrt(2.0) * math.pi,
-)
+### BIOMETRIC ALGORITHM
 
-tempdir = tempfile.TemporaryDirectory()
-algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir.name)
+algorithm = BioAlgorithmLegacy(
+    lda,
+    base_dir=tempdir.name,
+    projector_file=os.path.join(tempdir.name, "Projector.hdf5"),
+)
 
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)

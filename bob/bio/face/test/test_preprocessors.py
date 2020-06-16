@@ -29,6 +29,15 @@ import bob.bio.face
 import bob.db.base
 
 
+# Cropping
+CROPPED_IMAGE_HEIGHT = 80
+CROPPED_IMAGE_WIDTH = CROPPED_IMAGE_HEIGHT * 4 // 5
+
+# eye positions for frontal images
+RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
+LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
+
+
 def _compare(
     data,
     reference,
@@ -61,8 +70,9 @@ def _annotation():
 
 
 def test_base():
-    base = bob.bio.base.load_resource(
-        "base", "preprocessor", preferred_package="bob.bio.face"
+    base = bob.bio.face.preprocessor.Base(
+      color_channel = 'gray',
+      dtype = numpy.float64
     )
     assert isinstance(base, bob.bio.face.preprocessor.Base)
 
@@ -95,9 +105,12 @@ def test_face_crop():
     # read input
     image, annotation = _image(), _annotation()
 
-    cropper = bob.bio.base.load_resource(
-        "face-crop-eyes", "preprocessor", preferred_package="bob.bio.face"
+    # define the preprocessor
+    cropper = bob.bio.face.preprocessor.FaceCrop(
+      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
     )
+
     assert isinstance(cropper, bob.bio.face.preprocessor.FaceCrop)
     assert isinstance(cropper, bob.bio.face.preprocessor.Base)
 
@@ -140,9 +153,16 @@ def test_face_crop():
 
 def test_face_detect():
     image, annotation = _image(), None
-    cropper = bob.bio.base.load_resource(
-        "face-detect", "preprocessor", preferred_package="bob.bio.face"
+    face_cropper = bob.bio.face.preprocessor.FaceCrop(
+      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
     )
+
+    cropper = bob.bio.face.preprocessor.FaceDetect(
+      face_cropper = face_cropper,
+      use_flandmark = False
+    )
+
     assert isinstance(cropper, bob.bio.face.preprocessor.FaceDetect)
     assert isinstance(cropper, bob.bio.face.preprocessor.Base)
     assert cropper.flandmark is None
@@ -156,7 +176,8 @@ def test_face_detect():
 
     # execute face detector with flandmark
     cropper = bob.bio.face.preprocessor.FaceDetect(
-        face_cropper="face-crop-eyes", use_flandmark=True
+      face_cropper = face_cropper,
+      use_flandmark = True
     )
     reference = pkg_resources.resource_filename(
         "bob.bio.face.test", "data/flandmark.hdf5"
@@ -164,27 +185,18 @@ def test_face_detect():
     _compare(cropper.transform(image, annotation), reference)
     assert abs(cropper.quality - 39.209601948013685) < 1e-5
 
-    # execute face detector with tan-triggs
-    cropper = bob.bio.face.preprocessor.TanTriggs(face_cropper="landmark-detect")
-    preprocessed = cropper.transform(image, annotation)
-    # load reference and perform Tan-Triggs
-    detected = bob.bio.base.load(
-        pkg_resources.resource_filename("bob.bio.face.test", "data/flandmark.hdf5")
-    )
-    tan_triggs = bob.bio.base.load_resource(
-        "tan-triggs", "preprocessor", preferred_package="bob.bio.face"
-    )
-    reference = tan_triggs.transform(detected)
-    assert numpy.allclose(preprocessed, reference, atol=1e-5)
-
 
 def test_tan_triggs():
     # read input
     image, annotation = _image(), _annotation()
 
-    preprocessor = bob.bio.base.load_resource(
-        "tan-triggs-crop", "preprocessor", preferred_package="bob.bio.face"
+    face_cropper = bob.bio.face.preprocessor.FaceCrop(
+      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
     )
+
+    preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=face_cropper)
+
     assert isinstance(preprocessor, bob.bio.face.preprocessor.TanTriggs)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)    
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
@@ -198,9 +210,7 @@ def test_tan_triggs():
     )
 
     # test the preprocessor without cropping
-    preprocessor = bob.bio.base.load_resource(
-        "tan-triggs", "preprocessor", preferred_package="bob.bio.face"
-    )
+    preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=None)
     assert preprocessor.cropper is None
     # result must be identical to the original face cropper (same eyes are used)
     _compare(
@@ -210,9 +220,11 @@ def test_tan_triggs():
         )
     )
 
-    preprocessor = bob.bio.base.load_resource(
-        "tan-triggs-landmark", "preprocessor", preferred_package="bob.bio.face"
+    face_detector = bob.bio.face.preprocessor.FaceDetect(
+        face_cropper = face_cropper,
+        use_flandmark = True
     )
+    preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=face_detector)
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
     assert preprocessor.cropper.flandmark is not None
 
@@ -220,10 +232,16 @@ def test_tan_triggs():
 def test_inorm_lbp():
     # read input
     image, annotation = _image(), _annotation()
-
-    preprocessor = bob.bio.base.load_resource(
-        "inorm-lbp-crop", "preprocessor", preferred_package="bob.bio.face"
+    face_cropper = bob.bio.face.preprocessor.FaceCrop(
+      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
     )
+
+    preprocessor = bob.bio.face.preprocessor.INormLBP(
+      face_cropper = face_cropper,
+      dtype = numpy.float64
+    )
+
     assert isinstance(preprocessor, bob.bio.face.preprocessor.INormLBP)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
@@ -236,13 +254,19 @@ def test_inorm_lbp():
     )
 
     # load the preprocessor without cropping
-    preprocessor = bob.bio.base.load_resource(
-        "inorm-lbp", "preprocessor", preferred_package="bob.bio.face"
+    preprocessor = bob.bio.face.preprocessor.INormLBP(
+      face_cropper = None,      
     )
     assert preprocessor.cropper is None
     # load the preprocessor landmark detection
-    preprocessor = bob.bio.base.load_resource(
-        "inorm-lbp-landmark", "preprocessor", preferred_package="bob.bio.face"
+    face_detector = bob.bio.face.preprocessor.FaceDetect(
+        face_cropper = face_cropper,
+        use_flandmark = True
+    )
+
+    preprocessor = bob.bio.face.preprocessor.INormLBP(
+      face_cropper = face_detector,
+      dtype = numpy.float64
     )
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
 
@@ -251,9 +275,14 @@ def test_heq():
     # read input
     image, annotation = _image(), _annotation()
 
-    preprocessor = bob.bio.base.load_resource(
-        "histogram-crop", "preprocessor", preferred_package="bob.bio.face"
+    face_cropper = bob.bio.face.preprocessor.FaceCrop(
+      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
     )
+    preprocessor = bob.bio.face.preprocessor.HistogramEqualization(
+      face_cropper = face_cropper
+    )
+
     assert isinstance(preprocessor, bob.bio.face.preprocessor.HistogramEqualization)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)    
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
@@ -266,14 +295,22 @@ def test_heq():
     )
 
     # load the preprocessor without cropping
-    preprocessor = bob.bio.base.load_resource(
-        "histogram", "preprocessor", preferred_package="bob.bio.face"
+    preprocessor = bob.bio.face.preprocessor.HistogramEqualization(
+      face_cropper = None
     )
     assert preprocessor.cropper is None
     # load the preprocessor landmark detection
-    preprocessor = bob.bio.base.load_resource(
-        "histogram-landmark", "preprocessor", preferred_package="bob.bio.face"
+
+    face_detector = bob.bio.face.preprocessor.FaceDetect(
+        face_cropper = face_cropper,
+        use_flandmark = True
     )
+
+    preprocessor = bob.bio.face.preprocessor.HistogramEqualization(
+      face_cropper = face_detector,
+      dtype = numpy.float64
+    )
+
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)
 
 
@@ -281,9 +318,14 @@ def test_sqi():
     # read input
     image, annotation = _image(), _annotation()
 
-    preprocessor = bob.bio.base.load_resource(
-        "self-quotient-crop", "preprocessor", preferred_package="bob.bio.face"
+    face_cropper = bob.bio.face.preprocessor.FaceCrop(
+      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
     )
+    preprocessor = bob.bio.face.preprocessor.SelfQuotientImage(
+      face_cropper = face_cropper
+    )
+
     assert isinstance(preprocessor, bob.bio.face.preprocessor.SelfQuotientImage)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)    
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
@@ -296,12 +338,18 @@ def test_sqi():
     )
 
     # load the preprocessor without cropping
-    preprocessor = bob.bio.base.load_resource(
-        "self-quotient", "preprocessor", preferred_package="bob.bio.face"
+    preprocessor = bob.bio.face.preprocessor.SelfQuotientImage(
+      face_cropper = None
     )
     assert preprocessor.cropper is None
     # load the preprocessor landmark detection
-    preprocessor = bob.bio.base.load_resource(
-        "self-quotient-landmark", "preprocessor", preferred_package="bob.bio.face"
+    face_detector = bob.bio.face.preprocessor.FaceDetect(
+        face_cropper = face_cropper,
+        use_flandmark = True
     )
+
+    preprocessor = bob.bio.face.preprocessor.SelfQuotientImage(
+      face_cropper = face_detector
+    )
+
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceDetect)

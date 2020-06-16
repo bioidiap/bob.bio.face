@@ -22,6 +22,7 @@ import bob.ip.base
 import numpy
 from .Base import Base
 from .utils import load_cropper
+from bob.pipelines.sample import SampleBatch
 
 
 class HistogramEqualization(Base):
@@ -95,14 +96,15 @@ class HistogramEqualization(Base):
         def _crop(image, annotations):
             image = self.color_channel(image)
             if self.cropper is not None:
-                image = self.cropper.crop_face(image, annotations)
+                image = self.cropper.transform(image, annotations)
             image = self.equalize_histogram(image)
             return self.data_type(image)
 
-        if isinstance(annotations, list):
-            cropped_images = []
-            for img, annot in zip(X, annotations):
-                cropped_images.append(_crop(img, annot))
-            return cropped_images
+        if isinstance(X, SampleBatch):
+            if annotations is None:
+                return [_crop(data) for data in X]
+            else:
+                return [_crop(data, annot) for data, annot in zip(X, annotations)]
         else:
             return _crop(X, annotations)
+

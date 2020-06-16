@@ -34,88 +34,145 @@ seed_value = 5489
 
 
 def test_gabor_jet():
-  jets = bob.bio.base.load_resource("gabor-jet", "algorithm", preferred_package='bob.bio.face')
-  assert isinstance(jets, bob.bio.face.algorithm.GaborJet)
-  assert isinstance(jets, bob.bio.base.algorithm.Algorithm)
-  assert not jets.performs_projection
-  assert not jets.requires_projector_training
-  assert not jets.use_projected_features_for_enrollment
-  assert not jets.split_training_features_by_client
-  assert not jets.requires_enroller_training
+    jets = bob.bio.face.algorithm.GaborJet(
+        # Gabor jet comparison
+        gabor_jet_similarity_type="PhaseDiffPlusCanberra",
+        multiple_feature_scoring="max_jet",
+        # Gabor wavelet setup
+        gabor_sigma=math.sqrt(2.0) * math.pi,
+    )
 
-  # read input
-  feature = bob.ip.gabor.load_jets(bob.io.base.HDF5File(pkg_resources.resource_filename("bob.bio.face.test", "data/graph_regular.hdf5")))
+    assert isinstance(jets, bob.bio.face.algorithm.GaborJet)
+    assert isinstance(jets, bob.bio.base.algorithm.Algorithm)
+    assert not jets.performs_projection
+    assert not jets.requires_projector_training
+    assert not jets.use_projected_features_for_enrollment
+    assert not jets.split_training_features_by_client
+    assert not jets.requires_enroller_training
 
-  # enroll
-  model = jets.enroll([feature, feature])
-  assert len(model) == len(feature)
-  assert all(len(m) == 2 for m in model)
-  assert all(model[n][i] == feature[n] for n in range(len(feature)) for i in range(2))
+    # read input
+    feature = bob.ip.gabor.load_jets(
+        bob.io.base.HDF5File(
+            pkg_resources.resource_filename(
+                "bob.bio.face.test", "data/graph_regular.hdf5"
+            )
+        )
+    )
 
-  # score
-  assert abs(jets.score(model, feature) - 1.) < 1e-8
-  assert abs(jets.score_for_multiple_probes(model, [feature, feature]) - 1.) < 1e-8
+    # enroll
+    model = jets.enroll([feature, feature])
+    assert len(model) == len(feature)
+    assert all(len(m) == 2 for m in model)
+    assert all(model[n][i] == feature[n] for n in range(len(feature)) for i in range(2))
 
+    # score
+    assert abs(jets.score(model, feature) - 1.0) < 1e-8
+    assert abs(jets.score_for_multiple_probes(model, [feature, feature]) - 1.0) < 1e-8
 
-  # test averaging
-  jets = bob.bio.face.algorithm.GaborJet(
-    "PhaseDiffPlusCanberra",
-    multiple_feature_scoring = "average_model"
-  )
-  model = jets.enroll([feature, feature])
-  assert len(model) == len(feature)
-  assert all(len(m) == 1 for m in model)
+    # test averaging
+    jets = bob.bio.face.algorithm.GaborJet(
+        "PhaseDiffPlusCanberra", multiple_feature_scoring="average_model"
+    )
+    model = jets.enroll([feature, feature])
+    assert len(model) == len(feature)
+    assert all(len(m) == 1 for m in model)
 
-  # absoulte values must be identical
-  assert all(numpy.allclose(model[n][0].abs, feature[n].abs) for n in range(len(model)))
-  # phases might differ with 2 Pi
-  for n in range(len(model)):
-    for j in range(len(model[n][0].phase)):
-      assert any(abs(model[n][0].phase[j] - feature[n].phase[j] - k*2.*math.pi) < 1e-5 for k in (0, -2, 2))
+    # absoulte values must be identical
+    assert all(
+        numpy.allclose(model[n][0].abs, feature[n].abs) for n in range(len(model))
+    )
+    # phases might differ with 2 Pi
+    for n in range(len(model)):
+        for j in range(len(model[n][0].phase)):
+            assert any(
+                abs(model[n][0].phase[j] - feature[n].phase[j] - k * 2.0 * math.pi)
+                < 1e-5
+                for k in (0, -2, 2)
+            )
 
-  assert abs(jets.score(model, feature) - 1.) < 1e-8
-  assert abs(jets.score_for_multiple_probes(model, [feature, feature]) - 1.) < 1e-8
+    assert abs(jets.score(model, feature) - 1.0) < 1e-8
+    assert abs(jets.score_for_multiple_probes(model, [feature, feature]) - 1.0) < 1e-8
 
 
 def test_histogram():
-  histogram = bob.bio.base.load_resource("histogram", "algorithm", preferred_package='bob.bio.face')
-  assert isinstance(histogram, bob.bio.face.algorithm.Histogram)
-  assert isinstance(histogram, bob.bio.base.algorithm.Algorithm)
-  assert not histogram.performs_projection
-  assert not histogram.requires_projector_training
-  assert not histogram.use_projected_features_for_enrollment
-  assert not histogram.split_training_features_by_client
-  assert not histogram.requires_enroller_training
+    histogram = bob.bio.face.algorithm.Histogram(
+      distance_function = bob.math.histogram_intersection,
+      is_distance_function = False
+    )
 
-  # read input
-  feature1 = bob.bio.base.load(pkg_resources.resource_filename('bob.bio.face.test', 'data/lgbphs_sparse.hdf5'))
-  feature2 = bob.bio.base.load(pkg_resources.resource_filename('bob.bio.face.test', 'data/lgbphs_with_phase.hdf5'))
+    assert isinstance(histogram, bob.bio.face.algorithm.Histogram)
+    assert isinstance(histogram, bob.bio.base.algorithm.Algorithm)
+    assert not histogram.performs_projection
+    assert not histogram.requires_projector_training
+    assert not histogram.use_projected_features_for_enrollment
+    assert not histogram.split_training_features_by_client
+    assert not histogram.requires_enroller_training
 
-  # enroll model from sparse features
-  model1 = histogram.enroll([feature1, feature1])
-  assert model1.shape == feature1.shape
-  assert numpy.allclose(model1, feature1)
+    # read input
+    feature1 = bob.bio.base.load(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/lgbphs_sparse.hdf5")
+    )
+    feature2 = bob.bio.base.load(
+        pkg_resources.resource_filename(
+            "bob.bio.face.test", "data/lgbphs_with_phase.hdf5"
+        )
+    )
 
-  # enroll from non-sparse features
-  model2 = histogram.enroll([feature2, feature2])
-  assert model2.shape == feature2.shape
-  assert numpy.allclose(model2, feature2)
+    # enroll model from sparse features
+    model1 = histogram.enroll([feature1, feature1])
+    assert model1.shape == feature1.shape
+    assert numpy.allclose(model1, feature1)
 
-  # score without phase and sparse
-  reference = 40960.
-  assert abs(histogram.score(model1, feature1) - reference) < 1e-5
-  assert abs(histogram.score_for_multiple_probes(model1, [feature1, feature1]) - reference) < 1e-5
+    # enroll from non-sparse features
+    model2 = histogram.enroll([feature2, feature2])
+    assert model2.shape == feature2.shape
+    assert numpy.allclose(model2, feature2)
 
-  # score with phase, but non-sparse
-  # reference doubles since we have two times more features
-  reference *= 2.
-  assert abs(histogram.score(model2, feature2) - reference) < 1e-5
-  assert abs(histogram.score_for_multiple_probes(model2, [feature2, feature2]) - reference) < 1e-5
+    # score without phase and sparse
+    reference = 40960.0
+    assert abs(histogram.score(model1, feature1) - reference) < 1e-5
+    assert (
+        abs(
+            histogram.score_for_multiple_probes(model1, [feature1, feature1])
+            - reference
+        )
+        < 1e-5
+    )
+
+    # score with phase, but non-sparse
+    # reference doubles since we have two times more features
+    reference *= 2.0
+    assert abs(histogram.score(model2, feature2) - reference) < 1e-5
+    assert (
+        abs(
+            histogram.score_for_multiple_probes(model2, [feature2, feature2])
+            - reference
+        )
+        < 1e-5
+    )
 
 
 def test_bic_jets():
-  bic = bob.bio.base.load_resource("bic-jets", "algorithm", preferred_package='bob.bio.face')
-  assert isinstance(bic, bob.bio.base.algorithm.BIC)
-  assert isinstance(bic, bob.bio.base.algorithm.Algorithm)
 
-  # TODO: add more tests for bic-jets
+    similarity_function = bob.ip.gabor.Similarity("PhaseDiffPlusCanberra", bob.ip.gabor.Transform())
+
+    def gabor_jet_similarities(f1, f2):
+        """Computes the similarity vector between two Gabor graph features"""
+        assert len(f1) == len(f2)
+        return [similarity_function(f1[i], f2[i]) for i in range(len(f1))]
+
+    bic = bob.bio.base.algorithm.BIC(
+        # measure to compare two features in input space
+        comparison_function = gabor_jet_similarities,
+        # load and save functions
+        read_function = bob.ip.gabor.load_jets,
+        write_function = bob.ip.gabor.save_jets,
+        # Limit the number of training pairs
+        maximum_training_pair_count = 1000000,
+        # Dimensions of intrapersonal and extrapersonal subspaces
+        subspace_dimensions = (20, 20),
+        multiple_model_scoring = 'max'
+    )
+
+    assert isinstance(bic, bob.bio.base.algorithm.BIC)
+    assert isinstance(bic, bob.bio.base.algorithm.Algorithm)

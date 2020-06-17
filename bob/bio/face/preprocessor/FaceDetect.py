@@ -10,7 +10,7 @@ import numpy
 from .Base import Base
 from .utils import load_cropper_only
 from sklearn.utils import check_array
-
+from bob.pipelines.sample import SampleBatch
 import logging
 
 logger = logging.getLogger("bob.bio.face")
@@ -225,14 +225,13 @@ class FaceDetect(Base):
             return self.data_type(image)
 
 
-        X = check_array(X, allow_nd=True)
-        cropped_images = []
+        if isinstance(X, SampleBatch):
 
-        if isinstance(annotations, list):
-            cropped_images = []
-            for image, annot in zip(X, annotations):
-                cropped_images.append(_crop(image, annot))
-            return cropped_images
+            if annotations is None:
+                return [_crop(data) for data in X]
+            else:
+                return [_crop(data, annot) for data, annot in zip(X, annotations)]
+
         else:
             return _crop(X, annotations)
 

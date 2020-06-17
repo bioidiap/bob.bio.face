@@ -115,9 +115,7 @@ setup(
 
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
-            'mobio-image       = bob.bio.face.config.database.mobio:mobio_image',
-            'mobio-male        = bob.bio.face.config.database.mobio:mobio_male',  # MOBIO gender-dependent training
-            'mobio-female      = bob.bio.face.config.database.mobio:mobio_female',  # MOBIO gender-dependent training
+            'mobio-male       = bob.bio.face.config.database.mobio_male:database',
             'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_licit',
             'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_spoof',
             'multipie          = bob.bio.face.config.database.multipie:database',
@@ -149,7 +147,7 @@ setup(
         ],
 
         #baselines
-        'bob.bio.baseline':[
+        'bob.bio.pipeline':[
           'facenet_sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:pipeline',
           'inception_resnetv1_casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:pipeline',
           'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline',

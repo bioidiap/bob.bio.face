@@ -11,7 +11,7 @@ from .Base import Base
 
 logger = logging.getLogger("bob.bio.face")
 from sklearn.utils import check_array
-
+from bob.pipelines.sample import SampleBatch
 
 class FaceCrop(Base):
     """Crops the face according to the given annotations.
@@ -335,15 +335,16 @@ class FaceCrop(Base):
             # crop face
             return self.data_type(self.crop_face(image, annot))
 
-        X = check_array(X, allow_nd=True)
+        if isinstance(X, SampleBatch):
 
-        if isinstance(annotations, list):
-            cropped_images = []
-            for image, annot in zip(X, annotations):
-                cropped_images.append(_crop(image, annot))
-            return cropped_images
+            if annotations is None:
+                return [_crop(data) for data in X]
+            else:
+                return [_crop(data, annot) for data, annot in zip(X, annotations)]
+
         else:
             return _crop(X, annotations)
+
 
     def __getstate__(self):
         d = dict(self.__dict__)

@@ -62,7 +62,7 @@ def run_baseline(baseline, samples_for_training=[]):
     probes = get_fake_sample_set(purpose="probe")
 
     # Regular pipeline
-    pipeline = load_resource(baseline, "baseline")
+    pipeline = load_resource(baseline, "pipeline")
     scores = pipeline(samples_for_training, biometric_references, probes)
     assert len(scores) == 1
     assert len(scores[0]) == 1

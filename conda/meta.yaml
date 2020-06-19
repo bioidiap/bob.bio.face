@@ -89,6 +89,8 @@ test:
     - bob.db.fargo
     - bob.bio.gmm
     - gridtk
+    - bob.learn.tensoflow
+    - tensorflow
 
 about:
   home: https://www.idiap.ch/software/bob/

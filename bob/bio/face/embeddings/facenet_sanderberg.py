@@ -223,7 +223,6 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
     def __setstate__(self, d):
         # Handling unpicklable objects
         self.__dict__ = d
-        self.loaded = False
 
     def __getstate__(self):
         import tensorflow as tf
@@ -236,6 +235,7 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
         d.pop("images_placeholder") if "images_placeholder" in d else None
         d.pop("phase_train_placeholder") if "phase_train_placeholder" in d else None
         tf.compat.v1.reset_default_graph()
+        self.loaded = False
         return d
 
     def _more_tags(self):

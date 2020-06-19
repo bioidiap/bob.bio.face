@@ -46,11 +46,15 @@ requirements:
     - bob.pipelines
     - matplotlib {{ matplotlib }}
     - six {{ six }}
+    - scikit-image
   run:
     - python
     - setuptools
     - matplotlib
     - six
+  optional:
+    - bob.learn.tensorflow
+    - tensorflow
 
 test:
   imports:
@@ -85,6 +89,8 @@ test:
     - bob.db.fargo
     - bob.bio.gmm
     - gridtk
+    - bob.learn.tensorflow
+    - tensorflow
 
 about:
   home: https://www.idiap.ch/software/bob/

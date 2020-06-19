@@ -28,13 +28,15 @@ logger = bob.core.log.setup("bob.bio.face")
 
 
 def _check_annotations(database, topleft=False, required=True, limit_files=None, framed=False):
-    files = database.all_files()
+    database_legacy = database.database
+    files = database_legacy.all_files()
     if limit_files is not None:
         import random
         files = random.sample(files, limit_files)
     found_none = False
+
     for file in files:
-        annotations = database.annotations(file)
+        annotations = database_legacy.annotations(file)
         if required:
             assert annotations is not None
         if annotations is not None:
@@ -51,7 +53,7 @@ def _check_annotations(database, topleft=False, required=True, limit_files=None,
         else:
             found_none = True
     if found_none:
-        logger.warn("Some annotations were None for {}".format(database.name))
+        logger.warn("Some annotations were None for {}".format(database_legacy.name))
 
 
 @db_available('arface')
@@ -79,36 +81,6 @@ def test_atnt():
     except IOError as e:
         raise SkipTest(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-
-
-@db_available('caspeal')
-def test_caspeal():
-    database = bob.bio.base.load_resource(
-        'caspeal', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database)
-        check_database(database, protocol='aging')
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
-
-
-#@db_available('frgc')
-# def test_frgc():
-#    import xml.sax
-#    database = bob.bio.base.load_resource('frgc', 'database', preferred_package='bob.bio.face')
-#    try:
-#        _check_database(database, models_depend=True)
-#        _check_database(database, protocol='2.0.2', models_depend=True)
-#        _check_annotations(database)
-#    except xml.sax.SAXException as e:
-#        raise SkipTest(
-#            "The database could not be opened, probably the original directory is wrong. Here is the error: '%s'" % e)
 
 
 @db_available('gbu')
@@ -186,40 +158,6 @@ def test_multipie():
         raise SkipTest(
             "The database could not queried; probably the protocol is missing inside the db.sql3 file. Here is the error: '%s'" % e)
 
-    try:
-        _check_annotations(database)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
-
-
-@db_available('scface')
-def test_scface():
-    database = bob.bio.base.load_resource(
-        'scface', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database_zt(database)
-    except IOError as e:
-        raise SkipTest(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
-
-
-@db_available('xm2vts')
-def test_xm2vts():
-    database = bob.bio.base.load_resource(
-        'xm2vts', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database, groups=('dev', 'eval'))
-        check_database(database, groups=('dev', 'eval'),
-                       protocol='darkened-lp1')
-    except IOError as e:
-        raise SkipTest(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'" % e)
     try:
         _check_annotations(database)
     except IOError as e:
@@ -351,4 +289,3 @@ def test_fargo():
     except IOError as e:
         raise SkipTest(
             "The database could not queried; Here is the error: '%s'" % e)
-

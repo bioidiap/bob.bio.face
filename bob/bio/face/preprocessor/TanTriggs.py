@@ -22,8 +22,7 @@ import bob.ip.base
 import numpy
 from .Base import Base
 from .utils import load_cropper
-from bob.bio.base.preprocessor import Preprocessor
-
+from bob.pipelines.sample import SampleBatch
 
 class TanTriggs(Base):
     """Crops the face (if desired) and applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image.
@@ -59,16 +58,14 @@ class TanTriggs(Base):
         Base.__init__(self, **kwargs)
 
         # call base class constructor with its set of parameters
-        Preprocessor.__init__(
-            self,
-            face_cropper=face_cropper,
-            gamma=gamma,
-            sigma0=sigma0,
-            sigma1=sigma1,
-            size=size,
-            threshold=threshold,
-            alpha=alpha,
-        )
+
+        self.face_cropper = face_cropper
+        self.gamma = gamma
+        self.sigma0 = sigma0
+        self.sigma1 = sigma1
+        self.size = size
+        self.threshold = threshold
+        self.alpha = alpha
 
         self.gamma = gamma
         self.sigma0 = sigma0
@@ -85,7 +82,7 @@ class TanTriggs(Base):
             self.gamma, self.sigma0, self.sigma1, self.size, self.threshold, self.alpha
         )
 
-    def __call__(self, image, annotations=None):
+    def transform(self, X, annotations=None):
         """__call__(image, annotations = None) -> face
 
     Aligns the given image according to the given annotations.
@@ -110,12 +107,22 @@ class TanTriggs(Base):
       The cropped and photometrically enhanced face.
     """
 
-        image = self.color_channel(image)
-        if self.cropper is not None:
-            image = self.cropper.crop_face(image, annotations)
-        image = self.tan_triggs(image)
+        def _crop(image, annotations=None):
+            image = self.color_channel(image)
+            if self.cropper is not None:
+                image = self.cropper.transform(image, annotations)
+            image = self.tan_triggs(image)
 
-        return self.data_type(image)
+            return self.data_type(image)
+
+        if isinstance(X, SampleBatch):
+            if annotations is None:
+                return [_crop(data) for data in X]
+            else:
+                return [_crop(data, annot) for data, annot in zip(X, annotations)]
+        else:
+            return _crop(X, annotations)
+
 
     def __getstate__(self):
         d = dict(self.__dict__)

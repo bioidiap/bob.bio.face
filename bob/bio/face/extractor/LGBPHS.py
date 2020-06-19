@@ -8,10 +8,12 @@ import bob.ip.base
 import numpy
 import math
 
-from bob.bio.base.extractor import Extractor
+from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.utils import check_array
+from bob.pipelines.sample import SampleBatch
 
 
-class LGBPHS(Extractor):
+class LGBPHS(TransformerMixin, BaseEstimator):
     """Extracts *Local Gabor Binary Pattern Histogram Sequences* (LGBPHS) [ZSG05]_ from the images, using functionality from :ref:`bob.ip.base <bob.ip.base>` and :ref:`bob.ip.gabor <bob.ip.gabor>`.
 
   The block size and the overlap of the blocks can be varied, as well as the parameters of the Gabor wavelet (:py:class:`bob.ip.gabor.Transform`) and the LBP extractor (:py:class:`bob.ip.base.LBP`).
@@ -80,30 +82,6 @@ class LGBPHS(Extractor):
         sparse_histogram=False,
         split_histogram=None,
     ):
-        # call base class constructor
-        Extractor.__init__(
-            self,
-            block_size=block_size,
-            block_overlap=block_overlap,
-            gabor_directions=gabor_directions,
-            gabor_scales=gabor_scales,
-            gabor_sigma=gabor_sigma,
-            gabor_maximum_frequency=gabor_maximum_frequency,
-            gabor_frequency_step=gabor_frequency_step,
-            gabor_power_of_k=gabor_power_of_k,
-            gabor_dc_free=gabor_dc_free,
-            use_gabor_phases=use_gabor_phases,
-            lbp_radius=lbp_radius,
-            lbp_neighbor_count=lbp_neighbor_count,
-            lbp_uniform=lbp_uniform,
-            lbp_circular=lbp_circular,
-            lbp_rotation_invariant=lbp_rotation_invariant,
-            lbp_compare_to_average=lbp_compare_to_average,
-            lbp_add_average=lbp_add_average,
-            sparse_histogram=sparse_histogram,
-            split_histogram=split_histogram,
-        )
-
         # block parameters
         self.block_size = (
             block_size
@@ -214,7 +192,7 @@ class LGBPHS(Extractor):
                 values.append(array[i])
         return numpy.array([indices, values], dtype=numpy.float64)
 
-    def __call__(self, image):
+    def transform(self, X):
         """__call__(image) -> feature
 
     Extracts the local Gabor binary pattern histogram sequence from the given image.
@@ -230,79 +208,77 @@ class LGBPHS(Extractor):
       The list of Gabor jets extracted from the image.
       The 2D location of the jet's nodes is not returned.
     """
-        """"""
-        assert image.ndim == 2
-        assert isinstance(image, numpy.ndarray)
-        assert image.dtype == numpy.float64
+    
+        def _extract(image):
+            assert image.ndim == 2
+            assert isinstance(image, numpy.ndarray)
+            assert image.dtype == numpy.float64
 
-        # perform GWT on image
-        if self.trafo_image is None or self.trafo_image.shape[1:3] != image.shape:
-            # create trafo image
-            self.trafo_image = numpy.ndarray(
-                (self.gwt.number_of_wavelets, image.shape[0], image.shape[1]),
-                numpy.complex128,
-            )
-
-        # perform Gabor wavelet transform
-        self.gwt.transform(image, self.trafo_image)
-
-        jet_length = self.gwt.number_of_wavelets * (2 if self.use_phases else 1)
-
-        lgbphs_array = None
-        # iterate through the layers of the trafo image
-        for j in range(self.gwt.number_of_wavelets):
-            # compute absolute part of complex response
-            abs_image = numpy.abs(self.trafo_image[j])
-            # Computes LBP histograms
-            abs_blocks = bob.ip.base.lbphs(
-                abs_image, self.lbp, self.block_size, self.block_overlap
-            )
-
-            # Converts to Blitz array (of different dimensionalities)
-            self.n_bins = abs_blocks.shape[1]
-            self.n_blocks = abs_blocks.shape[0]
-
-            if self.split is None:
-                shape = (self.n_blocks * self.n_bins * jet_length,)
-            elif self.split == "blocks":
-                shape = (self.n_blocks, self.n_bins * jet_length)
-            elif self.split == "wavelets":
-                shape = (jet_length, self.n_bins * self.n_blocks)
-            elif self.split == "both":
-                shape = (jet_length * self.n_blocks, self.n_bins)
-            else:
-                raise ValueError(
-                    "The split parameter must be one of ['blocks', 'wavelets', 'both'] or None"
+            # perform GWT on image
+            if self.trafo_image is None or self.trafo_image.shape[1:3] != image.shape:
+                # create trafo image
+                self.trafo_image = numpy.ndarray(
+                    (self.gwt.number_of_wavelets, image.shape[0], image.shape[1]),
+                    numpy.complex128,
                 )
 
-            # create new array if not done yet
-            if lgbphs_array is None:
-                lgbphs_array = numpy.ndarray(shape, "float64")
+            # perform Gabor wavelet transform
+            self.gwt.transform(image, self.trafo_image)
 
-            # fill the array with the absolute values of the Gabor wavelet transform
-            self._fill(lgbphs_array, abs_blocks, j)
+            jet_length = self.gwt.number_of_wavelets * (2 if self.use_phases else 1)
 
-            if self.use_phases:
-                # compute phase part of complex response
-                phase_image = numpy.angle(self.trafo_image[j])
+            lgbphs_array = None
+            # iterate through the layers of the trafo image
+            for j in range(self.gwt.number_of_wavelets):
+                # compute absolute part of complex response
+                abs_image = numpy.abs(self.trafo_image[j])
                 # Computes LBP histograms
-                phase_blocks = bob.ip.base.lbphs(
-                    phase_image, self.lbp, self.block_size, self.block_overlap
+                abs_blocks = bob.ip.base.lbphs(
+                    abs_image, self.lbp, self.block_size, self.block_overlap
                 )
-                # fill the array with the phases at the end of the blocks
-                self._fill(lgbphs_array, phase_blocks, j + self.gwt.number_of_wavelets)
 
-        # return the concatenated list of all histograms
-        return self._sparsify(lgbphs_array)
+                # Converts to Blitz array (of different dimensionalities)
+                self.n_bins = abs_blocks.shape[1]
+                self.n_blocks = abs_blocks.shape[0]
 
-    # re-define the train function to get it non-documented
-    def train(*args, **kwargs):
-        raise NotImplementedError(
-            "This function is not implemented and should not be called."
-        )
+                if self.split is None:
+                    shape = (self.n_blocks * self.n_bins * jet_length,)
+                elif self.split == "blocks":
+                    shape = (self.n_blocks, self.n_bins * jet_length)
+                elif self.split == "wavelets":
+                    shape = (jet_length, self.n_bins * self.n_blocks)
+                elif self.split == "both":
+                    shape = (jet_length * self.n_blocks, self.n_bins)
+                else:
+                    raise ValueError(
+                        "The split parameter must be one of ['blocks', 'wavelets', 'both'] or None"
+                    )
 
-    def load(*args, **kwargs):
-        pass
+                # create new array if not done yet
+                if lgbphs_array is None:
+                    lgbphs_array = numpy.ndarray(shape, "float64")
+
+                # fill the array with the absolute values of the Gabor wavelet transform
+                self._fill(lgbphs_array, abs_blocks, j)
+
+                if self.use_phases:
+                    # compute phase part of complex response
+                    phase_image = numpy.angle(self.trafo_image[j])
+                    # Computes LBP histograms
+                    phase_blocks = bob.ip.base.lbphs(
+                        phase_image, self.lbp, self.block_size, self.block_overlap
+                    )
+                    # fill the array with the phases at the end of the blocks
+                    self._fill(lgbphs_array, phase_blocks, j + self.gwt.number_of_wavelets)
+
+            # return the concatenated list of all histograms
+            return self._sparsify(lgbphs_array)
+
+
+        if isinstance(X, SampleBatch):
+            return [_extract(x) for x in X]
+        else:
+            return _extract(X)
 
     def __getstate__(self):
         d = dict(self.__dict__)
@@ -313,3 +289,9 @@ class LGBPHS(Extractor):
     def __setstate__(self, d):
         self.__dict__ = d
         self._init_non_pickables()
+
+    def _more_tags(self):
+        return {"stateless": True, "requires_fit": False}
+
+    def fit(self, X, y=None):
+        return self

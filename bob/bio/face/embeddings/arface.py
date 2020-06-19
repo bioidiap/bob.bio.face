@@ -5,6 +5,9 @@ import os
 from sklearn.base import TransformerMixin, BaseEstimator
 from .tensorflow_compat_v1 import TensorflowCompatV1
 from bob.io.image import to_matplotlib
+import numpy as np
+from sklearn.utils import check_array
+
 
 class ArcFace_InsightFaceTF(TensorflowCompatV1):
     """
@@ -19,10 +22,11 @@ class ArcFace_InsightFaceTF(TensorflowCompatV1):
     def __init__(self):
 
         bob_rc_variable = "bob.bio.face.arcface_tf_path"
-        urls = ["https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/arcface_insight_tf.tar.gz"]
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/arcface_insight_tf.tar.gz"
+        ]
         model_subdirectory = "arcface_tf_path"
 
-        
         checkpoint_filename = self.get_modelpath(bob_rc_variable, model_subdirectory)
         self.download_model(checkpoint_filename, urls)
 
@@ -34,10 +38,39 @@ class ArcFace_InsightFaceTF(TensorflowCompatV1):
     def transform(self, data):
 
         # https://github.com/luckycallor/InsightFace-tensorflow/blob/master/evaluate.py#L42
-        data = to_matplotlib(data)
+        data = check_array(data, allow_nd=True)
         data = data / 127.5 - 1.0
-
         return super().transform(data)
+
+    def load_model(self):
+
+        self.input_tensor = tf.compat.v1.placeholder(
+            dtype=tf.float32, shape=self.input_shape, name="input_image",
+        )
+
+        prelogits = self.architecture_fn(self.input_tensor)
+        self.embedding = prelogits
+
+        # Initializing the variables of the current graph
+        self.session = tf.compat.v1.Session()
+        self.session.run(tf.compat.v1.global_variables_initializer())
+
+        # Loading the last checkpoint and overwriting the current variables
+        saver = tf.compat.v1.train.Saver()
+
+        if os.path.splitext(self.checkpoint_filename)[1] == ".meta":
+            saver.restore(
+                self.session,
+                tf.train.latest_checkpoint(os.path.dirname(self.checkpoint_filename)),
+            )
+        elif os.path.isdir(self.checkpoint_filename):
+            saver.restore(
+                self.session, tf.train.latest_checkpoint(self.checkpoint_filename)
+            )
+        else:
+            saver.restore(self.session, self.checkpoint_filename)
+
+        self.loaded = True
 
 
 ###########################
@@ -49,7 +82,8 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from collections import namedtuple
 
-def init_network(input_tensor, model=None):
+
+def init_network(input_tensor):
 
     with tf.variable_scope("embd_extractor", reuse=False):
         arg_sc = resnet_arg_scope()

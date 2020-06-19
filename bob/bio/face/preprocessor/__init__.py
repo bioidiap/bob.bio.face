@@ -6,6 +6,7 @@ from .TanTriggs import TanTriggs
 from .INormLBP import INormLBP
 from .HistogramEqualization import HistogramEqualization
 from .SelfQuotientImage import SelfQuotientImage
+from .Scale import Scale
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -30,5 +31,6 @@ __appropriate__(
     INormLBP,
     HistogramEqualization,
     SelfQuotientImage,
+    Scale
 )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

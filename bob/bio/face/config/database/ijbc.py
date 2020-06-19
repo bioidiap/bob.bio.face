@@ -1,15 +1,21 @@
 #!/usr/bin/env python
 
 from bob.bio.face.database import IJBCBioDatabase
+from bob.bio.base.pipelines.vanilla_biometrics import DatabaseConnector
+from bob.extension import rc
 
-ijbc_directory = "[YOUR_IJBC_DIRECTORY]"
 
-ijbc_11 = IJBCBioDatabase(
-  original_directory=ijbc_directory,
-  protocol='1:1'
+ijbc_directory = rc["bob.db.ijbc.directory"]
+
+database = DatabaseConnector(
+    IJBCBioDatabase(original_directory=ijbc_directory, protocol="1:1"),
+    annotation_type = "eyes-center",
+    fixed_positions = None,
+	allow_scoring_with_all_biometric_references = False
 )
 
-ijbc_covariates = IJBCBioDatabase(
-  original_directory=ijbc_directory,
-  protocol='Covariates'
-)
+#ijbc_covariates = DatabaseConnector(
+#    IJBCBioDatabase(
+#        original_directory=ijbc_directory, protocol="Covariates"
+#    )
+#)

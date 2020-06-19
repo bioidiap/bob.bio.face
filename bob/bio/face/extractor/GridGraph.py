@@ -139,18 +139,10 @@ class GridGraph(Extractor):
                 raise ValueError(
                     "Please specify either 'eyes' or the grid parameters 'node_distance' (and 'first_node')!"
                 )
-
-            if not hasattr(self, "_last_image_resolution"):
-                self._last_image_resolution = None
-
-            if not hasattr(self, "_aligned_graph"):
-                self._aligned_graph = None
-            
+            self._aligned_graph = None
+            self._last_image_resolution = None
             if isinstance(self.node_distance, (int, float)):
                 self.node_distance = (int(self.node_distance), int(self.node_distance))
-
-        self._graph = None
-
 
     def _extractor(self, image):
         """Creates an extractor based on the given image.

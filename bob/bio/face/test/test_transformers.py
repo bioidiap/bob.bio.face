@@ -1,63 +1,95 @@
-import bob.bio.face
+from bob.extension.config import load
+import pkg_resources
 import numpy as np
+from bob.pipelines import Sample, SampleSet
+from bob.bio.base import load_resource
 
-
-def test_facenet():
-    from bob.bio.face.transformers import FaceNetSanderberg
-
+def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 53)}):
     np.random.seed(10)
-
-    transformer = FaceNetSanderberg()
-    data = np.random.rand(3, 160, 160).astype("uint8")
-    output = transformer.transform(data)
-    assert output.size == 128, output.shape
+    data = np.random.rand(3, 400, 400)
+    annotations = {"leye": (115, 267), "reye": (115, 132)}
+    return Sample(data, key="1", annotations=annotations)
 
 
-def test_idiap_inceptionv2_msceleb():
-    from bob.bio.face.transformers import InceptionResnetv2_MsCeleb
+def test_facenet():    
+    transformer = load_resource("facenet_sanderberg", "transformer")
 
-    np.random.seed(10)
-    transformer = InceptionResnetv2_MsCeleb()
-    data = np.random.rand(3, 160, 160).astype("uint8")
-    output = transformer.transform(data)
-    assert output.size == 128, output.shape
+    fake_sample = get_fake_sample()
 
-
-def test_idiap_inceptionv2_casia():
-    from bob.bio.face.transformers import InceptionResnetv2_CasiaWebFace
-
-    np.random.seed(10)
-    transformer = InceptionResnetv2_CasiaWebFace()
-    data = np.random.rand(3, 160, 160).astype("uint8")
-    output = transformer.transform(data)
-    assert output.size == 128, output.shape
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
 
 
-def test_idiap_inceptionv1_msceleb():
-    from bob.bio.face.transformers import InceptionResnetv1_MsCeleb
+def test_inception_resnetv2_msceleb():
+    transformer = load_resource("inception_resnetv2_msceleb", "transformer")
 
-    np.random.seed(10)
-    transformer = InceptionResnetv1_MsCeleb()
-    data = np.random.rand(3, 160, 160).astype("uint8")
-    output = transformer.transform(data)
-    assert output.size == 128, output.shape
+    fake_sample = get_fake_sample()
 
-
-def test_idiap_inceptionv1_casia():
-    from bob.bio.face.transformers import InceptionResnetv1_CasiaWebFace
-
-    np.random.seed(10)
-    transformer = InceptionResnetv1_CasiaWebFace()
-    data = np.random.rand(3, 160, 160).astype("uint8")
-    output = transformer.transform(data)
-    assert output.size == 128, output.shape
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
 
 
-def test_arface_insight_tf():
-    from bob.bio.face.transformers import ArcFace_InsightFaceTF
+def test_inception_resnetv2_casiawebface():
+    transformer = load_resource("inception_resnetv2_casiawebface", "transformer")
 
-    np.random.seed(10)
-    transformer = ArcFace_InsightFaceTF()
-    data = np.random.rand(3, 112, 112).astype("uint8")
-    output = transformer.transform(data)
-    assert output.size == 512, output.shape
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
+
+
+def test_inception_resnetv1_msceleb():
+    transformer = load_resource("inception_resnetv1_msceleb", "transformer")
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
+
+
+def test_inception_resnetv1_casiawebface():
+    transformer = load_resource("inception_resnetv1_casiawebface", "transformer")
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 128
+
+
+def test_arcface_insight_tf():
+    import tensorflow as tf
+    tf.compat.v1.reset_default_graph()
+    transformer = load_resource("arcface_insight_tf", "transformer")
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+    assert transformed_sample.data.size == 512
+
+
+def test_gabor_graph():
+    transformer = load_resource("gabor_graph", "transformer")
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+
+    assert len(transformed_sample.data) == 80
+
+
+def test_lgbphs():    
+    transformer = load_resource("lgbphs", "transformer")
+
+    fake_sample = get_fake_sample()
+
+    transformed_sample = transformer.transform([fake_sample])[0]
+    transformed_data = transformed_sample.data
+
+    assert transformed_sample.data.shape == (2, 44014)

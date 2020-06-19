@@ -7,13 +7,9 @@ from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase
 from .gbu import GBUBioDatabase
 from .arface import ARFaceBioDatabase
-from .caspeal import CaspealBioDatabase
 from .lfw import LFWBioDatabase
 from .multipie import MultipieBioDatabase
 from .ijbc import IJBCBioDatabase
-from .xm2vts import XM2VTSBioDatabase
-from .frgc import FRGCBioDatabase
-from .scface import SCFaceBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .msu_mfsd_mod import MsuMfsdModBioDatabase
 from .fargo import FargoBioDatabase
@@ -43,13 +39,9 @@ __appropriate__(
   AtntBioDatabase,  
   GBUBioDatabase,
   ARFaceBioDatabase,
-  CaspealBioDatabase,
   LFWBioDatabase,
   MultipieBioDatabase,
-  IJBCBioDatabase, 
-  XM2VTSBioDatabase,
-  FRGCBioDatabase,
-  SCFaceBioDatabase,
+  IJBCBioDatabase,   
   ReplayMobileBioDatabase,
   MsuMfsdModBioDatabase,
   FargoBioDatabase

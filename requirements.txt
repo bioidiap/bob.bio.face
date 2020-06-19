@@ -23,3 +23,4 @@ bob.ip.flandmark
 bob.pipelines
 matplotlib   # for plotting
 six
+scikit-image

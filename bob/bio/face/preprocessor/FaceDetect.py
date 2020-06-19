@@ -9,8 +9,8 @@ import numpy
 
 from .Base import Base
 from .utils import load_cropper_only
-from bob.bio.base.preprocessor import Preprocessor
-
+from sklearn.utils import check_array
+from bob.pipelines.sample import SampleBatch
 import logging
 
 logger = logging.getLogger("bob.bio.face")
@@ -79,16 +79,13 @@ class FaceDetect(Base):
         # call base class constructors
         Base.__init__(self, **kwargs)
 
-        Preprocessor.__init__(
-            self,
-            face_cropper=face_cropper,
-            cascade=cascade,
-            use_flandmark=use_flandmark,
-            detection_overlap=detection_overlap,
-            distance=distance,
-            scale_base=scale_base,
-            lowest_scale=lowest_scale,
-        )
+        self.face_cropper = face_cropper
+        self.cascade=cascade
+        self.use_flandmark=use_flandmark
+        self.detection_overlap=detection_overlap
+        self.distance=distance
+        self.scale_base=scale_base
+        self.lowest_scale=lowest_scale
 
         assert face_cropper is not None
 
@@ -194,7 +191,7 @@ class FaceDetect(Base):
         # apply face cropping
         return self.cropper.crop_face(image, annotations)
 
-    def __call__(self, image, annotations=None):
+    def transform(self, X, annotations=None):
         """__call__(image, annotations = None) -> face
 
     Aligns the given image according to the detected face bounding box or the detected facial features.
@@ -216,14 +213,28 @@ class FaceDetect(Base):
     face : 2D :py:class:`numpy.ndarray`
       The cropped face.
     """
-        # convert to the desired color channel
-        image = self.color_channel(image)
+        def _crop(image, annotation):
 
-        # detect face and crop it
-        image = self.crop_face(image)
+            # convert to the desired color channel
+            image = self.color_channel(image)
 
-        # convert data type
-        return self.data_type(image)
+            # detect face and crop it
+            image = self.crop_face(image)
+
+            # convert data type
+            return self.data_type(image)
+
+
+        if isinstance(X, SampleBatch):
+
+            if annotations is None:
+                return [_crop(data) for data in X]
+            else:
+                return [_crop(data, annot) for data, annot in zip(X, annotations)]
+
+        else:
+            return _crop(X, annotations)
+
 
     def __getstate__(self):
         d = dict(self.__dict__)

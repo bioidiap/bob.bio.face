@@ -53,7 +53,7 @@ requirements:
     - matplotlib
     - six
   optional:
-    - bob.learn.tensoflow
+    - bob.learn.tensorflow
     - tensorflow
 
 test:
@@ -89,7 +89,7 @@ test:
     - bob.db.fargo
     - bob.bio.gmm
     - gridtk
-    - bob.learn.tensoflow
+    - bob.learn.tensorflow
     - tensorflow
 
 about:

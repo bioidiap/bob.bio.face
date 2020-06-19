@@ -20,49 +20,53 @@ else:
     fixed_positions = None
 
 
-####### SOLVING THE FACE CROPPER TO BE USED ##########
+def load(annotation_type, fixed_positions=None):
+    ####### SOLVING THE FACE CROPPER TO BE USED ##########
 
-# Cropping
-face_cropper, transform_extra_arguments = crop_80x64(
-    annotation_type, fixed_positions, color_channel="gray"
-)
-
-preprocessor = bob.bio.face.preprocessor.INormLBP(
-    face_cropper=face_cropper, dtype=np.float64
-)
-
-
-#### FEATURE EXTRACTOR ######
-
-# legacy objects needs to be wrapped with legacy transformers
-from bob.bio.base.transformers import ExtractorTransformer
-
-gabor_graph = ExtractorTransformer(
-    bob.bio.face.extractor.GridGraph(
-        # Gabor parameters
-        gabor_sigma=math.sqrt(2.0) * math.pi,
-        # what kind of information to extract
-        normalize_gabor_jets=True,
-        # setup of the fixed grid
-        node_distance=(8, 8),
+    # Cropping
+    face_cropper, transform_extra_arguments = crop_80x64(
+        annotation_type, fixed_positions, color_channel="gray"
     )
-)
 
-transformer = make_pipeline(
-    wrap(
-        ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
-    ),
-    wrap(["sample"], gabor_graph),
-)
+    preprocessor = bob.bio.face.preprocessor.INormLBP(
+        face_cropper=face_cropper, dtype=np.float64
+    )
 
 
-gabor_jet = bob.bio.face.algorithm.GaborJet(
-    gabor_jet_similarity_type="PhaseDiffPlusCanberra",
-    multiple_feature_scoring="max_jet",
-    gabor_sigma=math.sqrt(2.0) * math.pi,
-)
+    #### FEATURE EXTRACTOR ######
 
-tempdir = tempfile.TemporaryDirectory()
-algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir.name)
+    # legacy objects needs to be wrapped with legacy transformers
+    from bob.bio.base.transformers import ExtractorTransformer
 
-pipeline = VanillaBiometricsPipeline(transformer, algorithm)
+    gabor_graph = ExtractorTransformer(
+        bob.bio.face.extractor.GridGraph(
+            # Gabor parameters
+            gabor_sigma=math.sqrt(2.0) * math.pi,
+            # what kind of information to extract
+            normalize_gabor_jets=True,
+            # setup of the fixed grid
+            node_distance=(8, 8),
+        )
+    )
+
+    transformer = make_pipeline(
+        wrap(
+            ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
+        ),
+        wrap(["sample"], gabor_graph),
+    )
+
+
+    gabor_jet = bob.bio.face.algorithm.GaborJet(
+        gabor_jet_similarity_type="PhaseDiffPlusCanberra",
+        multiple_feature_scoring="max_jet",
+        gabor_sigma=math.sqrt(2.0) * math.pi,
+    )
+
+    tempdir = tempfile.TemporaryDirectory()
+    algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir.name)
+
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+pipeline = load(annotation_type, fixed_positions)
+transformer = pipeline.transformer

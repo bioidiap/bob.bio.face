@@ -14,10 +14,15 @@ else:
     fixed_positions = None
 
 
-transformer = embedding_transformer_160x160(
-    FaceNetSanderberg(), annotation_type, fixed_positions
-)
+def load(annotation_type, fixed_positions=None):
 
-algorithm = Distance()
+    transformer = embedding_transformer_160x160(
+        FaceNetSanderberg(), annotation_type, fixed_positions
+    )
+    algorithm = Distance()
 
-pipeline = VanillaBiometricsPipeline(transformer, algorithm)
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+
+pipeline = load(annotation_type, fixed_positions)
+transformer = pipeline.transformer

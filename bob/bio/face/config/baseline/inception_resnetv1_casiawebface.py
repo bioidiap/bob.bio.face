@@ -1,7 +1,9 @@
 from bob.bio.face.embeddings import InceptionResnetv1_CasiaWebFace
 from bob.bio.face.config.baseline.helpers import embedding_transformer_160x160
-from bob.bio.base.pipelines.vanilla_biometrics import Distance, VanillaBiometricsPipeline
-
+from bob.bio.base.pipelines.vanilla_biometrics import (
+    Distance,
+    VanillaBiometricsPipeline,
+)
 
 
 if "database" in locals():
@@ -11,12 +13,14 @@ else:
     annotation_type = None
     fixed_positions = None
 
+def load(annotation_type, fixed_positions=None):
+    transformer = embedding_transformer_160x160(
+        InceptionResnetv1_CasiaWebFace(), annotation_type, fixed_positions
+    )
 
-transformer = embedding_transformer_160x160(InceptionResnetv1_CasiaWebFace(), annotation_type, fixed_positions)
+    algorithm = Distance()
 
-algorithm = Distance()
+    return VanillaBiometricsPipeline(transformer, algorithm)
 
-pipeline = VanillaBiometricsPipeline(
-    transformer,
-    algorithm
-)
+pipeline = load(annotation_type, fixed_positions)
+transformer = pipeline.transformer

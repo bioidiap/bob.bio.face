@@ -23,42 +23,46 @@ else:
 
 
 ####### SOLVING THE FACE CROPPER TO BE USED ##########
+def load(annotation_type, fixed_positions=None):
 
-# Cropping
-face_cropper, transform_extra_arguments = crop_80x64(
-    annotation_type, fixed_positions, color_channel="gray"
-)
+    # Cropping
+    face_cropper, transform_extra_arguments = crop_80x64(
+        annotation_type, fixed_positions, color_channel="gray"
+    )
 
-preprocessor = bob.bio.face.preprocessor.TanTriggs(
-    face_cropper=face_cropper, dtype=np.float64
-)
-
-
-#### FEATURE EXTRACTOR ######
-
-tempdir = tempfile.TemporaryDirectory()
-lda = bob.bio.base.algorithm.LDA(use_pinv=True, pca_subspace_dimension=0.90)
-
-lda_transformer = AlgorithmTransformer(
-    lda, projector_file=os.path.join(tempdir.name, "Projector.hdf5")
-)
+    preprocessor = bob.bio.face.preprocessor.TanTriggs(
+        face_cropper=face_cropper, dtype=np.float64
+    )
 
 
-transformer = make_pipeline(
-    wrap(
-        ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
-    ),
-    SampleLinearize(),
-    wrap(["sample"], lda_transformer),
-)
+    #### FEATURE EXTRACTOR ######
+
+    tempdir = tempfile.TemporaryDirectory()
+    lda = bob.bio.base.algorithm.LDA(use_pinv=True, pca_subspace_dimension=0.90)
+
+    lda_transformer = AlgorithmTransformer(
+        lda, projector_file=os.path.join(tempdir.name, "Projector.hdf5")
+    )
 
 
-### BIOMETRIC ALGORITHM
+    transformer = make_pipeline(
+        wrap(
+            ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
+        ),
+        SampleLinearize(),
+        wrap(["sample"], lda_transformer),
+    )
 
-algorithm = BioAlgorithmLegacy(
-    lda,
-    base_dir=tempdir.name,
-    projector_file=os.path.join(tempdir.name, "Projector.hdf5"),
-)
 
-pipeline = VanillaBiometricsPipeline(transformer, algorithm)
+    ### BIOMETRIC ALGORITHM
+
+    algorithm = BioAlgorithmLegacy(
+        lda,
+        base_dir=tempdir.name,
+        projector_file=os.path.join(tempdir.name, "Projector.hdf5"),
+    )
+
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+pipeline = load(annotation_type, fixed_positions)
+transformer = pipeline.transformer

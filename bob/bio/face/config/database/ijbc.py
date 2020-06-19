@@ -7,12 +7,15 @@ from bob.extension import rc
 
 ijbc_directory = rc["bob.db.ijbc.directory"]
 
-ijbc_11 = DatabaseConnector(
-    IJBCBioDatabase(original_directory=ijbc_directory, protocol="1:1")
+database = DatabaseConnector(
+    IJBCBioDatabase(original_directory=ijbc_directory, protocol="1:1"),
+    annotation_type = "eyes-center",
+    fixed_positions = None,
+	allow_scoring_with_all_biometric_references = False
 )
 
-ijbc_covariates = DatabaseConnector(
-    IJBCBioDatabase(
-        original_directory=ijbc_directory, protocol="Covariates"
-    )
-)
+#ijbc_covariates = DatabaseConnector(
+#    IJBCBioDatabase(
+#        original_directory=ijbc_directory, protocol="Covariates"
+#    )
+#)

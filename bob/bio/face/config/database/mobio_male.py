@@ -10,6 +10,8 @@ database = DatabaseConnector(
         annotation_directory=rc["bob.db.mobio.annotation_directory"],
         original_extension=".png",
         protocol="mobile0-male",
-    )
+    ),
+    annotation_type = "eyes-center",
+    fixed_positions = None
 )
 

@@ -110,8 +110,7 @@ setup(
             'atnt              = bob.bio.face.config.database.atnt:database',
             'gbu               = bob.bio.face.config.database.gbu:database',
 
-            'ijbc-11              = bob.bio.face.config.database.ijbc:ijbc_11',
-            'ijbc-covariates      = bob.bio.face.config.database.ijbc:ijbc_covariates',
+            'ijbc-11              = bob.bio.face.config.database.ijbc:database',
 
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',

@@ -8,7 +8,7 @@ import bob.io.base
 import numpy
 import math
 from bob.bio.base.extractor import Extractor
-
+import copy
 
 class GridGraph(Extractor):
     """Extracts Gabor jets in a grid structure [GHW12]_ using functionalities from :ref:`bob.ip.gabor <bob.ip.gabor>`.
@@ -278,11 +278,12 @@ class GridGraph(Extractor):
         pass
 
     def __getstate__(self):
-        d = dict(self.__dict__)
+        d = self.__dict__.copy()
         d.pop("gwt")
         d.pop("_aligned_graph")
         if "_graph" in d:
             d.pop("_graph")
+
         return d
 
     def __setstate__(self, d):

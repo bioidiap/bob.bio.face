@@ -281,7 +281,7 @@ class LGBPHS(TransformerMixin, BaseEstimator):
             return _extract(X)
 
     def __getstate__(self):
-        d = dict(self.__dict__)
+        d = self.__dict__.copy()
         d.pop("lbp")
         d.pop("gwt")
         return d

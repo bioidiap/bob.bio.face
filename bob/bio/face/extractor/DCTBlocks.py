@@ -140,7 +140,7 @@ class DCTBlocks(TransformerMixin, BaseEstimator):
         return self
 
     def __getstate__(self):
-        d = dict(self.__dict__)
+        d = self.__dict__.copy()
         d.pop("dct_features")
         return d
 

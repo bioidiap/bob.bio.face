@@ -10,7 +10,7 @@ import numpy as np
 import logging
 from sklearn.utils import check_array
 from bob.pipelines.sample import SampleBatch
-
+import copy
 logger = logging.getLogger(__name__)
 
 
@@ -132,19 +132,13 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
         self.__dict__ = d        
 
     def __getstate__(self):
-        import tensorflow as tf
-
         # Handling unpicklable objects
-        d = self.__dict__
+        d = self.__dict__.copy()
         d.pop("session", None)
         d.pop("input_tensor", None)
         d.pop("embedding", None)
-        tf.compat.v1.reset_default_graph()
-        self.loaded = False
+        d["loaded"] = False
         return d
-
-    # def __del__(self):
-    #    tf.compat.v1.reset_default_graph()
 
     def get_modelpath(self, bob_rc_variable, model_subdirectory):
         """

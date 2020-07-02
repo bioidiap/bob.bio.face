@@ -32,4 +32,5 @@ def face_crop_solver(
                 cropped_positions=cropped_positions,
                 color_channel=color_channel,
                 fixed_positions=fixed_positions,
+                dtype=np.uint8
             )

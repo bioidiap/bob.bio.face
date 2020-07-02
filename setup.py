@@ -143,6 +143,7 @@ setup(
           'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
           'gabor_graph = bob.bio.face.config.baseline.gabor_graph:transformer',
           'lgbphs = bob.bio.face.config.baseline.lgbphs:transformer',
+          'dummy = bob.bio.face.config.baseline.dummy:transformer',
         ],
 
         #baselines
@@ -156,6 +157,7 @@ setup(
           'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
           'lgbphs = bob.bio.face.config.baseline.lgbphs:pipeline',
           'lda = bob.bio.face.config.baseline.lda:pipeline',
+          'dummy = bob.bio.face.config.baseline.dummy:pipeline',
         ],
 
 

@@ -10,6 +10,7 @@ import bob.bio.face
 from sklearn.pipeline import make_pipeline
 from bob.pipelines import wrap
 import tempfile
+import os
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
 if "database" in locals():
@@ -63,8 +64,14 @@ def load(annotation_type, fixed_positions=None):
         gabor_sigma=math.sqrt(2.0) * math.pi,
     )
 
-    tempdir = tempfile.TemporaryDirectory()
-    algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir.name)
+    default_temp = os.path.join("idiap","temp",os.environ["USER"])    
+    if os.path.exists(default_temp):
+        tempdir = os.path.join(default_temp, "bob_bio_base_tmp")
+        algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir)
+    else:
+        # /idiap/temp/%s/" % os.environ["USER"]
+        tempdir = tempfile.TemporaryDirectory()    
+        algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir.name)
 
     return VanillaBiometricsPipeline(transformer, algorithm)
 

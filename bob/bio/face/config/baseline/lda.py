@@ -2,6 +2,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
     VanillaBiometricsPipeline,
     BioAlgorithmLegacy,
+    temp_directory
 )
 from bob.bio.face.config.baseline.helpers import crop_80x64
 import numpy as np
@@ -13,6 +14,10 @@ from bob.bio.base.transformers import AlgorithmTransformer
 from bob.pipelines.transformers import SampleLinearize
 import os
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
 if "database" in locals():
     annotation_type = database.annotation_type
@@ -23,7 +28,7 @@ else:
 
 
 ####### SOLVING THE FACE CROPPER TO BE USED ##########
-def load(annotation_type, fixed_positions=None):
+def load(annotation_type, fixed_positions=None, checkpoints_dir=None):
 
     # Cropping
     face_cropper, transform_extra_arguments = crop_80x64(
@@ -37,11 +42,30 @@ def load(annotation_type, fixed_positions=None):
 
     #### FEATURE EXTRACTOR ######
 
-    tempdir = tempfile.TemporaryDirectory()
+    # Set default temporary directory
+    default_temp = os.path.join("/idiap","temp",os.environ["USER"])
+    if os.path.exists(default_temp):
+        tempdir = os.path.join(default_temp, "bob_bio_base_tmp")
+    else:
+        # if /idiap/temp/<USER> does not exist, use /tmp/tmpxxxxxxxx
+        tempdir = tempfile.TemporaryDirectory().name
+
+    # Replace the default if provided
+    if checkpoints_dir is not None:
+        try:
+            os.makedirs(checkpoints_dir, exist_ok=True)
+        except OSError:
+            logger.info(
+                "Could not create directory '{}'.".format(checkpoints_dir)
+                + " Using default ('{}').".format(tempdir)
+            )
+        else:
+            tempdir = checkpoints_dir
+
     lda = bob.bio.base.algorithm.LDA(use_pinv=True, pca_subspace_dimension=0.90)
 
     lda_transformer = AlgorithmTransformer(
-        lda, projector_file=os.path.join(tempdir.name, "Projector.hdf5")
+        lda, projector_file=os.path.join(tempdir, "Projector.hdf5")
     )
 
 
@@ -58,11 +82,16 @@ def load(annotation_type, fixed_positions=None):
 
     algorithm = BioAlgorithmLegacy(
         lda,
-        base_dir=tempdir.name,
-        projector_file=os.path.join(tempdir.name, "Projector.hdf5"),
+        base_dir=tempdir,
+        projector_file=os.path.join(tempdir, "Projector.hdf5"),
     )
 
     return VanillaBiometricsPipeline(transformer, algorithm)
 
-pipeline = load(annotation_type, fixed_positions)
+try: temp_directory
+except NameError:
+    logger.info("Temporary directory not defined. Using default.")
+    pipeline = load(annotation_type, fixed_positions, None)
+else:
+    pipeline = load(annotation_type, fixed_positions, temp_directory)
 transformer = pipeline.transformer

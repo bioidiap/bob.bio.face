@@ -11,6 +11,7 @@ def face_crop_solver(
     cropped_positions=None,
     fixed_positions=None,
     use_face_detector=False,
+    dtype=np.uint8
 ):
     """
     Decide which face cropper to use.
@@ -32,5 +33,5 @@ def face_crop_solver(
                 cropped_positions=cropped_positions,
                 color_channel=color_channel,
                 fixed_positions=fixed_positions,
-                dtype=np.uint8
+                dtype=dtype
             )

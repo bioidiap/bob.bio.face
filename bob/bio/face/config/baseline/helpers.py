@@ -3,6 +3,7 @@ from sklearn.pipeline import make_pipeline
 from bob.bio.base.wrappers import wrap_sample_preprocessor
 from bob.pipelines import wrap
 from bob.bio.face.helpers import face_crop_solver
+import numpy as np
 
 
 def embedding_transformer_160x160(embedding, annotation_type, fixed_positions):
@@ -156,7 +157,6 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
 
     """
 
-
     # Cropping
     CROPPED_IMAGE_HEIGHT = 80
     CROPPED_IMAGE_WIDTH = CROPPED_IMAGE_HEIGHT * 4 // 5
@@ -167,7 +167,7 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
 
     cropped_image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
     color_channel = color_channel
-
+    dtype = np.float64
 
     if annotation_type == "bounding-box":
         transform_extra_arguments = (("annotations", "annotations"),)
@@ -180,6 +180,7 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
             color_channel=color_channel,
             cropped_positions={"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS},
             fixed_positions=fixed_positions,
+            dtype=dtype
         )
 
     elif annotation_type == "eyes-center":
@@ -192,6 +193,7 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
             color_channel=color_channel,
             cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
             fixed_positions=fixed_positions,
+            dtype=dtype
         )
 
     else:

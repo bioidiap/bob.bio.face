@@ -166,6 +166,10 @@ The aforementioned script will produce in the console the HTERs below for each b
   +-------------+-------------+-------------+-------------+-------------+-------------+-------------+-------------+
 
 
+.. todo::
+  Add updated results + new DCNN results
+
+
 Several types of evaluation can be executed, see ``bob bio --help`` for details.
 Particularly, here we can enable ROC curves, DET plots and CMC curves.
 

@@ -33,6 +33,7 @@ Users Guide
 .. toctree::
    :maxdepth: 2
 
+   face_recognition_intro
    baselines
    implementation
    references

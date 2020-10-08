@@ -115,6 +115,7 @@ setup(
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
             'mobio-male       = bob.bio.face.config.database.mobio_male:database',
+            'mobio-all        = bob.bio.face.config.database.mobio_all:database',
             'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_licit',
             'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_spoof',
             'multipie          = bob.bio.face.config.database.multipie:database',

@@ -81,10 +81,7 @@ class TensorflowCompatV1(TransformerMixin, BaseEstimator):
 
             return self.session.run(self.embedding, feed_dict={self.input_tensor: data},)
 
-        if isinstance(X, SampleBatch):
-            return [_transform(x) for x in X]
-        else:
-            return _transform(X)
+        return [_transform(x) for x in X]
 
     def load_model(self):
         import tensorflow as tf

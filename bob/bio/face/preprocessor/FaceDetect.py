@@ -224,17 +224,10 @@ class FaceDetect(Base):
             # convert data type
             return self.data_type(image)
 
-
-        if isinstance(X, SampleBatch):
-
-            if annotations is None:
-                return [_crop(data) for data in X]
-            else:
-                return [_crop(data, annot) for data, annot in zip(X, annotations)]
-
+        if annotations is None:
+            return [_crop(data) for data in X]
         else:
-            return _crop(X, annotations)
-
+            return [_crop(data, annot) for data, annot in zip(X, annotations)]
 
     def __getstate__(self):
         d = dict(self.__dict__)

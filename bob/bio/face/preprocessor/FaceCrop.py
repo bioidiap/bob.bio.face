@@ -300,8 +300,7 @@ class FaceCrop(Base):
                 The cropped face.
             """
 
-        def _crop(image, annot):
-
+        def _crop(image, annot):            
             # if annotations are missing and cannot do anything else return None.
             if (
                 not self.is_annotations_valid(annot)
@@ -335,15 +334,10 @@ class FaceCrop(Base):
             # crop face
             return self.data_type(self.crop_face(image, annot))
 
-        if isinstance(X, SampleBatch):
-
-            if annotations is None:
-                return [_crop(data) for data in X]
-            else:
-                return [_crop(data, annot) for data, annot in zip(X, annotations)]
-
+        if annotations is None:
+            return [_crop(data, None) for data in X]
         else:
-            return _crop(X, annotations)
+            return [_crop(data, annot) for data, annot in zip(X, annotations)]
 
 
     def __getstate__(self):

@@ -274,11 +274,7 @@ class LGBPHS(TransformerMixin, BaseEstimator):
             # return the concatenated list of all histograms
             return self._sparsify(lgbphs_array)
 
-
-        if isinstance(X, SampleBatch):
-            return [_extract(x) for x in X]
-        else:
-            return _extract(X)
+        return [_extract(x) for x in X]
 
     def __getstate__(self):
         d = self.__dict__.copy()

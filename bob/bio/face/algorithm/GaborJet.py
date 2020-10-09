@@ -296,7 +296,6 @@ class GaborJet(Algorithm):
         return graph_scoring(local_scores)
 
     def score_for_multiple_models(self, models, probe):
-
         self._check_feature(probe)
         [self._check_feature(m) for model in models for m in model]
 

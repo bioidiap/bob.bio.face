@@ -110,18 +110,15 @@ class TanTriggs(Base):
         def _crop(image, annotations=None):
             image = self.color_channel(image)
             if self.cropper is not None:
-                image = self.cropper.transform(image, annotations)
+                image = self.cropper.transform([image], [annotations])[0]
             image = self.tan_triggs(image)
 
             return self.data_type(image)
 
-        if isinstance(X, SampleBatch):
-            if annotations is None:
-                return [_crop(data) for data in X]
-            else:
-                return [_crop(data, annot) for data, annot in zip(X, annotations)]
+        if annotations is None:
+            return [_crop(data) for data in X]
         else:
-            return _crop(X, annotations)
+            return [_crop(data, annot) for data, annot in zip(X, annotations)]
 
 
     def __getstate__(self):

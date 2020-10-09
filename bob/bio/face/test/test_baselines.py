@@ -62,7 +62,7 @@ def run_baseline(baseline, samples_for_training=[]):
     probes = get_fake_sample_set(purpose="probe")
 
     # Regular pipeline
-    pipeline = load_resource(baseline, "pipeline")
+    pipeline = load_resource(baseline, "pipeline")    
     scores = pipeline(samples_for_training, biometric_references, probes)
     assert len(scores) == 1
     assert len(scores[0]) == 1
@@ -72,7 +72,7 @@ def run_baseline(baseline, samples_for_training=[]):
 
         checkpoint_pipeline = checkpoint_vanilla_biometrics(
             copy.deepcopy(pipeline), base_dir=d
-        )
+        )        
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
         assert len(checkpoint_scores[0]) == 1

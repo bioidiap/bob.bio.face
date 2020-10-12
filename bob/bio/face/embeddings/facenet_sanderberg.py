@@ -193,10 +193,7 @@ class FaceNetSanderberg(TransformerMixin, BaseEstimator):
             features = self.session.run(self.embeddings, feed_dict=feed_dict)
             return features
         
-        if isinstance(X, list):
-            return [_transform(i) for i in X]
-        else:
-            return _transform(X)
+        return [_transform(i) for i in X]
 
     @staticmethod
     def get_modelpath():

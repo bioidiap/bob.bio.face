@@ -128,10 +128,7 @@ class DCTBlocks(TransformerMixin, BaseEstimator):
             # Computes DCT features
             return self.dct_features(image)
 
-        if isinstance(X, SampleBatch):
-            return [_extract(x) for x in X]
-        else:
-            return _extract(X)
+        return [_extract(x) for x in X]
 
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}

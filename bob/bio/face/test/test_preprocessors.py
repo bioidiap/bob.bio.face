@@ -118,7 +118,8 @@ def test_face_crop():
     reference = pkg_resources.resource_filename(
         "bob.bio.face.test", "data/cropped.hdf5"
     )
-    ref_image = _compare(cropper.transform(image, annotation), reference)
+    ref_image = _compare(cropper.transform([image], [annotation]), reference)
+
 
     # test the preprocessor with fixed eye positions (which correspond to th ones
     fixed_cropper = bob.bio.face.preprocessor.FaceCrop(
@@ -126,12 +127,12 @@ def test_face_crop():
         cropper.cropped_positions,
         fixed_positions={"reye": annotation["reye"], "leye": annotation["leye"]},
     )
-    # result must be identical to the original face cropper (same eyes are used)
-    _compare(fixed_cropper.transform(image), reference)
+    # result must be identical to the original face cropper (same eyes are used)    
+    _compare(fixed_cropper.transform([image]), reference)
 
     # check color cropping
     cropper.channel = "rgb"
-    cropped = cropper.transform(image, annotation)
+    cropped = cropper.transform([image], [annotation])[0]
     assert cropped.ndim == 3
     assert cropped.shape[0] == 3
     assert cropped.shape[1:] == ref_image.shape
@@ -142,7 +143,7 @@ def test_face_crop():
     # test a ValueError is raised if eye annotations are swapped
     try:
         annot = dict(reye=annotation["leye"], leye=annotation["reye"])
-        cropper.transform(image, annot)
+        cropper.transform([image], [annot])
         assert 0, "FaceCrop did not raise a ValueError for swapped eye annotations"
     except ValueError:
         pass
@@ -171,7 +172,7 @@ def test_face_detect():
     reference = pkg_resources.resource_filename(
         "bob.bio.face.test", "data/detected.hdf5"
     )
-    _compare(cropper.transform(image, annotation), reference)
+    _compare(cropper.transform([image], [annotation]), reference)
     assert abs(cropper.quality - 39.209601948013685) < 1e-5
 
     # execute face detector with flandmark
@@ -182,7 +183,7 @@ def test_face_detect():
     reference = pkg_resources.resource_filename(
         "bob.bio.face.test", "data/flandmark.hdf5"
     )
-    _compare(cropper.transform(image, annotation), reference)
+    _compare(cropper.transform([image], [annotation]), reference)
     assert abs(cropper.quality - 39.209601948013685) < 1e-5
 
 
@@ -203,7 +204,7 @@ def test_tan_triggs():
 
     # execute face cropper
     _compare(
-        preprocessor.transform(image, annotation),
+        preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_cropped.hdf5"
         )
@@ -214,7 +215,7 @@ def test_tan_triggs():
     assert preprocessor.cropper is None
     # result must be identical to the original face cropper (same eyes are used)
     _compare(
-        preprocessor.transform(image, annotation),
+        preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_none.hdf5"
         )
@@ -247,7 +248,7 @@ def test_inorm_lbp():
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
     # execute preprocessor
     _compare(
-        preprocessor.transform(image, annotation),
+        preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/inorm_lbp_cropped.hdf5"
         )
@@ -288,7 +289,7 @@ def test_heq():
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
     # execute preprocessor
     _compare(
-        preprocessor.transform(image, annotation),
+        preprocessor.transform([image],[annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/histogram_cropped.hdf5"
         ),
@@ -331,7 +332,7 @@ def test_sqi():
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
     # execute preprocessor
     _compare(
-        preprocessor.transform(image, annotation),
+        preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/self_quotient_cropped.hdf5"
         )

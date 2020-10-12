@@ -78,7 +78,7 @@ def test_dct_blocks():
     dct = bob.bio.face.extractor.DCTBlocks(8, (0, 0), 15)
 
     # extract features
-    feature = dct.transform(data)
+    feature = dct.transform([data])[0]
     assert feature.ndim == 2
     # feature dimension is one lower than the block size, since blocks are normalized by default
     assert feature.shape == (80, 14)
@@ -158,7 +158,7 @@ def test_lgbphs():
     )
 
     # extract feature
-    feature = lgbphs.transform(data)
+    feature = lgbphs.transform([data])[0]
     assert feature.ndim == 2
 
     reference = pkg_resources.resource_filename(
@@ -175,7 +175,7 @@ def test_lgbphs():
         gabor_sigma=math.sqrt(2.0) * math.pi,
         use_gabor_phases=True,
     )
-    feature = lgbphs.transform(data)
+    feature = lgbphs.transform([data])[0]
     assert feature.ndim == 1
 
     reference = pkg_resources.resource_filename(

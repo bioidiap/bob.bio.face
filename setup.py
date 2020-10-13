@@ -136,29 +136,64 @@ setup(
         ],
 
         'bob.bio.transformer':[
-          'facenet_sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:transformer',
-          'inception_resnetv1_casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:transformer',
-          'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:transformer',
-          'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:transformer',
-          'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
-          'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
-          'gabor_graph = bob.bio.face.config.baseline.gabor_graph:transformer',
+          'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:transformer',
+          'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:transformer',
+          'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:transformer',
+          'inception-resnetv1-msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:transformer',
+          'inception-resnetv2-msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
+          'arcface-insight-tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
+          'gabor-graph = bob.bio.face.config.baseline.gabor_graph:transformer',
           'lgbphs = bob.bio.face.config.baseline.lgbphs:transformer',
           'dummy = bob.bio.face.config.baseline.dummy:transformer',
         ],
 
         #baselines
         'bob.bio.pipeline':[
-          'facenet_sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:pipeline',
-          'inception_resnetv1_casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:pipeline',
-          'inception_resnetv2_casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline',
-          'inception_resnetv1_msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline',
-          'inception_resnetv2_msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline',
+          'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:pipeline',
+          'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:pipeline',
+          'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline',
+          'inception-resnetv1-msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline',
+          'inception-resnetv2-msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline',
           'gabor_graph = bob.bio.face.config.baseline.gabor_graph:pipeline',
-          'arcface_insight_tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
+          'arcface-insight-tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
           'lgbphs = bob.bio.face.config.baseline.lgbphs:pipeline',
           'lda = bob.bio.face.config.baseline.lda:pipeline',
           'dummy = bob.bio.face.config.baseline.dummy:pipeline',
+        ],
+
+        'bob.bio.config': [
+          'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg',
+          'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface',
+          'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface',
+          'inception-resnetv1-msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb',
+          'inception-resnetv2-msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb',
+          'gabor_graph = bob.bio.face.config.baseline.gabor_graph',
+          'arcface-insight-tf = bob.bio.face.config.baseline.arcface_insight_tf',
+          'lgbphs = bob.bio.face.config.baseline.lgbphs',
+          'lda = bob.bio.face.config.baseline.lda',
+
+
+
+          'arface            = bob.bio.face.config.database.arface',
+          'atnt              = bob.bio.face.config.database.atnt',
+          'gbu               = bob.bio.face.config.database.gbu',
+
+          'ijbc-11              = bob.bio.face.config.database.ijbc',
+
+          'lfw-restricted    = bob.bio.face.config.database.lfw_restricted',
+          'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted',
+          'mobio-male       = bob.bio.face.config.database.mobio_male',
+          'mobio-all        = bob.bio.face.config.database.mobio_all',
+          'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod',
+          'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod',
+          'multipie          = bob.bio.face.config.database.multipie',
+          'multipie-pose     = bob.bio.face.config.database.multipie_pose',
+          'replay-img-licit  = bob.bio.face.config.database.replay',
+          'replay-img-spoof  = bob.bio.face.config.database.replay',
+          'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile',
+          'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile',
+            
+          'fargo  = bob.bio.face.config.database.fargo',
         ],
 
 

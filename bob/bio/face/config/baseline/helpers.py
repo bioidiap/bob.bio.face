@@ -44,13 +44,13 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
         EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(3/7*CROPPED_IMAGE_WIDTH))
         MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(3/7*CROPPED_IMAGE_WIDTH))
-        cropped_positions={'eye': EYE_POS, 'mouth': MOUTH_POS}
+        cropped_positions={'leye': EYE_POS, 'mouth': MOUTH_POS}
 
     elif annotation_type == "right-profile":
 
         EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(5/7*CROPPED_IMAGE_WIDTH))
         MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(5/7*CROPPED_IMAGE_WIDTH))
-        cropped_positions={'eye': EYE_POS, 'mouth': MOUTH_POS}
+        cropped_positions={'reye': EYE_POS, 'mouth': MOUTH_POS}
     
     else:
 
@@ -97,13 +97,13 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
         # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
         EYE_POS = (CROPPED_IMAGE_HEIGHT//5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
         MOUTH_POS = (CROPPED_IMAGE_HEIGHT//3 * 2, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
-        cropped_positions={'eye': EYE_POS, 'mouth': MOUTH_POS}
+        cropped_positions={'leye': EYE_POS, 'mouth': MOUTH_POS}
 
     elif annotation_type == "right-profile":
         # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
         EYE_POS = (CROPPED_IMAGE_HEIGHT//5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
         MOUTH_POS = (CROPPED_IMAGE_HEIGHT//3 * 2, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
-        cropped_positions={'eye': EYE_POS, 'mouth': MOUTH_POS}
+        cropped_positions={'reye': EYE_POS, 'mouth': MOUTH_POS}
     
     else:
 

@@ -8,10 +8,12 @@ import numpy
 import logging
 
 from .Base import Base
+from sklearn.base import TransformerMixin, BaseEstimator
 
 logger = logging.getLogger("bob.bio.face")
 from sklearn.utils import check_array
 from bob.pipelines.sample import SampleBatch
+
 
 class FaceCrop(Base):
     """Crops the face according to the given annotations.
@@ -20,7 +22,7 @@ class FaceCrop(Base):
   on the eye locations, using :py:class:`bob.ip.base.FaceEyesNorm`. Usually,
   when executing the :py:meth:`crop_face` function, the image and the eye
   locations have to be specified. There, the given image will be transformed
-  such that the eye locations will be placed at specific locations in the
+  such that the eye locations will be placed at specific locations in theq
   resulting image. These locations, as well as the size of the cropped image,
   need to be specified in the constructor of this class, as
   ``cropped_positions`` and ``cropped_image_size``.
@@ -355,3 +357,37 @@ class FaceCrop(Base):
     def __setstate__(self, d):
         self.__dict__ = d
         self._init_non_pickables()
+
+class MultiFaceCrop(TransformerMixin, BaseEstimator):
+    def __init__(self,
+                 cropped_image_size,
+                 cropped_positions_list,
+                 fixed_positions=None,
+                 mask_sigma=None,
+                 mask_neighbors=5,
+                 mask_seed=None,
+                 annotator=None,
+                 allow_upside_down_normalized_faces=False,
+                 **kwargs):
+
+        assert isinstance(cropped_positions_list, list)
+
+        self.croppers = {}
+        for cropped_positions in cropped_positions_list:
+            assert len(cropped_positions) == 2
+            croppers[tuple(cropped_positions)] = FaceCrop(cropped_image_size,
+                                                          cropped_positions,
+                                                          fixed_positions,
+                                                          mask_sigma,
+                                                          mask_neighbors,
+                                                          mask_seed,
+                                                          annotator,
+                                                          allow_upside_down_normalized_faces,
+                                                          **kwargs)
+    
+    def transform(self, X, annotations=None):
+        valid_keys = [k for k in self.cropper.keys() if set(k).issubset(set(annotations.keys()))]
+        assert len(valid_keys) == 1, "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(len(valid_keys))
+
+        cropper = self.croppers[valid_keys[0]]
+        return cropper.transform(X, annotations)

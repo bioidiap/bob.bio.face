@@ -6,7 +6,16 @@ from sklearn.base import TransformerMixin, BaseEstimator
 from .tensorflow_compat_v1 import TensorflowCompatV1
 
 
-class InceptionResnetv2_MsCeleb(TensorflowCompatV1):
+class InceptionResnetv2(TensorflowCompatV1):
+    def __init__(self, checkpoint_path):
+        from bob.learn.tensorflow.network import inception_resnet_v2_batch_norm
+        input_shape = (1, 160, 160, 3)
+        architecture_fn = inception_resnet_v2_batch_norm
+        super().__init__(checkpoint_path, input_shape, architecture_fn)
+
+
+
+class InceptionResnetv2_MsCeleb(InceptionResnetv2):
     """
     Inception Restnet v2 model from https://gitlab.idiap.ch/bob/bob.learn.tensorflow/-/blob/1e40a68bfbbb3dd8813c48d50b2f23ff7a399956/bob/learn/tensorflow/network/InceptionResnetV2.py
 
@@ -18,8 +27,6 @@ class InceptionResnetv2_MsCeleb(TensorflowCompatV1):
     """
 
     def __init__(self):
-        from bob.learn.tensorflow.network import inception_resnet_v2_batch_norm
-
         bob_rc_variable = "bob.bio.face.idiap_inception_resnet_v2_path"
         urls = ["https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/inception-v2_batchnorm_rgb.tar.gz"]
         model_subdirectory = "idiap_inception_resnet_v2_path"
@@ -28,13 +35,10 @@ class InceptionResnetv2_MsCeleb(TensorflowCompatV1):
         checkpoint_filename = self.get_modelpath(bob_rc_variable, model_subdirectory)
         self.download_model(checkpoint_filename, urls)
 
-        input_shape = (1, 160, 160, 3)
-        architecture_fn = inception_resnet_v2_batch_norm
-
-        super().__init__(checkpoint_filename, input_shape, architecture_fn)
+        super().__init__(checkpoint_filename)
 
 
-class InceptionResnetv2_CasiaWebFace(TensorflowCompatV1):
+class InceptionResnetv2_CasiaWebFace(InceptionResnetv2):
     """
     Inception Restnet v2 model from https://gitlab.idiap.ch/bob/bob.learn.tensorflow/-/blob/1e40a68bfbbb3dd8813c48d50b2f23ff7a399956/bob/learn/tensorflow/network/InceptionResnetV2.py
 
@@ -48,7 +52,6 @@ class InceptionResnetv2_CasiaWebFace(TensorflowCompatV1):
     def __init__(self):
         """Loads the tensorflow model
         """
-        from bob.learn.tensorflow.network import inception_resnet_v2_batch_norm
 
         bob_rc_variable = "bob.bio.face.idiap_inception_resnet_v2_casiawebface_path"
         urls = ["https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/idiap_inception_resnet_v2_casiawebface_path.tar.gz"]
@@ -58,10 +61,8 @@ class InceptionResnetv2_CasiaWebFace(TensorflowCompatV1):
         checkpoint_filename = self.get_modelpath(bob_rc_variable, model_subdirectory)
         self.download_model(checkpoint_filename, urls)
 
-        input_shape = (1, 160, 160, 3)
-        architecture_fn = inception_resnet_v2_batch_norm
 
-        super().__init__(checkpoint_filename, input_shape, architecture_fn)
+        super().__init__(checkpoint_filename)
 
 
 class InceptionResnetv1_MsCeleb(TensorflowCompatV1):

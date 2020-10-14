@@ -24,15 +24,14 @@ else:
     annotation_type = None
     fixed_positions = None
 
-
-def load(annotation_type, fixed_positions=None):
-    ####### SOLVING THE FACE CROPPER TO BE USED ##########
-
+def get_cropper(annotation_type, fixed_positions=None):
     # Cropping
     face_cropper, transform_extra_arguments = crop_80x64(
         annotation_type, fixed_positions, color_channel="gray"
     )
+    return face_cropper, transform_extra_arguments
 
+def get_pipeline(face_cropper, transform_extra_arguments):
     preprocessor = bob.bio.face.preprocessor.INormLBP(
         face_cropper=face_cropper, dtype=np.float64
     )
@@ -78,6 +77,11 @@ def load(annotation_type, fixed_positions=None):
 
     algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir)
     return VanillaBiometricsPipeline(transformer, algorithm)
+
+def load(annotation_type, fixed_positions=None):
+    ####### SOLVING THE FACE CROPPER TO BE USED ##########
+    face_cropper, transform_extra_arguments = get_cropper(annotation_type, fixed_positions)
+    return get_pipeline(face_cropper, transform_extra_arguments)
 
 pipeline = load(annotation_type, fixed_positions)
 

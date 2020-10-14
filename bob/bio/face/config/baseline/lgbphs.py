@@ -21,15 +21,14 @@ else:
     annotation_type = None
     fixed_positions = None
 
-
-def load(annotation_type, fixed_positions=None):
-    ####### SOLVING THE FACE CROPPER TO BE USED ##########
-
+def get_cropper(annotation_type, fixed_positions=None):
     # Cropping
     face_cropper, transform_extra_arguments = crop_80x64(
         annotation_type, fixed_positions, color_channel="gray"
     )
+    return face_cropper, transform_extra_arguments
 
+def get_pipeline(face_cropper, transform_extra_arguments):
     preprocessor = bob.bio.face.preprocessor.TanTriggs(
         face_cropper=face_cropper, dtype=np.float64
     )
@@ -56,7 +55,6 @@ def load(annotation_type, fixed_positions=None):
     )
 
 
-
     ### BIOMETRIC ALGORITHM
     histogram = bob.bio.face.algorithm.Histogram(
         distance_function = bob.math.histogram_intersection,
@@ -69,5 +67,10 @@ def load(annotation_type, fixed_positions=None):
 
     return VanillaBiometricsPipeline(transformer, algorithm)
 
+def load(annotation_type, fixed_positions=None):
+    ####### SOLVING THE FACE CROPPER TO BE USED ##########
+    face_cropper, transform_extra_arguments = get_cropper(annotation_type, fixed_positions)
+    return get_pipeline(face_cropper, transform_extra_arguments)
+   
 pipeline = load(annotation_type, fixed_positions)
 transformer = pipeline.transformer

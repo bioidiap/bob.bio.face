@@ -148,7 +148,7 @@ class FaceCrop(Base):
         self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
 
         # create objects required for face cropping
-        self.cropper = bob.ip.base.FaceEyesNorm(
+        self. cropper = bob.ip.base.FaceEyesNorm(
             crop_size=cropped_image_size,
             right_eye=cropped_positions[self.cropped_keys[0]],
             left_eye=cropped_positions[self.cropped_keys[1]],
@@ -375,19 +375,31 @@ class MultiFaceCrop(TransformerMixin, BaseEstimator):
         self.croppers = {}
         for cropped_positions in cropped_positions_list:
             assert len(cropped_positions) == 2
-            croppers[tuple(cropped_positions)] = FaceCrop(cropped_image_size,
-                                                          cropped_positions,
-                                                          fixed_positions,
-                                                          mask_sigma,
-                                                          mask_neighbors,
-                                                          mask_seed,
-                                                          annotator,
-                                                          allow_upside_down_normalized_faces,
-                                                          **kwargs)
+            self.croppers[tuple(cropped_positions)] = FaceCrop(cropped_image_size,
+                                                               cropped_positions,
+                                                               fixed_positions,
+                                                               mask_sigma,
+                                                               mask_neighbors,
+                                                               mask_seed,
+                                                               annotator,
+                                                               allow_upside_down_normalized_faces,
+                                                               **kwargs)
     
     def transform(self, X, annotations=None):
-        valid_keys = [k for k in self.cropper.keys() if set(k).issubset(set(annotations.keys()))]
-        assert len(valid_keys) == 1, "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(len(valid_keys))
+        subsets = {k : {'X': [], 'annotations': []} for k in self.croppers.keys()}
 
-        cropper = self.croppers[valid_keys[0]]
-        return cropper.transform(X, annotations)
+        def assign(X_elem, annotations_elem):
+            valid_keys = [k for k in self.croppers.keys() if set(k).issubset(set(annotations_elem.keys()))]
+            assert len(valid_keys) == 1, "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(len(valid_keys))
+            subsets[valid_keys[0]]['X'].append(X_elem)
+            subsets[valid_keys[0]]['annotations'].append(annotations_elem)
+        
+        for X_elem, annotations_elem in zip(X, annotations):
+            assign(X_elem, annotations_elem)
+        
+        transformed_subsets = {k : self.croppers[k].transform(**subsets[k]) for k in subsets.keys()}
+        
+        return [item for sublist in transformed_subsets.values() for item in sublist]
+
+    def fit(self, X, y=None):
+        return self

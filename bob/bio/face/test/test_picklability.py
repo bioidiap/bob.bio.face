@@ -68,26 +68,6 @@ def test_face_crop():
     assert assert_picklable_with_exceptions(cropper)
 
 
-def test_face_detect():
-    face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
-    )
-
-    face_detect = bob.bio.face.preprocessor.FaceDetect(
-      face_cropper = face_cropper,
-      use_flandmark = False
-    )
-
-    assert_picklable_with_exceptions(face_detect)
-
-    face_detect = bob.bio.face.preprocessor.FaceDetect(
-      face_cropper = face_cropper,
-      use_flandmark = True
-    )
-    assert assert_picklable_with_exceptions(face_detect)
-
-
 def test_INormLBP():
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
       cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
@@ -126,7 +106,7 @@ def test_SQI():
 
 
 def test_HistogramEqualization():
-    
+
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
       cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
       cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}

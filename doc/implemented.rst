@@ -43,7 +43,6 @@ Image Preprocessors
 .. autosummary::
    bob.bio.face.preprocessor.Base
    bob.bio.face.preprocessor.FaceCrop
-   bob.bio.face.preprocessor.FaceDetect
 
    bob.bio.face.preprocessor.TanTriggs
    bob.bio.face.preprocessor.HistogramEqualization

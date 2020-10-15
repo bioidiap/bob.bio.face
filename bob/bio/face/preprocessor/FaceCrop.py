@@ -10,8 +10,8 @@ import logging
 from .Base import Base
 
 logger = logging.getLogger("bob.bio.face")
-from sklearn.utils import check_array
-from bob.pipelines.sample import SampleBatch
+from bob.bio.base import load_resource
+
 
 class FaceCrop(Base):
     """Crops the face according to the given annotations.
@@ -85,17 +85,17 @@ class FaceCrop(Base):
   mask_seed : int or None
     The random seed to apply for mask extrapolation.
 
-  allow_upside_down_normalized_faces: bool, optional
-    If ``False`` (default), a ValueError is raised when normalized faces are going to be
-    upside down compared to input image. This allows you to catch wrong annotations in
-    your database easily. If you are sure about your input, you can set this flag to
-    ``True``.
-
     .. warning::
 
        When run in parallel, the same random seed will be applied to all
        parallel processes. Hence, results of parallel execution will differ
        from the results in serial execution.
+
+  allow_upside_down_normalized_faces: bool, optional
+    If ``False`` (default), a ValueError is raised when normalized faces are going to be
+    upside down compared to input image. This allows you to catch wrong annotations in
+    your database easily. If you are sure about your input, you can set this flag to
+    ``True``.
 
   annotator : :any:`bob.bio.base.annotator.Annotator`
     If provided, the annotator will be used if the required annotations are
@@ -142,7 +142,7 @@ class FaceCrop(Base):
         self.mask_sigma = mask_sigma
         self.mask_neighbors = mask_neighbors
         self.mask_seed = mask_seed
-        self.annotator = annotator
+        self.annotator = load_resource(annotator, "annotator")
         self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
 
         # create objects required for face cropping
@@ -300,7 +300,7 @@ class FaceCrop(Base):
                 The cropped face.
             """
 
-        def _crop(image, annot):            
+        def _crop(image, annot):
             # if annotations are missing and cannot do anything else return None.
             if (
                 not self.is_annotations_valid(annot)

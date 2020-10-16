@@ -42,14 +42,14 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
     elif annotation_type == "left-profile":
 
-        EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(3/7*CROPPED_IMAGE_WIDTH))
-        MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(3/7*CROPPED_IMAGE_WIDTH))
+        EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(3/8*CROPPED_IMAGE_WIDTH))
+        MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(3/8*CROPPED_IMAGE_WIDTH))
         cropped_positions={'leye': EYE_POS, 'mouth': MOUTH_POS}
 
     elif annotation_type == "right-profile":
 
-        EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(5/7*CROPPED_IMAGE_WIDTH))
-        MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(5/7*CROPPED_IMAGE_WIDTH))
+        EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(5/8*CROPPED_IMAGE_WIDTH))
+        MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(5/8*CROPPED_IMAGE_WIDTH))
         cropped_positions={'reye': EYE_POS, 'mouth': MOUTH_POS}
     
     else:

@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-
 from sklearn.preprocessing import FunctionTransformer
 from skimage.transform import resize
 from sklearn.utils import check_array
@@ -14,14 +11,17 @@ def scale(images, target_img_size):
     ----------
     images : array_like
         A list of images (in Bob format) to be scaled to the target size
-    target_img_size : tuple
-        A tuple of size 2 as (H, W)
+    target_img_size : int or tuple
+        A tuple of size 2 as (H, W) or an integer where H==W
 
     Returns
     -------
     numpy.ndarray
         Scaled images
     """
+    if isinstance(target_img_size, int):
+        target_img_size = (target_img_size, target_img_size)
+
     images = check_array(images, allow_nd=True)
     images = to_matplotlib(images)
 

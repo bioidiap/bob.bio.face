@@ -1,13 +1,10 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-
 from bob.bio.face.preprocessor import FaceCrop, Scale
 
 
 def face_crop_solver(
     cropped_image_size,
-    color_channel="rgb",
     cropped_positions=None,
+    color_channel="rgb",
     fixed_positions=None,
     annotator=None,
     dtype="uint8",
@@ -15,7 +12,6 @@ def face_crop_solver(
     """
     Decide which face cropper to use.
     """
-
     # If there's not cropped positions, just resize
     if cropped_positions is None:
         return Scale(cropped_image_size)

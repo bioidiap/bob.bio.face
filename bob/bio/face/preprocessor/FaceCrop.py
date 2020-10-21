@@ -125,8 +125,8 @@ class FaceCrop(Base):
             if cropped_positions == "eyes-center":
                 eyes_distance = (face_size + 1) / 2.0
                 eyes_center = (face_size / 4.0, (face_size - 0.5) / 2.0)
-                right_eye = (eyes_center[0], eyes_center[1] + eyes_distance / 2)
-                left_eye = (eyes_center[0], eyes_center[1] - eyes_distance / 2)
+                right_eye = (eyes_center[0], eyes_center[1] - eyes_distance / 2)
+                left_eye = (eyes_center[0], eyes_center[1] + eyes_distance / 2)
                 cropped_positions = {"reye": right_eye, "leye": left_eye}
 
             elif cropped_positions == "bounding-box":
@@ -162,7 +162,9 @@ class FaceCrop(Base):
         self.mask_sigma = mask_sigma
         self.mask_neighbors = mask_neighbors
         self.mask_seed = mask_seed
-        self.annotator = load_resource(annotator, "annotator")
+        if isinstance(annotator, str):
+            annotator = load_resource(annotator, "annotator")
+        self.annotator = annotator
         self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
 
         # create objects required for face cropping

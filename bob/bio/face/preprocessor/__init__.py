@@ -25,7 +25,6 @@ def __appropriate__(*args):
 __appropriate__(
     Base,
     FaceCrop,
-    FaceDetect,
     TanTriggs,
     INormLBP,
     HistogramEqualization,

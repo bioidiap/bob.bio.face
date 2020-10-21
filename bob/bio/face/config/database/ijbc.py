@@ -11,7 +11,6 @@ database = DatabaseConnector(
     IJBCBioDatabase(original_directory=ijbc_directory, protocol="1:1"),
     annotation_type = "eyes-center",
     fixed_positions = None,
-	allow_scoring_with_all_biometric_references = False
 )
 
 #ijbc_covariates = DatabaseConnector(

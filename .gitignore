@@ -13,3 +13,4 @@ sphinx
 dist
 record.txt
 build/
+bob/bio/face/embeddings/data

@@ -57,12 +57,12 @@ def get_fake_samples_for_training():
     ]
 
 
-def run_baseline(baseline, samples_for_training=[]):    
+def run_baseline(baseline, samples_for_training=[]):
     biometric_references = get_fake_sample_set(purpose="bioref")
     probes = get_fake_sample_set(purpose="probe")
 
     # Regular pipeline
-    pipeline = load_resource(baseline, "pipeline")    
+    pipeline = load_resource(baseline, "pipeline")
     scores = pipeline(samples_for_training, biometric_references, probes)
     assert len(scores) == 1
     assert len(scores[0]) == 1
@@ -72,7 +72,7 @@ def run_baseline(baseline, samples_for_training=[]):
 
         checkpoint_pipeline = checkpoint_vanilla_biometrics(
             copy.deepcopy(pipeline), base_dir=d
-        )        
+        )
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
         assert len(checkpoint_scores[0]) == 1
@@ -104,23 +104,23 @@ def run_baseline(baseline, samples_for_training=[]):
 
 
 def test_facenet_baseline():
-    run_baseline("facenet_sanderberg")
+    run_baseline("facenet-sanderberg")
 
 
 def test_inception_resnetv2_msceleb():
-    run_baseline("inception_resnetv2_msceleb")
+    run_baseline("inception-resnetv2-msceleb")
 
 
 def test_inception_resnetv2_casiawebface():
-    run_baseline("inception_resnetv2_casiawebface")
+    run_baseline("inception-resnetv2-casiawebface")
 
 
 def test_inception_resnetv1_msceleb():
-    run_baseline("inception_resnetv1_msceleb")
+    run_baseline("inception-resnetv1-msceleb")
 
 
 def test_inception_resnetv1_casiawebface():
-    run_baseline("inception_resnetv1_casiawebface")
+    run_baseline("inception-resnetv1-casiawebface")
 
 
 def test_arcface_insight_tf():
@@ -128,7 +128,7 @@ def test_arcface_insight_tf():
 
     tf.compat.v1.reset_default_graph()
 
-    run_baseline("arcface_insight_tf")
+    run_baseline("arcface-insight-tf")
 
 
 def test_gabor_graph():

@@ -11,8 +11,8 @@ def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 
     return Sample(data, key="1", annotations=annotations)
 
 
-def test_facenet():    
-    transformer = load_resource("facenet_sanderberg", "transformer")
+def test_facenet():
+    transformer = load_resource("facenet-sanderberg", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -22,7 +22,7 @@ def test_facenet():
 
 
 def test_inception_resnetv2_msceleb():
-    transformer = load_resource("inception_resnetv2_msceleb", "transformer")
+    transformer = load_resource("inception-resnetv2-msceleb", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -32,7 +32,7 @@ def test_inception_resnetv2_msceleb():
 
 
 def test_inception_resnetv2_casiawebface():
-    transformer = load_resource("inception_resnetv2_casiawebface", "transformer")
+    transformer = load_resource("inception-resnetv2-casiawebface", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -42,7 +42,7 @@ def test_inception_resnetv2_casiawebface():
 
 
 def test_inception_resnetv1_msceleb():
-    transformer = load_resource("inception_resnetv1_msceleb", "transformer")
+    transformer = load_resource("inception-resnetv1-msceleb", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -52,7 +52,7 @@ def test_inception_resnetv1_msceleb():
 
 
 def test_inception_resnetv1_casiawebface():
-    transformer = load_resource("inception_resnetv1_casiawebface", "transformer")
+    transformer = load_resource("inception-resnetv1-casiawebface", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -64,7 +64,7 @@ def test_inception_resnetv1_casiawebface():
 def test_arcface_insight_tf():
     import tensorflow as tf
     tf.compat.v1.reset_default_graph()
-    transformer = load_resource("arcface_insight_tf", "transformer")
+    transformer = load_resource("arcface-insight-tf", "transformer")
 
     fake_sample = get_fake_sample()
 
@@ -74,7 +74,7 @@ def test_arcface_insight_tf():
 
 
 def test_gabor_graph():
-    transformer = load_resource("gabor_graph", "transformer")
+    transformer = load_resource("gabor-graph", "transformer")
 
     fake_sample = get_fake_sample()
     transformed_sample = transformer.transform([fake_sample])[0]

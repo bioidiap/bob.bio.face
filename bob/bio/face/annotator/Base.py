@@ -5,9 +5,6 @@ import bob.bio.face.preprocessor  # import for documentation
 class Base(bob.bio.base.annotator.Annotator):
     """Base class for all face annotators"""
 
-    def __init__(self, **kwargs):
-        super(Base, self).__init__(**kwargs)
-
     def annotate(self, sample, **kwargs):
         """Annotates an image and returns annotations in a dictionary. All
         annotator should return at least the ``topleft`` and ``bottomright``

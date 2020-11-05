@@ -1,6 +1,5 @@
 from .Base import Base
 from .FaceCrop import FaceCrop
-from .FaceDetect import FaceDetect
 
 from .TanTriggs import TanTriggs
 from .INormLBP import INormLBP
@@ -26,7 +25,6 @@ def __appropriate__(*args):
 __appropriate__(
     Base,
     FaceCrop,
-    FaceDetect,
     TanTriggs,
     INormLBP,
     HistogramEqualization,

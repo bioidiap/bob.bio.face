@@ -12,6 +12,7 @@
 
 from .database import FaceBioFile
 from bob.bio.base.database import BioDatabase
+from bob.db.base.utils import convert_names_to_highlevel, convert_names_to_lowlevel
 
 
 class ReplayBioFile(FaceBioFile):
@@ -64,7 +65,7 @@ class ReplayBioDatabase(BioDatabase):
         return names
 
     def groups(self):
-        return self.convert_names_to_highlevel(
+        return convert_names_to_highlevel(
             self._db.groups(), self.low_level_group_names, self.high_level_group_names)
 
     def annotations(self, file):
@@ -89,7 +90,7 @@ class ReplayBioDatabase(BioDatabase):
         groups = self.check_parameters_for_validity(groups, "group", self.groups(), self.groups())
         purposes = self.check_parameters_for_validity(purposes, "purpose", ('enroll', 'probe'), ('enroll', 'probe'))
         purposes = list(purposes)
-        groups = self.convert_names_to_lowlevel(
+        groups = convert_names_to_lowlevel(
             groups, self.low_level_group_names, self.high_level_group_names)
 
         # protocol licit is not defined in the low level API

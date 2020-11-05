@@ -67,14 +67,16 @@ However, we want to use the same algorithms on those images as well, so we have 
 So, image preprocessing becomes a three stage algorithm.
 
 How to combine the two stages, image alignment and photometric enhancement, we have seen before.
-Fortunately, the same technique can be applied for the :py:class:`bob.bio.face.preprocessor.FaceDetect`.
 The face detector takes as an input a ``face_cropper``, where we can use the same options to select a face cropper, just that we cannot pass ``None``.
 Interestingly, the face detector itself can be used as a ``face_cropper`` inside the photometric enhancement classes.
 Hence, to generate a TanTriggs preprocessor that performs face detection, crops the face and performs photometric enhancement, you can create:
 
 .. code-block:: py
 
-   preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper = bob.bio.face.preprocessor.FaceDetect(face_cropper = 'face-crop-eyes', use_flandmark = True) )
+   face_cropper = bob.bio.base.load_resource("face-crop-eyes", "preprocessor")
+   annotator = bob.bio.base.load_resource("facedetect-eye-estimate", "annotator")
+   face_cropper.annotator = annotator
+   preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=face_cropper)
 
 Or simply (using the face detector :ref:`Resource <bob.bio.face.preprocessors>`):
 
@@ -208,7 +210,6 @@ Feature extractors
 Only four types of features are registered as resources here:
 
 * ``'dct-blocks'``: DCT blocks with 12 pixels and full overlap, extracting 35 DCT features per block
-* ``'eigenface'``: Pixel vectors projected to face space keeping 95 % variance
 * ``'grid-graph'``: Gabor jets in grid graphs, with 8 pixels distance between nodes
 * ``'lgbphs'``: Local Gabor binary pattern histogram sequences with block-size of 8 and no overlap
 

@@ -155,4 +155,10 @@ class Histogram (Algorithm):
   def read_feature(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
   def train_enroller(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
   def load_enroller(*args, **kwargs) : pass
-  def score_for_multiple_models(*args, **kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
+
+  def score_for_multiple_models(self, models, probe):
+
+      self._check_feature(probe, self._is_sparse(probe))
+      scores = [ self.score(m, probe) for m in models ]
+      return scores
+

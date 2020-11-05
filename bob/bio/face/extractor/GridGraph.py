@@ -278,7 +278,7 @@ class GridGraph(Extractor):
         pass
 
     def __getstate__(self):
-        d = dict(self.__dict__)
+        d = self.__dict__.copy()
         d.pop("gwt")
         d.pop("_aligned_graph")
         if "_graph" in d:

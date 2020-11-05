@@ -9,7 +9,6 @@ bob.math
 bob.sp
 bob.ip.base
 bob.ip.color
-bob.ip.draw
 bob.ip.gabor
 bob.learn.linear
 bob.learn.em
@@ -17,8 +16,8 @@ bob.measure
 bob.db.base
 bob.db.atnt  # required for testing
 bob.bio.base
-bob.learn.boosting
 bob.ip.facedetect
-bob.ip.flandmark
+bob.pipelines
 matplotlib   # for plotting
 six
+scikit-image

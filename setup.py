@@ -103,35 +103,23 @@ setup(
 
         # scripts should be declared using this entry:
         'console_scripts': [
-            'baselines.py      = bob.bio.face.script.baselines:main',
-            'display_face_annotations.py = bob.bio.face.script.display_face_annotations:main',
-            'bob_ijba_collect_results.py = bob.bio.face.script.ijba_collect_results:main',
         ],
 
         'bob.bio.database': [
             'arface            = bob.bio.face.config.database.arface:database',
             'atnt              = bob.bio.face.config.database.atnt:database',
-            'banca             = bob.bio.face.config.database.banca_english:database',
-            'caspeal           = bob.bio.face.config.database.caspeal:database',
-            'frgc              = bob.bio.face.config.database.frgc:database',
             'gbu               = bob.bio.face.config.database.gbu:database',
-            'ijba              = bob.bio.face.config.database.ijba:database',
-            'ijbb              = bob.bio.face.config.database.ijbb:database',
 
-            'ijbc-11              = bob.bio.face.config.database.ijbc:ijbc_11',
-            'ijbc-covariates      = bob.bio.face.config.database.ijbc:ijbc_covariates',
+            'ijbc-11              = bob.bio.face.config.database.ijbc:database',
 
             'lfw-restricted    = bob.bio.face.config.database.lfw_restricted:database',
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
-            'mobio-image       = bob.bio.face.config.database.mobio:mobio_image',
-            'mobio-male        = bob.bio.face.config.database.mobio:mobio_male',  # MOBIO gender-dependent training
-            'mobio-female      = bob.bio.face.config.database.mobio:mobio_female',  # MOBIO gender-dependent training
+            'mobio-male       = bob.bio.face.config.database.mobio_male:database',
+            'mobio-all        = bob.bio.face.config.database.mobio_all:database',
             'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_licit',
             'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_spoof',
             'multipie          = bob.bio.face.config.database.multipie:database',
             'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
-            'scface            = bob.bio.face.config.database.scface:database',
-            'xm2vts            = bob.bio.face.config.database.xm2vts:database',
             'replay-img-licit  = bob.bio.face.config.database.replay:replay_licit',
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
             'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
@@ -147,65 +135,67 @@ setup(
             'mtcnn                    = bob.bio.face.config.annotator.mtcnn:annotator',
         ],
 
-        'bob.bio.preprocessor': [
-            'base              = bob.bio.face.config.preprocessor.base:preprocessor',  # simple color conversion
-            'face-crop-eyes    = bob.bio.face.config.preprocessor.face_crop_eyes:preprocessor',  # face crop
-            'landmark-detect   = bob.bio.face.config.preprocessor.face_detect:preprocessor',
-            # face detection + landmark detection + cropping
-            'face-detect       = bob.bio.face.config.preprocessor.face_detect:preprocessor_no_eyes',
-            # face detection + cropping
-
-            'inorm-lbp-crop    = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor',  # face crop + inorm-lbp
-            'tan-triggs-crop   = bob.bio.face.config.preprocessor.tan_triggs:preprocessor',  # face crop + Tan&Triggs
-            'histogram-crop    = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor',
-            # face crop + histogram equalization
-            'self-quotient-crop= bob.bio.face.config.preprocessor.self_quotient_image:preprocessor',
-            # face crop + self quotient image
-
-            'inorm-lbp-landmark = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_landmark',
-            # face detection + landmark detection + cropping + inorm-lbp
-            'tan-triggs-landmark = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_landmark',
-            # face detection + landmark detection + cropping + Tan&Triggs
-            'histogram-landmark = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_landmark',
-            # face detection + landmark detection + cropping + histogram equalization
-            'self-quotient-landmark = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_landmark',
-            # face detection + landmark detection + cropping + self quotient image
-
-            'inorm-lbp         = bob.bio.face.config.preprocessor.inorm_lbp:preprocessor_no_crop',
-            # inorm-lbp w/o face-crop
-            'tan-triggs        = bob.bio.face.config.preprocessor.tan_triggs:preprocessor_no_crop',
-            # Tan&Triggs w/o face-crop
-            'histogram         = bob.bio.face.config.preprocessor.histogram_equalization:preprocessor_no_crop',
-            # histogram equalization w/o face-crop
-            'self-quotient     = bob.bio.face.config.preprocessor.self_quotient_image:preprocessor_no_crop',
-            # self quotient image w/o face-crop
-        ],
-
-        'bob.bio.extractor': [
-            'dct-blocks        = bob.bio.face.config.extractor.dct_blocks:extractor',  # DCT blocks
-            'grid-graph        = bob.bio.face.config.extractor.grid_graph:extractor',  # Grid graph
-            'lgbphs            = bob.bio.face.config.extractor.lgbphs:extractor',  # LGBPHS
-            'eigenface         = bob.bio.face.config.extractor.eigenface:extractor',  # Eigenface
-        ],
-
-        'bob.bio.algorithm': [
-            'gabor-jet         = bob.bio.face.config.algorithm.gabor_jet:algorithm',  # Gabor jet comparison
-            'histogram         = bob.bio.face.config.algorithm.histogram:algorithm',  # LGBPHS histograms
-            'bic-jets          = bob.bio.face.config.algorithm.bic_jets:algorithm',  # BIC on gabor jets
+        'bob.bio.transformer':[
+          'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:transformer',
+          'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:transformer',
+          'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:transformer',
+          'inception-resnetv1-msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:transformer',
+          'inception-resnetv2-msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:transformer',
+          'arcface-insight-tf = bob.bio.face.config.baseline.arcface_insight_tf:transformer',
+          'gabor-graph = bob.bio.face.config.baseline.gabor_graph:transformer',
+          'lgbphs = bob.bio.face.config.baseline.lgbphs:transformer',
+          'dummy = bob.bio.face.config.baseline.dummy:transformer',
         ],
 
         #baselines
-        'bob.bio.baseline':[
-          'eigenface = bob.bio.face.baseline.baseline:eigenface',
-          'lda = bob.bio.face.baseline.baseline:lda',
-          'plda = bob.bio.face.baseline.baseline:plda',
-          'gabor_graph = bob.bio.face.baseline.baseline:gabor_graph',
-          'lgbphs = bob.bio.face.baseline.baseline:lgbphs',
-          'gmm = bob.bio.face.baseline.baseline:gmm',
-          'isv = bob.bio.face.baseline.baseline:isv',
-          'ivector = bob.bio.face.baseline.baseline:ivector',
-          'bic = bob.bio.face.baseline.baseline:bic',
+        'bob.bio.pipeline':[
+          'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:pipeline',
+          'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:pipeline',
+          'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline',
+          'inception-resnetv1-msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline',
+          'inception-resnetv2-msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline',
+          'gabor_graph = bob.bio.face.config.baseline.gabor_graph:pipeline',
+          'arcface-insight-tf = bob.bio.face.config.baseline.arcface_insight_tf:pipeline',
+          'lgbphs = bob.bio.face.config.baseline.lgbphs:pipeline',
+          'lda = bob.bio.face.config.baseline.lda:pipeline',
+          'dummy = bob.bio.face.config.baseline.dummy:pipeline',
         ],
+
+        'bob.bio.config': [
+          'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg',
+          'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface',
+          'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface',
+          'inception-resnetv1-msceleb = bob.bio.face.config.baseline.inception_resnetv1_msceleb',
+          'inception-resnetv2-msceleb = bob.bio.face.config.baseline.inception_resnetv2_msceleb',
+          'gabor_graph = bob.bio.face.config.baseline.gabor_graph',
+          'arcface-insight-tf = bob.bio.face.config.baseline.arcface_insight_tf',
+          'lgbphs = bob.bio.face.config.baseline.lgbphs',
+          'lda = bob.bio.face.config.baseline.lda',
+
+
+
+          'arface            = bob.bio.face.config.database.arface',
+          'atnt              = bob.bio.face.config.database.atnt',
+          'gbu               = bob.bio.face.config.database.gbu',
+
+          'ijbc-11              = bob.bio.face.config.database.ijbc',
+
+          'lfw-restricted    = bob.bio.face.config.database.lfw_restricted',
+          'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted',
+          'mobio-male       = bob.bio.face.config.database.mobio_male',
+          'mobio-all        = bob.bio.face.config.database.mobio_all',
+          'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod',
+          'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod',
+          'multipie          = bob.bio.face.config.database.multipie',
+          'multipie-pose     = bob.bio.face.config.database.multipie_pose',
+          'replay-img-licit  = bob.bio.face.config.database.replay',
+          'replay-img-spoof  = bob.bio.face.config.database.replay',
+          'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile',
+          'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile',
+            
+          'fargo  = bob.bio.face.config.database.fargo',
+        ],
+
 
     },
 

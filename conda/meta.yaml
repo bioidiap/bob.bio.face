@@ -32,7 +32,6 @@ requirements:
     - bob.sp
     - bob.ip.base
     - bob.ip.color
-    - bob.ip.draw
     - bob.ip.gabor
     - bob.learn.linear
     - bob.learn.em
@@ -40,9 +39,8 @@ requirements:
     - bob.db.base
     - bob.db.atnt
     - bob.bio.base
-    - bob.learn.boosting
     - bob.ip.facedetect
-    - bob.ip.flandmark
+    - bob.pipelines
     - matplotlib {{ matplotlib }}
     - six {{ six }}
   run:
@@ -50,6 +48,10 @@ requirements:
     - setuptools
     - matplotlib
     - six
+    - scikit-image
+  optional:
+    - bob.learn.tensorflow
+    - tensorflow
 
 test:
   imports:
@@ -69,11 +71,9 @@ test:
     - sphinx_rtd_theme
     - bob.db.arface
     - bob.db.atnt
-    - bob.db.banca
     - bob.db.caspeal
     - bob.db.frgc
     - bob.db.gbu
-    - bob.db.ijba
     - bob.db.ijbc
     - bob.db.lfw
     - bob.db.mobio
@@ -86,6 +86,8 @@ test:
     - bob.db.fargo
     - bob.bio.gmm
     - gridtk
+    - bob.learn.tensorflow
+    - tensorflow
 
 about:
   home: https://www.idiap.ch/software/bob/

@@ -8,10 +8,14 @@ import bob.ip.base
 import numpy
 
 from bob.bio.base.extractor import Extractor
+from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.utils import check_array
+from bob.pipelines.sample import SampleBatch
 
-class DCTBlocks (Extractor):
 
-  """Extracts *Discrete Cosine Transform* (DCT) features from (overlapping) image blocks.
+class DCTBlocks(TransformerMixin, BaseEstimator):
+
+    """Extracts *Discrete Cosine Transform* (DCT) features from (overlapping) image blocks.
   These features are based on the :py:class:`bob.ip.base.DCTFeatures` class.
   The default parametrization is the one that performed best on the BANCA database in [WMM11]_.
 
@@ -39,43 +43,68 @@ class DCTBlocks (Extractor):
   normalize_dcts : bool
     Normalize the values of the DCT components to zero mean and unit standard deviation. Default is ``True``.
   """
-  def __init__(
-      self,
-      block_size = 12,    # 1 or two parameters for block size
-      block_overlap = 11, # 1 or two parameters for block overlap
-      number_of_dct_coefficients = 45,
-      normalize_blocks = True,
-      normalize_dcts = True,
-      auto_reduce_coefficients = False
-  ):
 
-    # call base class constructor
-    Extractor.__init__(
+    def __init__(
         self,
-        block_size = block_size,
-        block_overlap = block_overlap,
-        number_of_dct_coefficients = number_of_dct_coefficients,
-        normalize_blocks = normalize_blocks,
-        normalize_dcts = normalize_dcts,
-        auto_reduce_coefficients = auto_reduce_coefficients
-    )
+        block_size=12,  # 1 or two parameters for block size
+        block_overlap=11,  # 1 or two parameters for block overlap
+        number_of_dct_coefficients=45,
+        normalize_blocks=True,
+        normalize_dcts=True,
+        auto_reduce_coefficients=False,
+    ):
 
-    # block parameters
-    block_size = block_size if isinstance(block_size, (tuple, list)) else (block_size, block_size)
-    block_overlap = block_overlap if isinstance(block_overlap, (tuple, list)) else (block_overlap, block_overlap)
+        self.block_size = (block_size,)
+        self.block_overlap = block_overlap
+        self.number_of_dct_coefficients = number_of_dct_coefficients
+        self.normalize_blocks = normalize_blocks
+        self.normalize_dcts = normalize_dcts
+        self.auto_reduce_coefficients = auto_reduce_coefficients
 
-    if block_size[0] < block_overlap[0] or block_size[1] < block_overlap[1]:
-      raise ValueError("The overlap '%s' is bigger than the block size '%s'. This won't work. Please check your setup!"%(block_overlap, block_size))
-    if block_size[0] * block_size[1] <= number_of_dct_coefficients:
-      if auto_reduce_coefficients:
-        number_of_dct_coefficients = block_size[0] * block_size[1] - 1
-      else:
-        raise ValueError("You selected more coefficients %d than your blocks have %d. This won't work. Please check your setup!"%(number_of_dct_coefficients, block_size[0] * block_size[1]))
+        # block parameters
+        block_size = (
+            block_size
+            if isinstance(block_size, (tuple, list))
+            else (block_size, block_size)
+        )
+        block_overlap = (
+            block_overlap
+            if isinstance(block_overlap, (tuple, list))
+            else (block_overlap, block_overlap)
+        )
 
-    self.dct_features = bob.ip.base.DCTFeatures(number_of_dct_coefficients, block_size, block_overlap, normalize_blocks, normalize_dcts)
+        if block_size[0] < block_overlap[0] or block_size[1] < block_overlap[1]:
+            raise ValueError(
+                "The overlap '%s' is bigger than the block size '%s'. This won't work. Please check your setup!"
+                % (block_overlap, block_size)
+            )
+        if block_size[0] * block_size[1] <= number_of_dct_coefficients:
+            if auto_reduce_coefficients:
+                number_of_dct_coefficients = block_size[0] * block_size[1] - 1
+            else:
+                raise ValueError(
+                    "You selected more coefficients %d than your blocks have %d. This won't work. Please check your setup!"
+                    % (number_of_dct_coefficients, block_size[0] * block_size[1])
+                )
 
-  def __call__(self, image):
-    """__call__(image) -> feature
+        self.number_of_dct_coefficients = number_of_dct_coefficients
+        self.block_size = block_size
+        self.block_overlap = block_overlap
+        self.normalize_blocks = normalize_blocks
+        self.normalize_dcts = normalize_dcts
+        self._init_non_pickables()
+
+    def _init_non_pickables(self):
+        self.dct_features = bob.ip.base.DCTFeatures(
+            self.number_of_dct_coefficients,
+            self.block_size,
+            self.block_overlap,
+            self.normalize_blocks,
+            self.normalize_dcts,
+        )
+
+    def transform(self, X):
+        """__call__(image) -> feature
 
     Computes and returns DCT blocks for the given input image.
 
@@ -90,13 +119,28 @@ class DCTBlocks (Extractor):
       The extracted DCT features for all blocks inside the image.
       The first index is the block index, while the second index is the DCT coefficient.
     """
-    assert isinstance(image, numpy.ndarray)
-    assert image.ndim == 2
-    assert image.dtype == numpy.float64
 
-    # Computes DCT features
-    return self.dct_features(image)
+        def _extract(image):
+            assert isinstance(image, numpy.ndarray)
+            assert image.ndim == 2
+            assert image.dtype == numpy.float64
 
-  # re-define the train function to get it non-documented
-  def train(*args,**kwargs) : raise NotImplementedError("This function is not implemented and should not be called.")
-  def load(*args,**kwargs) : pass
+            # Computes DCT features
+            return self.dct_features(image)
+
+        return [_extract(x) for x in X]
+
+    def _more_tags(self):
+        return {"stateless": True, "requires_fit": False}
+
+    def fit(self, X, y=None):
+        return self
+
+    def __getstate__(self):
+        d = self.__dict__.copy()
+        d.pop("dct_features")
+        return d
+
+    def __setstate__(self, d):
+        self.__dict__ = d
+        self._init_non_pickables()

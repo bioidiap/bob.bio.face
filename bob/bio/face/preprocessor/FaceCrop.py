@@ -337,7 +337,7 @@ class FaceCrop(Base):
                 return None
 
             # convert to the desired color channel
-            image = self.color_channel(image)
+            image = self.change_color_channel(image)
 
             # annotate the image if annotations are missing
             if (

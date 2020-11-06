@@ -60,7 +60,7 @@ class Base(TransformerMixin, BaseEstimator):
     def fit(self, X, y=None):
         return self
 
-    def color_channel(self, image):
+    def change_color_channel(self, image):
         """color_channel(image) -> channel
 
         Returns the channel of the given image, which was selected in the
@@ -121,5 +121,5 @@ class Base(TransformerMixin, BaseEstimator):
     def _transform_one_image(self, image):
         assert isinstance(image, numpy.ndarray) and image.ndim in (2, 3)
         # convert to grayscale
-        image = self.color_channel(image)
+        image = self.change_color_channel(image)
         return self.data_type(image)

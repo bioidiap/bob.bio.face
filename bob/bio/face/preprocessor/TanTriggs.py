@@ -108,7 +108,7 @@ class TanTriggs(Base):
     """
 
         def _crop(image, annotations=None):
-            image = self.color_channel(image)
+            image = self.change_color_channel(image)
             if self.cropper is not None:
                 image = self.cropper.transform([image], [annotations])[0]
             image = self.tan_triggs(image)

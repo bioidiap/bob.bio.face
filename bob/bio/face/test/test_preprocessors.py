@@ -79,7 +79,7 @@ def test_base():
     # read input
     image = _image()
 
-    preprocessed = base.transform(image)
+    preprocessed = base.transform([image])[0]
 
     assert preprocessed.ndim == 2
     assert preprocessed.dtype == numpy.float64
@@ -87,7 +87,7 @@ def test_base():
 
     # color output
     base = bob.bio.face.preprocessor.Base(color_channel="rgb", dtype=numpy.uint8)
-    colored = base.transform(bob.ip.color.rgb_to_gray(image))
+    colored = base.transform([bob.ip.color.rgb_to_gray(image)])[0]
 
     assert colored.ndim == 3
     assert colored.dtype == numpy.uint8
@@ -95,7 +95,7 @@ def test_base():
         numpy.allclose(colored[c], bob.ip.color.rgb_to_gray(image)) for c in range(3)
     )
 
-    colored = base.transform(image)
+    colored = base.transform([image])[0]
     assert colored.ndim == 3
     assert colored.dtype == numpy.uint8
     assert numpy.all(colored == image)
@@ -131,7 +131,7 @@ def test_face_crop():
     _compare(fixed_cropper.transform([image]), reference)
 
     # check color cropping
-    cropper.channel = "rgb"
+    cropper.color_channel = "rgb"
     cropped = cropper.transform([image], [annotation])[0]
     assert cropped.ndim == 3
     assert cropped.shape[0] == 3
@@ -149,7 +149,7 @@ def test_face_crop():
         pass
 
     # reset the configuration, so that later tests don't get screwed.
-    cropper.channel = "gray"
+    cropper.color_channel = "gray"
 
 
 def test_tan_triggs():

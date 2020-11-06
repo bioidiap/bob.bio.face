@@ -91,7 +91,7 @@ class SelfQuotientImage(Base):
       The cropped and photometrically enhanced face.
     """
         def _crop(image, annotations):
-            image = self.color_channel(image)
+            image = self.change_color_channel(image)
             if self.cropper is not None:
                 image = self.cropper.transform([image], [annotations])[0]
             image = self.self_quotient(image)

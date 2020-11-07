@@ -25,6 +25,7 @@ from .utils import load_cropper
 from sklearn.utils import check_array
 from bob.pipelines.sample import SampleBatch
 
+
 class INormLBP(Base):
     """Performs I-Norm LBP on the given image"""
 
@@ -120,10 +121,15 @@ class INormLBP(Base):
         def _crop(image, annotations=None):
             image = self.change_color_channel(image)
             if self.cropper is not None:
-                image = self.cropper.transform([image], annotations=[annotations])[0]
+                # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
+                image = (
+                    self.cropper.transform([image])[0]
+                    if annotations is None
+                    else self.cropper.transform([image], [annotations])[0]
+                )
             image = self.lbp_extractor(image)
             return self.data_type(image)
-                
+
         if annotations is None:
             return [_crop(data) for data in X]
         else:

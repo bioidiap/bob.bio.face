@@ -25,6 +25,7 @@ from .Base import Base
 from .utils import load_cropper
 from bob.pipelines.sample import SampleBatch
 
+
 class SelfQuotientImage(Base):
     """Crops the face (if desired) and applies self quotient image algorithm [WLW04]_ to photometrically enhance the image.
 
@@ -49,9 +50,8 @@ class SelfQuotientImage(Base):
         Base.__init__(self, **kwargs)
 
         # call base class constructor with its set of parameters
-        self.face_cropper=face_cropper
-        self.sigma=sigma
-
+        self.face_cropper = face_cropper
+        self.sigma = sigma
 
         self.cropper = load_cropper(face_cropper)
 
@@ -90,10 +90,16 @@ class SelfQuotientImage(Base):
     face : 2D :py:class:`numpy.ndarray`
       The cropped and photometrically enhanced face.
     """
+
         def _crop(image, annotations):
             image = self.change_color_channel(image)
             if self.cropper is not None:
-                image = self.cropper.transform([image], [annotations])[0]
+                # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
+                image = (
+                    self.cropper.transform([image])[0]
+                    if annotations is None
+                    else self.cropper.transform([image], [annotations])[0]
+                )
             image = self.self_quotient(image)
             return self.data_type(image)
 

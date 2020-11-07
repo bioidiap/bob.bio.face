@@ -79,14 +79,13 @@ def test_gabor_graph():
     fake_sample = get_fake_sample()
     transformed_sample = transformer.transform([fake_sample])[0]
     transformed_data = transformed_sample.data
-    assert len(transformed_sample.data) == 400
+    assert len(transformed_sample.data) == 80
 
 
 def test_lgbphs():
     transformer = load_resource("lgbphs", "transformer")
 
     fake_sample = get_fake_sample()
-
     transformed_sample = transformer.transform([fake_sample])[0]
     transformed_data = transformed_sample.data
-    assert transformed_sample.data.shape == (2, 220267)
+    assert transformed_sample.data.shape == (2, 44014)

@@ -24,6 +24,7 @@ from .Base import Base
 from .utils import load_cropper
 from bob.pipelines.sample import SampleBatch
 
+
 class TanTriggs(Base):
     """Crops the face (if desired) and applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image.
 
@@ -110,16 +111,19 @@ class TanTriggs(Base):
         def _crop(image, annotations=None):
             image = self.change_color_channel(image)
             if self.cropper is not None:
-                image = self.cropper.transform([image], [annotations])[0]
+                # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
+                image = (
+                    self.cropper.transform([image])[0]
+                    if annotations is None
+                    else self.cropper.transform([image], [annotations])[0]
+                )
             image = self.tan_triggs(image)
-
             return self.data_type(image)
 
         if annotations is None:
             return [_crop(data) for data in X]
         else:
             return [_crop(data, annot) for data, annot in zip(X, annotations)]
-
 
     def __getstate__(self):
         d = dict(self.__dict__)

@@ -96,7 +96,12 @@ class HistogramEqualization(Base):
         def _crop(image, annotations):
             image = self.change_color_channel(image)
             if self.cropper is not None:
-                image = self.cropper.transform([image], [annotations])[0]
+                # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
+                image = (
+                    self.cropper.transform([image])[0]
+                    if annotations is None
+                    else self.cropper.transform([image], [annotations])[0]
+                )
             image = self.equalize_histogram(image)
             return self.data_type(image)
 

@@ -27,7 +27,7 @@ def scale(images, target_img_size):
 
     # images are always batched
     output_shape = tuple(target_img_size)
-    output_shape = tuple(images.shape[0:1]) + output_shape
+    output_shape = tuple(images.shape[-1:-2]) + output_shape
     images = resize(images, output_shape=output_shape)
 
     return to_bob(images)

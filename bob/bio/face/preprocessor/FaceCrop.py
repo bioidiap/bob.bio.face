@@ -3,6 +3,7 @@ import numpy
 import logging
 
 from .Base import Base
+from sklearn.base import TransformerMixin, BaseEstimator
 
 logger = logging.getLogger("bob.bio.face")
 from bob.bio.base import load_resource
@@ -370,3 +371,64 @@ class FaceCrop(Base):
     def __setstate__(self, d):
         self.__dict__ = d
         self._init_non_pickables()
+
+
+class MultiFaceCrop(TransformerMixin, BaseEstimator):
+    def __init__(
+        self,
+        cropped_image_size,
+        cropped_positions_list,
+        fixed_positions=None,
+        mask_sigma=None,
+        mask_neighbors=5,
+        mask_seed=None,
+        annotator=None,
+        allow_upside_down_normalized_faces=False,
+        **kwargs,
+    ):
+
+        assert isinstance(cropped_positions_list, list)
+
+        self.croppers = {}
+        for cropped_positions in cropped_positions_list:
+            assert len(cropped_positions) == 2
+            self.croppers[tuple(cropped_positions)] = FaceCrop(
+                cropped_image_size,
+                cropped_positions,
+                fixed_positions,
+                mask_sigma,
+                mask_neighbors,
+                mask_seed,
+                annotator,
+                allow_upside_down_normalized_faces,
+                **kwargs,
+            )
+
+    def transform(self, X, annotations=None):
+        subsets = {k: {"X": [], "annotations": []} for k in self.croppers.keys()}
+
+        def assign(X_elem, annotations_elem):
+            valid_keys = [
+                k
+                for k in self.croppers.keys()
+                if set(k).issubset(set(annotations_elem.keys()))
+            ]
+            assert (
+                len(valid_keys) == 1
+            ), "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(
+                len(valid_keys)
+            )
+            subsets[valid_keys[0]]["X"].append(X_elem)
+            subsets[valid_keys[0]]["annotations"].append(annotations_elem)
+
+        for X_elem, annotations_elem in zip(X, annotations):
+            assign(X_elem, annotations_elem)
+
+        transformed_subsets = {
+            k: self.croppers[k].transform(**subsets[k]) for k in subsets.keys()
+        }
+
+        return [item for sublist in transformed_subsets.values() for item in sublist]
+
+    def fit(self, X, y=None):
+        return self

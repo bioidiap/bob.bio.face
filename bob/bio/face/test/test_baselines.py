@@ -12,6 +12,7 @@ import os
 import bob.io.base
 import functools
 import copy
+import tensorflow as tf
 
 
 images = dict()
@@ -70,9 +71,11 @@ def run_baseline(baseline, samples_for_training=[]):
     # CHECKPOINTING
     with tempfile.TemporaryDirectory() as d:
 
+        cpy = copy.deepcopy(pipeline)
         checkpoint_pipeline = checkpoint_vanilla_biometrics(
-            copy.deepcopy(pipeline), base_dir=d
+            cpy, base_dir=d
         )
+
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
         assert len(checkpoint_scores[0]) == 1
@@ -85,10 +88,11 @@ def run_baseline(baseline, samples_for_training=[]):
         assert "scores" in dirs
 
     # DASK
-    with tempfile.TemporaryDirectory() as d:
 
+    with tempfile.TemporaryDirectory() as d:
+        cpy = copy.deepcopy(pipeline)
         dask_pipeline = dask_vanilla_biometrics(
-            checkpoint_vanilla_biometrics(copy.deepcopy(pipeline), base_dir=d)
+            checkpoint_vanilla_biometrics(cpy, base_dir=d)
         )
         dask_scores = dask_pipeline([], biometric_references, probes)
         dask_scores = dask_scores.compute(scheduler="single-threaded")
@@ -101,7 +105,6 @@ def run_baseline(baseline, samples_for_training=[]):
         assert "samplewrapper-1" in dirs
         assert "samplewrapper-2" in dirs
         assert "scores" in dirs
-
 
 def test_facenet_baseline():
     run_baseline("facenet-sanderberg")
@@ -122,14 +125,14 @@ def test_inception_resnetv1_msceleb():
 def test_inception_resnetv1_casiawebface():
     run_baseline("inception-resnetv1-casiawebface")
 
-
+"""
 def test_arcface_insight_tf():
     import tensorflow as tf
 
     tf.compat.v1.reset_default_graph()
 
     run_baseline("arcface-insight-tf")
-
+"""
 
 def test_gabor_graph():
     run_baseline("gabor_graph")

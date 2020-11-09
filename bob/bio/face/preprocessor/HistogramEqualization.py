@@ -98,11 +98,15 @@ class HistogramEqualization(Base):
             if self.cropper is not None:
                 # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
                 image = (
-                    self.cropper.transform([image])[0]
+                    self.cropper.transform([image])
                     if annotations is None
-                    else self.cropper.transform([image], [annotations])[0]
+                    else self.cropper.transform([image], [annotations])
                 )
-            image = self.equalize_histogram(image)
+                image = self.equalize_histogram(image[0])
+            else:
+                # Handle with the cropper is None
+                image = self.equalize_histogram(image)
+
             return self.data_type(image)
 
         if annotations is None:

@@ -108,22 +108,26 @@ class TanTriggs(Base):
       The cropped and photometrically enhanced face.
     """
 
-        def _crop(image, annotations=None):
+        def _crop_one_sample(image, annotations=None):
             image = self.change_color_channel(image)
             if self.cropper is not None:
                 # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
                 image = (
-                    self.cropper.transform([image])[0]
+                    self.cropper.transform([image])
                     if annotations is None
-                    else self.cropper.transform([image], [annotations])[0]
+                    else self.cropper.transform([image], [annotations])
                 )
-            image = self.tan_triggs(image)
+                image = self.tan_triggs(image[0])
+            else:
+                # Handle with the cropper is None
+                image = self.tan_triggs(image)
+            
             return self.data_type(image)
 
         if annotations is None:
-            return [_crop(data) for data in X]
+            return [_crop_one_sample(data) for data in X]
         else:
-            return [_crop(data, annot) for data, annot in zip(X, annotations)]
+            return [_crop_one_sample(data, annot) for data, annot in zip(X, annotations)]
 
     def __getstate__(self):
         d = dict(self.__dict__)

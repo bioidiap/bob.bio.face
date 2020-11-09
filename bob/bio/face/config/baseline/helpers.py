@@ -5,55 +5,131 @@ from bob.pipelines import wrap
 from bob.bio.face.helpers import face_crop_solver
 import numpy as np
 
+def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
+    """
+    Computes the default cropped positions for the FaceCropper used with Facenet-like 
+    Embedding extractors, proportionally to the target image size
 
-def embedding_transformer_160x160(embedding, annotation_type, fixed_positions):
+
+    Parameters
+    ----------
+       cropped_image_size : tuple
+          A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
+
+       annotation_type: str
+          Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile', 
+          'right-profile'  and None
+
+    Returns
+    -------
+
+      cropped_positions:
+         The dictionary of cropped positions that will be feeded to the FaceCropper.
+    """
+    CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+
+    if annotation_type == "bounding-box":
+
+        TOP_LEFT_POS = (0, 0)
+        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+        cropped_positions={"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+
+    elif annotation_type == "eyes-center":
+
+        RIGHT_EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(1/3*CROPPED_IMAGE_WIDTH))
+        LEFT_EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(2/3*CROPPED_IMAGE_WIDTH))
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+
+    elif annotation_type == "left-profile":
+
+        EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(3/8*CROPPED_IMAGE_WIDTH))
+        MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(3/8*CROPPED_IMAGE_WIDTH))
+        cropped_positions={'leye': EYE_POS, 'mouth': MOUTH_POS}
+
+    elif annotation_type == "right-profile":
+
+        EYE_POS = (round(2/7*CROPPED_IMAGE_HEIGHT), round(5/8*CROPPED_IMAGE_WIDTH))
+        MOUTH_POS = (round(5/7*CROPPED_IMAGE_HEIGHT), round(5/8*CROPPED_IMAGE_WIDTH))
+        cropped_positions={'reye': EYE_POS, 'mouth': MOUTH_POS}
+    
+    else:
+
+        cropped_positions = None
+
+    return cropped_positions
+
+def legacy_default_cropping(cropped_image_size, annotation_type):
+    """
+    Computes the default cropped positions for the FaceCropper used with legacy extractors, 
+    proportionally to the target image size
+
+
+    Parameters
+    ----------
+       cropped_image_size : tuple
+          A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
+
+       annotation_type: str
+          Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile', 
+          'right-profile' and None
+
+    Returns
+    -------
+
+      cropped_positions:
+         The dictionary of cropped positions that will be feeded to the FaceCropper.
+    """
+    CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+
+    if annotation_type == "bounding-box":
+
+        TOP_LEFT_POS = (0, 0)
+        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+        cropped_positions={"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+
+    elif annotation_type == "eyes-center":
+
+        RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
+        LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+
+    elif annotation_type == "left-profile":
+        # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
+        EYE_POS = (CROPPED_IMAGE_HEIGHT//5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
+        MOUTH_POS = (CROPPED_IMAGE_HEIGHT//3 * 2, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
+        cropped_positions={'leye': EYE_POS, 'mouth': MOUTH_POS}
+
+    elif annotation_type == "right-profile":
+        # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
+        EYE_POS = (CROPPED_IMAGE_HEIGHT//5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
+        MOUTH_POS = (CROPPED_IMAGE_HEIGHT//3 * 2, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
+        cropped_positions={'reye': EYE_POS, 'mouth': MOUTH_POS}
+    
+    else:
+
+        cropped_positions = None
+
+    return cropped_positions
+
+def embedding_transformer(cropped_image_size, embedding, annotation_type, cropped_positions, fixed_positions=None):
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
     
     .. warning::
-       This will resize images to :math:`160 \times 160`
+       This will resize images to the requested `image_size`
     
     """
-
-    # This is the size of the image that this model expects
-    CROPPED_IMAGE_HEIGHT = 160
-    CROPPED_IMAGE_WIDTH = 160
-    cropped_image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
     color_channel = "rgb"
 
-    #### SOLVING THE FACE CROPPER TO BE USED
-    if annotation_type == "bounding-box":
-        transform_extra_arguments = (("annotations", "annotations"),)
-        TOP_LEFT_POS = (0, 0)
-        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-
-        # Detects the face and crops it without eye detection
-        face_cropper = face_crop_solver(
+    face_cropper = face_crop_solver(
             cropped_image_size,
             color_channel=color_channel,
-            cropped_positions={"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS},
+            cropped_positions=cropped_positions,
             fixed_positions=fixed_positions,
         )
 
-    elif annotation_type == "eyes-center":
-        transform_extra_arguments = (("annotations", "annotations"),)
-        # eye positions for frontal images
-        RIGHT_EYE_POS = (46, 53)
-        LEFT_EYE_POS = (46, 107)
-
-        # Detects the face and crops it without eye detection
-        face_cropper = face_crop_solver(
-            cropped_image_size,
-            color_channel=color_channel,
-            cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
-            fixed_positions=fixed_positions,
-        )
-
-    else:
-        transform_extra_arguments = None
-        # DEFAULT TO FACE SIMPLE RESIZE
-        face_cropper = face_crop_solver(cropped_image_size)
+    transform_extra_arguments = None if cropped_positions is None else (("annotations", "annotations"),)
 
     transformer = make_pipeline(
         wrap(
@@ -65,6 +141,19 @@ def embedding_transformer_160x160(embedding, annotation_type, fixed_positions):
     )
 
     return transformer
+
+def embedding_transformer_160x160(embedding, annotation_type, fixed_positions):
+    """
+    Creates a pipeline composed by and FaceCropper and an Embedding extractor.
+    This transformer is suited for Facenet based architectures
+    
+    .. warning::
+       This will resize images to :math:`160 \times 160`
+    
+    """
+    cropped_positions = embedding_transformer_default_cropping((160, 160), annotation_type)
+
+    return embedding_transformer((160, 160), embedding, annotation_type, cropped_positions, fixed_positions)
 
 
 def embedding_transformer_112x112(embedding, annotation_type, fixed_positions):
@@ -76,56 +165,16 @@ def embedding_transformer_112x112(embedding, annotation_type, fixed_positions):
        This will resize images to :math:`112 \times 112`
     
     """
+    cropped_image_size = (112, 112)
 
-    # This is the size of the image that this model expects
-    CROPPED_IMAGE_HEIGHT = 112
-    CROPPED_IMAGE_WIDTH = 112
-    cropped_image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-    color_channel = "rgb"
-
-    #### SOLVING THE FACE CROPPER TO BE USED
-    if annotation_type == "bounding-box":
-        transform_extra_arguments = (("annotations", "annotations"),)
-        TOP_LEFT_POS = (0, 0)
-        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-
-        # Detects the face and crops it without eye detection
-        face_cropper = face_crop_solver(
-            cropped_image_size,
-            color_channel=color_channel,
-            cropped_positions={"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS},
-            fixed_positions=fixed_positions,
-        )
-
-    elif annotation_type == "eyes-center":
-        transform_extra_arguments = (("annotations", "annotations"),)
-        # eye positions for frontal images
-        RIGHT_EYE_POS = (32, 34)
-        LEFT_EYE_POS = (32, 77)
-
-        # Detects the face and crops it without eye detection
-        face_cropper = face_crop_solver(
-            cropped_image_size,
-            color_channel=color_channel,
-            cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
-            fixed_positions=fixed_positions,
-        )
-
+    if annotation_type == "eyes-center":
+        # Hard coding eye positions for backward consistency
+        cropped_positions = {'leye': (32, 77), 'reye': (32, 34)}
     else:
-        transform_extra_arguments = None
-        # DEFAULT TO FACE SIMPLE RESIZE
-        face_cropper = face_crop_solver(cropped_image_size)
+        # Will use default 
+        cropped_positions = embedding_transformer_default_cropping(cropped_image_size, annotation_type)
 
-    transformer = make_pipeline(
-        wrap(
-            ["sample"],
-            face_cropper,
-            transform_extra_arguments=transform_extra_arguments,
-        ),
-        wrap(["sample"], embedding),
-    )
-
-    return transformer
+    return embedding_transformer(cropped_image_size, embedding, annotation_type, cropped_positions, fixed_positions)
 
 
 def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
@@ -156,49 +205,25 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
          The parameters to the transformer
 
     """
+    color_channel = color_channel
+    dtype = np.float64
 
     # Cropping
     CROPPED_IMAGE_HEIGHT = 80
     CROPPED_IMAGE_WIDTH = CROPPED_IMAGE_HEIGHT * 4 // 5
-
-    # eye positions for frontal images
-    RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
-    LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
-
     cropped_image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-    color_channel = color_channel
-    dtype = np.float64
 
-    if annotation_type == "bounding-box":
-        transform_extra_arguments = (("annotations", "annotations"),)
-        TOP_LEFT_POS = (0, 0)
-        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+    cropped_positions = legacy_default_cropping(cropped_image_size, annotation_type)
 
-        # Detects the face and crops it without eye detection
-        face_cropper = face_crop_solver(
+
+    face_cropper = face_crop_solver(
             cropped_image_size,
             color_channel=color_channel,
-            cropped_positions={"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS},
+            cropped_positions=cropped_positions,
             fixed_positions=fixed_positions,
             dtype=dtype
         )
-
-    elif annotation_type == "eyes-center":
-        transform_extra_arguments = (("annotations", "annotations"),)
-        # eye positions for frontal images
-
-        # Detects the face and crops it without eye detection
-        face_cropper = face_crop_solver(
-            cropped_image_size,
-            color_channel=color_channel,
-            cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
-            fixed_positions=fixed_positions,
-            dtype=dtype
-        )
-
-    else:
-        transform_extra_arguments = None
-        # DEFAULT TO FACE SIMPLE RESIZE
-        face_cropper = face_crop_solver(cropped_image_size)
+    
+    transform_extra_arguments = None if cropped_positions is None else (("annotations", "annotations"),)
 
     return face_cropper, transform_extra_arguments

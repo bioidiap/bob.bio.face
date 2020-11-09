@@ -1,4 +1,4 @@
-from bob.bio.face.embeddings import InceptionResnetv1_CasiaWebFace
+from bob.bio.face.embeddings import InceptionResnetv1_Casia_CenterLoss_2018
 from bob.bio.face.config.baseline.helpers import embedding_transformer_160x160
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
@@ -15,7 +15,7 @@ else:
 
 def load(annotation_type, fixed_positions=None):
     transformer = embedding_transformer_160x160(
-        InceptionResnetv1_CasiaWebFace(), annotation_type, fixed_positions
+        InceptionResnetv1_Casia_CenterLoss_2018(), annotation_type, fixed_positions
     )
 
     algorithm = Distance()

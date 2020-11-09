@@ -1,4 +1,4 @@
-from bob.bio.face.embeddings import FaceNetSanderberg
+from bob.bio.face.embeddings import FaceNetSanderberg_20170512_110547
 from bob.bio.face.config.baseline.helpers import embedding_transformer_160x160
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
@@ -17,7 +17,7 @@ else:
 def load(annotation_type, fixed_positions=None):
 
     transformer = embedding_transformer_160x160(
-        FaceNetSanderberg(), annotation_type, fixed_positions
+        FaceNetSanderberg_20170512_110547(), annotation_type, fixed_positions
     )
     algorithm = Distance()
 

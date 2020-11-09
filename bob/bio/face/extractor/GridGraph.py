@@ -211,7 +211,6 @@ class GridGraph(Extractor):
       The list of Gabor jets extracted from the image.
       The 2D location of the jet's nodes is not returned.
     """
-
         assert image.ndim == 2
         assert isinstance(image, numpy.ndarray)
         image = image.astype(numpy.float64)

@@ -2,7 +2,7 @@ from sklearn.preprocessing import FunctionTransformer
 from skimage.transform import resize
 from sklearn.utils import check_array
 from bob.io.image import to_matplotlib, to_bob
-
+import numpy as np
 
 def scale(images, target_img_size):
     """Scales a list of images to the target size
@@ -22,15 +22,21 @@ def scale(images, target_img_size):
     if isinstance(target_img_size, int):
         target_img_size = (target_img_size, target_img_size)
 
-    images = check_array(images, allow_nd=True)
-    images = to_matplotlib(images)
-
     # images are always batched
+    images = check_array(images, allow_nd=True)
+    
     output_shape = tuple(target_img_size)
-    output_shape = tuple(images.shape[-1:-2]) + output_shape
-    images = resize(images, output_shape=output_shape)
+    output_shape = tuple(images.shape[0:1]) + output_shape
 
-    return to_bob(images)
+    # If it's Bob batched RGB images
+    if images.ndim > 3:
+        images = to_matplotlib(images)
+        images = resize(images, output_shape=output_shape)
+        return to_bob(images)
+    else:
+        # If it's Bob batched gray scaled images
+        images = resize(images, output_shape=output_shape)
+        return images
 
 
 def Scale(target_img_size):

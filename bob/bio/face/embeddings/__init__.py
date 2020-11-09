@@ -1,13 +1,38 @@
-from .facenet_sanderberg import FaceNetSanderberg
-from .idiap_inception_resnet import (
-    InceptionResnetv2_MsCeleb,
-    InceptionResnetv2_CasiaWebFace,
-    InceptionResnetv1_MsCeleb,
-    InceptionResnetv1_CasiaWebFace
+import os
+import bob.extension.download
+
+def download_model(model_path, urls, zip_file="model.tar.gz"):
+    """
+    Download and unzip a model from some URL.
+
+    Parameters
+    ----------
+
+    model_path: str
+        Path where the model is supposed to be stored
+
+    urls: list
+        List of paths where the model is stored
+
+    zip_file: str
+        File name after the download
+
+    """
+
+    if not os.path.exists(model_path):
+        os.makedirs(model_path, exist_ok=True)
+        zip_file = os.path.join(model_path, zip_file)
+        bob.extension.download.download_and_unzip(urls, zip_file)
+
+
+from .tf2_inception_resnet import (
+    InceptionResnet,
+    InceptionResnetv2_MsCeleb_CenterLoss_2018,
+    InceptionResnetv2_Casia_CenterLoss_2018,
+    InceptionResnetv1_MsCeleb_CenterLoss_2018,
+    InceptionResnetv1_Casia_CenterLoss_2018,
+    FaceNetSanderberg_20170512_110547
 )
-
-from .arface import ArcFace_InsightFaceTF
-
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -26,11 +51,11 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    FaceNetSanderberg,
-    InceptionResnetv2_MsCeleb,
-    InceptionResnetv2_CasiaWebFace,
-    InceptionResnetv1_MsCeleb,
-    InceptionResnetv1_CasiaWebFace,
-    ArcFace_InsightFaceTF
+    InceptionResnet,
+    InceptionResnetv2_MsCeleb_CenterLoss_2018,
+    InceptionResnetv1_MsCeleb_CenterLoss_2018,
+    InceptionResnetv2_Casia_CenterLoss_2018,
+    InceptionResnetv1_Casia_CenterLoss_2018,
+    FaceNetSanderberg_20170512_110547
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

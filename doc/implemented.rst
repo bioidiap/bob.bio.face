@@ -17,7 +17,6 @@ Databases
    bob.bio.face.database.CaspealBioDatabase
    bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
-   bob.bio.face.database.MsuMfsdModBioDatabase
    bob.bio.face.database.GBUBioDatabase
    bob.bio.face.database.LFWBioDatabase
    bob.bio.face.database.MultipieBioDatabase

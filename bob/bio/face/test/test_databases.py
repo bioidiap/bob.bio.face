@@ -229,42 +229,6 @@ def test_replaymobile_spoof():
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'" % e)
 
 
-@db_available('msu_mfsd_mod')
-def test_msu_mfsd_mod_licit():
-    database = bob.bio.base.load_resource(
-        'msu-mfsd-mod-licit', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database, groups=('dev', 'eval'))
-    except IOError as e:
-        raise SkipTest(
-            "The database could not be queried; probably the db.sql3 file is "
-            "missing. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database, topleft=False, limit_files=20)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation "
-            "files are missing. Here is the error: '%s'" % e)
-
-
-@db_available('msu_mfsd_mod')
-def test_msu_mfsd_mod_spoof():
-    database = bob.bio.base.load_resource(
-        'msu-mfsd-mod-spoof', 'database', preferred_package='bob.bio.face')
-    try:
-        check_database(database, groups=('dev', 'eval'))
-    except IOError as e:
-        raise SkipTest(
-            "The database could not be queried; probably the db.sql3 file is "
-            "missing. Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database, topleft=False, limit_files=20)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation "
-            "files are missing. Here is the error: '%s'" % e)
-            
-
 @db_available('ijbc')
 def test_ijbc():
     database = bob.bio.base.load_resource(

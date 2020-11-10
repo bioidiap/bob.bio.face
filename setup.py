@@ -116,15 +116,13 @@ setup(
             'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted:database',
             'mobio-male       = bob.bio.face.config.database.mobio_male:database',
             'mobio-all        = bob.bio.face.config.database.mobio_all:database',
-            'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_licit',
-            'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod:msu_mfsd_mod_spoof',
             'multipie          = bob.bio.face.config.database.multipie:database',
             'multipie-pose     = bob.bio.face.config.database.multipie_pose:database',
             'replay-img-licit  = bob.bio.face.config.database.replay:replay_licit',
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
             'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
             'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof',
-            
+
             'fargo  = bob.bio.face.config.database.fargo:database',
         ],
 
@@ -184,15 +182,13 @@ setup(
           'lfw-unrestricted  = bob.bio.face.config.database.lfw_unrestricted',
           'mobio-male       = bob.bio.face.config.database.mobio_male',
           'mobio-all        = bob.bio.face.config.database.mobio_all',
-          'msu-mfsd-mod-licit = bob.bio.face.config.database.msu_mfsd_mod',
-          'msu-mfsd-mod-spoof = bob.bio.face.config.database.msu_mfsd_mod',
           'multipie          = bob.bio.face.config.database.multipie',
           'multipie-pose     = bob.bio.face.config.database.multipie_pose',
           'replay-img-licit  = bob.bio.face.config.database.replay',
           'replay-img-spoof  = bob.bio.face.config.database.replay',
           'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile',
           'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile',
-            
+
           'fargo  = bob.bio.face.config.database.fargo',
         ],
 

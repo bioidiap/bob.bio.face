@@ -11,7 +11,6 @@ from .lfw import LFWBioDatabase
 from .multipie import MultipieBioDatabase
 from .ijbc import IJBCBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
-from .msu_mfsd_mod import MsuMfsdModBioDatabase
 from .fargo import FargoBioDatabase
 
 
@@ -36,14 +35,13 @@ __appropriate__(
   FaceBioFile,
   MobioBioDatabase,
   ReplayBioDatabase,
-  AtntBioDatabase,  
+  AtntBioDatabase,
   GBUBioDatabase,
   ARFaceBioDatabase,
   LFWBioDatabase,
   MultipieBioDatabase,
-  IJBCBioDatabase,   
+  IJBCBioDatabase,
   ReplayMobileBioDatabase,
-  MsuMfsdModBioDatabase,
   FargoBioDatabase
 )
 __all__ = [_ for _ in dir() if not _.startswith('_')]

@@ -10,6 +10,7 @@ import pkg_resources
 import os
 from bob.extension import rc
 
+
 class ArcFaceInsightFace(TransformerMixin, BaseEstimator):
     """
     ArcFace from Insight Face.
@@ -78,9 +79,6 @@ class ArcFaceInsightFace(TransformerMixin, BaseEstimator):
         db = mx.io.DataBatch(data=(X,))
         self.model.forward(db, is_train=False)
         return self.model.get_outputs()[0].asnumpy()
-
-    def __setstate__(self, d):
-        self.__dict__ = d
 
     def __getstate__(self):
         # Handling unpicklable objects

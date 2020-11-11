@@ -68,9 +68,6 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
 
         return self.inference(X).numpy()
 
-    def __setstate__(self, d):
-        self.__dict__ = d
-
     def __getstate__(self):
         # Handling unpicklable objects
         d = self.__dict__.copy()
@@ -146,7 +143,6 @@ class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
         )
 
 
-
 class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
     """
     InceptionResnet v1 model trained in 2018 using the CasiaWebFace dataset in the context of the work:
@@ -172,11 +168,12 @@ class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
 
         download_model(
             checkpoint_path, urls, "inceptionresnetv1_casia_centerloss_2018.tar.gz"
-        )        
+        )
 
         super(InceptionResnetv1_Casia_CenterLoss_2018, self).__init__(
             checkpoint_path, preprocessor=tf.image.per_image_standardization,
         )
+
 
 class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
     """
@@ -193,7 +190,8 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
 
         checkpoint_path = (
             internal_path
-            if rc["bob.bio.face.models.InceptionResnetv1_MsCeleb_CenterLoss_2018"] is None
+            if rc["bob.bio.face.models.InceptionResnetv1_MsCeleb_CenterLoss_2018"]
+            is None
             else rc["bob.bio.face.models.InceptionResnetv1_MsCeleb_CenterLoss_2018"]
         )
 
@@ -203,7 +201,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
 
         download_model(
             checkpoint_path, urls, "inceptionresnetv1_msceleb_centerloss_2018.tar.gz"
-        )        
+        )
 
         super(InceptionResnetv1_MsCeleb_CenterLoss_2018, self).__init__(
             checkpoint_path, preprocessor=tf.image.per_image_standardization,
@@ -249,7 +247,7 @@ class FaceNetSanderberg_20170512_110547(InceptionResnet):
 
         download_model(
             checkpoint_path, urls, "facenet_sanderberg_20170512_110547.tar.gz"
-        )        
+        )
 
         super(FaceNetSanderberg_20170512_110547, self).__init__(
             checkpoint_path, tf.image.per_image_standardization,

@@ -21,4 +21,3 @@ bob.pipelines
 matplotlib   # for plotting
 six
 scikit-image
-mxnet

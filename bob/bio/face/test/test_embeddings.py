@@ -94,6 +94,22 @@ def test_facenet_sanderberg():
     assert output.size == 128, output.shape
 
 
+def test_arcface_insight_face():
+    from bob.bio.face.embeddings import ArcFaceInsightFace
+
+    transformer = ArcFaceInsightFace()
+    data = np.random.rand(3, 112, 112)*255
+    data = data.astype("uint8")
+    output = transformer.transform([data])
+    assert output.size == 512, output.shape
+    
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+    assert output.size == 512, output.shape
+
+
 """
 def test_arface_insight_tf():
     import tensorflow as tf

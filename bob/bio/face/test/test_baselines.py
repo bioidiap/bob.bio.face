@@ -125,14 +125,8 @@ def test_inception_resnetv1_msceleb():
 def test_inception_resnetv1_casiawebface():
     run_baseline("inception-resnetv1-casiawebface")
 
-"""
-def test_arcface_insight_tf():
-    import tensorflow as tf
-
-    tf.compat.v1.reset_default_graph()
-
-    run_baseline("arcface-insight-tf")
-"""
+def test_arcface_insightface():
+    run_baseline("arcface-insightface")
 
 def test_gabor_graph():
     run_baseline("gabor_graph")

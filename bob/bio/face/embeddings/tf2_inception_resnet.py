@@ -49,7 +49,7 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
         if self.preprocessor is not None:
             X = self.preprocessor(tf.cast(X, "float32"))
 
-        prelogits = self.model(X, training=False)
+        prelogits = self.model.predict_on_batch(X)
         embeddings = tf.math.l2_normalize(prelogits, axis=-1)
         return embeddings
 
@@ -74,7 +74,7 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
     def __getstate__(self):
         # Handling unpicklable objects
         d = self.__dict__.copy()
-        d["model"] = None        
+        d["model"] = None
         return d
 
     def _more_tags(self):

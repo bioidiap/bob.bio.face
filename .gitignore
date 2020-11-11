@@ -14,3 +14,4 @@ dist
 record.txt
 build/
 bob/bio/face/embeddings/data
+*.DS_Store

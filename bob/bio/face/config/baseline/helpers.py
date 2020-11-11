@@ -111,7 +111,7 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
     return cropped_positions
 
-def embedding_transformer(cropped_image_size, embedding, annotation_type, cropped_positions, fixed_positions=None):
+def embedding_transformer(cropped_image_size, embedding, annotation_type, cropped_positions, fixed_positions=None, color_channel = "rgb"):
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
@@ -120,8 +120,6 @@ def embedding_transformer(cropped_image_size, embedding, annotation_type, croppe
        This will resize images to the requested `image_size`
     
     """
-    color_channel = "rgb"
-
     face_cropper = face_crop_solver(
             cropped_image_size,
             color_channel=color_channel,
@@ -142,7 +140,7 @@ def embedding_transformer(cropped_image_size, embedding, annotation_type, croppe
 
     return transformer
 
-def embedding_transformer_160x160(embedding, annotation_type, fixed_positions):
+def embedding_transformer_160x160(embedding, annotation_type, fixed_positions, color_channel="rgb"):
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
@@ -153,10 +151,10 @@ def embedding_transformer_160x160(embedding, annotation_type, fixed_positions):
     """
     cropped_positions = embedding_transformer_default_cropping((160, 160), annotation_type)
 
-    return embedding_transformer((160, 160), embedding, annotation_type, cropped_positions, fixed_positions)
+    return embedding_transformer((160, 160), embedding, annotation_type, cropped_positions, fixed_positions, color_channel=color_channel)
 
 
-def embedding_transformer_112x112(embedding, annotation_type, fixed_positions):
+def embedding_transformer_112x112(embedding, annotation_type, fixed_positions, color_channel="rgb"):
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
@@ -166,7 +164,6 @@ def embedding_transformer_112x112(embedding, annotation_type, fixed_positions):
     
     """
     cropped_image_size = (112, 112)
-
     if annotation_type == "eyes-center":
         # Hard coding eye positions for backward consistency
         cropped_positions = {'leye': (32, 77), 'reye': (32, 34)}
@@ -174,7 +171,7 @@ def embedding_transformer_112x112(embedding, annotation_type, fixed_positions):
         # Will use default 
         cropped_positions = embedding_transformer_default_cropping(cropped_image_size, annotation_type)
 
-    return embedding_transformer(cropped_image_size, embedding, annotation_type, cropped_positions, fixed_positions)
+    return embedding_transformer(cropped_image_size, embedding, annotation_type, cropped_positions, fixed_positions, color_channel=color_channel)
 
 
 def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):

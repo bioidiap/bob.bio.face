@@ -16,9 +16,11 @@ def change_color_channel(image, color_channel):
                 + " image from a gray level image!"
             )
         return image
-
+    
     if color_channel == "rgb":
         return image
+    if color_channel == "bgr":
+        return image[[2,1,0],...]
     if color_channel == "gray":
         return bob.ip.color.rgb_to_gray(image)
     if color_channel == "red":

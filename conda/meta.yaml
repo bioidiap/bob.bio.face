@@ -52,6 +52,7 @@ requirements:
   optional:
     - bob.learn.tensorflow
     - tensorflow
+    - mxnet
 
 test:
   imports:

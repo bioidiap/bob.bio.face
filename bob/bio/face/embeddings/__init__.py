@@ -34,6 +34,8 @@ from .tf2_inception_resnet import (
     FaceNetSanderberg_20170512_110547
 )
 
+from .mxnet_models import ArcFaceInsightFace
+
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
     """Says object was actually declared here, and not in the import module.
@@ -56,6 +58,7 @@ __appropriate__(
     InceptionResnetv1_MsCeleb_CenterLoss_2018,
     InceptionResnetv2_Casia_CenterLoss_2018,
     InceptionResnetv1_Casia_CenterLoss_2018,
-    FaceNetSanderberg_20170512_110547
+    FaceNetSanderberg_20170512_110547,
+    ArcFaceInsightFace
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

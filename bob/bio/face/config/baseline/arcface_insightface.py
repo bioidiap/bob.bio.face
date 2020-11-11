@@ -1,4 +1,4 @@
-from bob.bio.face.embeddings import ArcFace_InsightFaceTF
+from bob.bio.face.embeddings import ArcFaceInsightFace
 from bob.bio.face.config.baseline.helpers import embedding_transformer_112x112
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
@@ -16,7 +16,7 @@ else:
 
 def load(annotation_type, fixed_positions=None):
     transformer = embedding_transformer_112x112(
-        ArcFace_InsightFaceTF(), annotation_type, fixed_positions
+        ArcFaceInsightFace(), annotation_type, fixed_positions, color_channel="rgb"
     )
 
     algorithm = Distance()

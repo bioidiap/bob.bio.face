@@ -12,8 +12,8 @@ import os
 import bob.io.base
 import functools
 import copy
-import tensorflow as tf
 
+from bob.bio.base.test.utils import is_library_available
 
 images = dict()
 images["bioref"] = (
@@ -54,7 +54,8 @@ def get_fake_samples_for_training():
     annotations = {"reye": (131, 176), "leye": (222, 170)}
 
     return [
-        Sample(x, key=str(i), subject=str(i), annotations=annotations) for i,x in enumerate(data)
+        Sample(x, key=str(i), subject=str(i), annotations=annotations)
+        for i, x in enumerate(data)
     ]
 
 
@@ -72,9 +73,7 @@ def run_baseline(baseline, samples_for_training=[]):
     with tempfile.TemporaryDirectory() as d:
 
         cpy = copy.deepcopy(pipeline)
-        checkpoint_pipeline = checkpoint_vanilla_biometrics(
-            cpy, base_dir=d
-        )
+        checkpoint_pipeline = checkpoint_vanilla_biometrics(cpy, base_dir=d)
 
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
@@ -106,37 +105,40 @@ def run_baseline(baseline, samples_for_training=[]):
         assert "samplewrapper-2" in dirs
         assert "scores" in dirs
 
+
+@is_library_available("tensorflow")
 def test_facenet_baseline():
     run_baseline("facenet-sanderberg")
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
     run_baseline("inception-resnetv2-msceleb")
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
     run_baseline("inception-resnetv2-casiawebface")
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
     run_baseline("inception-resnetv1-msceleb")
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
     run_baseline("inception-resnetv1-casiawebface")
 
-"""
-def test_arcface_insight_tf():
-    import tensorflow as tf
 
-    tf.compat.v1.reset_default_graph()
+@is_library_available("mxnet")
+def test_arcface_insightface():
+    run_baseline("arcface-insightface")
 
-    run_baseline("arcface-insight-tf")
-"""
 
 def test_gabor_graph():
     run_baseline("gabor_graph")
 
 
-#def test_lda():
+# def test_lda():
 #    run_baseline("lda", get_fake_samples_for_training())

@@ -13,7 +13,7 @@ import bob.io.base
 import functools
 import copy
 
-from bob.bio.base.test.utils import mxnet_available, tensorflow_available
+from bob.bio.base.test.utils import is_library_available
 
 images = dict()
 images["bioref"] = (
@@ -106,32 +106,32 @@ def run_baseline(baseline, samples_for_training=[]):
         assert "scores" in dirs
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_facenet_baseline():
     run_baseline("facenet-sanderberg")
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
     run_baseline("inception-resnetv2-msceleb")
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
     run_baseline("inception-resnetv2-casiawebface")
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
     run_baseline("inception-resnetv1-msceleb")
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
     run_baseline("inception-resnetv1-casiawebface")
 
 
-@mxnet_available
+@is_library_available("mxnet")
 def test_arcface_insightface():
     run_baseline("arcface-insightface")
 

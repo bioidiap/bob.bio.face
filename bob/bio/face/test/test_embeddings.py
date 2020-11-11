@@ -3,10 +3,10 @@ import bob.io.base
 import numpy as np
 from bob.pipelines import Sample, wrap
 import pkg_resources
-from bob.bio.base.test.utils import mxnet_available, tensorflow_available
+from bob.bio.base.test.utils import is_library_available
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_idiap_inceptionv2_msceleb():
     from bob.bio.face.embeddings import InceptionResnetv2_MsCeleb_CenterLoss_2018
 
@@ -30,7 +30,7 @@ def test_idiap_inceptionv2_msceleb():
     assert output.size == 128, output.shape
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_idiap_inceptionv2_casia():
     from bob.bio.face.embeddings import InceptionResnetv2_Casia_CenterLoss_2018
 
@@ -48,7 +48,7 @@ def test_idiap_inceptionv2_casia():
     assert output.size == 128, output.shape
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_idiap_inceptionv1_msceleb():
     from bob.bio.face.embeddings import InceptionResnetv1_MsCeleb_CenterLoss_2018
 
@@ -66,7 +66,7 @@ def test_idiap_inceptionv1_msceleb():
     assert output.size == 128, output.shape
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_idiap_inceptionv1_casia():
     from bob.bio.face.embeddings import InceptionResnetv1_Casia_CenterLoss_2018
 
@@ -84,7 +84,7 @@ def test_idiap_inceptionv1_casia():
     assert output.size == 128, output.shape
 
 
-@tensorflow_available
+@is_library_available("tensorflow")
 def test_facenet_sanderberg():
     from bob.bio.face.embeddings import FaceNetSanderberg_20170512_110547
 
@@ -101,7 +101,7 @@ def test_facenet_sanderberg():
     assert output.size == 128, output.shape
 
 
-@mxnet_available
+@is_library_available("mxnet")
 def test_arcface_insight_face():
     from bob.bio.face.embeddings import ArcFaceInsightFace
 

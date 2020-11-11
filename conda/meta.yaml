@@ -43,6 +43,7 @@ requirements:
     - bob.pipelines
     - matplotlib {{ matplotlib }}
     - six {{ six }}
+    - mxnet
   run:
     - python
     - setuptools

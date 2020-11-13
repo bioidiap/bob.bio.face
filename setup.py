@@ -195,6 +195,10 @@ setup(
           'fargo  = bob.bio.face.config.database.fargo',
         ],
 
+        'bob.bio.cli': [
+          'display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations',
+        ],
+
 
     },
 

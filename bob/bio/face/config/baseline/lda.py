@@ -42,9 +42,11 @@ def load(annotation_type, fixed_positions=None):
     #### FEATURE EXTRACTOR ######
 
     # Set default temporary directory
-    default_temp = os.path.join("/idiap","temp",os.environ["USER"])
-    if os.path.exists(default_temp):
-        tempdir = os.path.join(default_temp, "bob_bio_base_tmp")
+    user_env_var = os.getenv(["USER"], None)
+    if user_env_var:
+        default_temp = os.path.join("/idiap","temp",user_env_var)
+    if user_env_var and os.path.exists(default_temp):
+        tempdir = os.path.join(default_temp, "bob_bio_base_tmp", "lda")
     else:
         # if /idiap/temp/<USER> does not exist, use /tmp/tmpxxxxxxxx
         tempdir = tempfile.TemporaryDirectory().name

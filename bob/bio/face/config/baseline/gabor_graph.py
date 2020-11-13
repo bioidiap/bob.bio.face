@@ -68,7 +68,7 @@ def get_pipeline(face_cropper, transform_extra_arguments):
     )
 
     # Set default temporary directory
-    user_env_var = os.getenv(["USER"], None)
+    user_env_var = os.getenv("USER", None)
     if user_env_var:
         default_temp = os.path.join("/idiap","temp",user_env_var)
     if user_env_var and os.path.exists(default_temp):

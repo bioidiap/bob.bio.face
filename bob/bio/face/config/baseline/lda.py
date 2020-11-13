@@ -42,7 +42,7 @@ def load(annotation_type, fixed_positions=None):
     #### FEATURE EXTRACTOR ######
 
     # Set default temporary directory
-    user_env_var = os.getenv(["USER"], None)
+    user_env_var = os.getenv("USER", None)
     if user_env_var:
         default_temp = os.path.join("/idiap","temp",user_env_var)
     if user_env_var and os.path.exists(default_temp):

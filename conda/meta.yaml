@@ -7,7 +7,6 @@ package:
 
 build:
   entry_points:
-    - display_face_annotations.py = bob.bio.face.script.display_face_annotations:main
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}

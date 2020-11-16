@@ -242,7 +242,7 @@ class FaceNetSanderberg_20170512_110547(InceptionResnet):
         )
 
         urls = [
-            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/facenet_sanderberg_20170512_110547.tar.gz"
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/facenet_sanderberg_20170512_110547.tar.gz"
         ]
 
         download_model(

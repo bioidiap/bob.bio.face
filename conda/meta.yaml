@@ -51,14 +51,13 @@ requirements:
     - scikit-image
   optional:
     - bob.learn.tensorflow
-    - tensorflow
-    - mxnet
+    - {{ pin_compatible('tensorflow') }}  # [linux]
+    - mxnet {{ mxnet }}
 
 test:
   imports:
     - {{ name }}
   commands:
-    - display_face_annotations.py --help
     - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx

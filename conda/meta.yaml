@@ -52,7 +52,7 @@ requirements:
   optional:
     - bob.learn.tensorflow
     - {{ pin_compatible('tensorflow') }}  # [linux]
-    - mxnet {{ mxnet }}
+    - mxnet
 
 test:
   imports:

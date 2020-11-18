@@ -8,60 +8,51 @@
 Executing Baseline Algorithms
 =============================
 
-.. todo::
-   Here we should:   
-     - Brief how to run an experiment
-     - Point to bob.bio.base for further explanation
-     - Show the baselines available
-     - Show the databases available
 
+In this section we introduce the baselines available in this pakcage.
+To execute one of then in the databases available just run the following command::
 
-The baselines
--------------
-
-The algorithms present an (incomplete) set of state-of-the-art face recognition algorithms. Here is the list of short-cuts:
-
-* ``eigenface``: The eigenface algorithm as proposed by [TP91]_. It uses the pixels as raw data, and applies a *Principal Component Analysis* (PCA) on it:
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.FaceCrop`
-  - feature : :py:class:`bob.bio.base.extractor.Linearize`
-  - algorithm : :py:class:`bob.bio.base.algorithm.PCA`
-
-* ``lda``: The LDA algorithm applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_:
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.FaceCrop`
-  - feature : :py:class:`bob.bio.face.extractor.Eigenface`
-  - algorithm : :py:class:`bob.bio.base.algorithm.LDA`
-
-* ``gaborgraph``: This method extract grid graphs of Gabor jets from the images, and computes a Gabor phase based similarity [GHW12]_.
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.INormLBP`
-  - feature : :py:class:`bob.bio.face.extractor.GridGraph`
-  - algorithm : :py:class:`bob.bio.face.algorithm.GaborJet`
-
-
-Further algorithms are available, when the :ref:`bob.bio.gmm <bob.bio.gmm>` package is installed:
-
-* ``gmm``: *Gaussian Mixture Models* (GMM) [MM09]_ are extracted from *Discrete Cosine Transform* (DCT) block features.
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.TanTriggs`
-  - feature : :py:class:`bob.bio.face.extractor.DCTBlocks`
-  - algorithm : :py:class:`bob.bio.gmm.algorithm.GMM`
-
-* ``isv``: As an extension of the GMM algorithm, *Inter-Session Variability* (ISV) modeling [WMM11]_ is used to learn what variations in images are introduced by identity changes and which not.
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.TanTriggs`
-  - feature : :py:class:`bob.bio.face.extractor.DCTBlocks`
-  - algorithm : :py:class:`bob.bio.gmm.algorithm.ISV`
-
-* ``ivector``: Another extension of the GMM algorithm is *Total Variability* (TV) modeling [WM12]_ (aka. I-Vector), which tries to learn a subspace in the GMM super-vector space.
-
-  - preprocessor : :py:class:`bob.bio.face.preprocessor.TanTriggs`
-  - feature : :py:class:`bob.bio.face.extractor.DCTBlocks`
-  - algorithm : :py:class:`bob.bio.gmm.algorithm.IVector`
+$ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
 
 .. note::
-  The ``ivector`` algorithm needs a lot of training data and fails on small databases such as the `AT&T database`_.
+  Both, `[DATABASE_NAME]` and `[BASELINE]` can be either python resources or
+  python files.
 
-.. _bob.bio.base.baseline_results:
+  Please, refer to :ref:`bob.bio.base <bob.bio.base>` for more information.  
 
+
+
+Baselines available
+-------------------
+
+The algorithms below constains all the face recognition baselines available.
+It is split in two groups, before and after deep learning era.
+
+
+Before Deep learning era
+========================
+
+
+* ``eigenface``: The eigenface algorithm as proposed by [TP91]_. It uses the pixels as raw data, and applies a *Principal Component Analysis* (PCA) on it.
+
+* ``lda``: The LDA algorithm applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_
+
+* ``gabor_graph``: This method extract grid graphs of Gabor jets from the images, and computes a Gabor phase based similarity [GHW12]_.
+
+* ``lgbphs``: Local Gabor binary pattern histogram sequence (LGBPHS) implemented in [ZSG05]_
+
+
+Deep learning baselines
+=======================
+
+* ``facenet-sanderberg``: FaceNet trained by `David Sanderberg <https://github.com/davidsandberg/facenet>`_
+
+* ``inception-resnetv2-msceleb``: Inception Resnet v2 model trained using the MSCeleb dataset in the context of the work published by [TFP18]_
+
+* ``inception-resnetv1-msceleb``: Inception Resnet v1 model trained using the MSCeleb dataset in the context of the work published by [TFP18]_
+
+* ``inception-resnetv2-casiawebface``: Inception Resnet v2 model trained using the Casia Web dataset in the context of the work published by [TFP18]_
+
+* ``inception-resnetv1-casiawebface``: Inception Resnet v1 model trained using the Casia Web dataset in the context of the work published by [TFP18]_
+
+* ``arcface-insightface``: Arcface model from `Insightface <https://github.com/deepinsight/insightface>`_

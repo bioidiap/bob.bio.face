@@ -4,9 +4,9 @@
 
 .. _bob.bio.face:
 
-=============================
- Open Source Face Recognition
-=============================
+=====================================
+ Open Source Face Recognition Library
+=====================================
 
 
 This package provide open source tools to run comparable and reproducible face recognition experiments.
@@ -15,32 +15,30 @@ This includes:
 * Preprocessors to detect, align and photometrically enhance face images
 * Feature extractors that extract features from facial images
 * Facial image databases including their protocols.
-* Scripts that trains CNNs
-
-For more detailed information about how this package is structured, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
+* Scripts that trains CNNs for face recognition.
 
 
 Get Started
-============
+===========
 
 The easiest way to get started is by simply comparing two faces::
 
-$ bob bio compare-samples -p gabor_graph me.png not_me.png
+$ bob bio compare-samples -p facenet-sanderberg me.png not_me.png
 
 .. warning::
    No face detection is carried out with this command.
 
 Check out all the face recognition algorithms available by doing::
 
-$ resources.py --type p
+$ resources.py --types p
 
 
 Get Started, serious 
 ====================
 
-.. todo::
-
-   Briefing about baselines
+For detailed information on how this package is structured and how
+to run experiments with it, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`
+and get to know the vanilla biometrics and how to integrate both, algorithm and database protocols with it.
  
 
 Users Guide
@@ -50,7 +48,7 @@ Users Guide
    :maxdepth: 2
 
    baselines
-   leaderboad
+   leaderboard/leaderboard
    references
    annotators
 

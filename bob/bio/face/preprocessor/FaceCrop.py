@@ -93,7 +93,7 @@ class FaceCrop(Base):
       your database easily. If you are sure about your input, you can set this flag to
       ``True``.
 
-    annotator : `bob.bio.base.annotator.Annotator`
+    annotator : :any:`bob.bio.base.annotator.Annotator`
       If provided, the annotator will be used if the required annotations are
       missing.
 

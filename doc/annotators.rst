@@ -7,7 +7,7 @@
 =================
 
 This packages provides several face annotators (using RGB images) that you can
-use to annotate biometric databases. See :any:`bob.bio.base.annotator` for
+use to annotate biometric databases. See :ref:`bob.bio.base.annotator` for
 a guide on the general usage of this feature.
 
 .. warning::

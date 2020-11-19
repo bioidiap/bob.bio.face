@@ -1,6 +1,7 @@
 import os
 import bob.extension.download
 
+
 def download_model(model_path, urls, zip_file="model.tar.gz"):
     """
     Download and unzip a model from some URL.
@@ -25,17 +26,6 @@ def download_model(model_path, urls, zip_file="model.tar.gz"):
         bob.extension.download.download_and_unzip(urls, zip_file)
 
 
-from .tf2_inception_resnet import (
-    InceptionResnet,
-    InceptionResnetv2_MsCeleb_CenterLoss_2018,
-    InceptionResnetv2_Casia_CenterLoss_2018,
-    InceptionResnetv1_MsCeleb_CenterLoss_2018,
-    InceptionResnetv1_Casia_CenterLoss_2018,
-    FaceNetSanderberg_20170512_110547
-)
-
-from .mxnet_models import ArcFaceInsightFace
-
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
     """Says object was actually declared here, and not in the import module.
@@ -52,13 +42,5 @@ def __appropriate__(*args):
         obj.__module__ = __name__
 
 
-__appropriate__(
-    InceptionResnet,
-    InceptionResnetv2_MsCeleb_CenterLoss_2018,
-    InceptionResnetv1_MsCeleb_CenterLoss_2018,
-    InceptionResnetv2_Casia_CenterLoss_2018,
-    InceptionResnetv1_Casia_CenterLoss_2018,
-    FaceNetSanderberg_20170512_110547,
-    ArcFaceInsightFace
-)
+__appropriate__()
 __all__ = [_ for _ in dir() if not _.startswith("_")]

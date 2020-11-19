@@ -77,6 +77,9 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}
 
+    def __del__(self):
+        self.model = None
+
 
 class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
     """
@@ -100,7 +103,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
-            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz"
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
         ]
 
         download_model(
@@ -133,7 +136,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
-            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz"
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
         ]
 
         download_model(
@@ -166,7 +169,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
-            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz"
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
         ]
 
         download_model(
@@ -200,7 +203,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
-            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz"
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
         ]
 
         download_model(

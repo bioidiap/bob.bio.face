@@ -3,6 +3,8 @@ import pkg_resources
 import numpy as np
 from bob.pipelines import Sample, SampleSet
 from bob.bio.base import load_resource
+from bob.bio.base.test.utils import is_library_available
+
 
 def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 53)}):
     np.random.seed(10)
@@ -11,6 +13,7 @@ def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 
     return Sample(data, key="1", annotations=annotations)
 
 
+@is_library_available("tensorflow")
 def test_facenet_sanderberg():
     transformer = load_resource("facenet-sanderberg", "transformer")
 
@@ -21,6 +24,7 @@ def test_facenet_sanderberg():
     assert transformed_sample.data.size == 128
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
     transformer = load_resource("inception-resnetv2-msceleb", "transformer")
 
@@ -31,6 +35,7 @@ def test_inception_resnetv2_msceleb():
     assert transformed_sample.data.size == 128
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
     transformer = load_resource("inception-resnetv2-casiawebface", "transformer")
 
@@ -41,6 +46,7 @@ def test_inception_resnetv2_casiawebface():
     assert transformed_sample.data.size == 128
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
     transformer = load_resource("inception-resnetv1-msceleb", "transformer")
 
@@ -51,6 +57,7 @@ def test_inception_resnetv1_msceleb():
     assert transformed_sample.data.size == 128
 
 
+@is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
     transformer = load_resource("inception-resnetv1-casiawebface", "transformer")
 
@@ -59,6 +66,7 @@ def test_inception_resnetv1_casiawebface():
     transformed_sample = transformer.transform([fake_sample])[0]
     transformed_data = transformed_sample.data
     assert transformed_sample.data.size == 128
+
 
 """
 def test_arcface_insight_tf():
@@ -72,6 +80,7 @@ def test_arcface_insight_tf():
     transformed_data = transformed_sample.data
     assert transformed_sample.data.size == 512
 """
+
 
 def test_gabor_graph():
     transformer = load_resource("gabor-graph", "transformer")

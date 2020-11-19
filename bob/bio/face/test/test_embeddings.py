@@ -8,7 +8,9 @@ from bob.bio.base.test.utils import is_library_available
 
 @is_library_available("tensorflow")
 def test_idiap_inceptionv2_msceleb():
-    from bob.bio.face.embeddings import InceptionResnetv2_MsCeleb_CenterLoss_2018
+    from bob.bio.face.embeddings.tf2_inception_resnet import (
+        InceptionResnetv2_MsCeleb_CenterLoss_2018,
+    )
 
     reference = bob.io.base.load(
         pkg_resources.resource_filename(
@@ -26,7 +28,7 @@ def test_idiap_inceptionv2_msceleb():
     transformer_sample = wrap(["sample"], transformer)
     output = [s.data for s in transformer_sample.transform([sample])][0]
 
-    assert np.allclose(output, reference)
+    np.testing.assert_allclose(output, reference.flatten(), rtol=1e-5, atol=1e-4)
     assert output.size == 128, output.shape
 
 
@@ -50,7 +52,9 @@ def test_idiap_inceptionv2_casia():
 
 @is_library_available("tensorflow")
 def test_idiap_inceptionv1_msceleb():
-    from bob.bio.face.embeddings import InceptionResnetv1_MsCeleb_CenterLoss_2018
+    from bob.bio.face.embeddings.tf2_inception_resnet import (
+        InceptionResnetv1_MsCeleb_CenterLoss_2018,
+    )
 
     np.random.seed(10)
     transformer = InceptionResnetv1_MsCeleb_CenterLoss_2018()
@@ -68,7 +72,9 @@ def test_idiap_inceptionv1_msceleb():
 
 @is_library_available("tensorflow")
 def test_idiap_inceptionv1_casia():
-    from bob.bio.face.embeddings import InceptionResnetv1_Casia_CenterLoss_2018
+    from bob.bio.face.embeddings.tf2_inception_resnet import (
+        InceptionResnetv1_Casia_CenterLoss_2018,
+    )
 
     np.random.seed(10)
     transformer = InceptionResnetv1_Casia_CenterLoss_2018()
@@ -86,7 +92,9 @@ def test_idiap_inceptionv1_casia():
 
 @is_library_available("tensorflow")
 def test_facenet_sanderberg():
-    from bob.bio.face.embeddings import FaceNetSanderberg_20170512_110547
+    from bob.bio.face.embeddings.tf2_inception_resnet import (
+        FaceNetSanderberg_20170512_110547,
+    )
 
     np.random.seed(10)
     transformer = FaceNetSanderberg_20170512_110547()
@@ -103,7 +111,7 @@ def test_facenet_sanderberg():
 
 @is_library_available("mxnet")
 def test_arcface_insight_face():
-    from bob.bio.face.embeddings import ArcFaceInsightFace
+    from bob.bio.face.embeddings.mxnet_models import ArcFaceInsightFace
 
     transformer = ArcFaceInsightFace()
     data = np.random.rand(3, 112, 112) * 255

@@ -1,4 +1,3 @@
-gridtk
 bob.db.arface
 bob.db.atnt
 bob.db.banca
@@ -15,4 +14,3 @@ bob.db.replaymobile
 bob.db.scface
 bob.db.xm2vts
 bob.db.fargo
-bob.bio.gmm

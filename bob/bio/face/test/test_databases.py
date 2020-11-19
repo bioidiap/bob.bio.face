@@ -159,6 +159,8 @@ def test_multipie():
             "The database could not queried; probably the protocol is missing inside the db.sql3 file. Here is the error: '%s'" % e)
 
     try:
+        if database.database.annotation_directory is None:
+            raise SkipTest("The annotation directory is not set")
         _check_annotations(database)
     except IOError as e:
         raise SkipTest(

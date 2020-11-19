@@ -42,17 +42,18 @@ requirements:
     - bob.ip.facedetect
     - bob.pipelines
     - matplotlib {{ matplotlib }}
+    - scikit-image {{ scikit_image }}
     - six {{ six }}
+    - tensorflow {{ tensorflow }}  # [linux]
   run:
     - python
     - setuptools
-    - matplotlib
-    - six
-    - scikit-image
-  optional:
+    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('six') }}
+    - {{ pin_compatible('scikit-image') }}
+  run_constrained:
     - bob.learn.tensorflow
     - {{ pin_compatible('tensorflow') }}  # [linux]
-    - mxnet
 
 test:
   imports:
@@ -83,10 +84,8 @@ test:
     - bob.db.scface
     - bob.db.xm2vts
     - bob.db.fargo
-    - bob.bio.gmm
-    - gridtk
-    - bob.learn.tensorflow
-    - tensorflow
+    - bob.learn.tensorflow  # [linux]
+    - tensorflow  # [linux]
 
 about:
   home: https://www.idiap.ch/software/bob/

@@ -28,7 +28,7 @@ def test_idiap_inceptionv2_msceleb():
     transformer_sample = wrap(["sample"], transformer)
     output = [s.data for s in transformer_sample.transform([sample])][0]
 
-    assert np.allclose(output, reference)
+    np.testing.assert_allclose(output, reference.flatten(), rtol=1e-5, atol=1e-4)
     assert output.size == 128, output.shape
 
 

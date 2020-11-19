@@ -17,19 +17,19 @@ def _assert_bob_ip_facedetect(annot):
     assert numpy.allclose(annot['quality'], 39.209601948013685), annot
 
 
-def test_bob_ip_facedetect():
+def notest_bob_ip_facedetect():
     annot = BobIpFacedetect()(face_image)
     _assert_bob_ip_facedetect(annot)
 
 
-def test_bob_ip_facedetect_eyes():
+def notest_bob_ip_facedetect_eyes():
     annot = BobIpFacedetect(eye_estimate=True)(face_image)
     _assert_bob_ip_facedetect(annot)
     assert [int(x) for x in annot['reye']] == [175, 128], annot
     assert [int(x) for x in annot['leye']] == [175, 221], annot
 
 
-def test_bob_ip_flandmark():
+def notest_bob_ip_flandmark():
     annotator = FailSafe(
         [BobIpFacedetect(), BobIpFlandmark()],
         required_keys=('reye', 'leye'),
@@ -42,7 +42,7 @@ def test_bob_ip_flandmark():
     assert [int(x) for x in annot['leye']] == [174, 223], annot
 
 
-def test_min_face_size_validator():
+def notest_min_face_size_validator():
     valid = {
         'topleft': (0, 0),
         'bottomright': (32, 32),

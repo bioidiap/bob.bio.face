@@ -61,7 +61,7 @@ Examples:
 @click.option(
     "-x",
     "--annotations-extension",
-    default = ".json",
+    default = "json",
     show_default=True,
     help="Annotations files have the given filename extension.",
 )
@@ -193,12 +193,10 @@ def display_face_annotations(
         annotations = {}
         if annotations_dir is not None:
             # Loads the corresponding annotations file
-            annotations_file = os.path.join(annotations_dir, sample.key + annotations_extension)
+            annotations_file = os.path.join(annotations_dir, sample.key + '.' + annotations_extension)
             if os.path.exists(annotations_file):
                 logger.info("Loading annotations from file %s", annotations_file)
-                with open(annotations_file) as f: # TODO remove and use bob.db.base.read_annotations_file
-                    annotations=json.load(f)
-                # annotations = bob.db.base.read_annotation_file(annotations_file, args.annotations_type)
+                annotations = bob.db.base.read_annotation_file(annotations_file, annotations_extension)
             else:
                 logger.warn("Could not find annotation file %s", annotations_file)
         else:

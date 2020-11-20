@@ -1,5 +1,5 @@
 import bob.bio.base.annotator
-import bob.bio.face.preprocessor  # import for documentation
+from bob.bio.base.annotator.FailSafe import translate_kwargs
 
 
 class Base(bob.bio.base.annotator.Annotator):
@@ -21,3 +21,22 @@ class Base(bob.bio.base.annotator.Annotator):
             The extra arguments that may be passed.
         """
         raise NotImplementedError()
+
+    def transform(self, samples, **kwargs):
+        """Annotates an image and returns annotations in a dictionary.
+
+        All annotator should add at least the ``topleft`` and ``bottomright``
+        coordinates. Some currently known annotation points such as ``reye``
+        and ``leye`` are formalized in
+        :any:`bob.bio.face.preprocessor.FaceCrop`.
+
+        Parameters
+        ----------
+        sample : Sample
+            The image int the sample object should be a Bob format
+            (#Channels, Height, Width) RGB image.
+        **kwargs
+            Extra arguments that may be passed.
+        """
+        kwargs = translate_kwargs(kwargs, len(samples))
+        return [self.annotate(sample, **kw) for sample, kw in zip(samples, kwargs)]

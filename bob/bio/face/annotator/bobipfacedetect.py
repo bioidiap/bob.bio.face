@@ -41,9 +41,6 @@ class BobIpFacedetect(Base):
                  eye_estimate=False,
                  **kwargs):
         super(BobIpFacedetect, self).__init__(**kwargs)
-        self.sampler = bob.ip.facedetect.Sampler(
-            scale_factor=scale_base, lowest_scale=lowest_scale,
-            distance=distance)
         if cascade is None:
             self.cascade = bob.ip.facedetect.default_cascade()
         else:
@@ -51,6 +48,15 @@ class BobIpFacedetect(Base):
                 bob.io.base.HDF5File(cascade))
         self.detection_overlap = detection_overlap
         self.eye_estimate = eye_estimate
+        self.scale_base = scale_base
+        self.lowest_scale = lowest_scale
+        self.distance = distance
+        self.fit()
+
+    def fit(self, X=None, y=None, **kwargs):
+        self.sampler_ = bob.ip.facedetect.Sampler(
+            scale_factor=self.scale_base, lowest_scale=self.lowest_scale,
+            distance=self.distance)
 
     def annotate(self, image, **kwargs):
         """Return topleft and bottomright and expected eye positions
@@ -71,7 +77,7 @@ class BobIpFacedetect(Base):
         if image.ndim == 3:
             image = bob.ip.color.rgb_to_gray(image)
         bbx, quality = bob.ip.facedetect.detect_single_face(
-            image, self.cascade, self.sampler, self.detection_overlap)
+            image, self.cascade, self.sampler_, self.detection_overlap)
 
         landmarks = bounding_box_to_annotations(bbx)
         landmarks['quality'] = quality

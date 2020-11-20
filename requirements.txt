@@ -21,3 +21,4 @@ bob.pipelines
 matplotlib   # for plotting
 six
 scikit-image
+scikit-learn # for pipelines Tranformers

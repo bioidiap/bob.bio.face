@@ -1,6 +1,5 @@
 from . import Base
 import bob.ip.color
-import bob.ip.flandmark
 
 
 class BobIpFlandmark(Base):
@@ -21,6 +20,7 @@ class BobIpFlandmark(Base):
 
     def __init__(self, **kwargs):
         super(BobIpFlandmark, self).__init__(**kwargs)
+        import bob.ip.flandmark
         self.flandmark = bob.ip.flandmark.Flandmark()
 
     def annotate(self, image, annotations, **kwargs):

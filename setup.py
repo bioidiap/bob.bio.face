@@ -122,7 +122,6 @@ setup(
             'replay-img-spoof  = bob.bio.face.config.database.replay:replay_spoof',
             'replaymobile-img-licit  = bob.bio.face.config.database.replaymobile:replaymobile_licit',
             'replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof',
-
             'fargo  = bob.bio.face.config.database.fargo:database',
         ],
 
@@ -134,6 +133,10 @@ setup(
         ],
 
         'bob.bio.transformer':[
+          'facedetect-eye-estimate = bob.bio.face.config.annotator.facedetect_eye_estimate:transformer',
+          'facedetect = bob.bio.face.config.annotator.facedetect:transformer',
+          'flandmark = bob.bio.face.config.annotator.flandmark:annotator',
+          'mtcnn = bob.bio.face.config.annotator.mtcnn:transformer',
           'facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg:transformer',
           'inception-resnetv1-casiawebface = bob.bio.face.config.baseline.inception_resnetv1_casiawebface:transformer',
           'inception-resnetv2-casiawebface = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:transformer',

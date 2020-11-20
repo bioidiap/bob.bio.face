@@ -55,15 +55,23 @@ Examples:
 @click.option(
     "-a",
     "--annotations-dir",
-    help="If given, use the annotations stored in this directory "
-        "(when annotated with `$ bob bio annnotate` for example).",
+    help="Use the annotations stored in this directory "
+        "(when annotated with `$ bob bio annnotate` for example). "
+        "If not given, will try to load the annotations from the database.",
 )
 @click.option(
     "-x",
     "--annotations-extension",
-    default = "json",
+    default = ".json",
     show_default=True,
     help="Annotations files have the given filename extension.",
+)
+@click.option(
+    "-t",
+    "--annotations-type",
+    default = "json",
+    show_default=True,
+    help="Annotations type given to bob.bio.base.read_annotations.",
 )
 @click.option(
     "-n",
@@ -131,6 +139,7 @@ def display_face_annotations(
     is_video,
     annotations_dir,
     annotations_extension,
+    annotations_type,
     marker_style,
     marker_size,
     display_names,
@@ -193,10 +202,10 @@ def display_face_annotations(
         annotations = {}
         if annotations_dir is not None:
             # Loads the corresponding annotations file
-            annotations_file = os.path.join(annotations_dir, sample.key + '.' + annotations_extension)
+            annotations_file = os.path.join(annotations_dir, sample.key + annotations_extension)
             if os.path.exists(annotations_file):
                 logger.info("Loading annotations from file %s", annotations_file)
-                annotations = bob.db.base.read_annotation_file(annotations_file, annotations_extension)
+                annotations = bob.db.base.read_annotation_file(annotations_file, annotations_type)
             else:
                 logger.warn("Could not find annotation file %s", annotations_file)
         else:

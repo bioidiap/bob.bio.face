@@ -18,7 +18,7 @@ def test_display_annotations():
             display_face_annotations,
             args=(
                 '--database', 'dummy',
-                '--groups', 'dev',
+                '--groups', 'world', '--groups', 'dev',
                 '--annotations-dir', annotations_dir,
                 '--output-dir', tmp_dir, '--keep-all',
                 '--self-test',
@@ -28,7 +28,7 @@ def test_display_annotations():
             'Command exited with this output: `{}\' \n'
             'If the output is empty, you can run this script locally to see '
             'what is wrong:\n'
-            '$ bob bio display_face_annotations -vvv -d dummy -g dev -a ./annotations/ -o /tmp/temp_annotated'
+            '$ bob bio display_face_annotations -vvv -d dummy -g world -g dev -a ./annotations/ -o /tmp/temp_annotated'
             ''.format(result.output))
         assert result.exit_code == 0, assertion_error_message
 

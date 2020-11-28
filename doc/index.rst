@@ -4,28 +4,42 @@
 
 .. _bob.bio.face:
 
-===========================================
- Face Recognition Algorithms and Databases
-===========================================
+=====================================
+ Open Source Face Recognition Library
+=====================================
 
-This package is part of the ``bob.bio`` packages, which provide open source tools to run comparable and reproducible biometric recognition experiments.
-In this package, tools for executing face recognition experiments are provided.
+
+This package provide open source tools to run comparable and reproducible face recognition experiments.
 This includes:
 
 * Preprocessors to detect, align and photometrically enhance face images
 * Feature extractors that extract features from facial images
-* Recognition algorithms that are specialized on facial features, and
 * Facial image databases including their protocols.
+* Scripts that trains CNNs for face recognition.
 
-Additionally, a set of baseline algorithms are defined, which integrate well with the two other ``bob.bio`` packages:
 
-* :ref:`bob.bio.gmm <bob.bio.gmm>` defines algorithms based on Gaussian mixture models
-* :ref:`bob.bio.video <bob.bio.video>` uses face recognition algorithms in video frames
+Get Started
+===========
 
-For more detailed information about the structure of the ``bob.bio`` packages, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`.
-Particularly, the installation of this and other ``bob.bio`` packages, please read the :ref:`bob.bio.base.installation`.
+The easiest way to get started is by simply comparing two faces::
 
-In the following, we provide more detailed information about the particularities of this package only.
+$ bob bio compare-samples -p facenet-sanderberg me.png not_me.png
+
+.. warning::
+   No face detection is carried out with this command.
+
+Check out all the face recognition algorithms available by doing::
+
+$ resources.py --types p
+
+
+Get Started, serious 
+====================
+
+For detailed information on how this package is structured and how
+to run experiments with it, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`
+and get to know the vanilla biometrics and how to integrate both, algorithm and database protocols with it.
+ 
 
 Users Guide
 ===========
@@ -34,7 +48,7 @@ Users Guide
    :maxdepth: 2
 
    baselines
-   implementation
+   leaderboard/leaderboard
    references
    annotators
 

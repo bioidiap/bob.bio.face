@@ -1,4 +1,4 @@
-from bob.bio.face.embeddings import ArcFaceInsightFace
+from bob.bio.face.embeddings.mxnet_models import ArcFaceInsightFace
 from bob.bio.face.config.baseline.helpers import embedding_transformer_112x112
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
@@ -22,6 +22,7 @@ def load(annotation_type, fixed_positions=None):
     algorithm = Distance()
 
     return VanillaBiometricsPipeline(transformer, algorithm)
+
 
 pipeline = load(annotation_type, fixed_positions)
 transformer = pipeline.transformer

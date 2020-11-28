@@ -14,7 +14,7 @@ from bob.extension import rc
 class ArcFaceInsightFace(TransformerMixin, BaseEstimator):
     """
     ArcFace from Insight Face.
-    
+
     Model and source code taken from the repository
 
     https://github.com/deepinsight/insightface/blob/master/python-package/insightface/model_zoo/face_recognition.py
@@ -37,7 +37,8 @@ class ArcFaceInsightFace(TransformerMixin, BaseEstimator):
         )
 
         urls = [
-            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz"
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz"
         ]
 
         download_model(checkpoint_path, urls, "arcface_r100_v1_mxnet.tar.gz")

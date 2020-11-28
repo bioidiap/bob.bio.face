@@ -1,4 +1,6 @@
-from bob.bio.face.embeddings import InceptionResnetv2_Casia_CenterLoss_2018
+from bob.bio.face.embeddings.tf2_inception_resnet import (
+    InceptionResnetv2_Casia_CenterLoss_2018,
+)
 from bob.bio.face.config.baseline.helpers import embedding_transformer_160x160
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,

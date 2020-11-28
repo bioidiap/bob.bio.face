@@ -1,7 +1,7 @@
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
     VanillaBiometricsPipeline,
-    BioAlgorithmLegacy,    
+    BioAlgorithmLegacy,
 )
 from bob.bio.face.config.baseline.helpers import crop_80x64
 import math
@@ -24,6 +24,7 @@ else:
     annotation_type = None
     fixed_positions = None
 
+
 def get_cropper(annotation_type, fixed_positions=None):
     # Cropping
     face_cropper, transform_extra_arguments = crop_80x64(
@@ -31,11 +32,11 @@ def get_cropper(annotation_type, fixed_positions=None):
     )
     return face_cropper, transform_extra_arguments
 
+
 def get_pipeline(face_cropper, transform_extra_arguments):
     preprocessor = bob.bio.face.preprocessor.INormLBP(
         face_cropper=face_cropper, dtype=np.float64
     )
-
 
     #### FEATURE EXTRACTOR ######
 
@@ -55,11 +56,12 @@ def get_pipeline(face_cropper, transform_extra_arguments):
 
     transformer = make_pipeline(
         wrap(
-            ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
+            ["sample"],
+            preprocessor,
+            transform_extra_arguments=transform_extra_arguments,
         ),
         wrap(["sample"], gabor_graph),
     )
-
 
     gabor_jet = bob.bio.face.algorithm.GaborJet(
         gabor_jet_similarity_type="PhaseDiffPlusCanberra",
@@ -68,11 +70,13 @@ def get_pipeline(face_cropper, transform_extra_arguments):
     )
 
     # Set default temporary directory
-    user_env_var = os.getenv("USER", None)
-    if user_env_var:
-        default_temp = os.path.join("/idiap","temp",user_env_var)
-    if user_env_var and os.path.exists(default_temp):
-        tempdir = os.path.join(default_temp, "bob_bio_base_tmp", "gabor_graph")
+    default_temp = (
+        os.path.join("/idiap", "temp", os.environ["USER"])
+        if "USER" in os.environ
+        else "~/temp"
+    )
+    if os.path.exists(default_temp):
+        tempdir = os.path.join(default_temp, "bob_bio_base_tmp")
     else:
         # if /idiap/temp/<USER> does not exist, use /tmp/tmpxxxxxxxx
         tempdir = tempfile.TemporaryDirectory().name
@@ -80,10 +84,14 @@ def get_pipeline(face_cropper, transform_extra_arguments):
     algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir)
     return VanillaBiometricsPipeline(transformer, algorithm)
 
+
 def load(annotation_type, fixed_positions=None):
     ####### SOLVING THE FACE CROPPER TO BE USED ##########
-    face_cropper, transform_extra_arguments = get_cropper(annotation_type, fixed_positions)
+    face_cropper, transform_extra_arguments = get_cropper(
+        annotation_type, fixed_positions
+    )
     return get_pipeline(face_cropper, transform_extra_arguments)
+
 
 pipeline = load(annotation_type, fixed_positions)
 

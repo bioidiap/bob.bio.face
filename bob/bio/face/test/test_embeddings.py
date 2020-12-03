@@ -93,7 +93,7 @@ def test_idiap_inceptionv1_casia():
 @is_library_available("tensorflow")
 def test_facenet_sanderberg():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
-        FaceNetSanderberg_20170512_110547
+        FaceNetSanderberg_20170512_110547,
     )
 
     reference = bob.io.base.load(
@@ -106,7 +106,7 @@ def test_facenet_sanderberg():
     data = (np.random.rand(3, 160, 160) * 255).astype("uint8")
     output = transformer.transform([data])[0]
     assert output.size == 128, output.shape
-    
+
     # Sample Batch
     sample = Sample(data)
     transformer_sample = wrap(["sample"], transformer)

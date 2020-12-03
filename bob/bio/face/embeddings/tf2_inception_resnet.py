@@ -10,6 +10,7 @@ from functools import partial
 import pkg_resources
 import os
 from bob.bio.face.embeddings import download_model
+import numpy as np
 
 
 def sanderberg_rescaling():
@@ -34,13 +35,19 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
     preprocessor:
         Preprocessor function
 
+    memory_demanding bool
+        If `True`, the `transform` method will run one sample at the time.
+        This is useful when there is not enough memory available to forward big chucks of data.
     """
 
-    def __init__(self, checkpoint_path, preprocessor=None, **kwargs):
+    def __init__(
+        self, checkpoint_path, preprocessor=None, memory_demanding=False, **kwargs
+    ):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
         self.model = None
         self.preprocessor = preprocessor
+        self.memory_demanding = memory_demanding
 
     def load_model(self):
         self.model = tf.keras.models.load_model(self.checkpoint_path)
@@ -54,19 +61,26 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
         return embeddings
 
     def transform(self, X):
+        def _transform(X):
+            X = tf.convert_to_tensor(X)
+            X = to_channels_last(X)
+
+            if X.shape[-3:] != self.model.input_shape[-3:]:
+                raise ValueError(
+                    f"Image shape {X.shape} not supported. Expected {self.model.input_shape}"
+                )
+
+            return self.inference(X).numpy()
+
         if self.model is None:
             self.load_model()
 
         X = check_array(X, allow_nd=True)
-        X = tf.convert_to_tensor(X)
-        X = to_channels_last(X)
 
-        if X.shape[-3:] != self.model.input_shape[-3:]:
-            raise ValueError(
-                f"Image shape {X.shape} not supported. Expected {self.model.input_shape}"
-            )
-
-        return self.inference(X).numpy()
+        if self.memory_demanding:
+            return np.array([_transform(x[None, ...]) for x in X])
+        else:
+            return _transform(X)
 
     def __getstate__(self):
         # Handling unpicklable objects
@@ -89,7 +103,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
 
     """
 
-    def __init__(self):
+    def __init__(self, memory_demanding=False):
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "inceptionresnetv2_msceleb_centerloss_2018"),
         )
@@ -111,7 +125,9 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
         )
 
         super(InceptionResnetv2_MsCeleb_CenterLoss_2018, self).__init__(
-            checkpoint_path, preprocessor=tf.image.per_image_standardization,
+            checkpoint_path,
+            preprocessor=tf.image.per_image_standardization,
+            memory_demanding=memory_demanding,
         )
 
 
@@ -123,7 +139,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
 
     """
 
-    def __init__(self):
+    def __init__(self, memory_demanding=False):
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "inceptionresnetv2_casia_centerloss_2018"),
         )
@@ -144,7 +160,9 @@ class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
         )
 
         super(InceptionResnetv2_Casia_CenterLoss_2018, self).__init__(
-            checkpoint_path, preprocessor=tf.image.per_image_standardization,
+            checkpoint_path,
+            preprocessor=tf.image.per_image_standardization,
+            memory_demanding=memory_demanding,
         )
 
 
@@ -156,7 +174,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
 
     """
 
-    def __init__(self):
+    def __init__(self, memory_demanding=False):
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "inceptionresnetv1_casia_centerloss_2018"),
         )
@@ -177,7 +195,9 @@ class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
         )
 
         super(InceptionResnetv1_Casia_CenterLoss_2018, self).__init__(
-            checkpoint_path, preprocessor=tf.image.per_image_standardization,
+            checkpoint_path,
+            preprocessor=tf.image.per_image_standardization,
+            memory_demanding=memory_demanding,
         )
 
 
@@ -189,7 +209,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
 
     """
 
-    def __init__(self):
+    def __init__(self, memory_demanding=False):
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "inceptionresnetv1_msceleb_centerloss_2018"),
         )
@@ -211,7 +231,9 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
         )
 
         super(InceptionResnetv1_MsCeleb_CenterLoss_2018, self).__init__(
-            checkpoint_path, preprocessor=tf.image.per_image_standardization,
+            checkpoint_path,
+            preprocessor=tf.image.per_image_standardization,
+            memory_demanding=memory_demanding,
         )
 
 
@@ -237,7 +259,7 @@ class FaceNetSanderberg_20170512_110547(InceptionResnet):
         )
     """
 
-    def __init__(self):
+    def __init__(self, memory_demanding=False):
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "facenet_sanderberg_20170512_110547"),
         )
@@ -257,5 +279,8 @@ class FaceNetSanderberg_20170512_110547(InceptionResnet):
         )
 
         super(FaceNetSanderberg_20170512_110547, self).__init__(
-            checkpoint_path, tf.image.per_image_standardization,
+            checkpoint_path,
+            tf.image.per_image_standardization,
+            memory_demanding=memory_demanding,
         )
+

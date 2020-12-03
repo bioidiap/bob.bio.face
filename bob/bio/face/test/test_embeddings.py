@@ -33,6 +33,33 @@ def test_idiap_inceptionv2_msceleb():
 
 
 @is_library_available("tensorflow")
+def test_idiap_inceptionv2_msceleb_memory_demanding():
+    from bob.bio.face.embeddings.tf2_inception_resnet import (
+        InceptionResnetv2_MsCeleb_CenterLoss_2018,
+    )
+
+    reference = bob.io.base.load(
+        pkg_resources.resource_filename(
+            "bob.bio.face.test", "data/inception_resnet_v2_rgb.hdf5"
+        )
+    )
+    np.random.seed(10)
+
+    transformer = InceptionResnetv2_MsCeleb_CenterLoss_2018(memory_demanding=True)
+    data = (np.random.rand(3, 160, 160) * 255).astype("uint8")
+    output = transformer.transform([data])[0]
+    assert output.size == 128, output.shape
+
+    # Sample Batch
+    sample = Sample(data)
+    transformer_sample = wrap(["sample"], transformer)
+    output = [s.data for s in transformer_sample.transform([sample])][0]
+
+    np.testing.assert_allclose(output[0], reference.flatten(), rtol=1e-5, atol=1e-4)
+    assert output.size == 128, output.shape
+
+
+@is_library_available("tensorflow")
 def test_idiap_inceptionv2_casia():
     from bob.bio.face.embeddings import InceptionResnetv2_Casia_CenterLoss_2018
 

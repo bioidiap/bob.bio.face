@@ -7,7 +7,6 @@ package:
 
 build:
   entry_points:
-    - display_face_annotations.py = bob.bio.face.script.display_face_annotations:main
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}
@@ -59,6 +58,7 @@ test:
   imports:
     - {{ name }}
   commands:
+    - bob bio display-face-annotations --help
     - nosetests --with-coverage --cover-package={{ name }} -sv {{ name }}
     - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
     - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx

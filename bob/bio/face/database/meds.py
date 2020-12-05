@@ -60,7 +60,9 @@ class MEDSDatabase(CSVDatasetDevEvalZTNorm):
             csv_to_sample_loader=CSVToSampleLoader(
                 data_loader=bob.io.base.load,
                 metadata_loader=eyes_annotations_loader,
-                dataset_original_directory=rc["bob.db.meds.directory"],
+                dataset_original_directory=rc["bob.db.meds.directory"]
+                if rc["bob.db.meds.directory"]
+                else "",
                 extension=".jpg",
             ),
         )

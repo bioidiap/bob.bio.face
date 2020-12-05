@@ -137,7 +137,7 @@ def test_idiap_inceptionv1_casia():
     assert output.size == 128, output.shape
 
 
-@is_library_available("tensorflow")
+# @is_library_available("tensorflow")
 def test_facenet_sanderberg():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
         FaceNetSanderberg_20170512_110547,

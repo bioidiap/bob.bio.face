@@ -96,8 +96,7 @@ def test_gabor_jet():
 
 def test_histogram():
     histogram = bob.bio.face.algorithm.Histogram(
-      distance_function = bob.math.histogram_intersection,
-      is_distance_function = False
+        distance_function=bob.math.histogram_intersection, is_distance_function=False
     )
 
     assert isinstance(histogram, bob.bio.face.algorithm.Histogram)
@@ -150,29 +149,3 @@ def test_histogram():
         )
         < 1e-5
     )
-
-
-def test_bic_jets():
-
-    similarity_function = bob.ip.gabor.Similarity("PhaseDiffPlusCanberra", bob.ip.gabor.Transform())
-
-    def gabor_jet_similarities(f1, f2):
-        """Computes the similarity vector between two Gabor graph features"""
-        assert len(f1) == len(f2)
-        return [similarity_function(f1[i], f2[i]) for i in range(len(f1))]
-
-    bic = bob.bio.base.algorithm.BIC(
-        # measure to compare two features in input space
-        comparison_function = gabor_jet_similarities,
-        # load and save functions
-        read_function = bob.ip.gabor.load_jets,
-        write_function = bob.ip.gabor.save_jets,
-        # Limit the number of training pairs
-        maximum_training_pair_count = 1000000,
-        # Dimensions of intrapersonal and extrapersonal subspaces
-        subspace_dimensions = (20, 20),
-        multiple_model_scoring = 'max'
-    )
-
-    assert isinstance(bic, bob.bio.base.algorithm.BIC)
-    assert isinstance(bic, bob.bio.base.algorithm.Algorithm)

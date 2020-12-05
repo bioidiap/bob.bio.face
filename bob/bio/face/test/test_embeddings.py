@@ -40,7 +40,7 @@ def test_idiap_inceptionv2_msceleb_memory_demanding():
 
     reference = bob.io.base.load(
         pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/inception_resnet_v2_rgb.hdf5"
+            "bob.bio.face.test", "data/inception_resnet_v2_msceleb_rgb.hdf5"
         )
     )
     np.random.seed(10)

@@ -7,18 +7,12 @@ from bob.extension import rc
 
 replay_mobile_directory = rc["bob.db.replay_mobile.directory"]
 
-replaymobile_licit = DatabaseConnector(
+database = DatabaseConnector(
     ReplayMobileBioDatabase(
         original_directory=replay_mobile_directory,
         original_extension=".mov",
         protocol="grandtest-licit",
-    )
-)
-
-replaymobile_spoof = DatabaseConnector(
-    ReplayMobileBioDatabase(
-        original_directory=replay_mobile_directory,
-        original_extension=".mov",
-        protocol="grandtest-spoof",
-    )
+    ),
+    annotation_type="bounding-box",
+    fixed_positions=None,
 )

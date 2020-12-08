@@ -7,8 +7,8 @@
 """
 
 from bob.bio.base.database import (
-    CSVDatasetDevEval,
-    CSVDatasetDevEvalZTNorm,
+    CSVDataset,
+    CSVDatasetZTNorm,
     CSVToSampleLoader,
 )
 from bob.extension import rc
@@ -25,7 +25,7 @@ dataset_protocol_path = os.path.join(
 )
 
 
-class MEDSDatabase(CSVDatasetDevEvalZTNorm):
+class MEDSDatabase(CSVDatasetZTNorm):
     """
     The MEDS-II (Multiple Encounter Data Set II) database interface
 
@@ -54,7 +54,7 @@ class MEDSDatabase(CSVDatasetDevEvalZTNorm):
         self.annotation_type = ("eyes-center",)
         self.fixed_positions = None
 
-        database = CSVDatasetDevEval(
+        database = CSVDataset(
             dataset_protocol_path,
             protocol,
             csv_to_sample_loader=CSVToSampleLoader(

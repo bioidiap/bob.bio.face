@@ -4,23 +4,40 @@
 """  Sample and Metatada loaders"""
 
 
-def eyes_annotations_loader(row, header=None):
-    """
-    Convert  leye_x, leye_y, reye_x, reye_y attributes to `annotations = (leye, reye)`
-    """
+from bob.pipelines import DelayedSample, Sample, SampleSet
+from sklearn.base import TransformerMixin, BaseEstimator
 
-    def find_attribute(attribute):
-        for i, a in enumerate(header):
-            if a == attribute:
-                return i
-        else:
-            ValueError(f"Attribute not found in the dataset: {a}")
 
-    eyes = {
-        "leye": (row[find_attribute("leye_x")], row[find_attribute("leye_y")]),
-        "reye": (row[find_attribute("reye_x")], row[find_attribute("reye_y")]),
-    }
+class EyesAnnotations(TransformerMixin, BaseEstimator):
+    def fit(self, X, y=None):
+        return self
 
-    annotation = {"annotations": eyes}
+    def _more_tags(self):
+        return {
+            "stateless": True,
+            "requires_fit": False,
+        }
 
-    return annotation
+    def transform(self, X):
+        """
+        Convert  leye_x, leye_y, reye_x, reye_y attributes to `annotations = (leye, reye)`
+        """
+
+        def find_attribute(x, attribute):
+            if hasattr(x, attribute):
+                return getattr(x, attribute)
+            else:
+                ValueError(f"Attribute not found in the dataset: {attribute}")
+
+        annotated_samples = []
+        for x in X:
+            eyes = {
+                "leye": (find_attribute, (x, "leye_x"), find_attribute(x, "leye_y")),
+                "reye": (find_attribute(x, "reye_x"), find_attribute(x, "reye_y")),
+            }
+
+            sample = DelayedSample(x._load, parent=x, annotations=eyes)
+            [delattr(sample, a) for a in ["leye_x", "leye_y", "reye_x", "reye_y"]]
+            annotated_samples.append(sample)
+
+        return annotated_samples

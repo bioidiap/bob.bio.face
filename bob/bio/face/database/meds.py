@@ -9,12 +9,15 @@
 from bob.bio.base.database import (
     CSVDataset,
     CSVDatasetZTNorm,
-    CSVToSampleLoader,
 )
+from bob.pipelines.datasets import CSVToSampleLoader
+from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 import bob.io.base
-from bob.bio.face.database.sample_loaders import eyes_annotations_loader
+from sklearn.pipeline import make_pipeline
+
+# from bob.bio.face.database.sample_loaders import eyes_annotations_loader
 import os
 
 
@@ -57,13 +60,15 @@ class MEDSDatabase(CSVDatasetZTNorm):
         database = CSVDataset(
             dataset_protocol_path,
             protocol,
-            csv_to_sample_loader=CSVToSampleLoader(
-                data_loader=bob.io.base.load,
-                metadata_loader=eyes_annotations_loader,
-                dataset_original_directory=rc["bob.db.meds.directory"]
-                if rc["bob.db.meds.directory"]
-                else "",
-                extension=".jpg",
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoader(
+                    data_loader=bob.io.base.load,
+                    dataset_original_directory=rc["bob.db.meds.directory"]
+                    if rc["bob.db.meds.directory"]
+                    else "",
+                    extension=".jpg",
+                ),
+                EyesAnnotations(),
             ),
         )
 

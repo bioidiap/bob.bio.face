@@ -30,7 +30,62 @@ dataset_protocol_path = os.path.join(
 
 class MEDSDatabase(CSVDatasetZTNorm):
     """
-    The MEDS-II (Multiple Encounter Data Set II) database interface
+    The MEDS II database was developed by NIST to support and assists their biometrics evaluation program.
+    It is composed by 518 identities from both men/women (labeled as M and F) and five different race annotations (Asian, Black, American Indian, Unknown and White)
+    (labeled as A, B, I, U and W.
+    
+    Unfortunately, the distribution of gender and race is extremely unbalanced as it can be
+    observed in their statistics. Furthermore, only 256 subjects has
+    more than one image sample (obviously it is not possible to do a biometric evaluation with one sample per subject).
+    For this reason, this interface contains a subset of the data, which is composed only by 383 subjects (White and Black men only).
+
+    This dataset contains three verification protocols and they are:
+    `verification_fold1`, `verification_fold2` and `verification_fold1`.
+    Follow below the identities distribution in each set for the for each protocol:
+
+
+    +--------------------+---------------+-----------+-----------+-----------+
+    |                    | Training set              | Dev. Set  | Eval. Set |
+    +--------------------+---------------+-----------+           +           +
+    |                    | T-References  | Z-Probes  |           |           |
+    +====================+===============+===========+===========+===========+
+    | verification_fold1 |      80       |     80    |   111     |   112     |
+    +--------------------+---------------+-----------+-----------+-----------+
+    | verification_fold2 |      80       |     80    |   111     |   112     |
+    +--------------------+---------------+-----------+-----------+-----------+
+    | verification_fold3 |      80       |     80    |   111     |   112     |
+    +--------------------+---------------+-----------+-----------+-----------+
+    
+    Example
+    -------
+
+    Fetching biometric references::
+
+    >>> from bob.bio.face.database import MEDSDatabase
+    >>> database = MEDSDatabase(protocol="verification_fold1")
+    >>> database.references()
+
+
+    Fetching probes::
+
+    >>> from bob.bio.face.database import MEDSDatabase
+    >>> database = MEDSDatabase(protocol="verification_fold1")
+    >>> database.probes()
+
+
+    Fetching refererences for T-Norm normalization::
+
+    >>> from bob.bio.face.database import MEDSDatabase
+    >>> database = MEDSDatabase(protocol="verification_fold1")
+    >>> database.trerefences()
+
+
+    Fetching probes for Z-Norm normalization::
+
+    >>> from bob.bio.face.database import MEDSDatabase
+    >>> database = MEDSDatabase(protocol="verification_fold1")
+    >>> database.zprobes()
+
 
     .. warning::
         Use the command below to set the path of the real data::
@@ -54,7 +109,7 @@ class MEDSDatabase(CSVDatasetZTNorm):
         ]
         get_file(filename, urls)
 
-        self.annotation_type = ("eyes-center",)
+        self.annotation_type = "eyes-center"
         self.fixed_positions = None
 
         database = CSVDataset(

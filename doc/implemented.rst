@@ -20,7 +20,7 @@ Databases
    bob.bio.face.database.LFWBioDatabase
    bob.bio.face.database.MultipieBioDatabase
    bob.bio.face.database.FargoBioDatabase
-   bob.bio.face.database.meds.MEDSDatabase
+   bob.bio.face.database.MEDSDatabase
 
 
 Face Image Annotators

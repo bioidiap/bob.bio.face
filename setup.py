@@ -111,6 +111,7 @@ setup(
             "replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile:replaymobile_spoof",
             "fargo  = bob.bio.face.config.database.fargo:database",
             "meds = bob.bio.face.config.database.meds:database",
+            "morph = bob.bio.face.config.database.morph:database",
         ],
         "bob.bio.annotator": [
             "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
@@ -172,6 +173,7 @@ setup(
             "replaymobile-img-spoof  = bob.bio.face.config.database.replaymobile_spoof",
             "fargo  = bob.bio.face.config.database.fargo",
             "meds = bob.bio.face.config.database.meds",
+            "morph = bob.bio.face.config.database.morph",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

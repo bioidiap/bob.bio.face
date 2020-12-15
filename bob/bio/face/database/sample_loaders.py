@@ -32,8 +32,14 @@ class EyesAnnotations(TransformerMixin, BaseEstimator):
         annotated_samples = []
         for x in X:
             eyes = {
-                "leye": (find_attribute, (x, "leye_x"), find_attribute(x, "leye_y")),
-                "reye": (find_attribute(x, "reye_x"), find_attribute(x, "reye_y")),
+                "leye": (
+                    float(find_attribute(x, "leye_x")),
+                    float(find_attribute(x, "leye_y")),
+                ),
+                "reye": (
+                    float(find_attribute(x, "reye_x")),
+                    float(find_attribute(x, "reye_y")),
+                ),
             }
 
             sample = DelayedSample(x._load, parent=x, annotations=eyes)

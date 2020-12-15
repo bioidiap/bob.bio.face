@@ -13,6 +13,7 @@ from .ijbc import IJBCBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .fargo import FargoBioDatabase
 from .meds import MEDSDatabase
+from .morph import MorphDatabase
 
 # gets sphinx autodoc done right - don't remove it
 
@@ -45,5 +46,6 @@ __appropriate__(
     ReplayMobileBioDatabase,
     FargoBioDatabase,
     MEDSDatabase,
+    MorphDatabase,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

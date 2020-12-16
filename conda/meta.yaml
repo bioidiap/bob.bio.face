@@ -72,7 +72,6 @@ test:
     - sphinx_rtd_theme
     - bob.db.arface
     - bob.db.atnt
-    - bob.db.caspeal
     - bob.db.frgc
     - bob.db.gbu
     - bob.db.ijbc

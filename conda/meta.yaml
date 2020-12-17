@@ -72,7 +72,6 @@ test:
     - sphinx_rtd_theme
     - bob.db.arface
     - bob.db.atnt
-    - bob.db.frgc
     - bob.db.gbu
     - bob.db.ijbc
     - bob.db.lfw
@@ -80,7 +79,6 @@ test:
     - bob.db.multipie
     - bob.db.replay
     - bob.db.replaymobile
-    - bob.db.scface
     - bob.db.xm2vts
     - bob.db.fargo
     - bob.learn.tensorflow  # [linux]

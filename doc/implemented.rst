@@ -13,7 +13,7 @@ Databases
 .. autosummary::
    bob.bio.face.database.ARFaceBioDatabase
    bob.bio.face.database.AtntBioDatabase
-   bob.bio.face.database.MobioBioDatabase
+   bob.bio.face.database.MobioDatabase
    bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
    bob.bio.face.database.GBUBioDatabase

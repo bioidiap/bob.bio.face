@@ -75,7 +75,6 @@ test:
     - bob.db.gbu
     - bob.db.ijbc
     - bob.db.lfw
-    - bob.db.multipie
     - bob.db.replay
     - bob.db.replaymobile
     - bob.db.xm2vts

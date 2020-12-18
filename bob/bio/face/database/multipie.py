@@ -1,80 +1,74 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
-# Sat 20 Aug 15:43:10 CEST 2016
 
 """
-  Multipie database implementation of bob.bio.base.database.Database interface.
-  It is an extension of an SQL-based database interface, which directly talks to Multipie database, for
-  verification experiments (good to use in bob.bio.base framework).
+  Multipie database implementation 
 """
 
-from .database import FaceBioFile
-from bob.bio.base.database import ZTBioDatabase
+from bob.bio.base.database import CSVDataset
+from bob.pipelines.datasets import CSVToSampleLoader
+from bob.bio.face.database.sample_loaders import MultiposeAnnotations
+from bob.extension import rc
+from bob.extension.download import get_file
+import bob.io.base
+from sklearn.pipeline import make_pipeline
 
 
-class MultipieBioFile(FaceBioFile):
-
-    def __init__(self, f):
-        super(MultipieBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
-        self._f = f
-
-
-class MultipieBioDatabase(ZTBioDatabase):
+class MultipieDatabase(CSVDataset):
     """
-    Multipie database implementation of bob.bio.base.database.Database interface.
-    It is an extension of an SQL-based database interface, which directly talks to Multipie database, for
-    verification experiments (good to use in bob.bio.base framework).
+    The Multipie database..
     """
 
-    def __init__(
-            self,
-            original_directory=None,
-            original_extension='.png',
-            annotation_directory=None,
-            annotation_extension='.pos',
-            **kwargs
-    ):
-        from bob.db.multipie.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory,
-                                    original_extension,
-                                    annotation_directory,
-                                    annotation_extension)
+    def __init__(self, protocol):
 
-        # call base class constructors to open a session to the database
-        super(MultipieBioDatabase, self).__init__(
-            name='multipie',
-            original_directory=original_directory,
-            original_extension=original_extension,
-            annotation_directory=annotation_directory,
-            annotation_extension=annotation_extension,
-            **kwargs)
+        # Downloading model if not exists
+        urls = [
+            "https://www.idiap.ch/software/bob/databases/latest/multipie.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/multipie.tar.gz",
+        ]
+        filename = get_file("multipie.tar.gz", urls)
 
-    @property
-    def original_directory(self):
-        return self._db.original_directory
+        self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
+        self.fixed_positions = None
 
-    @original_directory.setter
-    def original_directory(self, value):
-        self._db.original_directory = value
+        super().__init__(
+            filename,
+            protocol,
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoader(
+                    data_loader=bob.io.base.load,
+                    dataset_original_directory=rc["bob.db.multipie.directory"]
+                    if rc["bob.db.multipie.directory"]
+                    else "",
+                    extension=".png",
+                ),
+                MultiposeAnnotations(),
+            ),
+        )
 
-    def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
-        return self._db.model_ids(groups=groups, protocol=protocol)
-
-    def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
-        retval = self._db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [MultipieBioFile(f) for f in retval]
-
-    def tmodel_ids_with_protocol(self, protocol=None, groups=None, **kwargs):
-        return self._db.tmodel_ids(protocol=protocol, groups=groups, **kwargs)
-
-    def tobjects(self, groups=None, protocol=None, model_ids=None, **kwargs):
-        retval = self._db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
-        return [MultipieBioFile(f) for f in retval]
-
-    def zobjects(self, groups=None, protocol=None, **kwargs):
-        retval = self._db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [MultipieBioFile(f) for f in retval]
-
-    def annotations(self, myfile):
-        return self._db.annotations(myfile._f)
+    @staticmethod
+    def protocols():
+        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+        return [
+            "P240",
+            "P191",
+            "P130",
+            "G",
+            "P010",
+            "P041",
+            "P051",
+            "P050",
+            "M",
+            "P110",
+            "P",
+            "P140",
+            "U",
+            "P200",
+            "E",
+            "P190",
+            "P120",
+            "P080",
+            "P081",
+            "P090",
+        ]

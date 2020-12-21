@@ -4,7 +4,8 @@ from bob.bio.base.wrappers import wrap_sample_preprocessor
 from bob.pipelines import wrap
 from bob.bio.face.helpers import face_crop_solver
 import numpy as np
-
+import logging
+logger = logging.getLogger(__name__)
 
 def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
     """
@@ -77,6 +78,7 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
+        logger.warning(f"Annotation type {annotation_type} is not handled. Input images will be fully scaled.")
         cropped_positions = None
 
     return cropped_positions
@@ -135,6 +137,7 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
+        logger.warning(f"Annotation type {annotation_type} is not handled. Input images will be fully scaled.")
         cropped_positions = None
 
     return cropped_positions

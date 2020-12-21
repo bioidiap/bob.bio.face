@@ -1,5 +1,5 @@
 from .Base import Base
-from .FaceCrop import FaceCrop
+from .FaceCrop import FaceCrop, MultiFaceCrop
 
 from .TanTriggs import TanTriggs
 from .INormLBP import INormLBP

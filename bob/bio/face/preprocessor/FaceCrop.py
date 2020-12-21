@@ -373,12 +373,26 @@ class FaceCrop(Base):
         self._init_non_pickables()
 
 
-class MultiFaceCrop(TransformerMixin, BaseEstimator):
+class MultiFaceCrop(Base):
+    """ Wraps around FaceCrop to enable a dynamical cropper that can handle several annotation types.
+    Initialization and usage is similar to the FaceCrop, but the main difference here is that one specifies
+    a *list* of cropped_positions, and optionally a *list* of associated fixed positions.
+
+    For each set of cropped_positions in the list, a new FaceCrop will be instanciated that handles this
+    exact set of annotations.
+    When calling the *transform* method, the MultiFaceCrop matches each sample to its associated cropper
+    based on the received annotation, then performs the cropping of each subset, and finally gathers the results.
+
+    In case of ambiguity (when no cropper is a match for the received annotations, or when several croppers
+    match the received annotations), raises a ValueError.
+
+    """
+
     def __init__(
         self,
         cropped_image_size,
         cropped_positions_list,
-        fixed_positions=None,
+        fixed_positions_list=None,
         mask_sigma=None,
         mask_neighbors=5,
         mask_seed=None,
@@ -388,9 +402,14 @@ class MultiFaceCrop(TransformerMixin, BaseEstimator):
     ):
 
         assert isinstance(cropped_positions_list, list)
+        if fixed_positions_list is None:
+            fixed_positions_list = [None] * len(cropped_positions_list)
+        assert isinstance(fixed_positions_list, list)
 
         self.croppers = {}
-        for cropped_positions in cropped_positions_list:
+        for cropped_positions, fixed_positions in zip(
+            cropped_positions_list, fixed_positions_list
+        ):
             assert len(cropped_positions) == 2
             self.croppers[tuple(cropped_positions)] = FaceCrop(
                 cropped_image_size,
@@ -408,26 +427,38 @@ class MultiFaceCrop(TransformerMixin, BaseEstimator):
         subsets = {k: {"X": [], "annotations": []} for k in self.croppers.keys()}
 
         def assign(X_elem, annotations_elem):
+            # Assign a single sample to its matching cropper
+
+            # Compare the received annotations keys to the cropped_positions keys of each cropper
             valid_keys = [
                 k
                 for k in self.croppers.keys()
                 if set(k).issubset(set(annotations_elem.keys()))
             ]
-            assert (
-                len(valid_keys) == 1
-            ), "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(
-                len(valid_keys)
-            )
-            subsets[valid_keys[0]]["X"].append(X_elem)
-            subsets[valid_keys[0]]["annotations"].append(annotations_elem)
 
+            # Ensure exactly one cropper is a match
+            if len(valid_keys) != 1:
+                raise ValueError(
+                    "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(
+                        len(valid_keys)
+                    )
+                )
+            else:
+                # Assign the sample to this particuler cropper
+                cropper_key = valid_keys[0]
+                subsets[cropper_key]["X"].append(X_elem)
+                subsets[cropper_key]["annotations"].append(annotations_elem)
+
+        # Assign each sample to its matching cropper
         for X_elem, annotations_elem in zip(X, annotations):
             assign(X_elem, annotations_elem)
 
+        # Call each FaceCrop on its sample subset
         transformed_subsets = {
             k: self.croppers[k].transform(**subsets[k]) for k in subsets.keys()
         }
 
+        # Gather the results
         return [item for sublist in transformed_subsets.values() for item in sublist]
 
     def fit(self, X, y=None):

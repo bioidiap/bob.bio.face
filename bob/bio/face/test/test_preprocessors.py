@@ -151,6 +151,56 @@ def test_face_crop():
     # reset the configuration, so that later tests don't get screwed.
     cropper.color_channel = "gray"
 
+def test_multi_face_crop():
+    # read input
+    image = _image()
+    eye_annotation, bbox_annotation = [
+            bob.db.base.read_annotation_file(
+                pkg_resources.resource_filename("bob.bio.face.test", "data/" + filename + ".pos"),
+                "named"
+            )
+            for filename in ["testimage", "testimage_bbox"]
+        ]
+
+    # define the preprocessor
+    cropper = bob.bio.face.preprocessor.MultiFaceCrop(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions_list=[
+            {'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS},
+            {'topleft': (0, 0), 'bottomright': (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)}
+        ]
+    )
+
+    # execute face cropper
+    eye_reference, bbox_reference = [
+        pkg_resources.resource_filename(
+            "bob.bio.face.test", "data/" + filename + ".hdf5"
+        )
+        for filename in ["cropped", "cropped_bbox"]
+    ]
+
+    eye_cropped, bbox_cropped = cropper.transform([image, image], [eye_annotation, bbox_annotation])
+    
+    # Compare the cropped results to the reference
+    _compare(eye_cropped, eye_reference)
+    _compare(bbox_cropped, bbox_reference)
+
+     # test a ValueError is raised if the annotations don't match any cropper
+    try:
+        annot = dict(landmark_A=(60, 60), landmark_B=(120, 120))
+        cropper.transform([image], [annot])
+        assert 0, "MultiFaceCrop did not raise a ValueError for annotations matching no cropper"
+    except ValueError:
+        pass
+
+    # test a ValueError is raised if the annotations match several croppers
+    try:
+        annot = {**eye_annotation, **bbox_annotation}
+        cropper.transform([image], [annot])
+        assert 0, "MultiFaceCrop did not raise a ValueError for annotations matching several croppers"
+    except ValueError:
+        pass
+
 
 def test_tan_triggs():
     # read input

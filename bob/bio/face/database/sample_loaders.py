@@ -96,7 +96,7 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
             ):
                 # Right profile
                 annotations = {
-                    "leye": (
+                    "reye": (
                         float(find_attribute(x, "reye_x")),
                         float(find_attribute(x, "reye_y")),
                     ),

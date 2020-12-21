@@ -78,7 +78,7 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
-        logger.warning(f"Annotation type {annotation_type} is not handled. Input images will be fully scaled.")
+        logger.warning(f"Annotation type {annotation_type} is not supported. Input images will be fully scaled.")
         cropped_positions = None
 
     return cropped_positions
@@ -137,7 +137,7 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
-        logger.warning(f"Annotation type {annotation_type} is not handled. Input images will be fully scaled.")
+        logger.warning(f"Annotation type {annotation_type} is not supported. Input images will be fully scaled.")
         cropped_positions = None
 
     return cropped_positions

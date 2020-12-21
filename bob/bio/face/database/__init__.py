@@ -2,13 +2,13 @@
 # vim: set fileencoding=utf-8 :
 
 from .database import FaceBioFile
-from .mobio import MobioBioDatabase
+from .mobio import MobioDatabase
 from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase
 from .gbu import GBUBioDatabase
 from .arface import ARFaceBioDatabase
 from .lfw import LFWBioDatabase
-from .multipie import MultipieBioDatabase
+from .multipie import MultipieDatabase
 from .ijbc import IJBCBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .fargo import FargoBioDatabase
@@ -35,13 +35,13 @@ def __appropriate__(*args):
 
 __appropriate__(
     FaceBioFile,
-    MobioBioDatabase,
+    MobioDatabase,
     ReplayBioDatabase,
     AtntBioDatabase,
     GBUBioDatabase,
     ARFaceBioDatabase,
     LFWBioDatabase,
-    MultipieBioDatabase,
+    MultipieDatabase,
     IJBCBioDatabase,
     ReplayMobileBioDatabase,
     FargoBioDatabase,

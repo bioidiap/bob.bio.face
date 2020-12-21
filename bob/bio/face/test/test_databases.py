@@ -156,74 +156,58 @@ def test_lfw():
         )
 
 
-@db_available("mobio")
 def test_mobio():
-    database = bob.bio.base.load_resource(
-        "mobio-image", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database_zt(database, models_depend=True)
-        check_database_zt(database, protocol="female", models_depend=True)
-        check_database_zt(
-            bob.bio.base.load_resource(
-                "mobio-male", "database", preferred_package="bob.bio.face"
-            ),
-            models_depend=True,
-        )
-        check_database_zt(
-            bob.bio.base.load_resource(
-                "mobio-female", "database", preferred_package="bob.bio.face"
-            ),
-            models_depend=True,
-        )
-    except IOError as e:
-        raise SkipTest(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
+    from bob.bio.face.database import MobioDatabase
 
-    try:
-        _check_annotations(database, limit_files=1000)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
+    protocols = MobioDatabase.protocols()
+    for p in protocols:
+        database = MobioDatabase(protocol=p)
+        assert len(database.background_model_samples()) > 0
+        assert len(database.treferences()) > 0
+        assert len(database.zprobes()) > 0
+
+        assert len(database.references(group="dev")) > 0
+        assert len(database.probes(group="dev")) > 0
+
+        assert len(database.references(group="eval")) > 0
+        assert len(database.probes(group="eval")) > 0
+
+    # Sanity check on mobio-male
+    database = MobioDatabase(protocol="mobile0-male")
+    assert len(database.treferences()) == 8
+    assert len(database.zprobes()) == 960
+    assert len(database.background_model_samples()) == 9600
+
+    assert len(database.references()) == 24
+    assert len(database.probes()) == 2520
+
+    assert len(database.references(group="eval")) == 38
+    assert len(database.probes(group="eval")) == 3990
 
 
-@db_available("multipie")
 def test_multipie():
-    database = bob.bio.base.load_resource(
-        "multipie", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database_zt(database, training_depends=True)
-        check_database_zt(
-            bob.bio.base.load_resource(
-                "multipie-pose", "database", preferred_package="bob.bio.face"
-            ),
-            training_depends=True,
-        )
-    except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    except ValueError as e:
-        raise SkipTest(
-            "The database could not queried; probably the protocol is missing inside the db.sql3 file. Here is the error: '%s'"
-            % e
-        )
+    from bob.bio.face.database import MultipieDatabase
 
-    try:
-        if database.database.annotation_directory is None:
-            raise SkipTest("The annotation directory is not set")
-        _check_annotations(database)
-    except IOError as e:
-        raise SkipTest(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
+    protocols = MultipieDatabase.protocols()
+
+    for p in protocols:
+        database = MultipieDatabase(protocol=p)
+        assert len(database.background_model_samples()) > 0
+
+        assert len(database.references(group="dev")) > 0
+        assert len(database.probes(group="dev")) > 0
+
+        assert len(database.references(group="eval")) > 0
+        assert len(database.probes(group="eval")) > 0
+
+    database = MultipieDatabase(protocol="P")
+    assert len(database.background_model_samples()) == 7725
+
+    assert len(database.references(group="dev")) == 64
+    assert len(database.probes(group="dev")) == 3328
+
+    assert len(database.references(group="eval")) == 65
+    assert len(database.probes(group="eval")) == 3380
 
 
 @db_available("replay")

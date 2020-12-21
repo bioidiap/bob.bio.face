@@ -13,12 +13,12 @@ Databases
 .. autosummary::
    bob.bio.face.database.ARFaceBioDatabase
    bob.bio.face.database.AtntBioDatabase
-   bob.bio.face.database.MobioBioDatabase
+   bob.bio.face.database.MobioDatabase
    bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
    bob.bio.face.database.GBUBioDatabase
    bob.bio.face.database.LFWBioDatabase
-   bob.bio.face.database.MultipieBioDatabase
+   bob.bio.face.database.MultipieDatabase
    bob.bio.face.database.FargoBioDatabase
    bob.bio.face.database.MEDSDatabase
    bob.bio.face.database.MorphDatabase

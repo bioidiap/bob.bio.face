@@ -1,92 +1,96 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
-# Amir Mohammadi <amir.mohammadi@idiap.ch>
-# Wed 13 Jul 16:43:22 CEST 2016
+# Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  MOBIO database implementation of bob.bio.base.database.ZTBioDatabase interface.
-  It is an extension of an SQL-based database interface, which directly talks to Mobio database, for
-  verification experiments (good to use in bob.bio.base framework).
+  MOBIO database implementation 
 """
 
+from bob.bio.base.database import (
+    CSVDataset,
+    CSVDatasetZTNorm,
+)
+from bob.pipelines.datasets import CSVToSampleLoader
+from bob.bio.face.database.sample_loaders import EyesAnnotations
+from bob.extension import rc
+from bob.extension.download import get_file
+import bob.io.base
+from sklearn.pipeline import make_pipeline
 
-from .database import FaceBioFile
-from bob.bio.base.database import ZTBioDatabase
 
-
-class MobioBioFile(FaceBioFile):
-    """FaceBioFile implementation of the Mobio Database"""
-
-    def __init__(self, f):
-        super(MobioBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
-        self._f = f
-
-
-class MobioBioDatabase(ZTBioDatabase):
+class MobioDatabase(CSVDatasetZTNorm):
     """
-    MOBIO database implementation of bob.bio.base.database.ZTBioDatabase interface.
-    It is an extension of an SQL-based database interface, which directly talks to Mobio database, for
-    verification experiments (good to use in bob.bio.base framework).
+    The MOBIO dataset is a video database containing bimodal data (face/speaker).
+    It is composed by 152 people (split in the two genders male and female), mostly Europeans, split in 5 sessions (few weeks time lapse between sessions).
+    The database was recorded using two types of mobile devices: mobile phones (NOKIA N93i) and laptop 
+    computers(standard 2008 MacBook).
+
+    For face recognition images are used instead of videos.
+    One image was extracted from each video by choosing the video frame after 10 seconds.
+    The eye positions were manually labelled and distributed with the database.
+
+    For more information check:
+
+    .. code-block:: latex
+
+        @article{McCool_IET_BMT_2013,
+            title = {Session variability modelling for face authentication},
+            author = {McCool, Chris and Wallace, Roy and McLaren, Mitchell and El Shafey, Laurent and Marcel, S{\'{e}}bastien},
+            month = sep,
+            journal = {IET Biometrics},
+            volume = {2},
+            number = {3},
+            year = {2013},
+            pages = {117-129},
+            issn = {2047-4938},
+            doi = {10.1049/iet-bmt.2012.0059},
+        }
+
     """
 
-    def __init__(
-            self,
-            original_directory=None,
-            original_extension=None,
-            annotation_directory=None,
-            annotation_extension='.pos',
-            **kwargs
-    ):
-        from bob.db.mobio.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory, original_extension,
-                                    annotation_directory, annotation_extension)
+    def __init__(self, protocol):
 
-        # call base class constructors to open a session to the database
-        super(MobioBioDatabase, self).__init__(
-            name='mobio',
-            original_directory=original_directory,
-            original_extension=original_extension,
-            annotation_directory=annotation_directory,
-            annotation_extension=annotation_extension,
-            **kwargs)
+        # Downloading model if not exists
+        urls = [
+            "https://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
+        ]
+        filename = get_file("mobio.tar.gz", urls)
 
-    @property
-    def original_directory(self):
-        return self._db.original_directory
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
-    @original_directory.setter
-    def original_directory(self, value):
-        self._db.original_directory = value
+        database = CSVDataset(
+            filename,
+            protocol,
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoader(
+                    data_loader=bob.io.base.load,
+                    dataset_original_directory=rc["bob.db.mobio.directory"]
+                    if rc["bob.db.mobio.directory"]
+                    else "",
+                    extension=".png",
+                ),
+                EyesAnnotations(),
+            ),
+        )
 
-    @property
-    def annotation_directory(self):
-        return self._db.annotation_directory
+        super().__init__(database)
 
-    @annotation_directory.setter
-    def annotation_directory(self, value):
-        self._db.annotation_directory = value
+    # def zprobes(self, proportion=0.20):
+    #    return super().zprobes(proportion=proportion)
 
-    def model_ids_with_protocol(self, groups=None, protocol=None, gender=None):
-        return self._db.model_ids(groups=groups, protocol=protocol, gender=gender)
-
-    def tmodel_ids_with_protocol(self, protocol=None, groups=None, **kwargs):
-        return self._db.tmodel_ids(protocol=protocol, groups=groups, **kwargs)
-
-    def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
-        retval = self._db.objects(groups=groups, protocol=protocol, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [MobioBioFile(f) for f in retval]
-
-    def tobjects(self, groups=None, protocol=None, model_ids=None, **kwargs):
-        retval = self._db.tobjects(groups=groups, protocol=protocol, model_ids=model_ids, **kwargs)
-        return [MobioBioFile(f) for f in retval]
-
-    def zobjects(self, groups=None, protocol=None, **kwargs):
-        retval = self._db.zobjects(groups=groups, protocol=protocol, **kwargs)
-        return [MobioBioFile(f) for f in retval]
-
-    def annotations(self, myfile):
-        return self._db.annotations(myfile._f)
-
-    def groups(self, protocol=None, **kwargs):
-        return self._db.groups(protocol=protocol)
-
+    @staticmethod
+    def protocols():
+        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+        return [
+            "laptop1-female",
+            "laptop_mobile1-female",
+            "mobile0-female",
+            "mobile0-male-female",
+            "mobile1-male",
+            "laptop1-male",
+            "laptop_mobile1-male",
+            "mobile0-male",
+            "mobile1-female",
+        ]

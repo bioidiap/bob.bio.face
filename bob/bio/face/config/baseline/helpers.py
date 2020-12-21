@@ -30,58 +30,56 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
     """
     if isinstance(annotation_type, list):
         return [embedding_transformer_default_cropping(cropped_image_size, item) for item in annotation_type]
-    
+
+    CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+
+    if annotation_type == "bounding-box":
+
+        TOP_LEFT_POS = (0, 0)
+        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+        cropped_positions = {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+
+    elif annotation_type == "eyes-center":
+
+        RIGHT_EYE_POS = (
+            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+            round(1 / 3 * CROPPED_IMAGE_WIDTH),
+        )
+        LEFT_EYE_POS = (
+            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+            round(2 / 3 * CROPPED_IMAGE_WIDTH),
+        )
+        cropped_positions = {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+
+    elif annotation_type == "left-profile":
+
+        EYE_POS = (
+            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+            round(3 / 8 * CROPPED_IMAGE_WIDTH),
+        )
+        MOUTH_POS = (
+            round(5 / 7 * CROPPED_IMAGE_HEIGHT),
+            round(3 / 8 * CROPPED_IMAGE_WIDTH),
+        )
+        cropped_positions = {"leye": EYE_POS, "mouth": MOUTH_POS}
+
+    elif annotation_type == "right-profile":
+
+        EYE_POS = (
+            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+            round(5 / 8 * CROPPED_IMAGE_WIDTH),
+        )
+        MOUTH_POS = (
+            round(5 / 7 * CROPPED_IMAGE_HEIGHT),
+            round(5 / 8 * CROPPED_IMAGE_WIDTH),
+        )
+        cropped_positions = {"reye": EYE_POS, "mouth": MOUTH_POS}
+
     else:
 
-        CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+        cropped_positions = None
 
-        if annotation_type == "bounding-box":
-
-            TOP_LEFT_POS = (0, 0)
-            BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-            cropped_positions = {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
-
-        elif annotation_type == "eyes-center":
-
-            RIGHT_EYE_POS = (
-                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-                round(1 / 3 * CROPPED_IMAGE_WIDTH),
-            )
-            LEFT_EYE_POS = (
-                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-                round(2 / 3 * CROPPED_IMAGE_WIDTH),
-            )
-            cropped_positions = {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
-
-        elif annotation_type == "left-profile":
-
-            EYE_POS = (
-                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-                round(3 / 8 * CROPPED_IMAGE_WIDTH),
-            )
-            MOUTH_POS = (
-                round(5 / 7 * CROPPED_IMAGE_HEIGHT),
-                round(3 / 8 * CROPPED_IMAGE_WIDTH),
-            )
-            cropped_positions = {"leye": EYE_POS, "mouth": MOUTH_POS}
-
-        elif annotation_type == "right-profile":
-
-            EYE_POS = (
-                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-                round(5 / 8 * CROPPED_IMAGE_WIDTH),
-            )
-            MOUTH_POS = (
-                round(5 / 7 * CROPPED_IMAGE_HEIGHT),
-                round(5 / 8 * CROPPED_IMAGE_WIDTH),
-            )
-            cropped_positions = {"reye": EYE_POS, "mouth": MOUTH_POS}
-
-        else:
-
-            cropped_positions = None
-
-        return cropped_positions
+    return cropped_positions
 
 
 def legacy_default_cropping(cropped_image_size, annotation_type):
@@ -108,39 +106,38 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
     """
     if isinstance(annotation_type, list):
         return [legacy_default_cropping(cropped_image_size, item) for item in annotation_type]
+
+    CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+
+    if annotation_type == "bounding-box":
+
+        TOP_LEFT_POS = (0, 0)
+        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+        cropped_positions = {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+
+    elif annotation_type == "eyes-center":
+
+        RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
+        LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
+        cropped_positions = {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+
+    elif annotation_type == "left-profile":
+        # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
+        EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
+        MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
+        cropped_positions = {"leye": EYE_POS, "mouth": MOUTH_POS}
+
+    elif annotation_type == "right-profile":
+        # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
+        EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
+        MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
+        cropped_positions = {"reye": EYE_POS, "mouth": MOUTH_POS}
+
     else:
 
-        CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+        cropped_positions = None
 
-        if annotation_type == "bounding-box":
-
-            TOP_LEFT_POS = (0, 0)
-            BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-            cropped_positions = {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
-
-        elif annotation_type == "eyes-center":
-
-            RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
-            LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
-            cropped_positions = {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
-
-        elif annotation_type == "left-profile":
-            # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
-            EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
-            MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
-            cropped_positions = {"leye": EYE_POS, "mouth": MOUTH_POS}
-
-        elif annotation_type == "right-profile":
-            # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
-            EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
-            MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
-            cropped_positions = {"reye": EYE_POS, "mouth": MOUTH_POS}
-
-        else:
-
-            cropped_positions = None
-
-        return cropped_positions
+    return cropped_positions
 
 
 def embedding_transformer(

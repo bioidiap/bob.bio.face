@@ -364,9 +364,35 @@ def test_meds():
     assert len(database.references()) == 111
     assert len(database.probes()) == 313
 
-    assert len(database.references(group="dev"))
     assert len(database.zprobes()) == 80
     assert len(database.treferences()) == 80
 
     assert len(database.references(group="eval")) == 112
     assert len(database.probes(group="eval")) == 309
+
+
+def test_morph():
+
+    from bob.bio.face.database import MorphDatabase
+
+    # Getting the absolute path
+    urls = MorphDatabase.urls()
+    filename = get_file("morph.tar.gz", urls)
+
+    # Removing the file before the test
+    try:
+        os.remove(filename)
+    except:
+        pass
+
+    database = MorphDatabase("verification_fold1")
+
+    assert len(database.background_model_samples()) == 226
+    assert len(database.references()) == 6738
+    assert len(database.probes()) == 6557
+
+    assert len(database.zprobes()) == 66
+    assert len(database.treferences()) == 69
+
+    assert len(database.references(group="eval")) == 6742
+    assert len(database.probes(group="eval")) == 6553

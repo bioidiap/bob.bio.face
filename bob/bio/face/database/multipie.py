@@ -23,10 +23,7 @@ class MultipieDatabase(CSVDataset):
     def __init__(self, protocol):
 
         # Downloading model if not exists
-        urls = [
-            "https://www.idiap.ch/software/bob/databases/latest/multipie.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/multipie.tar.gz",
-        ]
+        urls = MultipieDatabase.urls()
         filename = get_file("multipie.tar.gz", urls)
 
         self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
@@ -71,4 +68,11 @@ class MultipieDatabase(CSVDataset):
             "P080",
             "P081",
             "P090",
+        ]
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/multipie.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/multipie.tar.gz",
         ]

@@ -27,6 +27,7 @@ from bob.bio.base.test.test_database_implementations import (
     check_database_zt,
 )
 import bob.core
+from bob.extension.download import get_file
 
 logger = bob.core.log.setup("bob.bio.face")
 
@@ -159,6 +160,16 @@ def test_lfw():
 def test_mobio():
     from bob.bio.face.database import MobioDatabase
 
+    # Getting the absolute path
+    urls = MobioDatabase.urls()
+    filename = get_file("mobio.tar.gz", urls)
+
+    # Removing the file before the test
+    try:
+        os.remove(filename)
+    except:
+        pass
+
     protocols = MobioDatabase.protocols()
     for p in protocols:
         database = MobioDatabase(protocol=p)
@@ -187,6 +198,16 @@ def test_mobio():
 
 def test_multipie():
     from bob.bio.face.database import MultipieDatabase
+
+    # Getting the absolute path
+    urls = MultipieDatabase.urls()
+    filename = get_file("multipie.tar.gz", urls)
+
+    # Removing the file before the test
+    try:
+        os.remove(filename)
+    except:
+        pass
 
     protocols = MultipieDatabase.protocols()
 
@@ -324,7 +345,18 @@ def test_fargo():
 
 
 def test_meds():
+
     from bob.bio.face.database import MEDSDatabase
+
+    # Getting the absolute path
+    urls = MEDSDatabase.urls()
+    filename = get_file("meds.tar.gz", urls)
+
+    # Removing the file before the test
+    try:
+        os.remove(filename)
+    except:
+        pass
 
     database = MEDSDatabase("verification_fold1")
 
@@ -332,9 +364,35 @@ def test_meds():
     assert len(database.references()) == 111
     assert len(database.probes()) == 313
 
-    assert len(database.references(group="dev"))
     assert len(database.zprobes()) == 80
     assert len(database.treferences()) == 80
 
     assert len(database.references(group="eval")) == 112
     assert len(database.probes(group="eval")) == 309
+
+
+def test_morph():
+
+    from bob.bio.face.database import MorphDatabase
+
+    # Getting the absolute path
+    urls = MorphDatabase.urls()
+    filename = get_file("morph.tar.gz", urls)
+
+    # Removing the file before the test
+    try:
+        os.remove(filename)
+    except:
+        pass
+
+    database = MorphDatabase("verification_fold1")
+
+    assert len(database.background_model_samples()) == 226
+    assert len(database.references()) == 6738
+    assert len(database.probes()) == 6557
+
+    assert len(database.zprobes()) == 66
+    assert len(database.treferences()) == 69
+
+    assert len(database.references(group="eval")) == 6742
+    assert len(database.probes(group="eval")) == 6553

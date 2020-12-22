@@ -21,13 +21,6 @@ from sklearn.pipeline import make_pipeline
 import os
 
 
-cache_subdir = "datasets"
-filename = "meds.tar.gz"
-dataset_protocol_path = os.path.join(
-    os.path.expanduser("~"), "bob_data", cache_subdir, filename
-)
-
-
 class MEDSDatabase(CSVDatasetZTNorm):
     """
     The MEDS II database was developed by NIST to support and assists their biometrics evaluation program.
@@ -103,17 +96,14 @@ class MEDSDatabase(CSVDatasetZTNorm):
     def __init__(self, protocol):
 
         # Downloading model if not exists
-        urls = [
-            "https://www.idiap.ch/software/bob/databases/latest/meds.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/meds.tar.gz",
-        ]
-        get_file(filename, urls)
+        urls = MEDSDatabase.urls()
+        filename = get_file("meds.tar.gz", urls)
 
         self.annotation_type = "eyes-center"
         self.fixed_positions = None
 
         database = CSVDataset(
-            dataset_protocol_path,
+            filename,
             protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoader(
@@ -128,3 +118,10 @@ class MEDSDatabase(CSVDatasetZTNorm):
         )
 
         super().__init__(database)
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/meds.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/meds.tar.gz",
+        ]

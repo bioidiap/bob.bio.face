@@ -60,10 +60,7 @@ class MorphDatabase(CSVDatasetZTNorm):
     def __init__(self, protocol):
 
         # Downloading model if not exists
-        urls = [
-            "https://www.idiap.ch/software/bob/databases/latest/morph.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/morph.tar.gz",
-        ]
+        urls = MorphDatabase.urls()
         filename = get_file("morph.tar.gz", urls)
 
         self.annotation_type = "eyes-center"
@@ -85,3 +82,10 @@ class MorphDatabase(CSVDatasetZTNorm):
         )
 
         super().__init__(database)
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/morph.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/morph.tar.gz",
+        ]

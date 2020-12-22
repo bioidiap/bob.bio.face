@@ -4,7 +4,8 @@ from bob.bio.base.wrappers import wrap_sample_preprocessor
 from bob.pipelines import wrap
 from bob.bio.face.helpers import face_crop_solver
 import numpy as np
-
+import logging
+logger = logging.getLogger(__name__)
 
 def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
     """
@@ -17,16 +18,20 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
        cropped_image_size : tuple
           A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
 
-       annotation_type: str
+       annotation_type: str or list of str
           Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile', 
-          'right-profile'  and None
+          'right-profile'  and None, or a combination of those as a list
 
     Returns
     -------
 
       cropped_positions:
-         The dictionary of cropped positions that will be feeded to the FaceCropper.
+         The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
+         ``annotation_type`` is a list
     """
+    if isinstance(annotation_type, list):
+        return [embedding_transformer_default_cropping(cropped_image_size, item) for item in annotation_type]
+
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
     if annotation_type == "bounding-box":
@@ -73,6 +78,7 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
+        logger.warning(f"Annotation type {annotation_type} is not supported. Input images will be fully scaled.")
         cropped_positions = None
 
     return cropped_positions
@@ -91,14 +97,18 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
        annotation_type: str
           Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile', 
-          'right-profile' and None
+          'right-profile' and None, or a combination of those as a list
 
     Returns
     -------
 
       cropped_positions:
-         The dictionary of cropped positions that will be feeded to the FaceCropper.
+         The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
+         ``annotation_type`` is a list
     """
+    if isinstance(annotation_type, list):
+        return [legacy_default_cropping(cropped_image_size, item) for item in annotation_type]
+
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
     if annotation_type == "bounding-box":
@@ -127,6 +137,7 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
+        logger.warning(f"Annotation type {annotation_type} is not supported. Input images will be fully scaled.")
         cropped_positions = None
 
     return cropped_positions
@@ -156,7 +167,7 @@ def embedding_transformer(
     )
 
     transform_extra_arguments = (
-        None if cropped_positions is None else (("annotations", "annotations"),)
+        None if (cropped_positions is None or fixed_positions is not None) else (("annotations", "annotations"),)
     )
 
     transformer = make_pipeline(

@@ -1,4 +1,4 @@
-from bob.bio.face.preprocessor import FaceCrop, Scale
+from bob.bio.face.preprocessor import FaceCrop, MultiFaceCrop, Scale
 
 
 def face_crop_solver(
@@ -17,11 +17,21 @@ def face_crop_solver(
         return Scale(cropped_image_size)
     else:
         # Detects the face and crops it without eye detection
-        return FaceCrop(
-            cropped_image_size=cropped_image_size,
-            cropped_positions=cropped_positions,
-            color_channel=color_channel,
-            fixed_positions=fixed_positions,
-            dtype=dtype,
-            annotator=annotator,
-        )
+        if isinstance(cropped_positions, list):
+            return MultiFaceCrop(
+                cropped_image_size=cropped_image_size,
+                cropped_positions_list=cropped_positions,
+                fixed_positions_list=fixed_positions,
+                color_channel=color_channel,
+                dtype=dtype,
+                annotation=annotator,
+            )
+        else:
+            return FaceCrop(
+                cropped_image_size=cropped_image_size,
+                cropped_positions=cropped_positions,
+                color_channel=color_channel,
+                fixed_positions=fixed_positions,
+                dtype=dtype,
+                annotator=annotator,
+            )

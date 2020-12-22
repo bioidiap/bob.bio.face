@@ -51,10 +51,7 @@ class MobioDatabase(CSVDatasetZTNorm):
     def __init__(self, protocol):
 
         # Downloading model if not exists
-        urls = [
-            "https://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
-        ]
+        urls = MobioDatabase.urls()
         filename = get_file("mobio.tar.gz", urls)
 
         self.annotation_type = "eyes-center"
@@ -77,9 +74,6 @@ class MobioDatabase(CSVDatasetZTNorm):
 
         super().__init__(database)
 
-    # def zprobes(self, proportion=0.20):
-    #    return super().zprobes(proportion=proportion)
-
     @staticmethod
     def protocols():
         # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
@@ -93,4 +87,11 @@ class MobioDatabase(CSVDatasetZTNorm):
             "laptop_mobile1-male",
             "mobile0-male",
             "mobile1-female",
+        ]
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
         ]

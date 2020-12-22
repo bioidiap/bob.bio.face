@@ -70,16 +70,9 @@ def get_pipeline(face_cropper, transform_extra_arguments):
     )
 
     # Set default temporary directory
-    default_temp = (
-        os.path.join("/idiap", "temp", os.environ["USER"])
-        if "USER" in os.environ
-        else "~/temp"
+    tempdir = bob.bio.base.pipelines.vanilla_biometrics.legacy.get_temp_directory(
+        "gabor_graph"
     )
-    if os.path.exists(default_temp):
-        tempdir = os.path.join(default_temp, "bob_bio_base_tmp")
-    else:
-        # if /idiap/temp/<USER> does not exist, use /tmp/tmpxxxxxxxx
-        tempdir = tempfile.TemporaryDirectory().name
 
     algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir)
     return VanillaBiometricsPipeline(transformer, algorithm)

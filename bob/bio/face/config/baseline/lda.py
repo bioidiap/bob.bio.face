@@ -38,18 +38,10 @@ def load(annotation_type, fixed_positions=None):
         face_cropper=face_cropper, dtype=np.float64
     )
 
-
     #### FEATURE EXTRACTOR ######
 
     # Set default temporary directory
-    user_env_var = os.getenv("USER", None)
-    if user_env_var:
-        default_temp = os.path.join("/idiap","temp",user_env_var)
-    if user_env_var and os.path.exists(default_temp):
-        tempdir = os.path.join(default_temp, "bob_bio_base_tmp", "lda")
-    else:
-        # if /idiap/temp/<USER> does not exist, use /tmp/tmpxxxxxxxx
-        tempdir = tempfile.TemporaryDirectory().name
+    tempdir = bob.bio.base.pipelines.vanilla_biometrics.legacy.get_temp_directory("lda")
 
     lda = bob.bio.base.algorithm.LDA(use_pinv=True, pca_subspace_dimension=0.90)
 
@@ -57,25 +49,24 @@ def load(annotation_type, fixed_positions=None):
         lda, projector_file=os.path.join(tempdir, "Projector.hdf5")
     )
 
-
     transformer = make_pipeline(
         wrap(
-            ["sample"], preprocessor, transform_extra_arguments=transform_extra_arguments,
+            ["sample"],
+            preprocessor,
+            transform_extra_arguments=transform_extra_arguments,
         ),
         SampleLinearize(),
         wrap(["sample"], lda_transformer),
     )
 
-
     ### BIOMETRIC ALGORITHM
 
     algorithm = BioAlgorithmLegacy(
-        lda,
-        base_dir=tempdir,
-        projector_file=os.path.join(tempdir, "Projector.hdf5"),
+        lda, base_dir=tempdir, projector_file=os.path.join(tempdir, "Projector.hdf5"),
     )
 
     return VanillaBiometricsPipeline(transformer, algorithm)
+
 
 pipeline = load(annotation_type, fixed_positions)
 

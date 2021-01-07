@@ -216,16 +216,10 @@ as the results. This code is also available as a Jupytext-compatible
 as a Jupyter notebook.
 
 .. raw:: html
-
-   <details>
-   <summary> Uncollapse : Multipie pose analysis </summary>
-   
-.. raw:: html
     :file: script/multipie/pose_analysis.html
 
-.. raw:: html
 
-   </details>
+
 
 
 

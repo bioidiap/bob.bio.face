@@ -40,7 +40,7 @@ of 18 different possible flashes.
 
 The following picture showcase the positioning of the cameras (in yellow) and of the flashes (in white).
 
-.. image:: img/multipie_setup.jpg
+.. image:: img/multipie/multipie_setup.jpg
     :width: 620px
     :align: center
     :height: 200px
@@ -117,6 +117,116 @@ Benchmarks
 Run the baselines
 *****************
 
+You can run the Multipie baselines command with a simple command such as:
+
+.. code-block:: bash
+
+    bob bio pipeline vanilla-biometrics multipie gabor_graph -m -l sge
+
+Note that the default protocol implemented in the resource is the U protocol.
+The pose protocol is also available using
+
+.. code-block:: bash
+
+    bob bio pipeline vanilla-biometrics multipie_pose gabor_graph -m -l sge
+
+For the other protocols, one has to define its own configuration file (e.g.: *multipie_M.py*) as follows:
+
+.. code-block:: python
+
+    from bob.bio.face.database import MultipieDatabase
+    database = MultipieDatabase(protocol="M")
+
+then point to it when calling the pipeline execution:
+
+.. code-block:: bash
+
+    bob bio pipeline vanilla-biometrics multipie_M.py gabor_graph -m -l sge
+
+
+
 Leaderboard
 ***********
+
+Protocol M
+----------
+
+.. csv-table:: Protocol M
+   :file: table/multipie/multipie_M.csv
+   :header-rows: 1
+
+.. image:: img/multipie/multipie_M_DET_dev.png
+    :align: center
+    :alt: Multipie M - DET dev
+
+.. image:: img/multipie/multipie_M_DET_eval.png
+    :align: center
+    :alt: Multipie M - DET eval
+
+Protocol U
+----------
+
+.. csv-table:: Protocol U
+   :file: table/multipie/multipie_U.csv
+   :header-rows: 1
+
+.. image:: img/multipie/multipie_U_DET_dev.png
+    :align: center
+    :alt: Multipie U - DET dev
+
+.. image:: img/multipie/multipie_U_DET_eval.png
+    :align: center
+    :alt: Multipie U - DET eval
+
+Protocol E
+----------
+
+.. csv-table:: Protocol E
+   :file: table/multipie/multipie_E.csv
+   :header-rows: 1
+
+.. image:: img/multipie/multipie_E_DET_dev.png
+    :align: center
+    :alt: Multipie E - DET dev
+
+.. image:: img/multipie/multipie_E_DET_eval.png
+    :align: center
+    :alt: Multipie E - DET eval
+
+Protocol P
+----------
+
+.. csv-table:: Protocol P
+   :file: table/multipie/multipie_P.csv
+   :header-rows: 1
+
+.. image:: img/multipie/multipie_P_DET_dev.png
+    :align: center
+    :alt: Multipie P - DET dev
+
+.. image:: img/multipie/multipie_P_DET_eval.png
+    :align: center
+    :alt: Multipie P - DET eval
+
+For the pose protocol specifically, we can perform a more detailed study
+to assess angle-wise performance of the various FR systems.
+Hereafter is an example code to run this type of analysis, as well 
+as the results. This code is also available as a Jupytext-compatible
+.py file under `./script/multipie/pose_analysis.py`, that can be loaded 
+as a Jupyter notebook.
+
+.. raw:: html
+
+   <details>
+   <summary> Uncollapse : Multipie pose analysis </summary>
+   
+.. raw:: html
+    :file: script/multipie/pose_analysis.html
+
+.. raw:: html
+
+   </details>
+
+
+
 

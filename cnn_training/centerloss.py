@@ -38,7 +38,7 @@ OUTPUT_SHAPE = (160, 160)
 
 AUTOTUNE = tf.data.experimental.AUTOTUNE
 
-# HERE WE VALIDATE WITH LFW RUNNING A 
+# HERE WE VALIDATE WITH LFW RUNNING A
 # INFORMATION ABOUT THE VALIDATION SET
 VALIDATION_TF_RECORD_PATHS = rc["bob.bio.face.cnn.lfw_tfrecord_path"]
 
@@ -82,7 +82,7 @@ class CenterLossModel(tf.keras.Model):
                 + loss_center * self.loss_weights[self.center_loss.name]
             )
         trainable_vars = self.trainable_variables
-        gradients = tape.gradient(loss, trainable_vars)        
+        gradients = tape.gradient(loss, trainable_vars)
         self.optimizer.apply_gradients(zip(gradients, trainable_vars))
 
         self.train_loss(loss)
@@ -128,9 +128,7 @@ def build_and_compile_model(n_classes, learning_rate):
         from_logits=True, name="cross_entropy"
     )
     center_loss = CenterLoss(
-        centers_layer=model.get_layer("centers"),
-        alpha=0.9,
-        name="center_loss",
+        centers_layer=model.get_layer("centers"), alpha=0.9, name="center_loss",
     )
 
     optimizer = tf.keras.optimizers.RMSprop(
@@ -182,22 +180,24 @@ def train_and_evaluate(tf_record_paths, checkpoint_path, n_classes, batch_size, 
     learning_rate = 0.1
     KERAS_EPOCH_MULTIPLIER = 6
     train_ds = prepare_dataset(
-        tf_record_paths, 
+        tf_record_paths,
         batch_size,
         epochs,
         data_shape=DATA_SHAPE,
-        output_shape=OUTPUT_SHAPE, 
+        output_shape=OUTPUT_SHAPE,
         shuffle=True,
-        augment=True
+        augment=True,
     )
 
     if VALIDATION_TF_RECORD_PATHS is None:
-        raise ValueError("No validation set was set. Please, do `bob config set bob.bio.face.cnn.lfw_tfrecord_path [PATH]`")
+        raise ValueError(
+            "No validation set was set. Please, do `bob config set bob.bio.face.cnn.lfw_tfrecord_path [PATH]`"
+        )
 
     val_ds = prepare_dataset(
         VALIDATION_TF_RECORD_PATHS,
         data_shape=DATA_SHAPE,
-        output_shape=OUTPUT_SHAPE, 
+        output_shape=OUTPUT_SHAPE,
         epochs=epochs,
         batch_size=VALIDATION_BATCH_SIZE,
         shuffle=False,
@@ -206,7 +206,6 @@ def train_and_evaluate(tf_record_paths, checkpoint_path, n_classes, batch_size, 
     val_metric_name = "val_accuracy"
 
     model = build_and_compile_model(n_classes, learning_rate)
-
 
     def scheduler(epoch, lr):
         # 20 epochs at 0.1, 10 at 0.01 and 5 0.001
@@ -220,7 +219,9 @@ def train_and_evaluate(tf_record_paths, checkpoint_path, n_classes, batch_size, 
             return 0.001
 
     callbacks = {
-        "latest": tf.keras.callbacks.ModelCheckpoint(f"{checkpoint_path}/latest", verbose=1),
+        "latest": tf.keras.callbacks.ModelCheckpoint(
+            f"{checkpoint_path}/latest", verbose=1
+        ),
         "best": tf.keras.callbacks.ModelCheckpoint(
             f"{checkpoint_path}/best",
             monitor=val_metric_name,
@@ -229,10 +230,10 @@ def train_and_evaluate(tf_record_paths, checkpoint_path, n_classes, batch_size, 
             verbose=1,
         ),
         "tensorboard": tf.keras.callbacks.TensorBoard(
-            log_dir=f"{checkpoint_path}/logs", update_freq=15, profile_batch="10,50"
+            log_dir=f"{checkpoint_path}/logs", update_freq=15, profile_batch=0
         ),
         "lr": tf.keras.callbacks.LearningRateScheduler(scheduler, verbose=1),
-        "nan":tf.keras.callbacks.TerminateOnNaN(),
+        "nan": tf.keras.callbacks.TerminateOnNaN(),
     }
     callbacks = add_backup_callback(callbacks, backup_dir=f"{checkpoint_path}/backup")
     model.fit(

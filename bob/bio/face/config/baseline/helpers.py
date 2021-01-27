@@ -316,7 +316,7 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
     )
 
     transform_extra_arguments = (
-        None if cropped_positions is None else (("annotations", "annotations"),)
+        None if (cropped_positions is None or fixed_positions is not None) else (("annotations", "annotations"),)
     )
 
     return face_cropper, transform_extra_arguments

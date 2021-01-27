@@ -1,0 +1,8 @@
+Baseline,EER (dev),HTER (eval)
+Gabor graph,44.83%,45.66%
+LGBPHS,48.23%,48.36%
+FaceNet (D. Sandberg),14.46%,13.93%
+Casia-Webface - Inception Resnet v1,37.23%,37.11%
+Casia-Webface - Inception Resnet v2,13.04%,13.12%
+MSCeleb - Inception Resnet v1,13.58%,14.76%
+MSCeleb - Inception Resnet v2,5.17%,5.22%

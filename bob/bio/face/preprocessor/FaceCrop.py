@@ -346,7 +346,7 @@ class FaceCrop(Base):
                 and not self.fixed_positions
                 and self.annotator is not None
             ):
-                annot = self.annotator(image, annotations=annot)
+                annot = self.annotator([image], annotations=[annot])[0]
                 if not self.is_annotations_valid(annot):
                     logger.warn(
                         "The annotator failed and the annot are missing too"

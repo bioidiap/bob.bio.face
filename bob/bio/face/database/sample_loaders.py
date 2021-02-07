@@ -34,12 +34,12 @@ class EyesAnnotations(TransformerMixin, BaseEstimator):
         for x in X:
             eyes = {
                 "leye": (
-                    float(find_attribute(x, "leye_x")),
                     float(find_attribute(x, "leye_y")),
+                    float(find_attribute(x, "leye_x")),
                 ),
                 "reye": (
-                    float(find_attribute(x, "reye_x")),
                     float(find_attribute(x, "reye_y")),
+                    float(find_attribute(x, "reye_x")),
                 ),
             }
 
@@ -69,12 +69,12 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
                 # Normal profile
                 annotations = {
                     "leye": (
-                        float(find_attribute(x, "leye_x")),
                         float(find_attribute(x, "leye_y")),
+                        float(find_attribute(x, "leye_x")),
                     ),
                     "reye": (
-                        float(find_attribute(x, "reye_x")),
                         float(find_attribute(x, "reye_y")),
+                        float(find_attribute(x, "reye_x")),
                     ),
                 }
             elif (
@@ -83,12 +83,12 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
                 # Left profile
                 annotations = {
                     "leye": (
-                        float(find_attribute(x, "leye_x")),
                         float(find_attribute(x, "leye_y")),
+                        float(find_attribute(x, "leye_x")),
                     ),
                     "mouth": (
-                        float(find_attribute(x, "mouthl_x")),
                         float(find_attribute(x, "mouthl_y")),
+                        float(find_attribute(x, "mouthl_x")),
                     ),
                 }
             elif (
@@ -97,12 +97,12 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
                 # Right profile
                 annotations = {
                     "reye": (
-                        float(find_attribute(x, "reye_x")),
                         float(find_attribute(x, "reye_y")),
+                        float(find_attribute(x, "reye_x")),
                     ),
                     "mouth": (
-                        float(find_attribute(x, "mouthr_x")),
                         float(find_attribute(x, "mouthr_y")),
+                        float(find_attribute(x, "mouthr_x")),
                     ),
                 }
             else:

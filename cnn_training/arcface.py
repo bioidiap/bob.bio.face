@@ -17,6 +17,40 @@ SCALE = 64.0  # Scale
 # ORIGINAL = False  # Original implementation
 
 
+The config file has the following format to train an ARCFACE model:
+
+```yml
+# VGG2 params
+batch-size: 90
+face-size: 182
+face-output-size: 160
+n-classes: 87662
+
+
+## Backbone
+backbone: 'mobilenet-v2'
+head: 'arcface'
+s: 10
+bottleneck: 512
+m: 0.5
+
+# Training parameters
+#solver: "rmsprop"
+solver: "sgd"
+lr: 0.1
+dropout-rate: 0.5
+epochs: 310
+lerning-rate-schedule: 'cosine-decay-restarts'
+
+
+
+train-tf-record-path: "/path/*.tfrecord"
+validation-tf-record-path: "/path/lfw_pairs.tfrecord"
+```
+
+
+
+
 Usage:
     arcface.py <config-yaml> <checkpoint_path> 
     arcface.py -h | --help

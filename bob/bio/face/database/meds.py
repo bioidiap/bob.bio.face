@@ -97,7 +97,9 @@ class MEDSDatabase(CSVDatasetZTNorm):
 
         # Downloading model if not exists
         urls = MEDSDatabase.urls()
-        filename = get_file("meds.tar.gz", urls)
+        filename = get_file(
+            "meds.tar.gz", urls, file_hash="3b01354d4c170672ac14120b80dace75"
+        )
 
         self.annotation_type = "eyes-center"
         self.fixed_positions = None
@@ -122,6 +124,6 @@ class MEDSDatabase(CSVDatasetZTNorm):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/meds.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/meds.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/meds_v2.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/meds_v2.tar.gz",
         ]

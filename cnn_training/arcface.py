@@ -95,7 +95,8 @@ DATA_SHAPES = dict()
 
 # Inputs with 182x182 are cropped to 160x160
 DATA_SHAPES[182] = 160
-DATA_SHAPES[112] = 112
+DATA_SHAPES[112] = 98
+DATA_SHAPES[126] = 112
 
 
 # SHAPES EXPECTED FROM THE DATASET USING THIS BACKBONE
@@ -216,6 +217,7 @@ def train_and_evaluate(
     dropout_rate,
     face_size,
     validation_path,
+    lerning_rate_schedule,
 ):
 
     # number of training steps to do before validating a model. This also defines an epoch
@@ -277,7 +279,19 @@ def train_and_evaluate(
         if epoch in range(200):
             return 1 * lr
         else:
-            return lr * tf.math.exp(-0.1)
+            return lr * tf.math.exp(-0.01)
+
+    if lerning_rate_schedule == "cosine-decay-restarts":
+        decay_steps = 50
+        lr_decayed_fn = tf.keras.callbacks.LearningRateScheduler(
+            tf.keras.experimental.CosineDecayRestarts(
+                0.1, decay_steps, t_mul=2.0, m_mul=0.8, alpha=0.1
+            ),
+            verbose=1,
+        )
+
+    else:
+        lr_decayed_fn = tf.keras.callbacks.LearningRateScheduler(scheduler, verbose=1)
 
     callbacks = {
         "latest": tf.keras.callbacks.ModelCheckpoint(
@@ -286,7 +300,7 @@ def train_and_evaluate(
         "tensorboard": tf.keras.callbacks.TensorBoard(
             log_dir=f"{checkpoint_path}/logs", update_freq=15, profile_batch=0
         ),
-        "lr": tf.keras.callbacks.LearningRateScheduler(scheduler, verbose=1),
+        "lr": lr_decayed_fn,
         "nan": tf.keras.callbacks.TerminateOnNaN(),
     }
 
@@ -356,5 +370,6 @@ if __name__ == "__main__":
         dropout_rate=float(config["dropout-rate"]),
         face_size=int(config["face-size"]),
         validation_path=config["validation-tf-record-path"],
+        lerning_rate_schedule=config["lerning-rate-schedule"],
     )
 

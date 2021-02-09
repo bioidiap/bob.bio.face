@@ -53,7 +53,7 @@ class MobioDatabase(CSVDatasetZTNorm):
         # Downloading model if not exists
         urls = MobioDatabase.urls()
         filename = get_file(
-            "mobio.tar.gz", urls, file_hash="6a4c8c68276f738a3b17cc3e038ee49c"
+            "mobio.tar.gz", urls, file_hash="42cee778c17a34762d5fc5dd13ce3ee6"
         )
 
         self.annotation_type = "eyes-center"

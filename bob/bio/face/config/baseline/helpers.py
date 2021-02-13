@@ -5,7 +5,9 @@ from bob.pipelines import wrap
 from bob.bio.face.helpers import face_crop_solver
 import numpy as np
 import logging
+
 logger = logging.getLogger(__name__)
+
 
 def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
     """
@@ -30,7 +32,10 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
          ``annotation_type`` is a list
     """
     if isinstance(annotation_type, list):
-        return [embedding_transformer_default_cropping(cropped_image_size, item) for item in annotation_type]
+        return [
+            embedding_transformer_default_cropping(cropped_image_size, item)
+            for item in annotation_type
+        ]
 
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
@@ -78,7 +83,9 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
-        logger.warning(f"Annotation type {annotation_type} is not supported. Input images will be fully scaled.")
+        logger.warning(
+            f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+        )
         cropped_positions = None
 
     return cropped_positions
@@ -107,7 +114,10 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
          ``annotation_type`` is a list
     """
     if isinstance(annotation_type, list):
-        return [legacy_default_cropping(cropped_image_size, item) for item in annotation_type]
+        return [
+            legacy_default_cropping(cropped_image_size, item)
+            for item in annotation_type
+        ]
 
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
@@ -137,7 +147,9 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
     else:
 
-        logger.warning(f"Annotation type {annotation_type} is not supported. Input images will be fully scaled.")
+        logger.warning(
+            f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+        )
         cropped_positions = None
 
     return cropped_positions
@@ -167,7 +179,9 @@ def embedding_transformer(
     )
 
     transform_extra_arguments = (
-        None if (cropped_positions is None or fixed_positions is not None) else (("annotations", "annotations"),)
+        None
+        if (cropped_positions is None or fixed_positions is not None)
+        else (("annotations", "annotations"),)
     )
 
     transformer = make_pipeline(
@@ -221,7 +235,7 @@ def embedding_transformer_112x112(
     cropped_image_size = (112, 112)
     if annotation_type == "eyes-center":
         # Hard coding eye positions for backward consistency
-        cropped_positions = {"leye": (32, 77), "reye": (32, 34)}
+        cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
     else:
         # Will use default
         cropped_positions = embedding_transformer_default_cropping(
@@ -316,7 +330,9 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
     )
 
     transform_extra_arguments = (
-        None if (cropped_positions is None or fixed_positions is not None) else (("annotations", "annotations"),)
+        None
+        if (cropped_positions is None or fixed_positions is not None)
+        else (("annotations", "annotations"),)
     )
 
     return face_cropper, transform_extra_arguments

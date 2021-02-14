@@ -20,9 +20,9 @@ def sanderberg_rescaling():
     return preprocessor
 
 
-class InceptionResnet(TransformerMixin, BaseEstimator):
+class TransformTensorflow(TransformerMixin, BaseEstimator):
     """
-    Base Transformer for InceptionResnet architectures.
+    Base Transformer for Tensorflow architectures.
 
     Szegedy, Christian, et al. "Inception-v4, inception-resnet and the impact of residual connections on learning." arXiv preprint arXiv:1602.07261 (2016).
 
@@ -95,7 +95,7 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
         self.model = None
 
 
-class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv2_MsCeleb_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v2 model trained in 2018 using the MSCeleb dataset in the context of the work:
 
@@ -131,7 +131,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
         )
 
 
-class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv2_Casia_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v2 model trained in 2018 using the CasiaWebFace dataset in the context of the work:
 
@@ -166,7 +166,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
         )
 
 
-class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv1_Casia_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v1 model trained in 2018 using the CasiaWebFace dataset in the context of the work:
 
@@ -201,7 +201,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
         )
 
 
-class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv1_MsCeleb_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v1 model trained in 2018 using the MsCeleb dataset in the context of the work:
 
@@ -237,7 +237,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
         )
 
 
-class FaceNetSanderberg_20170512_110547(InceptionResnet):
+class FaceNetSanderberg_20170512_110547(TransformTensorflow):
     """
     Wrapper for the free FaceNet from David Sanderberg model 20170512_110547:
     https://github.com/davidsandberg/facenet

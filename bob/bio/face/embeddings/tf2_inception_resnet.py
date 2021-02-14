@@ -52,14 +52,6 @@ class TransformTensorflow(TransformerMixin, BaseEstimator):
     def load_model(self):
         self.model = tf.keras.models.load_model(self.checkpoint_path)
 
-    def inference(self, X):
-        if self.preprocessor is not None:
-            X = self.preprocessor(tf.cast(X, "float32"))
-
-        prelogits = self.model.predict_on_batch(X)
-        embeddings = tf.math.l2_normalize(prelogits, axis=-1)
-        return embeddings
-
     def transform(self, X):
         def _transform(X):
             X = tf.convert_to_tensor(X)

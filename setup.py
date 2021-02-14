@@ -146,6 +146,8 @@ setup(
             "lgbphs = bob.bio.face.config.baseline.lgbphs:pipeline",
             "lda = bob.bio.face.config.baseline.lda:pipeline",
             "dummy = bob.bio.face.config.baseline.dummy:pipeline",
+            "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021:pipeline",
+            "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
         ],
         "bob.bio.config": [
             "facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg",
@@ -174,6 +176,8 @@ setup(
             "fargo  = bob.bio.face.config.database.fargo",
             "meds = bob.bio.face.config.database.meds",
             "morph = bob.bio.face.config.database.morph",
+            "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021",
+            "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

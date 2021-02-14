@@ -235,7 +235,11 @@ def embedding_transformer_112x112(
     cropped_image_size = (112, 112)
     if annotation_type == "eyes-center":
         # Hard coding eye positions for backward consistency
-        cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
+        cropped_positions = {
+            "leye": (55, 81),
+            "reye": (55, 42),
+        }
+
     else:
         # Will use default
         cropped_positions = embedding_transformer_default_cropping(

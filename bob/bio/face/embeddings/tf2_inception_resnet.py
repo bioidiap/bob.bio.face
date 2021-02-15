@@ -80,6 +80,14 @@ class TransformTensorflow(TransformerMixin, BaseEstimator):
         d["model"] = None
         return d
 
+    def inference(self, X):
+        if self.preprocessor is not None:
+            X = self.preprocessor(tf.cast(X, "float32"))
+
+        prelogits = self.model.predict_on_batch(X)
+        embeddings = tf.math.l2_normalize(prelogits, axis=-1)
+        return embeddings
+
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}
 

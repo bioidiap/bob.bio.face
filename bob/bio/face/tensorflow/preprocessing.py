@@ -42,9 +42,10 @@ def get_preprocessor(output_shape):
             layers.experimental.preprocessing.RandomFlip("horizontal"),
             # FIXED_STANDARDIZATION from https://github.com/davidsandberg/facenet
             # [-0.99609375, 0.99609375]
-            layers.experimental.preprocessing.Rescaling(
-                scale=1 / 128, offset=-127.5 / 128
-            ),
+            # layers.experimental.preprocessing.Rescaling(
+            #    scale=1 / 128, offset=-127.5 / 128
+            # ),
+            layers.experimental.preprocessing.Rescaling(scale=1 / 255, offset=0),
         ]
     )
     return preprocessor
@@ -100,7 +101,9 @@ def prepare_dataset(
         ignore_order = tf.data.Options()
         ignore_order.experimental_deterministic = False
         ds = ds.with_options(ignore_order)
-    ds = ds.map(partial(decode_tfrecords, data_shape=data_shape)).prefetch(buffer_size=autotune)
+    ds = ds.map(partial(decode_tfrecords, data_shape=data_shape)).prefetch(
+        buffer_size=autotune
+    )
     if shuffle:
         ds = ds.shuffle(shuffle_buffer).repeat(epochs)
     preprocessor = get_preprocessor(output_shape)

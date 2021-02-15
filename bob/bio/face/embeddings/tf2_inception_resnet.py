@@ -20,9 +20,9 @@ def sanderberg_rescaling():
     return preprocessor
 
 
-class InceptionResnet(TransformerMixin, BaseEstimator):
+class TransformTensorflow(TransformerMixin, BaseEstimator):
     """
-    Base Transformer for InceptionResnet architectures.
+    Base Transformer for Tensorflow architectures.
 
     Szegedy, Christian, et al. "Inception-v4, inception-resnet and the impact of residual connections on learning." arXiv preprint arXiv:1602.07261 (2016).
 
@@ -52,14 +52,6 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
     def load_model(self):
         self.model = tf.keras.models.load_model(self.checkpoint_path)
 
-    def inference(self, X):
-        if self.preprocessor is not None:
-            X = self.preprocessor(tf.cast(X, "float32"))
-
-        prelogits = self.model.predict_on_batch(X)
-        embeddings = tf.math.l2_normalize(prelogits, axis=-1)
-        return embeddings
-
     def transform(self, X):
         def _transform(X):
             X = tf.convert_to_tensor(X)
@@ -88,6 +80,14 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
         d["model"] = None
         return d
 
+    def inference(self, X):
+        if self.preprocessor is not None:
+            X = self.preprocessor(tf.cast(X, "float32"))
+
+        prelogits = self.model.predict_on_batch(X)
+        embeddings = tf.math.l2_normalize(prelogits, axis=-1)
+        return embeddings
+
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}
 
@@ -95,7 +95,7 @@ class InceptionResnet(TransformerMixin, BaseEstimator):
         self.model = None
 
 
-class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv2_MsCeleb_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v2 model trained in 2018 using the MSCeleb dataset in the context of the work:
 
@@ -131,7 +131,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(InceptionResnet):
         )
 
 
-class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv2_Casia_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v2 model trained in 2018 using the CasiaWebFace dataset in the context of the work:
 
@@ -166,7 +166,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(InceptionResnet):
         )
 
 
-class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv1_Casia_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v1 model trained in 2018 using the CasiaWebFace dataset in the context of the work:
 
@@ -201,7 +201,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(InceptionResnet):
         )
 
 
-class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
+class InceptionResnetv1_MsCeleb_CenterLoss_2018(TransformTensorflow):
     """
     InceptionResnet v1 model trained in 2018 using the MsCeleb dataset in the context of the work:
 
@@ -237,7 +237,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(InceptionResnet):
         )
 
 
-class FaceNetSanderberg_20170512_110547(InceptionResnet):
+class FaceNetSanderberg_20170512_110547(TransformTensorflow):
     """
     Wrapper for the free FaceNet from David Sanderberg model 20170512_110547:
     https://github.com/davidsandberg/facenet

@@ -7,7 +7,7 @@
 """
 
 from bob.bio.base.database import CSVDataset
-from bob.pipelines.datasets import CSVToSampleLoader
+from bob.bio.base.database import CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import MultiposeAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
@@ -35,7 +35,7 @@ class MultipieDatabase(CSVDataset):
             filename,
             protocol,
             csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoader(
+                CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc["bob.db.multipie.directory"]
                     if rc["bob.db.multipie.directory"]

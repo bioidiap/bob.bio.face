@@ -176,6 +176,7 @@ def embedding_transformer(
         color_channel=color_channel,
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
+        dtype="float64",
     )
 
     transform_extra_arguments = (

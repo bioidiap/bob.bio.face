@@ -10,7 +10,7 @@ from bob.bio.base.database import (
     CSVDataset,
     CSVDatasetZTNorm,
 )
-from bob.pipelines.datasets import CSVToSampleLoader
+from bob.bio.base.database import CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
@@ -63,7 +63,7 @@ class MobioDatabase(CSVDatasetZTNorm):
             filename,
             protocol,
             csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoader(
+                CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc["bob.db.mobio.directory"]
                     if rc["bob.db.mobio.directory"]

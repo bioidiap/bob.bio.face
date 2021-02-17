@@ -24,5 +24,6 @@ database = DatabaseConnector(
         enroller_training_options={
             "world_type": "restricted"
         },  # 'subworld' : 'twofolds'
-    )
+    ),
+    allow_scoring_with_all_biometric_references=False,
 )

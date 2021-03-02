@@ -21,10 +21,11 @@ class ArcFaceInsightFace(TransformerMixin, BaseEstimator):
 
     """
 
-    def __init__(self, use_gpu=False, **kwargs):
+    def __init__(self, use_gpu=False, memory_demanding=False, **kwargs):
         super().__init__(**kwargs)
         self.model = None
         self.use_gpu = use_gpu
+        self.memory_demanding = memory_demanding
 
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "arcface_insightface"),
@@ -76,10 +77,17 @@ class ArcFaceInsightFace(TransformerMixin, BaseEstimator):
             self.load_model()
 
         X = check_array(X, allow_nd=True)
-        X = mx.nd.array(X)
-        db = mx.io.DataBatch(data=(X,))
-        self.model.forward(db, is_train=False)
-        return self.model.get_outputs()[0].asnumpy()
+
+        def _transform(X):
+            X = mx.nd.array(X)
+            db = mx.io.DataBatch(data=(X,))
+            self.model.forward(db, is_train=False)
+            return self.model.get_outputs()[0].asnumpy()
+
+        if self.memory_demanding:
+            return np.array([_transform(x[None, ...]) for x in X])
+        else:
+            return _transform(X)
 
     def __getstate__(self):
         # Handling unpicklable objects

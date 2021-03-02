@@ -147,6 +147,7 @@ setup(
             "lda = bob.bio.face.config.baseline.lda:pipeline",
             "dummy = bob.bio.face.config.baseline.dummy:pipeline",
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021:pipeline",
+            "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021:pipeline",
             "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
         ],
         "bob.bio.config": [
@@ -177,6 +178,7 @@ setup(
             "meds = bob.bio.face.config.database.meds",
             "morph = bob.bio.face.config.database.morph",
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021",
+            "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021",
             "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
         ],
         "bob.bio.cli": [

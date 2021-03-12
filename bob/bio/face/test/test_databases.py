@@ -272,6 +272,20 @@ def test_replay_spoof():
 
 
 @db_available("replaymobile")
+def test_replaymobile_csv():
+    from bob.bio.face.database.replaymobile_csv import ReplayMobileDatabase # TODO: load resource instead
+    database = ReplayMobileDatabase("grandtest", protocol_definition_path="./csv_datasets", data_path="")
+    samples = database.all_samples(groups=("dev","eval"))
+    assert len(samples) == 8300, len(samples)
+    assert all([s.path for s in samples])
+    # assert samples[0].data.shape == (3, 1280, 720)# TODO data sample?
+    assert hasattr(samples[0], "annotations")
+    assert "topleft" in samples[0].annotations
+    assert "bottomright" in samples[0].annotations
+    assert hasattr(samples[0], "frame")
+
+
+@db_available("replaymobile")
 def test_replaymobile_licit():
     database = bob.bio.base.load_resource(
         "replaymobile-img-licit", "database", preferred_package="bob.bio.face"

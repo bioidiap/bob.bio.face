@@ -201,7 +201,7 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
 
         return annotated_samples
 
-class ReplayMobileDatabase(CSVDataset):
+class ReplayMobileBioDatabase(CSVDataset):
     """Database interface that loads a csv definition for replay-mobile
 
     Looks for the protocol definition files (structure of CSV files). If not
@@ -217,7 +217,7 @@ class ReplayMobileDatabase(CSVDataset):
 
     protocol_definition_path: str or None
         Specifies a path to download the database definition to.
-        If None: Downloads and uses the ``bob_data`` config.
+        If None: Downloads and uses the ``bob_data_folder`` config.
         (See :py:fct:`bob.extension.download.get_file`)
 
     data_path: str or None

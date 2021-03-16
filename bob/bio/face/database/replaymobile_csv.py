@@ -5,11 +5,12 @@ from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.pipelines.datasets.sample_loaders import AnnotationsLoader
 from bob.pipelines.sample import DelayedSample
 from bob.extension.download import get_file
-from sklearn.pipeline import make_pipeline
 from bob.io.video import reader
 from bob.extension import rc
 import bob.core
 
+from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.pipeline import make_pipeline
 import functools
 import os.path
 import numpy
@@ -19,31 +20,26 @@ logger = bob.core.log.setup("bob.bio.face")
 def load_frame_from_file_replaymobile(file_name, frame, capturing_device):
     """Loads a single frame from a video file for replay-mobile.
 
-    A particularity of the replay-mobile is the use of different devices for
-    capturing the videos ('mobile' and 'tablet'). The orientation of the
-    resulting videos differs for each device and is encoded in the metadata,
-    but bob.io.video ignores it. This function correctly rotates the returned
-    image, given the captured device's name.
-
-    This function uses the video reader utility that does not load the full
+    This function uses bob's video reader utility that does not load the full
     video in memory to just access one frame.
 
     Parameters
     ----------
 
     file_name: str
-        The video file to load the frame from
+        The video file to load the frames from
 
-    frame: int
-        The frame index to load.
+    frame: None or list of int
+        The index of the frame to load.
 
     capturing device: str
         'mobile' devices' frames will be flipped vertically.
+        Other devices' frames will not be flipped.
 
     Returns
     -------
 
-    image: 3D numpy array
+    images: 3D numpy array
         The frame of the video in bob format (channel, height, width)
     """
     logger.debug(f"Extracting frame {frame} from '{file_name}'")
@@ -95,7 +91,7 @@ def read_frame_annotation_file_replaymobile(file_name, frame):
     positions = line.split(' ')
 
     if len(positions) != 4:
-        raise ValueError(f"The content of '{file_name}' was not correct for frame {frame}")
+        raise ValueError(f"The content of '{file_name}' was not correct for frame {frame} ({positions})")
 
     annotations = {
         'topleft': (float(positions[1]), float(positions[0])),
@@ -127,7 +123,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         self.reference_id_equal_subject_id = reference_id_equal_subject_id
 
     def convert_row_to_sample(self, row, header):
-        """Creates one sample given a row of the CSV protocol definition file.
+        """Creates a set of samples given a row of the CSV protocol definition.
         """
         path = row[0]
         reference_id = row[1]
@@ -139,19 +135,21 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         else:
             if "subject_id" not in kwargs:
                 raise ValueError(f"`subject_id` not available in {header}")
-
-        return DelayedSample(
+        # One row leads to multiple samples (different frames)
+        all_samples = [DelayedSample(
             functools.partial(
                 load_frame_from_file_replaymobile,
                 file_name=os.path.join(self.dataset_original_directory, path + self.extension),
-                frame=int(kwargs["frame"]),
+                frame=frame,
                 capturing_device=kwargs["capturing_device"],
             ),
-            key=id,
+            key=f"{id}_{frame}",
             path=path,
             reference_id=reference_id,
+            frame=frame,
             **kwargs,
-        )
+        ) for frame in range(12,251,24)]
+        return all_samples
 
 
 class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):

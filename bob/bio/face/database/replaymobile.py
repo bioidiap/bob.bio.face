@@ -1,132 +1,280 @@
 #!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
+# Yannick Dayer <yannick.dayer@idiap.ch>
 
-"""   The Replay-Mobile Database for face spoofing implementation of
-bob.bio.base.database.BioDatabase interface."""
-
-from .database import FaceBioFile
-from bob.bio.base.database import BioDatabase
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.pipelines.datasets.sample_loaders import AnnotationsLoader
+from bob.pipelines.sample import DelayedSample
+from bob.extension.download import get_file
+from bob.io.video import reader
 from bob.extension import rc
+import bob.core
 
+from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.pipeline import make_pipeline
+import functools
+import os.path
+import numpy
 
-class ReplayMobileBioFile(FaceBioFile):
-    """FaceBioFile implementation of the Replay Mobile Database"""
+logger = bob.core.log.setup("bob.bio.face")
 
-    def __init__(self, f):
-        super(ReplayMobileBioFile, self).__init__(client_id=f.client_id, path=f.path, file_id=f.id)
-        self._f = f
+def load_frame_from_file_replaymobile(file_name, frame, capturing_device):
+    """Loads a single frame from a video file for replay-mobile.
 
-    def load(self, directory=None, extension=None):
-        if extension in (None, '.mov'):
-            return self._f.load(directory, extension)
+    This function uses bob's video reader utility that does not load the full
+    video in memory to just access one frame.
+
+    Parameters
+    ----------
+
+    file_name: str
+        The video file to load the frames from
+
+    frame: None or list of int
+        The index of the frame to load.
+
+    capturing device: str
+        'mobile' devices' frames will be flipped vertically.
+        Other devices' frames will not be flipped.
+
+    Returns
+    -------
+
+    images: 3D numpy array
+        The frame of the video in bob format (channel, height, width)
+    """
+    logger.debug(f"Extracting frame {frame} from '{file_name}'")
+    video_reader = reader(file_name)
+    image = video_reader[frame]
+    # Image captured by the 'mobile' device are flipped vertically.
+    # (Images were captured horizontally and bob.io.video does not read the
+    #   metadata correctly, whether it was on the right or left side)
+    if capturing_device == "mobile":
+        image = numpy.flip(image, 2)
+    # Convert to bob format (channel, height, width)
+    image = numpy.transpose(image, (0, 2, 1))
+    return image
+
+def read_frame_annotation_file_replaymobile(file_name, frame):
+    """Returns the bounding-box for one frame of a video file of replay-mobile.
+
+    Given an annnotation file location and a frame number, returns the bounding
+    box coordinates corresponding to the frame.
+
+    The replay-mobile annotation files are composed of 4 columns and N rows for
+    N frames of the video:
+
+    120 230 40 40
+    125 230 40 40
+    ...
+    <x> <y> <w> <h>
+
+    Parameters
+    ----------
+
+    file_name: str
+        The complete annotation file path and name (with extension).
+
+    frame: int
+        The video frame index.
+    """
+    logger.debug(f"Reading annotation file '{file_name}', frame {frame}.")
+    if not file_name:
+        return None
+
+    if not os.path.exists(file_name):
+        raise IOError(f"The annotation file '{file_name}' was not found")
+
+    with open(file_name, 'r') as f:
+        # One line is one frame, each line contains a bounding box coordinates
+        line = f.readlines()[frame]
+
+    positions = line.split(' ')
+
+    if len(positions) != 4:
+        raise ValueError(f"The content of '{file_name}' was not correct for frame {frame} ({positions})")
+
+    annotations = {
+        'topleft': (float(positions[1]), float(positions[0])),
+        'bottomright':(
+            float(positions[1])+float(positions[3]),
+            float(positions[0])+float(positions[2])
+        )
+    }
+
+    return annotations
+
+class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
+    """A loader transformer returning a specific frame of a video file.
+
+    This is specifically tailored for replay-mobile. It uses a specific loader
+    that takes the capturing device as input.
+    """
+    def __init__(
+        self,
+        dataset_original_directory="",
+        extension="",
+        reference_id_equal_subject_id=True,
+    ):
+        super().__init__(
+            data_loader=None,
+            extension=extension,
+            dataset_original_directory=dataset_original_directory,
+        )
+        self.reference_id_equal_subject_id = reference_id_equal_subject_id
+
+    def convert_row_to_sample(self, row, header):
+        """Creates a set of samples given a row of the CSV protocol definition.
+        """
+        path = row[0]
+        reference_id = row[1]
+        id = row[2] # Will be used as 'key'
+
+        kwargs = dict([[str(h).lower(), r] for h, r in zip(header[3:], row[3:])])
+        if self.reference_id_equal_subject_id:
+            kwargs["subject_id"] = reference_id
         else:
-            return super(ReplayMobileBioFile, self).load(directory, extension)
+            if "subject_id" not in kwargs:
+                raise ValueError(f"`subject_id` not available in {header}")
+        # One row leads to multiple samples (different frames)
+        all_samples = [DelayedSample(
+            functools.partial(
+                load_frame_from_file_replaymobile,
+                file_name=os.path.join(self.dataset_original_directory, path + self.extension),
+                frame=frame,
+                capturing_device=kwargs["capturing_device"],
+            ),
+            key=f"{id}_{frame}",
+            path=path,
+            reference_id=reference_id,
+            frame=frame,
+            **kwargs,
+        ) for frame in range(12,251,24)]
+        return all_samples
 
-    @property
-    def annotations(self):
-        return self._f.annotations
 
+class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
+    """A transformer that adds bounding-box to a sample from annotations files.
 
-class ReplayMobileBioDatabase(BioDatabase):
+    Parameters
+    ----------
+
+    annotation_directory: str or None
     """
-    ReplayMobile database implementation of :py:class:`bob.bio.base.database.BioDatabase` interface.
-    It is an extension of an SQL-based database interface, which directly talks to ReplayMobile database, for
-    verification experiments (good to use in bob.bio.base framework).
-    """
-
-    def __init__(self, max_number_of_frames=None,
-                 annotation_directory=None,
-                 annotation_extension='.json',
-                 annotation_type='json',
-                 original_directory=rc['bob.db.replaymobile.directory'],
-                 original_extension='.mov',
-                 name='replay-mobile',
-                 **kwargs):
-        from bob.db.replaymobile.verificationprotocol import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(
-            max_number_of_frames,
-            original_directory=original_directory,
-            original_extension=original_extension,
+    def __init__(self,
+        annotation_directory=None,
+        annotation_extension=".face",
+        **kwargs
+    ):
+        super().__init__(
             annotation_directory=annotation_directory,
             annotation_extension=annotation_extension,
-            annotation_type=annotation_type,
+            **kwargs
         )
 
-        # call base class constructors to open a session to the database
-        super(ReplayMobileBioDatabase, self).__init__(
-            name=name,
-            original_directory=original_directory,
-            original_extension=original_extension,
-            annotation_directory=annotation_directory,
-            annotation_extension=annotation_extension,
-            annotation_type=annotation_type,
-            **kwargs)
-        self._kwargs['max_number_of_frames'] = max_number_of_frames
+    def transform(self, X):
+        """Adds the bounding-box annotations to a series of samples.
+        """
+        if self.annotation_directory is None:
+            return None
 
-    @property
-    def original_directory(self):
-        return self._db.original_directory
+        annotated_samples = []
+        for x in X:
 
-    @original_directory.setter
-    def original_directory(self, value):
-        self._db.original_directory = value
+            # Build the path to the annotation files structure
+            annotation_file = os.path.join(
+                self.annotation_directory, x.path + self.annotation_extension
+            )
 
-    @property
-    def original_extension(self):
-        return self._db.original_extension
+            annotated_samples.append(
+                DelayedSample(
+                    x._load,
+                    parent=x,
+                    delayed_attributes=dict(
+                        annotations=functools.partial(
+                            read_frame_annotation_file_replaymobile,
+                            file_name=annotation_file,
+                            frame=int(x.frame),
+                        )
+                    ),
+                )
+            )
 
-    @original_extension.setter
-    def original_extension(self, value):
-        self._db.original_extension = value
+        return annotated_samples
 
-    @property
-    def annotation_directory(self):
-        return self._db.annotation_directory
+class ReplayMobileDatabase(CSVDataset):
+    """Database interface that loads a csv definition for replay-mobile
 
-    @annotation_directory.setter
-    def annotation_directory(self, value):
-        self._db.annotation_directory = value
+    Looks for the protocol definition files (structure of CSV files). If not
+    present, downloads them.
+    Then sets the data and annotation paths from __init__ parameters or from
+    the configuration (``bob config`` command).
 
-    @property
-    def annotation_extension(self):
-        return self._db.annotation_extension
+    Parameters
+    ----------
 
-    @annotation_extension.setter
-    def annotation_extension(self, value):
-        self._db.annotation_extension = value
+    protocol_name: str
+        The protocol to use
 
-    @property
-    def annotation_type(self):
-        return self._db.annotation_type
+    protocol_definition_path: str or None
+        Specifies a path to download the database definition to.
+        If None: Downloads and uses the ``bob_data`` config.
+        (See :py:fct:`bob.extension.download.get_file`)
 
-    @annotation_type.setter
-    def annotation_type(self, value):
-        self._db.annotation_type = value
+    data_path: str or None
+        Overrides the config-defined data location.
+        If None: uses the ``bob.db.replaymobile.directory`` config.
+        If None and the config does not exist, set as cwd.
 
-    def protocol_names(self):
-        return self._db.protocols()
+    annotation_path: str or None
+        Overrides the config-defined annotation files location.
+        If None: uses the ``bob.db.replaymobile.annotation_directory`` config.
+        If None and the config does not exist, set as
+        ``{data_path}/faceloc/rect``.
+    """
+    def __init__(
+        self,
+        protocol_name="bio-grandtest",
+        protocol_definition_path=None,
+        data_path=None,
+        annotation_path=None,
+        **kwargs
+    ):
+        if protocol_definition_path is None:
+            # Downloading database description files if it is not specified
+            urls = [
+                "https://www.idiap.ch/software/bob/databases/latest/replay-mobile-csv.tar.gz",
+                "http://www.idiap.ch/software/bob/databases/latest/replay-mobile-csv.tar.gz",
+            ]
+            protocol_definition_path = get_file("replay-mobile-csv.tar.gz", urls)
 
-    def groups(self):
-        return self._db.groups()
+        if data_path is None:
+            # Defaults to cwd if config not defined
+            data_path = rc.get("bob.db.replaymobile.directory", "")
 
-    def annotations(self, myfile):
-        """Will return the bounding box annotation of nth frame of the video."""
-        return myfile.annotations
+        if annotation_path is None:
+            # Defaults to {data_path}/faceloc/rect if config not defined
+            annotation_path = rc.get(
+                "bob.db.replaymobile.annotation_directory",
+                os.path.join(data_path, "faceloc/rect/")
+            )
 
-    def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
-        return self._db.model_ids_with_protocol(groups, protocol, **kwargs)
-
-    def objects(self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs):
-        return [ReplayMobileBioFile(f) for f in self._db.objects(groups, protocol, purposes, model_ids, **kwargs)]
-
-    def arrange_by_client(self, files):
-        client_files = {}
-        for file in files:
-            if str(file.client_id) not in client_files:
-                client_files[str(file.client_id)] = []
-            client_files[str(file.client_id)].append(file)
-
-        files_by_clients = []
-        for client in sorted(client_files.keys()):
-            files_by_clients.append(client_files[client])
-        return files_by_clients
+        logger.info(f"Database: Loading database definition from '{protocol_definition_path}'.")
+        logger.info(f"Database: Defining data files path as '{data_path}'.")
+        logger.info(f"Database: Defining annotation files path as '{annotation_path}'.")
+        super().__init__(
+            protocol_definition_path,
+            protocol_name,
+            csv_to_sample_loader=make_pipeline(
+                ReplayMobileCSVFrameSampleLoader(
+                    dataset_original_directory=data_path,
+                    extension=".mov",
+                ),
+                FrameBoundingBoxAnnotationLoader(
+                    annotation_directory=annotation_path,
+                    annotation_extension=".face",
+                ),
+            ),
+            **kwargs
+        )
+        self.annotation_type = "bounding-box"
+        self.fixed_positions = None

@@ -6,7 +6,7 @@
   Replay-mobile CSV database interface instantiation
 """
 
-from bob.bio.face.database.replaymobile_csv import ReplayMobileDatabase
+from bob.bio.face.database.replaymobile import ReplayMobileDatabase
 
 
 import bob.core

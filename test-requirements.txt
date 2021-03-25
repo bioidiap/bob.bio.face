@@ -1,10 +1,1 @@
-bob.db.arface
 bob.db.atnt
-bob.db.banca
-bob.db.gbu
-bob.db.ijbc
-bob.db.lfw
-bob.db.replay
-bob.db.replaymobile
-bob.db.xm2vts
-bob.db.fargo

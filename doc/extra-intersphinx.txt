@@ -12,4 +12,3 @@ bob.ip.facedetect
 bob.ip.flandmark
 bob.learn.linear
 gridtk
-bob.db.youtube

@@ -2,7 +2,6 @@ import bob.bio.face
 import bob.bio.base
 import numpy as np
 import pickle
-import nose
 
 import bob.ip.base
 import bob.ip.flandmark
@@ -41,13 +40,13 @@ def assert_picklable_with_exceptions(obj):
     obj = obj.__dict__
     new_obj = new_obj.__dict__
     assert len(obj) == len(new_obj)
-    nose.tools.assert_equal(sorted(list(obj.keys())), sorted(list(new_obj.keys())))
+    assert sorted(list(obj.keys())) == sorted(list(new_obj.keys()))
     for k, v in obj.items():
         if isinstance(v, np.ndarray):
             np.testing.assert_equal(v, new_obj[k])
         else:
             if type(v) not in exception_list:
-                nose.tools.assert_equal(v, new_obj[k])
+                assert v == new_obj[k]
     return True
 
 

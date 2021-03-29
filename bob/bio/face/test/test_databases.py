@@ -18,13 +18,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-from nose.plugins.skip import SkipTest
+import pytest
 
+import os
 import bob.bio.base
 from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import (
     check_database,
-    check_database_zt,
 )
 import bob.core
 from bob.extension.download import get_file
@@ -72,14 +72,14 @@ def test_arface():
     try:
         check_database(database, groups=("dev", "eval"))
     except IOError as e:
-        raise SkipTest(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+        pytest.skip("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
+
         )
     try:
         _check_annotations(database)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -93,7 +93,7 @@ def test_atnt():
     try:
         check_database(database)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
@@ -109,14 +109,14 @@ def test_gbu():
         check_database(database, protocol="Bad", models_depend=True)
         check_database(database, protocol="Ugly", models_depend=True)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
     try:
         _check_annotations(database, limit_files=1000)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -144,14 +144,14 @@ def test_lfw():
             models_depend=True,
         )
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
     try:
         _check_annotations(database, limit_files=1000)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -167,7 +167,7 @@ def test_mobio():
     # Removing the file before the test
     try:
         os.remove(filename)
-    except:
+    except Exception:
         pass
 
     protocols = MobioDatabase.protocols()
@@ -206,7 +206,7 @@ def test_multipie():
     # Removing the file before the test
     try:
         os.remove(filename)
-    except:
+    except Exception:
         pass
 
     protocols = MultipieDatabase.protocols()
@@ -239,14 +239,14 @@ def test_replay_licit():
     try:
         check_database(database, groups=("dev", "eval"))
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
     try:
         _check_annotations(database, topleft=True)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -260,14 +260,14 @@ def test_replay_spoof():
     try:
         check_database(database, groups=("dev", "eval"))
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
     try:
         _check_annotations(database, topleft=True)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -281,14 +281,14 @@ def test_replaymobile_licit():
     try:
         check_database(database, groups=("dev", "eval"))
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
     try:
         _check_annotations(database, topleft=True, limit_files=20)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -302,14 +302,14 @@ def test_replaymobile_spoof():
     try:
         check_database(database, groups=("dev", "eval"))
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
         )
     try:
         _check_annotations(database, topleft=True, limit_files=20)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -323,11 +323,11 @@ def test_ijbc():
     try:
         check_database(database, models_depend=True, training_depends=True)
     except IOError as e:
-        raise SkipTest("The database could not queried; Here is the error: '%s'" % e)
+        pytest.skip("The database could not queried; Here is the error: '%s'" % e)
     try:
         _check_annotations(database, topleft=True, limit_files=1000)
     except IOError as e:
-        raise SkipTest(
+        pytest.skip(
             "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
             % e
         )
@@ -341,7 +341,7 @@ def test_fargo():
     try:
         check_database(database)
     except IOError as e:
-        raise SkipTest("The database could not queried; Here is the error: '%s'" % e)
+        pytest.skip("The database could not queried; Here is the error: '%s'" % e)
 
 
 def test_meds():
@@ -355,7 +355,7 @@ def test_meds():
     # Removing the file before the test
     try:
         os.remove(filename)
-    except:
+    except Exception:
         pass
 
     database = MEDSDatabase("verification_fold1")
@@ -382,7 +382,7 @@ def test_morph():
     # Removing the file before the test
     try:
         os.remove(filename)
-    except:
+    except Exception:
         pass
 
     database = MorphDatabase("verification_fold1")

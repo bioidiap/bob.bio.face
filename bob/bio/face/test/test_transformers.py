@@ -1,10 +1,8 @@
-from bob.extension.config import load
-import pkg_resources
 import numpy as np
-from bob.pipelines import Sample, SampleSet
+from bob.pipelines import Sample
 from bob.bio.base import load_resource
 from bob.bio.base.test.utils import is_library_available
-from nose.plugins.attrib import attr
+import pytest
 
 
 def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 53)}):
@@ -14,7 +12,7 @@ def get_fake_sample(face_size=(160, 160), eyes={"leye": (46, 107), "reye": (46, 
     return Sample(data, key="1", annotations=annotations)
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_facenet_sanderberg():
     transformer = load_resource("facenet-sanderberg", "transformer")
@@ -26,7 +24,7 @@ def test_facenet_sanderberg():
     assert transformed_sample.data.size == 128
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
     transformer = load_resource("inception-resnetv2-msceleb", "transformer")
@@ -38,7 +36,7 @@ def test_inception_resnetv2_msceleb():
     assert transformed_sample.data.size == 128
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
     transformer = load_resource("inception-resnetv2-casiawebface", "transformer")
@@ -50,7 +48,7 @@ def test_inception_resnetv2_casiawebface():
     assert transformed_sample.data.size == 128
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
     transformer = load_resource("inception-resnetv1-msceleb", "transformer")
@@ -62,7 +60,7 @@ def test_inception_resnetv1_msceleb():
     assert transformed_sample.data.size == 128
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
     transformer = load_resource("inception-resnetv1-casiawebface", "transformer")

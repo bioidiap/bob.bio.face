@@ -1,4 +1,3 @@
-from bob.extension.config import load
 import pkg_resources
 import numpy as np
 from bob.pipelines import Sample, SampleSet, DelayedSample
@@ -12,7 +11,7 @@ import os
 import bob.io.base
 import functools
 import copy
-from nose.plugins.attrib import attr
+import pytest
 
 from bob.bio.base.test.utils import is_library_available
 
@@ -107,37 +106,37 @@ def run_baseline(baseline, samples_for_training=[]):
         assert "scores" in dirs
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_facenet_baseline():
     run_baseline("facenet-sanderberg")
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
     run_baseline("inception-resnetv2-msceleb")
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
     run_baseline("inception-resnetv2-casiawebface")
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
     run_baseline("inception-resnetv1-msceleb")
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
     run_baseline("inception-resnetv1-casiawebface")
 
 
-@attr('slow')
+@pytest.mark.slow
 @is_library_available("mxnet")
 def test_arcface_insightface():
     run_baseline("arcface-insightface")

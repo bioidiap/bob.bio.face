@@ -4,8 +4,10 @@ import numpy as np
 from bob.pipelines import Sample, wrap
 import pkg_resources
 from bob.bio.base.test.utils import is_library_available
+from nose.plugins.attrib import attr
 
 
+@attr('slow')
 @is_library_available("tensorflow")
 def test_idiap_inceptionv2_msceleb():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
@@ -32,6 +34,7 @@ def test_idiap_inceptionv2_msceleb():
     assert output.size == 128, output.shape
 
 
+@attr('slow')
 @is_library_available("tensorflow")
 def test_idiap_inceptionv2_msceleb_memory_demanding():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
@@ -59,6 +62,7 @@ def test_idiap_inceptionv2_msceleb_memory_demanding():
     assert output.size == 128, output.shape
 
 
+@attr('slow')
 @is_library_available("tensorflow")
 def test_idiap_inceptionv2_casia():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
@@ -85,6 +89,7 @@ def test_idiap_inceptionv2_casia():
     assert output.size == 128, output.shape
 
 
+@attr('slow')
 @is_library_available("tensorflow")
 def test_idiap_inceptionv1_msceleb():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
@@ -111,6 +116,7 @@ def test_idiap_inceptionv1_msceleb():
     assert output.size == 128, output.shape
 
 
+@attr('slow')
 @is_library_available("tensorflow")
 def test_idiap_inceptionv1_casia():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
@@ -137,6 +143,7 @@ def test_idiap_inceptionv1_casia():
     assert output.size == 128, output.shape
 
 
+@attr('slow')
 @is_library_available("tensorflow")
 def test_facenet_sanderberg():
     from bob.bio.face.embeddings.tf2_inception_resnet import (
@@ -163,6 +170,7 @@ def test_facenet_sanderberg():
     assert output.size == 128, output.shape
 
 
+@attr('slow')
 @is_library_available("mxnet")
 def test_arcface_insight_face():
     from bob.bio.face.embeddings.mxnet_models import ArcFaceInsightFace

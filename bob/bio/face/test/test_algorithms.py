@@ -20,12 +20,8 @@
 import bob.io.base
 import bob.ip.gabor
 
-import unittest
-import os
 import numpy
 import math
-import tempfile
-from nose.plugins.skip import SkipTest
 
 import pkg_resources
 

@@ -20,14 +20,10 @@
 import bob.bio.base
 import bob.bio.face
 
-import unittest
-import os
 import numpy
 import math
-from nose.plugins.skip import SkipTest
 
 import bob.io.base.test_utils
-from bob.bio.base.test import utils
 
 import pkg_resources
 

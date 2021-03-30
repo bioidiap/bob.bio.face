@@ -68,6 +68,7 @@ test:
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
     - bob-devel {{ bob_devel }}.*
+    - nose
     - pytest
     - pytest-cov
     - coverage

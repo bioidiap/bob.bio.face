@@ -59,7 +59,7 @@ def get_fake_samples_for_training():
     ]
 
 
-def run_baseline(baseline, samples_for_training=[]):
+def run_baseline(baseline, samples_for_training=[], target_scores=None):
     biometric_references = get_fake_sample_set(purpose="bioref")
     probes = get_fake_sample_set(purpose="probe")
 
@@ -78,6 +78,10 @@ def run_baseline(baseline, samples_for_training=[]):
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
         assert len(checkpoint_scores[0]) == 1
+
+        if target_scores is not None:
+            np.allclose(target_scores, scores[0][0].data, atol=10e-3, rtol=10e-3)
+
         assert np.isclose(scores[0][0].data, checkpoint_scores[0][0].data)
 
         dirs = os.listdir(d)
@@ -109,41 +113,41 @@ def run_baseline(baseline, samples_for_training=[]):
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_facenet_baseline():
-    run_baseline("facenet-sanderberg")
+    run_baseline("facenet-sanderberg", target_scores=[-0.9220775737526933])
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
-    run_baseline("inception-resnetv2-msceleb")
+    run_baseline("inception-resnetv2-msceleb", target_scores=[-0.43447269718504244])
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
-    run_baseline("inception-resnetv2-casiawebface")
+    run_baseline("inception-resnetv2-casiawebface", target_scores=[-0.634583944368043])
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
-    run_baseline("inception-resnetv1-msceleb")
+    run_baseline("inception-resnetv1-msceleb", target_scores=[-0.44497649298306907])
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
-    run_baseline("inception-resnetv1-casiawebface")
+    run_baseline("inception-resnetv1-casiawebface", target_scores=[-0.6411599976437636])
 
 
 @pytest.mark.slow
 @is_library_available("mxnet")
 def test_arcface_insightface():
-    run_baseline("arcface-insightface")
+    run_baseline("arcface-insightface", target_scores=[-0.0005965275677296544])
 
 
 def test_gabor_graph():
-    run_baseline("gabor_graph")
+    run_baseline("gabor_graph", target_scores=[0.4385451147418939])
 
 
 # def test_lda():

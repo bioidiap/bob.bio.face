@@ -23,9 +23,7 @@ import pytest
 import os
 import bob.bio.base
 from bob.bio.base.test.utils import db_available
-from bob.bio.base.test.test_database_implementations import (
-    check_database,
-)
+from bob.bio.base.test.test_database_implementations import check_database
 import bob.core
 from bob.extension.download import get_file
 
@@ -72,9 +70,9 @@ def test_arface():
     try:
         check_database(database, groups=("dev", "eval"))
     except IOError as e:
-        pytest.skip("The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
+        pytest.skip(
+            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
             % e
-
         )
     try:
         _check_annotations(database)
@@ -396,3 +394,13 @@ def test_morph():
 
     assert len(database.references(group="eval")) == 6742
     assert len(database.probes(group="eval")) == 6553
+
+
+def test_casia_africa():
+
+    from bob.bio.face.database import CasiaAfricaDatabase
+
+    database = CasiaAfricaDatabase("ID-V-All-Ep1")
+
+    assert len(database.references()) == 2455
+    assert len(database.probes()) == 2426

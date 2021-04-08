@@ -9,12 +9,13 @@ from .gbu import GBUBioDatabase
 from .arface import ARFaceBioDatabase
 from .lfw import LFWBioDatabase
 from .multipie import MultipieDatabase
-from .ijbc import IJBCBioDatabase
+from .ijbc import IJBCDatabase, IJBCBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .fargo import FargoBioDatabase
 from .meds import MEDSDatabase
 from .morph import MorphDatabase
 from .casia_africa import CasiaAfricaDatabase
+from .pola_thermal import PolaThermalDatabase
 
 # gets sphinx autodoc done right - don't remove it
 
@@ -43,11 +44,12 @@ __appropriate__(
     ARFaceBioDatabase,
     LFWBioDatabase,
     MultipieDatabase,
-    IJBCBioDatabase,
+    IJBCDatabase,
     ReplayMobileBioDatabase,
     FargoBioDatabase,
     MEDSDatabase,
     MorphDatabase,
     CasiaAfricaDatabase,
+    PolaThermalDatabase,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

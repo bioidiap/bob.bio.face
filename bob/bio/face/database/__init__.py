@@ -9,7 +9,7 @@ from .gbu import GBUBioDatabase
 from .arface import ARFaceBioDatabase
 from .lfw import LFWBioDatabase
 from .multipie import MultipieDatabase
-from .ijbc import IJBCDatabase, IJBCBioDatabase
+from .ijbc import IJBCBioDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .fargo import FargoBioDatabase
 from .meds import MEDSDatabase
@@ -45,7 +45,6 @@ __appropriate__(
     ARFaceBioDatabase,
     LFWBioDatabase,
     MultipieDatabase,
-    IJBCDatabase,
     ReplayMobileBioDatabase,
     FargoBioDatabase,
     MEDSDatabase,

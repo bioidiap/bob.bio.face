@@ -16,6 +16,7 @@ from .meds import MEDSDatabase
 from .morph import MorphDatabase
 from .casia_africa import CasiaAfricaDatabase
 from .pola_thermal import PolaThermalDatabase
+from .cbsr_nir_vis_2 import CBSRNirVis2Database
 
 # gets sphinx autodoc done right - don't remove it
 
@@ -51,5 +52,6 @@ __appropriate__(
     MorphDatabase,
     CasiaAfricaDatabase,
     PolaThermalDatabase,
+    CBSRNirVis2Database,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

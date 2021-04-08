@@ -406,10 +406,20 @@ def test_casia_africa():
     assert len(database.probes()) == 2426
 
 
-def test_casia_polathermal():
+def test_polathermal():
 
     from bob.bio.face.database import PolaThermalDatabase
 
     database = PolaThermalDatabase("VIS-thermal-overall-split1")
     assert len(database.references()) == 35
     assert len(database.probes()) == 1680
+
+
+def test_cbsr_nir_vis_2():
+
+    from bob.bio.face.database import CBSRNirVis2Database
+
+    database = CBSRNirVis2Database("view2_1")
+
+    assert len(database.references()) == 358
+    assert len(database.probes()) == 6123

@@ -24,6 +24,7 @@ Databases
    bob.bio.face.database.MEDSDatabase
    bob.bio.face.database.MorphDatabase
    bob.bio.face.database.PolaThermalDatabase
+   bob.bio.face.database.CBSRNirVis2Database
 
 
 Face Image Annotators

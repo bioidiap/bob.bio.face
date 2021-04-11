@@ -18,6 +18,8 @@ bob.bio.base
 bob.ip.facedetect
 bob.pipelines
 matplotlib   # for plotting
+mxnet
+opencv-python
 six
 scikit-image
 scikit-learn # for pipelines Tranformers

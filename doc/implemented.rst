@@ -13,7 +13,6 @@ Databases
 .. autosummary::
    bob.bio.face.database.ARFaceBioDatabase
    bob.bio.face.database.AtntBioDatabase
-   bob.bio.face.database.CasiaAfricaDatabase
    bob.bio.face.database.MobioDatabase
    bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
@@ -35,6 +34,7 @@ Face Image Annotators
    bob.bio.face.annotator.BobIpFacedetect
    bob.bio.face.annotator.BobIpFlandmark
    bob.bio.face.annotator.BobIpMTCNN
+   bob.bio.face.annotator.BobIpTinyface
 
 
 Image Preprocessors
@@ -57,7 +57,11 @@ Image Feature Extractors
    bob.bio.face.extractor.DCTBlocks
    bob.bio.face.extractor.GridGraph
    bob.bio.face.extractor.LGBPHS
-
+   bob.bio.face.extractor.mxnet_model
+   bob.bio.face.extractor.pytorch_loaded_model
+   bob.bio.face.extractor.pytorch_library_model
+   bob.bio.face.extractor.tf_model
+   bob.bio.face.extractor.opencv_model
 
 Face Recognition Algorithms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~

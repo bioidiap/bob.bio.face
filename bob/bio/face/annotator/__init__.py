@@ -58,6 +58,7 @@ from .Base import Base
 from .bobipfacedetect import BobIpFacedetect
 from .bobipflandmark import BobIpFlandmark
 from .bobipmtcnn import BobIpMTCNN
+from .bobiptinyface import BobIpTinyface
 
 
 # gets sphinx autodoc done right - don't remove it
@@ -84,6 +85,7 @@ __appropriate__(
     BobIpFacedetect,
     BobIpFlandmark,
     BobIpMTCNN,
+    BobIpTinyface,
 )
 
 __all__ = [_ for _ in dir() if not _.startswith('_')]

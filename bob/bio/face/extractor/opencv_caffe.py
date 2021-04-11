@@ -85,7 +85,7 @@ class opencv_model(TransformerMixin, BaseEstimator):
     """
     
         if self.model is None:
-            self.load_model()
+            self._load_model()
 
         img = np.array(X)
 

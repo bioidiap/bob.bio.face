@@ -79,7 +79,7 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
     """
     
         if self.model is None:
-            self.load_model()
+            self._load_model()
 
         X = torch.Tensor(X)
 

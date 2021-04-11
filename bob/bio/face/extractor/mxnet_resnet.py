@@ -78,7 +78,7 @@ class mxnet_model(TransformerMixin, BaseEstimator):
     """
     
         if self.model is None:
-            self.load_model()
+            self._load_model()
 
         X = check_array(X, allow_nd=True)
         X = mx.nd.array(X)

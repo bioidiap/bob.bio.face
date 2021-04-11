@@ -113,11 +113,6 @@ setup(
             "meds = bob.bio.face.config.database.meds:database",
             "morph = bob.bio.face.config.database.morph:database",
             "casia-africa = bob.bio.face.config.database.casia_africa:database",
-<<<<<<< HEAD
-            "pola-thermal = bob.bio.face.config.database.pola_thermal:database",
-            "cbsr-nir-vis-2 = bob.bio.face.config.database.cbsr_nir_vis_2:database",
-=======
->>>>>>> 2
         ],
         "bob.bio.annotator": [
             "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
@@ -142,10 +137,9 @@ setup(
             "lgbphs = bob.bio.face.config.baseline.lgbphs:transformer",
             "dummy = bob.bio.face.config.baseline.dummy:transformer",
             "mxnet-pipe = bob.bio.face.config.baseline.mxnet_pipe:transformer",
-            "mxnet-tinyface = bob.bio.face.config.baseline.mxnet_tinyface:transformer",
             "pytorch-pipe-v1 = bob.bio.face.config.baseline.pytorch_pipe_v1:transformer",
             "pytorch-pipe-v2 = bob.bio.face.config.baseline.pytorch_pipe_v2:transformer",
-            "tf-pipe = bob.bio.face.config.baseline.tf_pipe:transformer",
+            "tf-pipe = bob.bio.face.config.baseline.ty_pipe:transformer",
             "opencv-pipe = bob.bio.face.config.baseline.opencv_pipe:transformer",
         ],
         # baselines
@@ -161,13 +155,11 @@ setup(
             "lda = bob.bio.face.config.baseline.lda:pipeline",
             "dummy = bob.bio.face.config.baseline.dummy:pipeline",
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021:pipeline",
-            "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021:pipeline",
             "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
             "mxnet-pipe = bob.bio.face.config.baseline.mxnet_pipe:pipeline",
-            "mxnet-tinyface = bob.bio.face.config.baseline.mxnet_tinyface:pipeline",
             "pytorch-pipe-v1 = bob.bio.face.config.baseline.pytorch_pipe_v1:pipeline",
             "pytorch-pipe-v2 = bob.bio.face.config.baseline.pytorch_pipe_v2:pipeline",
-            "tf-pipe = bob.bio.face.config.baseline.tf_pipe:pipeline",
+            "tf-pipe = bob.bio.face.config.baseline.ty_pipe:pipeline",
             "opencv-pipe = bob.bio.face.config.baseline.opencv_pipe:pipeline",
         ],
         "bob.bio.config": [
@@ -181,10 +173,9 @@ setup(
             "lgbphs = bob.bio.face.config.baseline.lgbphs",
             "lda = bob.bio.face.config.baseline.lda",
             "mxnet-pipe = bob.bio.face.config.baseline.mxnet_pipe",
-            "mxnet-tinyface = bob.bio.face.config.baseline.mxnet_tinyface",
             "pytorch-pipe-v1 = bob.bio.face.config.baseline.pytorch_pipe_v1",
             "pytorch-pipe-v2 = bob.bio.face.config.baseline.pytorch_pipe_v2",
-            "tf-pipe = bob.bio.face.config.baseline.tf_pipe",
+            "tf-pipe = bob.bio.face.config.baseline.ty_pipe",
             "opencv-pipe = bob.bio.face.config.baseline.opencv_pipe",
             "arface            = bob.bio.face.config.database.arface",
             "atnt              = bob.bio.face.config.database.atnt",
@@ -204,11 +195,7 @@ setup(
             "meds = bob.bio.face.config.database.meds",
             "casia-africa = bob.bio.face.config.database.casia_africa",
             "morph = bob.bio.face.config.database.morph",
-            "casia-africa = bob.bio.face.config.database.casia_africa",
-            "pola-thermal = bob.bio.face.config.database.pola_thermal",
-            "cbsr-nir-vis-2 = bob.bio.face.config.database.cbsr_nir_vis_2",
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021",
-            "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021",
             "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
         ],
         "bob.bio.cli": [

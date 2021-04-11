@@ -1,7 +1,7 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
 from bob.bio.base.transformers.preprocessor import PreprocessorTransformer
-from bob.bio.face.extractor import OpenCVModel
+from bob.bio.face.extractor import opencv_model
 from bob.bio.base.extractor import Extractor
 from bob.bio.base.transformers import ExtractorTransformer
 from bob.bio.base.algorithm import Distance
@@ -41,12 +41,9 @@ transform_extra_arguments = (
     else (("annotations", "annotations"),)
 )
 
+
 # Extractor
-
-weights = None  # PATH/TO/WEIGHTS
-config = None  # PATH/TO/CONFIG
-
-extractor_transformer = OpenCVModel(weights=weights, config=config)
+extractor_transformer = opencv_model()
 
 
 # Algorithm

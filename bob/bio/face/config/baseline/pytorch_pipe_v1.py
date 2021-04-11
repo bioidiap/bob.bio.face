@@ -1,6 +1,6 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.face.extractor import PyTorchLoadedModel
+from bob.bio.face.extractor import pytorch_loaded_model
 from bob.bio.base.algorithm import Distance
 from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
 import scipy.spatial
@@ -23,11 +23,11 @@ else:
     fixed_positions = None
 
 
-cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
+cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
 
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(224, 224),
-    cropped_positions={"leye": (110, 144), "reye": (110, 96)},
+    cropped_positions={"leye": (49, 72), "reye": (49, 38)},
     color_channel="rgb",
     fixed_positions=fixed_positions,
 )
@@ -39,7 +39,7 @@ transform_extra_arguments = (
 )
 
 
-extractor_transformer = PyTorchLoadedModel()
+extractor_transformer = pytorch_loaded_model()
 
 algorithm = Distance(
     distance_function=scipy.spatial.distance.cosine, is_distance_function=True
@@ -61,3 +61,4 @@ transformer = make_pipeline(
 # Assemble the Vanilla Biometric pipeline and execute
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)
 transformer = pipeline.transformer
+

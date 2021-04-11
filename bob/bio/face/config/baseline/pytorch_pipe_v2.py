@@ -1,6 +1,6 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.face.extractor import PyTorchLibraryModel
+from bob.bio.face.extractor import pytorch_library_model
 from facenet_pytorch import InceptionResnetV1
 from bob.bio.base.algorithm import Distance
 from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
@@ -24,11 +24,11 @@ else:
     fixed_positions = None
 
 
-cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
+cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
 
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(224, 224),
-    cropped_positions={"leye": (110, 144), "reye": (110, 96)},
+    cropped_positions={"leye": (49, 72), "reye": (49, 38)},
     color_channel="rgb",
     fixed_positions=fixed_positions,
 )
@@ -41,7 +41,7 @@ transform_extra_arguments = (
 
 
 model = InceptionResnetV1(pretrained="vggface2").eval()
-extractor_transformer = PyTorchLibraryModel(model=model)
+extractor_transformer = pytorch_library_model(model=model)
 
 
 algorithm = Distance(
@@ -64,3 +64,4 @@ transformer = make_pipeline(
 # Assemble the Vanilla Biometric pipeline and execute
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)
 transformer = pipeline.transformer
+

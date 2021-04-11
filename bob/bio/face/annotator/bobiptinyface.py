@@ -29,6 +29,8 @@ class BobIpTinyface(Base):
         annotations = self.tinyface.detect(image)
 
         if annotations is not None:
-            return annotations[0]
+            r = annotations[0]
+            return {"topleft": (r[0], r[1]), "bottomright": (r[2], r[3])}
         else:
             return None
+

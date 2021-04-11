@@ -1,6 +1,5 @@
 import bob.ip.facedetect
 
-
 def bounding_box_to_annotations(bbx):
     """Converts :any:`bob.ip.facedetect.BoundingBox` to dictionary annotations.
 

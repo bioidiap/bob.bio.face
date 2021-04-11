@@ -16,6 +16,7 @@ import imp
 pytorch_model_directory = rc["bob.extractor_model.pytorch"]
 pytorch_weight_directory = rc["bob.extractor_weights.pytorch"]
 
+
 class pytorch_loaded_model(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition models under PyTorch Interface, especially for the models and weights that need to load by hand.
     
@@ -30,7 +31,7 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
 
   **Parameters:**
   use_gpu: True or False.
-    """ 
+    """
 
     def __init__(self, use_gpu=False, **kwargs):
         super().__init__(**kwargs)
@@ -52,12 +53,12 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
 
     def _load_model(self):
 
-        MainModel = imp.load_source('MainModel', pytorch_model_directory)
+        MainModel = imp.load_source("MainModel", pytorch_model_directory)
         network = torch.load(pytorch_weight_directory)
         network.eval()
-        
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         network.to(self.device)
 
         self.model = network
@@ -77,14 +78,13 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
     feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
       The list of features extracted from the image.
     """
-    
+
         if self.model is None:
             self.load_model()
 
         X = torch.Tensor(X)
 
         return self.model(X).detach().numpy()
-
 
     def __getstate__(self):
         # Handling unpicklable objects
@@ -95,14 +95,8 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}
-        
-        
-        
-        
-        
-        
-        
-        
+
+
 class pytorch_library_model(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition with registered model frames in the PyTorch Library. 
     
@@ -152,7 +146,6 @@ class pytorch_library_model(TransformerMixin, BaseEstimator):
         X = torch.Tensor(X)
 
         return self.model(X).detach().numpy()
-
 
     def __getstate__(self):
         # Handling unpicklable objects

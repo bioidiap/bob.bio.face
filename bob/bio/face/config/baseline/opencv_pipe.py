@@ -26,27 +26,41 @@ else:
     fixed_positions = None
 
 
+cropped_positions = {"leye": (98, 144), "reye": (98, 76)}
+# Preprocessor
+preprocessor_transformer = FaceCrop(
+    cropped_image_size=(224, 224),
+    cropped_positions={"leye": (98, 144), "reye": (98, 76)},
+    color_channel="rgb",
+    fixed_positions=fixed_positions,
+)
 
-cropped_positions={"leye": (98, 144), "reye": (98, 76)}
-#Preprocessor
-preprocessor_transformer = FaceCrop(cropped_image_size=(224,224), cropped_positions={"leye": (98, 144), "reye": (98, 76)}, color_channel='rgb',fixed_positions=fixed_positions)
+transform_extra_arguments = (
+    None
+    if (cropped_positions is None or fixed_positions is not None)
+    else (("annotations", "annotations"),)
+)
 
-transform_extra_arguments = (None if (cropped_positions is None or fixed_positions is not None) else (("annotations", "annotations"),))
 
-
-#Extractor
+# Extractor
 extractor_transformer = opencv_model()
 
 
-#Algorithm
-algorithm = Distance(distance_function = scipy.spatial.distance.cosine,is_distance_function = True)
+# Algorithm
+algorithm = Distance(
+    distance_function=scipy.spatial.distance.cosine, is_distance_function=True
+)
 
 ## Creation of the pipeline
 
 
 # Chain the Transformers together
 transformer = make_pipeline(
-    wrap(["sample"], preprocessor_transformer,transform_extra_arguments=transform_extra_arguments),
+    wrap(
+        ["sample"],
+        preprocessor_transformer,
+        transform_extra_arguments=transform_extra_arguments,
+    ),
     wrap(["sample"], extractor_transformer)
     # Add more transformers here if needed
 )

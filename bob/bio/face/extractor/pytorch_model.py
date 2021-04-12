@@ -94,15 +94,9 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
         return d
 
     def _more_tags(self):
+
         return {"stateless": True, "requires_fit": False}
-        
-        
-        
-        
-        
-        
-        
-        
+              
 class pytorch_library_model(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition with registered model frames in the PyTorch Library. 
     

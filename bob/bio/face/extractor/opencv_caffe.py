@@ -85,6 +85,7 @@ class opencv_model(TransformerMixin, BaseEstimator):
     """
     
         if self.model is None:
+              
             self._load_model()
 
         img = np.array(X)
@@ -102,4 +103,5 @@ class opencv_model(TransformerMixin, BaseEstimator):
         return d
 
     def _more_tags(self):
+          
         return {"stateless": True, "requires_fit": False}

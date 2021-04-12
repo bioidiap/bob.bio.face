@@ -78,8 +78,6 @@ test:
     - bob.db.atnt
     - bob.learn.tensorflow  # [linux]
     - tensorflow  # [linux]
-    - mxnet
-    - opencv-python
 
 about:
   home: https://www.idiap.ch/software/bob/

@@ -24,28 +24,38 @@ else:
     fixed_positions = None
 
 
+cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
 
-cropped_positions={'leye':(49,72), 'reye':(49,38)}
+preprocessor_transformer = FaceCrop(
+    cropped_image_size=(224, 224),
+    cropped_positions={"leye": (49, 72), "reye": (49, 38)},
+    color_channel="rgb",
+    fixed_positions=fixed_positions,
+)
 
-preprocessor_transformer = FaceCrop(cropped_image_size=(224,224), cropped_positions={'leye':(49,72), 'reye':(49,38)}, color_channel='rgb',fixed_positions=fixed_positions)
+transform_extra_arguments = (
+    None
+    if (cropped_positions is None or fixed_positions is not None)
+    else (("annotations", "annotations"),)
+)
 
-transform_extra_arguments = (None if (cropped_positions is None or fixed_positions is not None) else (("annotations", "annotations"),))
 
-
-
-
-model = InceptionResnetV1(pretrained='vggface2').eval()
+model = InceptionResnetV1(pretrained="vggface2").eval()
 extractor_transformer = pytorch_library_model(model=model)
 
 
-
-
-algorithm = Distance(distance_function = scipy.spatial.distance.cosine,is_distance_function = True)
+algorithm = Distance(
+    distance_function=scipy.spatial.distance.cosine, is_distance_function=True
+)
 
 
 # Chain the Transformers together
 transformer = make_pipeline(
-    wrap(["sample"], preprocessor_transformer,transform_extra_arguments=transform_extra_arguments),
+    wrap(
+        ["sample"],
+        preprocessor_transformer,
+        transform_extra_arguments=transform_extra_arguments,
+    ),
     wrap(["sample"], extractor_transformer)
     # Add more transformers here if needed
 )
@@ -54,63 +64,3 @@ transformer = make_pipeline(
 # Assemble the Vanilla Biometric pipeline and execute
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)
 transformer = pipeline.transformer
-<<<<<<< HEAD
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-=======
->>>>>>> ”new”

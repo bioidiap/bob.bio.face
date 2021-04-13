@@ -59,7 +59,7 @@ class CBSRNirVis2Database(CSVDataset):
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()
         filename = get_file(
-            "cbsr_nir_vis_2.tar.gz", urls, file_hash="1fc247626f88d6f36a2675516eb745a5",
+            "cbsr_nir_vis_2.tar.gz", urls, file_hash="116da4537c1099915cdc0f08feb651bd",
         )
         self.annotation_type = "eyes-center"
         self.fixed_positions = None

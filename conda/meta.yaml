@@ -43,8 +43,6 @@ requirements:
     - scikit-image {{ scikit_image }}
     - six {{ six }}
     - tensorflow {{ tensorflow }}  # [linux]
-    - mxnet {{ mxnet }}
-    - opencv-pyrhon {{ opencv_python }}
   run:
     - python
     - setuptools

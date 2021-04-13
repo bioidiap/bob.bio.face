@@ -28,14 +28,13 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
   
   The extracted features can be combined with different the algorithms. 
 
-  **Parameters:**
-  use_gpu: True or False.
+
     """ 
 
-    def __init__(self, use_gpu=False, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.model = None
-        self.use_gpu = use_gpu
+        
 
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "resnet"),
@@ -109,10 +108,9 @@ class pytorch_library_model(TransformerMixin, BaseEstimator):
   use_gpu: True or False.
     """
 
-    def __init__(self, model=None, use_gpu=False, **kwargs):
+    def __init__(self, model=None, **kwargs):
         super().__init__(**kwargs)
         self.model = model
-        self.use_gpu = use_gpu
 
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "resnet"),

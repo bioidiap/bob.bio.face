@@ -40,14 +40,12 @@ class opencv_model(TransformerMixin, BaseEstimator):
     .. note::
        This structure only can be used for CAFFE pretrained model.
 
-  **Parameters:**
-  use_gpu: True or False.
+
     """
 
-    def __init__(self, use_gpu=False, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.model = None
-        self.use_gpu = use_gpu
 
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "opencv_model"),

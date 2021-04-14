@@ -374,7 +374,7 @@ class FaceCrop(Base):
 
 
 class MultiFaceCrop(Base):
-    """ Wraps around FaceCrop to enable a dynamical cropper that can handle several annotation types.
+    """Wraps around FaceCrop to enable a dynamical cropper that can handle several annotation types.
     Initialization and usage is similar to the FaceCrop, but the main difference here is that one specifies
     a *list* of cropped_positions, and optionally a *list* of associated fixed positions.
 
@@ -400,26 +400,39 @@ class MultiFaceCrop(Base):
         allow_upside_down_normalized_faces=False,
         **kwargs,
     ):
-
+        # Check parameters
         assert isinstance(cropped_positions_list, list)
         if fixed_positions_list is None:
             fixed_positions_list = [None] * len(cropped_positions_list)
         assert isinstance(fixed_positions_list, list)
 
+        # copy parameters (sklearn convention : each explicit __init__ argument *has* to become an attribute of the estimator)
+        self.cropped_image_size = cropped_image_size
+        self.cropped_positions_list = cropped_positions_list
+        self.fixed_positions_list = fixed_positions_list
+        self.mask_sigma = mask_sigma
+        self.mask_neighbors = mask_neighbors
+        self.mask_seed = mask_seed
+        if isinstance(annotator, str):
+            annotator = load_resource(annotator, "annotator")
+        self.annotator = annotator
+        self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
+
+        # Instantiate individual croppers
         self.croppers = {}
         for cropped_positions, fixed_positions in zip(
-            cropped_positions_list, fixed_positions_list
+            self.cropped_positions_list, self.fixed_positions_list
         ):
             assert len(cropped_positions) == 2
             self.croppers[tuple(cropped_positions)] = FaceCrop(
-                cropped_image_size,
+                self.cropped_image_size,
                 cropped_positions,
                 fixed_positions,
-                mask_sigma,
-                mask_neighbors,
-                mask_seed,
-                annotator,
-                allow_upside_down_normalized_faces,
+                self.mask_sigma,
+                self.mask_neighbors,
+                self.mask_seed,
+                self.annotator,
+                self.allow_upside_down_normalized_faces,
                 **kwargs,
             )
 

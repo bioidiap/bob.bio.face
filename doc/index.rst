@@ -51,6 +51,7 @@ Users Guide
    leaderboard/leaderboard
    references
    annotators
+   faq
 
 Reference Manual
 ================

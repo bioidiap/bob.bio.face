@@ -115,6 +115,7 @@ setup(
             "casia-africa = bob.bio.face.config.database.casia_africa:database",
             "pola-thermal = bob.bio.face.config.database.pola_thermal:database",
             "cbsr-nir-vis-2 = bob.bio.face.config.database.cbsr_nir_vis_2:database",
+            "mcxface = bob.bio.face.config.database.mcxface:database",
         ],
         "bob.bio.annotator": [
             "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
@@ -186,6 +187,7 @@ setup(
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021",
             "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021",
             "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
+            "mcxface = bob.bio.face.config.database.mcxface"
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

@@ -17,7 +17,6 @@ from tensorflow import keras
 
 tf_model_directory = rc["bob.extractor_model.tf"]
 
-
 class TensorFlowModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition models under TensorFlow Interface.
 
@@ -67,18 +66,19 @@ class TensorFlowModel(TransformerMixin, BaseEstimator):
     feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
       The list of features extracted from the image.
     """
-
+    
         if self.model is None:
             self._load_model()
-
+        
         X = check_array(X, allow_nd=True)
         X = tf.convert_to_tensor(X)
         X = to_channels_last(X)
 
-        X = X / 255
+        X = X/255
         predict = self.model.predict(X)
 
         return predict
+
 
     def __getstate__(self):
         # Handling unpicklable objects

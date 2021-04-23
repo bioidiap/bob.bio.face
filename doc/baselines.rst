@@ -61,12 +61,14 @@ Deep learning baselines
 Deep Learning with different interfaces baselines
 =================================================
 
-* ``mxnet_pipe``: Arcface Resnet Model using MxNet Interfaces from `Insightface <https://github.com/deepinsight/insightface>`_
+* ``mxnet-pipe``: Arcface Resnet Model using MxNet Interfaces from `Insightface <https://github.com/deepinsight/insightface>`_
 
-* ``pytorch_pipe_v1``: Pytorch network that extracs 1000-dimensional featrues, trained by Manual Gunther, as described in [LGB18]_
+* ``mxnet-tinyface``: Applying `tinyface annoator <https://github.com/chinakook/hr101_mxnet>`_ for the Arcface Resnet Model using MxNet Interfaces from `Insightface <https://github.com/deepinsight/insightface>`_
 
-* ``pytorch_pipe_v2``: Inception Resnet face recognition model from `facenet_pytorch <https://github.com/timesler/facenet-pytorch>`_
+* ``pytorch-pipe-v1``: Pytorch network that extracts 1000-dimensional features, trained by Manual Gunther, as described in [LGB18]_
 
-* ``tf_pipe``: Inception Resnet v2 model trained using the MSCeleb dataset in the context of the work published by [TFP18]_
+* ``pytorch-pipe-v2``: Inception Resnet face recognition model from `facenet_pytorch <https://github.com/timesler/facenet-pytorch>`_
 
-* ``opencv_pipe``: VGG Face descriptor pretrained models, i.e. `Caffe model <https://www.robots.ox.ac.uk/~vgg/software/vgg_face/>`_
+* ``tf-pipe``: Inception Resnet v2 model trained using the MSCeleb dataset in the context of the work published by [TFP18]_
+
+* ``opencv-pipe``: VGG Face descriptor pretrained models, i.e. `Caffe model <https://www.robots.ox.ac.uk/~vgg/software/vgg_face/>`_

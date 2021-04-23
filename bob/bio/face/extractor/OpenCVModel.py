@@ -41,6 +41,7 @@ class OpenCVModel(TransformerMixin, BaseEstimator):
        This structure only can be used for CAFFE pretrained model.
     """
 
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.model = None
@@ -59,7 +60,7 @@ class OpenCVModel(TransformerMixin, BaseEstimator):
 
     def _load_model(self):
 
-        net = cv2.dnn.readNetFromCaffe(opencv_model_prototxt, opencv_model_directory)
+        net = cv2.dnn.readNetFromCaffe(opencv_model_prototxt,opencv_model_directory)
 
         self.model = net
 
@@ -78,16 +79,17 @@ class OpenCVModel(TransformerMixin, BaseEstimator):
     feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
       The list of features extracted from the image.
     """
-
+    
         if self.model is None:
             self._load_model()
 
         img = np.array(X)
-        img = img / 255
+        img = img/255
 
         self.model.setInput(img)
-
+     
         return self.model.forward()
+
 
     def __getstate__(self):
         # Handling unpicklable objects

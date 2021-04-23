@@ -1,11 +1,11 @@
 from .DCTBlocks import DCTBlocks
 from .GridGraph import GridGraph
 from .LGBPHS import LGBPHS
-from .mxnet_resnet import mxnet_model
-from .pytorch_model import pytorch_loaded_model
-from .pytorch_model import pytorch_library_model
-from .tf_model import tf_model
-from .opencv_caffe import opencv_model
+from .MxNetModel import MxNetModel
+from .PyTorchModel import PyTorchLoadedModel
+from .PyTorchModel import PyTorchLibraryModel
+from .TensorFlowModel import TensorFlowModel
+from .OpenCVModel import OpenCVModel
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -27,10 +27,10 @@ __appropriate__(
     DCTBlocks,
     GridGraph,
     LGBPHS,
-    mxnet_model,
-    pytorch_loaded_model,
-    pytorch_library_model,
-    tf_model,
-    opencv_model,
+    MxNetModel,
+    PyTorchLoadedModel,
+    PyTorchLibraryModel,
+    TensorFlowModel,
+    OpenCVModel,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

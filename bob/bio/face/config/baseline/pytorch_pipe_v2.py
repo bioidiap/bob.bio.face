@@ -1,6 +1,6 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.face.extractor import pytorch_library_model
+from bob.bio.face.extractor import PyTorchLibraryModel
 from facenet_pytorch import InceptionResnetV1
 from bob.bio.base.algorithm import Distance
 from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
@@ -26,9 +26,11 @@ else:
 
 cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
 
+cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
+
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(224, 224),
-    cropped_positions={"leye": (49, 72), "reye": (49, 38)},
+    cropped_positions={"leye": (110, 144), "reye": (110, 96)},
     color_channel="rgb",
     fixed_positions=fixed_positions,
 )
@@ -40,8 +42,15 @@ transform_extra_arguments = (
 )
 
 
+transform_extra_arguments = (
+    None
+    if (cropped_positions is None or fixed_positions is not None)
+    else (("annotations", "annotations"),)
+)
+
+
 model = InceptionResnetV1(pretrained="vggface2").eval()
-extractor_transformer = pytorch_library_model(model=model)
+extractor_transformer = PyTorchLibraryModel(model=model)
 
 
 algorithm = Distance(

@@ -16,7 +16,6 @@ import imp
 pytorch_model_directory = rc["bob.extractor_model.pytorch"]
 pytorch_weight_directory = rc["bob.extractor_weights.pytorch"]
 
-
 class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition models under PyTorch Interface, especially for the models and weights that need to load by hand.
     
@@ -28,7 +27,7 @@ class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
     $ bob config set bob.extractor_weights.pytorch /PATH/TO/WEIGHTS/
   
   The extracted features can be combined with different the algorithms. 
-    """
+    """ 
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -49,12 +48,12 @@ class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
 
     def _load_model(self):
 
-        MainModel = imp.load_source("MainModel", pytorch_model_directory)
+        MainModel = imp.load_source('MainModel', pytorch_model_directory)
         network = torch.load(pytorch_weight_directory)
         network.eval()
-
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
+        
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+        
         network.to(self.device)
 
         self.model = network
@@ -78,9 +77,10 @@ class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
             self._load_model()
 
         X = torch.Tensor(X)
-        X = X / 255
+        X = X/255
 
         return self.model(X).detach().numpy()
+
 
     def __getstate__(self):
         # Handling unpicklable objects
@@ -91,8 +91,14 @@ class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
 
     def _more_tags(self):
         return {"stateless": True, "requires_fit": False}
-
-
+        
+        
+        
+        
+        
+        
+        
+        
 class PyTorchLibraryModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition with registered model frames in the PyTorch Library. 
     
@@ -122,8 +128,8 @@ class PyTorchLibraryModel(TransformerMixin, BaseEstimator):
         self.device = None
 
     def _load_model(self):
-
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
         self.model.to(self.device)
 
     def transform(self, X):
@@ -146,9 +152,10 @@ class PyTorchLibraryModel(TransformerMixin, BaseEstimator):
             self._load_model()
 
         X = torch.Tensor(X)
-        X = X / 255
+        X = X/255
 
         return self.model(X).detach().numpy()
+
 
     def __getstate__(self):
         # Handling unpicklable objects

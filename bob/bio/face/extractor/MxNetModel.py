@@ -12,10 +12,8 @@ import mxnet as mx
 from mxnet import gluon
 import warnings
 from bob.extension import rc
-
 mxnet_resnet_directory = rc["bob.extractor_model.mxnet"]
 mxnet_weight_directory = rc["bob.extractor_weights.mxnet"]
-
 
 class MxNetModel(TransformerMixin, BaseEstimator):
 
@@ -59,10 +57,8 @@ class MxNetModel(TransformerMixin, BaseEstimator):
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
-            deserialized_net = gluon.nn.SymbolBlock.imports(
-                mxnet_resnet_directory, ["data"], mxnet_weight_directory, ctx=ctx
-            )
-
+            deserialized_net = gluon.nn.SymbolBlock.imports(mxnet_resnet_directory, ['data'], mxnet_weight_directory, ctx=ctx)
+               
         self.model = deserialized_net
 
     def transform(self, X):
@@ -80,7 +76,7 @@ class MxNetModel(TransformerMixin, BaseEstimator):
     feature : 2D, 3D, or 4D :py:class:`numpy.ndarray` (floats)
       The list of features extracted from the image.
     """
-
+    
         if self.model is None:
             self._load_model()
 
@@ -88,6 +84,7 @@ class MxNetModel(TransformerMixin, BaseEstimator):
         X = mx.nd.array(X)
 
         return self.model(X,).asnumpy()
+
 
     def __getstate__(self):
         # Handling unpicklable objects

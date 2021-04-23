@@ -35,6 +35,15 @@ preprocessor_transformer = FaceCrop(
     fixed_positions=fixed_positions,
 )
 
+cropped_positions = {"leye": (100, 140), "reye": (100, 95)}
+# Preprocessor
+preprocessor_transformer = FaceCrop(
+    cropped_image_size=(224, 224),
+    cropped_positions={"leye": (100, 140), "reye": (100, 95)},
+    color_channel="rgb",
+    fixed_positions=fixed_positions,
+)
+
 transform_extra_arguments = (
     None
     if (cropped_positions is None or fixed_positions is not None)

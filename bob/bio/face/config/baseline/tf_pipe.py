@@ -1,6 +1,6 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.face.extractor import tf_model
+from bob.bio.face.extractor import TensorFlowModel
 from bob.bio.base.algorithm import Distance
 from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
 import scipy.spatial
@@ -24,11 +24,11 @@ else:
 
 
 # Preprocessor
-cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
+cropped_positions = {"leye": (80, 100), "reye": (80, 60)}
 
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(160, 160),
-    cropped_positions={"leye": (49, 72), "reye": (49, 38)},
+    cropped_positions={"leye": (80, 100), "reye": (80, 60)},
     color_channel="rgb",
     fixed_positions=fixed_positions,
 )
@@ -41,7 +41,7 @@ transform_extra_arguments = (
 
 
 # Extractor
-extractor_transformer = tf_model()
+extractor_transformer = TensorFlowModel()
 
 # Algorithm
 algorithm = Distance(

@@ -16,7 +16,8 @@ import imp
 pytorch_model_directory = rc["bob.extractor_model.pytorch"]
 pytorch_weight_directory = rc["bob.extractor_weights.pytorch"]
 
-class pytorch_loaded_model(TransformerMixin, BaseEstimator):
+
+class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition models under PyTorch Interface, especially for the models and weights that need to load by hand.
     
   Users can download the pretrained face recognition models with PyTorch Interface. The path to downloaded models should be specified before running the extractor (usually before running the pipeline file that includes the extractor). That is, set config of the model frame to :py:class:`bob.extractor_model.pytorch`, and set config of the parameters to :py:class:`bob.extractor_weights.pytorch`. 
@@ -27,14 +28,11 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
     $ bob config set bob.extractor_weights.pytorch /PATH/TO/WEIGHTS/
   
   The extracted features can be combined with different the algorithms. 
-
-
-    """ 
+    """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.model = None
-        
 
         internal_path = pkg_resources.resource_filename(
             __name__, os.path.join("data", "resnet"),
@@ -51,12 +49,12 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
 
     def _load_model(self):
 
-        MainModel = imp.load_source('MainModel', pytorch_model_directory)
+        MainModel = imp.load_source("MainModel", pytorch_model_directory)
         network = torch.load(pytorch_weight_directory)
         network.eval()
-        
-        self.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-        
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
         network.to(self.device)
 
         self.model = network
@@ -76,14 +74,13 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
     feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
       The list of features extracted from the image.
     """
-    
         if self.model is None:
             self._load_model()
 
         X = torch.Tensor(X)
+        X = X / 255
 
         return self.model(X).detach().numpy()
-
 
     def __getstate__(self):
         # Handling unpicklable objects
@@ -93,10 +90,10 @@ class pytorch_loaded_model(TransformerMixin, BaseEstimator):
         return d
 
     def _more_tags(self):
-
         return {"stateless": True, "requires_fit": False}
-              
-class pytorch_library_model(TransformerMixin, BaseEstimator):
+
+
+class PyTorchLibraryModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition with registered model frames in the PyTorch Library. 
     
   Users can import the pretrained face recognition models from PyTorch library. The model should be called in the pipeline. Example: `facenet_pytorch <https://github.com/timesler/facenet-pytorch>`_
@@ -105,7 +102,6 @@ class pytorch_library_model(TransformerMixin, BaseEstimator):
 
   **Parameters:**
   model: pytorch model calling from library.
-  use_gpu: True or False.
     """
 
     def __init__(self, model=None, **kwargs):
@@ -125,6 +121,11 @@ class pytorch_library_model(TransformerMixin, BaseEstimator):
         self.checkpoint_path = checkpoint_path
         self.device = None
 
+    def _load_model(self):
+
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model.to(self.device)
+
     def transform(self, X):
         """__call__(image) -> feature
 
@@ -141,10 +142,13 @@ class pytorch_library_model(TransformerMixin, BaseEstimator):
       The list of features extracted from the image.
     """
 
+        if self.model is None:
+            self._load_model()
+
         X = torch.Tensor(X)
+        X = X / 255
 
         return self.model(X).detach().numpy()
-
 
     def __getstate__(self):
         # Handling unpicklable objects

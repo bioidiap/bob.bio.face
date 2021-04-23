@@ -234,7 +234,7 @@ In this baseline, we use :py:class:`bob.bio.face.preprocessor.FaceCrop` with  ``
 and ``cropped_image_size=(160,160)`` 
 as preprocessor,  Inception Resnet v2  in [TFP18]_ as extractor, and ``distance-cosine`` as the algorithm. By testing on LFW database, we get the following ROC plot:
 
-.. figure:: img/tensorflow_lfw_pipe.png
+.. figure:: img/tensorflow_pipe.png
   :figwidth: 75%
   :align: center
   :alt: Face recognition results of LFW database.

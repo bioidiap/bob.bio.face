@@ -1,6 +1,6 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.face.extractor import mxnet_model
+from bob.bio.face.extractor import MxNetModel
 from bob.bio.base.algorithm import Distance
 from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
 import scipy.spatial
@@ -39,7 +39,7 @@ transform_extra_arguments = (
 )
 
 
-extractor_transformer = mxnet_model()
+extractor_transformer = MxNetModel()
 
 algorithm = Distance(
     distance_function=scipy.spatial.distance.cosine, is_distance_function=True

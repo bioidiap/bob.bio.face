@@ -18,7 +18,7 @@ from tensorflow import keras
 tf_model_directory = rc["bob.extractor_model.tf"]
 
 
-class tf_model(TransformerMixin, BaseEstimator):
+class TensorFlowModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition models under TensorFlow Interface.
 
   Users can download the pretrained face recognition models with TensorFlow Interface. The path to downloaded models should be specified before running the extractor (usually before running the pipeline file that includes the extractor). That is, set config of the model to :py:class:`bob.extractor_model.tf`. 
@@ -28,8 +28,6 @@ class tf_model(TransformerMixin, BaseEstimator):
     $ bob config set bob.extractor_model.tf /PATH/TO/MODEL/
   
   The extracted features can be combined with different the algorithms. 
-
-
     """
 
     def __init__(self, **kwargs):
@@ -76,6 +74,8 @@ class tf_model(TransformerMixin, BaseEstimator):
         X = check_array(X, allow_nd=True)
         X = tf.convert_to_tensor(X)
         X = to_channels_last(X)
+
+        X = X / 255
         predict = self.model.predict(X)
 
         return predict

@@ -25,7 +25,7 @@ opencv_model_directory = rc["bob.extractor_model.opencv"]
 opencv_model_prototxt = rc["bob.extractor_weights.opencv"]
 
 
-class opencv_model(TransformerMixin, BaseEstimator):
+class OpenCVModel(TransformerMixin, BaseEstimator):
     """Extracts features using deep face recognition models under OpenCV Interface
 
   Users can download the pretrained face recognition models with OpenCV Interface. The path to downloaded models should be specified before running the extractor (usually before running the pipeline file that includes the extractor). That is, set config of the model frame to :py:class:`bob.extractor_model.opencv`, and set config of the parameters to :py:class:`bob.extractor_weights.opencv`. 
@@ -39,8 +39,6 @@ class opencv_model(TransformerMixin, BaseEstimator):
 
     .. note::
        This structure only can be used for CAFFE pretrained model.
-
-
     """
 
     def __init__(self, **kwargs):
@@ -82,10 +80,10 @@ class opencv_model(TransformerMixin, BaseEstimator):
     """
 
         if self.model is None:
-
             self._load_model()
 
         img = np.array(X)
+        img = img / 255
 
         self.model.setInput(img)
 
@@ -99,5 +97,4 @@ class opencv_model(TransformerMixin, BaseEstimator):
         return d
 
     def _more_tags(self):
-
         return {"stateless": True, "requires_fit": False}

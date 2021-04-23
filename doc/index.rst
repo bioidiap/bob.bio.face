@@ -49,6 +49,7 @@ Users Guide
 
    baselines
    leaderboard/leaderboard
+   deeplearningextractor
    references
    annotators
    faq

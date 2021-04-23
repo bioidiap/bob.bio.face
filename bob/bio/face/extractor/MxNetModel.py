@@ -17,7 +17,7 @@ mxnet_resnet_directory = rc["bob.extractor_model.mxnet"]
 mxnet_weight_directory = rc["bob.extractor_weights.mxnet"]
 
 
-class mxnet_model(TransformerMixin, BaseEstimator):
+class MxNetModel(TransformerMixin, BaseEstimator):
 
     """Extracts features using deep face recognition models under MxNet Interfaces.
   

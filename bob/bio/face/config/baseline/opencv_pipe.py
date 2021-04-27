@@ -1,7 +1,7 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
 from bob.bio.base.transformers.preprocessor import PreprocessorTransformer
-from bob.bio.face.extractor import opencv_model
+from bob.bio.face.extractor import OpenCVModel
 from bob.bio.base.extractor import Extractor
 from bob.bio.base.transformers import ExtractorTransformer
 from bob.bio.base.algorithm import Distance
@@ -35,11 +35,11 @@ preprocessor_transformer = FaceCrop(
     fixed_positions=fixed_positions,
 )
 
-cropped_positions = {"leye": (100, 140), "reye": (100, 95)}
+cropped_positions = {"leye": (98, 144), "reye": (98, 76)}
 # Preprocessor
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(224, 224),
-    cropped_positions={"leye": (100, 140), "reye": (100, 95)},
+    cropped_positions={"leye": (98, 144), "reye": (98, 76)},
     color_channel="rgb",
     fixed_positions=fixed_positions,
 )
@@ -52,7 +52,7 @@ transform_extra_arguments = (
 
 
 # Extractor
-extractor_transformer = opencv_model()
+extractor_transformer = OpenCVModel()
 
 
 # Algorithm

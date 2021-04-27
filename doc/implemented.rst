@@ -64,6 +64,7 @@ Image Feature Extractors
    bob.bio.face.extractor.TensorFlowModel
    bob.bio.face.extractor.OpenCVModel
 
+
 Face Recognition Algorithms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

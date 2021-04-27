@@ -9,7 +9,7 @@ from .gbu import GBUBioDatabase
 from .arface import ARFaceBioDatabase
 from .lfw import LFWBioDatabase
 from .multipie import MultipieDatabase
-from .ijbc import IJBCBioDatabase
+from .ijbc import IJBCDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .fargo import FargoBioDatabase
 from .meds import MEDSDatabase

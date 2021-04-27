@@ -29,7 +29,7 @@ class IJBCDatabase:
         if pkl_directory is None:
             urls = IJBCDatabase.urls()
             pkl_directory = get_file(
-                "ijbc.tar.gz", urls, file_hash="4b25d7f10595eb9f97f328a2d448d957"
+                "ijbc.tar.gz", urls, file_hash="c6061dc9fa021233366b3dd7fa205eb0"
             )
 
         self.pkl_directory = pkl_directory

@@ -26,6 +26,8 @@ class BobIpTinyface(Base):
             Annotations with (topleft, bottomright) keys (or None).
         """
 
+        annotations = self.tinyface.detect(image)
+
         if annotations is not None:
             return annotations[0]
         else:

@@ -23,8 +23,6 @@ else:
     fixed_positions = None
 
 
-cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
-
 cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
 
 preprocessor_transformer = FaceCrop(
@@ -32,12 +30,6 @@ preprocessor_transformer = FaceCrop(
     cropped_positions={"leye": (110, 144), "reye": (110, 96)},
     color_channel="rgb",
     fixed_positions=fixed_positions,
-)
-
-transform_extra_arguments = (
-    None
-    if (cropped_positions is None or fixed_positions is not None)
-    else (("annotations", "annotations"),)
 )
 
 transform_extra_arguments = (
@@ -69,3 +61,4 @@ transformer = make_pipeline(
 # Assemble the Vanilla Biometric pipeline and execute
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)
 transformer = pipeline.transformer
+

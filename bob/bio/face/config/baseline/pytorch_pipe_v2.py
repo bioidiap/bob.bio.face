@@ -24,8 +24,6 @@ else:
     fixed_positions = None
 
 
-cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
-
 cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
 
 preprocessor_transformer = FaceCrop(
@@ -34,13 +32,6 @@ preprocessor_transformer = FaceCrop(
     color_channel="rgb",
     fixed_positions=fixed_positions,
 )
-
-transform_extra_arguments = (
-    None
-    if (cropped_positions is None or fixed_positions is not None)
-    else (("annotations", "annotations"),)
-)
-
 
 transform_extra_arguments = (
     None

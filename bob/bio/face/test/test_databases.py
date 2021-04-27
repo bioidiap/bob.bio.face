@@ -313,22 +313,24 @@ def test_replaymobile_spoof():
         )
 
 
-@db_available("ijbc")
 def test_ijbc():
-    database = bob.bio.base.load_resource(
-        "ijbc-11", "database", preferred_package="bob.bio.face"
-    )
+    from bob.bio.face.database import IJBCDatabase
+
+    # Getting the absolute path
+    urls = IJBCDatabase.urls()
+    filename = get_file("ijbc.tar.gz", urls)
+
+    # Removing the file before the test
     try:
-        check_database(database, models_depend=True, training_depends=True)
-    except IOError as e:
-        pytest.skip("The database could not queried; Here is the error: '%s'" % e)
-    try:
-        _check_annotations(database, topleft=True, limit_files=1000)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
+        os.remove(filename)
+    except Exception:
+        pass
+
+    database = IJBCDatabase()
+
+    assert len(database.background_model_samples()) == 140732
+    assert len(database.references()) == 3531
+    assert len(database.probes()) == 19593
 
 
 @db_available("fargo")

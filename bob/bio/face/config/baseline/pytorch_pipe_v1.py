@@ -69,4 +69,3 @@ transformer = make_pipeline(
 # Assemble the Vanilla Biometric pipeline and execute
 pipeline = VanillaBiometricsPipeline(transformer, algorithm)
 transformer = pipeline.transformer
-

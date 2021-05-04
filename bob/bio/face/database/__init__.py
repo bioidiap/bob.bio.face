@@ -12,6 +12,7 @@ from .multipie import MultipieDatabase
 from .ijbc import IJBCDatabase
 from .replaymobile import ReplayMobileBioDatabase
 from .fargo import FargoBioDatabase
+from .frgc import FRGCDatabase
 from .meds import MEDSDatabase
 from .morph import MorphDatabase
 from .casia_africa import CasiaAfricaDatabase
@@ -52,5 +53,6 @@ __appropriate__(
     CasiaAfricaDatabase,
     PolaThermalDatabase,
     CBSRNirVis2Database,
+    FRGCDatabase,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

@@ -408,6 +408,27 @@ def test_casia_africa():
     assert len(database.probes()) == 2426
 
 
+def test_frgc():
+
+    from bob.bio.face.database import FRGCDatabase
+
+    database = FRGCDatabase("2.0.1")
+
+    assert len(database.background_model_samples()) == 12776
+    assert len(database.references()) == 7572
+    assert len(database.probes()) == 8456
+
+    database = FRGCDatabase("2.0.2")
+    assert len(database.background_model_samples()) == 12776
+    assert len(database.references()) == 1893
+    assert len(database.probes()) == 8456
+
+    database = FRGCDatabase("2.0.4")
+    assert len(database.background_model_samples()) == 12776
+    assert len(database.references()) == 7572
+    assert len(database.probes()) == 4228
+
+
 def test_polathermal():
 
     from bob.bio.face.database import PolaThermalDatabase

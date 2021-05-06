@@ -1,21 +1,14 @@
 from bob.bio.face.embeddings.mobilenet_v2 import MobileNetv2_MsCeleb_ArcFace_2021
-from bob.bio.face.config.baseline.helpers import embedding_transformer_112x112
+from bob.bio.face.config.baseline.helpers import (
+    embedding_transformer_112x112,
+    lookup_config_from_database,
+)
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
     VanillaBiometricsPipeline,
 )
 
-memory_demanding = False
-if "database" in locals():
-    annotation_type = database.annotation_type
-    fixed_positions = database.fixed_positions
-
-    memory_demanding = (
-        database.memory_demanding if hasattr(database, "memory_demanding") else False
-    )
-else:
-    annotation_type = None
-    fixed_positions = None
+annotation_type, fixed_positions, memory_demanding = lookup_config_from_database()
 
 
 def load(annotation_type, fixed_positions=None):

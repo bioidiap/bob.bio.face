@@ -3,7 +3,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     VanillaBiometricsPipeline,
     BioAlgorithmLegacy,
 )
-from bob.bio.face.config.baseline.helpers import crop_80x64
+from bob.bio.face.config.baseline.helpers import crop_80x64, lookup_config_from_database
 import math
 import numpy as np
 import bob.bio.face
@@ -13,12 +13,7 @@ import bob.math
 
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
-if "database" in locals():
-    annotation_type = database.annotation_type
-    fixed_positions = database.fixed_positions
-else:
-    annotation_type = None
-    fixed_positions = None
+annotation_type, fixed_positions, memory_demanding = lookup_config_from_database()
 
 
 def get_cropper(annotation_type, fixed_positions=None):

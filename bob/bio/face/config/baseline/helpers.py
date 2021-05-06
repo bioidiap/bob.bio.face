@@ -9,6 +9,24 @@ import logging
 logger = logging.getLogger(__name__)
 
 
+def lookup_config_from_database():
+    if "database" in locals():
+        annotation_type = database.annotation_type
+        fixed_positions = database.fixed_positions
+        memory_demanding = (
+            database.memory_demanding
+            if hasattr(database, "memory_demanding")
+            else False
+        )
+
+    else:
+        annotation_type = None
+        fixed_positions = None
+        memory_demanding = False
+
+    return annotation_type, fixed_positions, memory_demanding
+
+
 def face_crop_solver(
     cropped_image_size,
     cropped_positions=None,

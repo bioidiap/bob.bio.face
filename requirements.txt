@@ -4,7 +4,6 @@ bob.blitz
 bob.core
 bob.io.base
 bob.io.image
-bob.learn.activation
 bob.math
 bob.sp
 bob.ip.base

@@ -17,7 +17,7 @@ import numpy
 
 logger = bob.core.log.setup("bob.bio.face")
 
-def load_frame_from_file_replaymobile(file_name, frame, capturing_device):
+def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     """Loads a single frame from a video file for replay-mobile.
 
     This function uses bob's video reader utility that does not load the full
@@ -48,7 +48,7 @@ def load_frame_from_file_replaymobile(file_name, frame, capturing_device):
     # Image captured by the 'mobile' device are flipped vertically.
     # (Images were captured horizontally and bob.io.video does not read the
     #   metadata correctly, whether it was on the right or left side)
-    if capturing_device == "mobile":
+    if should_flip:
         image = numpy.flip(image, 2)
     # Convert to bob format (channel, height, width)
     image = numpy.transpose(image, (0, 2, 1))
@@ -135,13 +135,15 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         else:
             if "subject_id" not in kwargs:
                 raise ValueError(f"`subject_id` not available in {header}")
+        if "should_flip" not in kwargs:
+            raise ValueError(f"`should_flip` not available in {header}")
         # One row leads to multiple samples (different frames)
         all_samples = [DelayedSample(
             functools.partial(
                 load_frame_from_file_replaymobile,
                 file_name=os.path.join(self.dataset_original_directory, path + self.extension),
                 frame=frame,
-                capturing_device=kwargs["capturing_device"],
+                should_flip=kwargs["should_flip"]=="TRUE",
             ),
             key=f"{id}_{frame}",
             path=path,

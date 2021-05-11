@@ -2,14 +2,14 @@
 # Yannick Dayer <yannick.dayer@idiap.ch>
 
 from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
-from bob.pipelines.datasets.sample_loaders import AnnotationsLoader
+from bob.pipelines.sample_loaders import AnnotationsLoader
 from bob.pipelines.sample import DelayedSample
+from bob.db.base.annotations import read_annotation_file
 from bob.extension.download import get_file
 from bob.io.video import reader
 from bob.extension import rc
 import bob.core
 
-from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.pipeline import make_pipeline
 import functools
 import os.path
@@ -54,7 +54,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     image = numpy.transpose(image, (0, 2, 1))
     return image
 
-def read_frame_annotation_file_replaymobile(file_name, frame):
+def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="json"):
     """Returns the bounding-box for one frame of a video file of replay-mobile.
 
     Given an annnotation file location and a frame number, returns the bounding
@@ -72,36 +72,16 @@ def read_frame_annotation_file_replaymobile(file_name, frame):
     ----------
 
     file_name: str
-        The complete annotation file path and name (with extension).
+        The annotation file name (relative to annotations_path).
 
     frame: int
         The video frame index.
     """
     logger.debug(f"Reading annotation file '{file_name}', frame {frame}.")
-    if not file_name:
-        return None
 
-    if not os.path.exists(file_name):
-        raise IOError(f"The annotation file '{file_name}' was not found")
-
-    with open(file_name, 'r') as f:
-        # One line is one frame, each line contains a bounding box coordinates
-        line = f.readlines()[frame]
-
-    positions = line.split(' ')
-
-    if len(positions) != 4:
-        raise ValueError(f"The content of '{file_name}' was not correct for frame {frame} ({positions})")
-
-    annotations = {
-        'topleft': (float(positions[1]), float(positions[0])),
-        'bottomright':(
-            float(positions[1])+float(positions[3]),
-            float(positions[0])+float(positions[2])
-        )
-    }
-
-    return annotations
+    video_annotations = read_annotation_file(file_name, annotation_type=annotations_type)
+    # read_annotation_file returns an ordered dict with string keys
+    return video_annotations[f"{frame}"]
 
 class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
     """A loader transformer returning a specific frame of a video file.
@@ -194,7 +174,7 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
                     delayed_attributes=dict(
                         annotations=functools.partial(
                             read_frame_annotation_file_replaymobile,
-                            file_name=annotation_file,
+                            file_name=f"{self.annotation_directory}:{x.path}{self.annotation_extension}",
                             frame=int(x.frame),
                         )
                     ),
@@ -235,10 +215,12 @@ class ReplayMobileBioDatabase(CSVDataset):
     """
     def __init__(
         self,
-        protocol_name="bio-grandtest",
+        protocol_name="grandtest",
         protocol_definition_path=None,
         data_path=None,
-        annotation_path=None,
+        data_extension=".mov",
+        annotations_path=None,
+        annotations_extension=".json",
         **kwargs
     ):
         if protocol_definition_path is None:
@@ -253,27 +235,27 @@ class ReplayMobileBioDatabase(CSVDataset):
             # Defaults to cwd if config not defined
             data_path = rc.get("bob.db.replaymobile.directory", "")
 
-        if annotation_path is None:
+        if annotations_path is None:
             # Defaults to {data_path}/faceloc/rect if config not defined
-            annotation_path = rc.get(
+            annotations_path = rc.get(
                 "bob.db.replaymobile.annotation_directory",
                 os.path.join(data_path, "faceloc/rect/")
             )
 
         logger.info(f"Database: Loading database definition from '{protocol_definition_path}'.")
         logger.info(f"Database: Defining data files path as '{data_path}'.")
-        logger.info(f"Database: Defining annotation files path as '{annotation_path}'.")
+        logger.info(f"Database: Defining annotation files path as '{annotations_path}'.")
         super().__init__(
             protocol_definition_path,
             protocol_name,
             csv_to_sample_loader=make_pipeline(
                 ReplayMobileCSVFrameSampleLoader(
                     dataset_original_directory=data_path,
-                    extension=".mov",
+                    extension=data_extension,
                 ),
                 FrameBoundingBoxAnnotationLoader(
-                    annotation_directory=annotation_path,
-                    annotation_extension=".face",
+                    annotation_directory=annotations_path,
+                    annotation_extension=annotations_extension,
                 ),
             ),
             **kwargs

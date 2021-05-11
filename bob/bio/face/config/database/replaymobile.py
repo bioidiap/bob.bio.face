@@ -44,8 +44,8 @@ logger.info(f"Annotations files will be fetched from '{annotations_path}'")
 
 logger.debug(f"Instantiation of ReplayMobile bio database with protocol '{protocol}'")
 database = ReplayMobileBioDatabase(
-    dataset_protocols_path=dataset_protocol_path,
-    protocol=protocol,
+    protocol_definition_path=dataset_protocol_path,
+    protocol_name=protocol,
     data_path=data_path,
     data_extension=data_extension,
     annotations_path=annotations_path,

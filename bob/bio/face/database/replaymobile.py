@@ -54,6 +54,68 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     image = numpy.transpose(image, (0, 2, 1))
     return image
 
+class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
+    """A loader transformer returning a specific frame of a video file.
+
+    This is specifically tailored for replay-mobile. It uses a specific loader
+    that takes the capturing device as input.
+    """
+    def __init__(
+        self,
+        dataset_original_directory="",
+        extension="",
+        reference_id_equal_subject_id=True,
+    ):
+        super().__init__(
+            data_loader=None,
+            extension=extension,
+            dataset_original_directory=dataset_original_directory,
+        )
+        self.reference_id_equal_subject_id = reference_id_equal_subject_id
+        self.references_list = []
+
+    def convert_row_to_sample(self, row, header):
+        """Creates a set of samples given a row of the CSV protocol definition.
+        """
+        fields = dict([[str(h).lower(), r] for h, r in zip(header, row)])
+
+        if self.reference_id_equal_subject_id:
+            fields["subject_id"] = fields["reference_id"]
+        else:
+            if "subject_id" not in fields:
+                raise ValueError(f"`subject_id` not available in {header}")
+        if "should_flip" not in fields:
+            raise ValueError(f"`should_flip` not available in {header}")
+        if "purpose" not in fields:
+            raise ValueError(f"`purpose` not available in {header}")
+
+        kwargs = {k: fields[k] for k in fields.keys() - {"id",}}
+
+        # Retrieve the references list
+        if fields["purpose"].lower() == "enroll" and fields["reference_id"] not in self.references_list:
+            self.references_list.append(fields["reference_id"])
+        # Set the references list in the probes for vanilla-biometrics
+        if fields["purpose"].lower() != "enroll":
+            if fields["attack_type"]:
+                # Attacks only compare to the target (no `spoof_neg`)
+                kwargs["references"] = fields["reference_id"]
+            else:
+                kwargs["references"] = self.references_list
+        # One row leads to multiple samples (different frames)
+        all_samples = [DelayedSample(
+            functools.partial(
+                load_frame_from_file_replaymobile,
+                file_name=os.path.join(self.dataset_original_directory, fields["path"] + self.extension),
+                frame=frame,
+                should_flip=kwargs["should_flip"]=="TRUE",
+            ),
+            key=f"{fields['id']}_{frame}",
+            frame=frame,
+            **kwargs,
+        ) for frame in range(12,251,24)]
+        return all_samples
+
+
 def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="json"):
     """Returns the bounding-box for one frame of a video file of replay-mobile.
 
@@ -83,57 +145,6 @@ def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="
     # read_annotation_file returns an ordered dict with string keys
     return video_annotations[f"{frame}"]
 
-class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
-    """A loader transformer returning a specific frame of a video file.
-
-    This is specifically tailored for replay-mobile. It uses a specific loader
-    that takes the capturing device as input.
-    """
-    def __init__(
-        self,
-        dataset_original_directory="",
-        extension="",
-        reference_id_equal_subject_id=True,
-    ):
-        super().__init__(
-            data_loader=None,
-            extension=extension,
-            dataset_original_directory=dataset_original_directory,
-        )
-        self.reference_id_equal_subject_id = reference_id_equal_subject_id
-
-    def convert_row_to_sample(self, row, header):
-        """Creates a set of samples given a row of the CSV protocol definition.
-        """
-        path = row[0]
-        reference_id = row[1]
-        id = row[2] # Will be used as 'key'
-
-        kwargs = dict([[str(h).lower(), r] for h, r in zip(header[3:], row[3:])])
-        if self.reference_id_equal_subject_id:
-            kwargs["subject_id"] = reference_id
-        else:
-            if "subject_id" not in kwargs:
-                raise ValueError(f"`subject_id` not available in {header}")
-        if "should_flip" not in kwargs:
-            raise ValueError(f"`should_flip` not available in {header}")
-        # One row leads to multiple samples (different frames)
-        all_samples = [DelayedSample(
-            functools.partial(
-                load_frame_from_file_replaymobile,
-                file_name=os.path.join(self.dataset_original_directory, path + self.extension),
-                frame=frame,
-                should_flip=kwargs["should_flip"]=="TRUE",
-            ),
-            key=f"{id}_{frame}",
-            path=path,
-            reference_id=reference_id,
-            frame=frame,
-            **kwargs,
-        ) for frame in range(12,251,24)]
-        return all_samples
-
-
 class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
     """A transformer that adds bounding-box to a sample from annotations files.
 
@@ -144,7 +155,7 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
     """
     def __init__(self,
         annotation_directory=None,
-        annotation_extension=".face",
+        annotation_extension=".json",
         **kwargs
     ):
         super().__init__(
@@ -161,12 +172,7 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
 
         annotated_samples = []
         for x in X:
-
-            # Build the path to the annotation files structure
-            annotation_file = os.path.join(
-                self.annotation_directory, x.path + self.annotation_extension
-            )
-
+            # Adds the annotations as delayed_attributes, loading them when needed
             annotated_samples.append(
                 DelayedSample(
                     x._load,
@@ -176,12 +182,14 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
                             read_frame_annotation_file_replaymobile,
                             file_name=f"{self.annotation_directory}:{x.path}{self.annotation_extension}",
                             frame=int(x.frame),
+                            annotations_type=self.annotation_type,
                         )
                     ),
                 )
             )
 
         return annotated_samples
+
 
 class ReplayMobileBioDatabase(CSVDataset):
     """Database interface that loads a csv definition for replay-mobile
@@ -258,7 +266,8 @@ class ReplayMobileBioDatabase(CSVDataset):
                     annotation_extension=annotations_extension,
                 ),
             ),
+            fetch_probes=False,
             **kwargs
         )
-        self.annotation_type = "bounding-box"
+        self.annotation_type = "eyes-center"
         self.fixed_positions = None

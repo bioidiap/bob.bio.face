@@ -89,7 +89,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         if "purpose" not in fields:
             raise ValueError(f"`purpose` not available in {header}")
 
-        kwargs = {k: fields[k] for k in fields.keys() - {"id",}}
+        kwargs = {k: fields[k] for k in fields.keys() - {"id","should_flip"}}
 
         # Retrieve the references list
         if fields["purpose"].lower() == "enroll" and fields["reference_id"] not in self.references_list:
@@ -107,7 +107,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
                 load_frame_from_file_replaymobile,
                 file_name=os.path.join(self.dataset_original_directory, fields["path"] + self.extension),
                 frame=frame,
-                should_flip=kwargs["should_flip"]=="TRUE",
+                should_flip=fields["should_flip"]=="TRUE",
             ),
             key=f"{fields['id']}_{frame}",
             frame=frame,
@@ -142,8 +142,21 @@ def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="
     logger.debug(f"Reading annotation file '{file_name}', frame {frame}.")
 
     video_annotations = read_annotation_file(file_name, annotation_type=annotations_type)
-    # read_annotation_file returns an ordered dict with string keys
-    return video_annotations[f"{frame}"]
+    # read_annotation_file returns an ordered dict with str keys as frame number
+    # Annotations can be "null". Take the last annotated frame in this case
+    offset = 1
+    frame_annotations = video_annotations[f"{frame}"]
+    if frame_annotations is None:
+        logger.warning(f"Annotation for file '{file_name}' at frame {frame} was 'null' retrieving nearest frame's annotations.")
+    while frame_annotations is None:
+        frame_annotations = video_annotations[f"{max(frame-offset, 1)}"]
+        if frame_annotations is not None:
+            break
+        frame_annotations = video_annotations[f"{min(frame+offset, len(video_annotations)-1)}"]
+        offset += 1
+        if frame-offset < 1 and frame+offset > len(video_annotations):
+            raise IOError(f"Annotations file '{file_name}' does not contain any annotations.")
+    return frame_annotations
 
 class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
     """A transformer that adds bounding-box to a sample from annotations files.

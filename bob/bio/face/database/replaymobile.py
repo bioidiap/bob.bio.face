@@ -97,8 +97,8 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         # Set the references list in the probes for vanilla-biometrics
         if fields["purpose"].lower() != "enroll":
             if fields["attack_type"]:
-                # Attacks only compare to the target (no `spoof_neg`)
-                kwargs["references"] = fields["reference_id"]
+                # Attacks are only compare to their target (no `spoof_neg`)
+                kwargs["references"] = [fields["reference_id"]]
             else:
                 kwargs["references"] = self.references_list
         # One row leads to multiple samples (different frames)

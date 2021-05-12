@@ -81,7 +81,6 @@ def load(annotation_type, fixed_positions=None):
     # Cropping
     face_cropper, transform_extra_arguments = make_cropper(
         cropped_image_size=cropped_image_size,
-        annotation_type=annotation_type,
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="gray",

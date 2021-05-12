@@ -1,6 +1,4 @@
-import bob.bio.face
 from sklearn.pipeline import make_pipeline
-from bob.bio.base.wrappers import wrap_sample_preprocessor
 from bob.pipelines import wrap
 from bob.bio.face.helpers import face_crop_solver
 import numpy as np

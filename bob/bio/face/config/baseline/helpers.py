@@ -173,6 +173,33 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
     return cropped_positions
 
 
+def make_cropper(
+    cropped_image_size,
+    annotation_type,
+    cropped_positions,
+    fixed_positions=None,
+    color_channel="rgb",
+    annotator=None,
+):
+
+    face_cropper = face_crop_solver(
+        cropped_image_size,
+        color_channel=color_channel,
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        dtype="float64",
+        annotator=annotator,
+    )
+
+    transform_extra_arguments = (
+        None
+        if (cropped_positions is None or fixed_positions is not None)
+        else (("annotations", "annotations"),)
+    )
+
+    return face_cropper, transform_extra_arguments
+
+
 def embedding_transformer(
     cropped_image_size,
     embedding,
@@ -304,58 +331,3 @@ def embedding_transformer_224x224(
         fixed_positions,
         color_channel=color_channel,
     )
-
-
-def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
-    """
-    Crops a face to :math:`80 \times 64`
-
-
-    Parameters
-    ----------
-
-       annotation_type: str
-          Type of annotations. Possible values are: `bounding-box`, `eyes-center` and None
-
-       fixed_positions: tuple
-          A tuple containing the annotations. This is used in case your input is already registered
-          with fixed positions (eyes or bounding box)
-
-       color_channel: str
-
-
-    Returns
-    -------
-
-      face_cropper:
-         A face cropper to be used
-
-      transform_extra_arguments:
-         The parameters to the transformer
-
-    """
-    color_channel = color_channel
-    dtype = np.float64
-
-    # Cropping
-    CROPPED_IMAGE_HEIGHT = 80
-    CROPPED_IMAGE_WIDTH = CROPPED_IMAGE_HEIGHT * 4 // 5
-    cropped_image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-
-    cropped_positions = legacy_default_cropping(cropped_image_size, annotation_type)
-
-    face_cropper = face_crop_solver(
-        cropped_image_size,
-        color_channel=color_channel,
-        cropped_positions=cropped_positions,
-        fixed_positions=fixed_positions,
-        dtype=dtype,
-    )
-
-    transform_extra_arguments = (
-        None
-        if (cropped_positions is None or fixed_positions is not None)
-        else (("annotations", "annotations"),)
-    )
-
-    return face_cropper, transform_extra_arguments

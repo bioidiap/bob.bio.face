@@ -221,7 +221,7 @@ class ReplayMobileBioDatabase(CSVDataset):
     protocol_definition_path: str or None
         Specifies a path to download the database definition to.
         If None: Downloads and uses the ``bob_data_folder`` config.
-        (See :py:fct:`bob.extension.download.get_file`)
+        (See :py:func:`bob.extension.download.get_file`)
 
     data_path: str or None
         Overrides the config-defined data location.

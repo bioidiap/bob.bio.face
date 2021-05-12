@@ -30,16 +30,16 @@ if 'protocol' not in locals():
     logger.info(f"protocol not specified, using default: '{default_protocol}'")
     protocol = default_protocol
 
-dataset_protocol_path = rc.get("bob.db.replaymobile.dataset_protocol_path", None) # TODO default
+dataset_protocol_path = rc.get("bob.db.replaymobile.dataset_protocol_path", None)
 logger.info(f"Loading protocol from '{dataset_protocol_path}'")
 
-data_path = rc.get("bob.db.replaymobile.directory") # TODO default
+data_path = rc.get("bob.db.replaymobile.directory", None)
 logger.info(f"Raw data files will be fetched from '{data_path}'")
 
 data_extension = rc.get("bob.db.replaymobile.extension", ".mov")
 logger.info(f"Raw data files have the '{data_extension}' extension")
 
-annotations_path = rc.get("bob.db.replaymobile.annotation_path", None) # TODO default
+annotations_path = rc.get("bob.db.replaymobile.annotation_path", None)
 logger.info(f"Annotations files will be fetched from '{annotations_path}'")
 
 logger.debug(f"Instantiation of ReplayMobile bio database with protocol '{protocol}'")

@@ -257,10 +257,12 @@ class ReplayMobileBioDatabase(CSVDataset):
             data_path = rc.get("bob.db.replaymobile.directory", "")
 
         if annotations_path is None:
-            # Defaults to {data_path}/faceloc/rect if config not defined
-            annotations_path = rc.get(
-                "bob.db.replaymobile.annotation_directory",
-                os.path.join(data_path, "faceloc/rect/")
+            name = "annotations-replaymobile-mtcnn-9cd6e452.tar.xz"
+            annotations_path = get_file(
+                name,
+                [f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{name}"],
+                cache_subdir="annotations",
+                file_hash="9cd6e452",
             )
 
         logger.info(f"Database: Loading database definition from '{protocol_definition_path}'.")

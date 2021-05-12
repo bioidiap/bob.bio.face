@@ -27,10 +27,10 @@ def lookup_config_from_database():
     return annotation_type, fixed_positions, memory_demanding
 
 
-def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
+def dnn_default_cropping(cropped_image_size, annotation_type):
     """
-    Computes the default cropped positions for the FaceCropper used with Facenet-like
-    Embedding extractors, proportionally to the target image size
+    Computes the default cropped positions for the FaceCropper used with Neural-Net based
+    extractors, proportionally to the target image size
 
 
     Parameters
@@ -51,8 +51,7 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
     """
     if isinstance(annotation_type, list):
         return [
-            embedding_transformer_default_cropping(cropped_image_size, item)
-            for item in annotation_type
+            dnn_default_cropping(cropped_image_size, item) for item in annotation_type
         ]
 
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
@@ -175,7 +174,6 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
 def make_cropper(
     cropped_image_size,
-    annotation_type,
     cropped_positions,
     fixed_positions=None,
     color_channel="rgb",
@@ -183,12 +181,12 @@ def make_cropper(
 ):
 
     face_cropper = face_crop_solver(
-        cropped_image_size,
-        color_channel=color_channel,
+        cropped_image_size=cropped_image_size,
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
-        dtype="float64",
         annotator=annotator,
+        color_channel=color_channel,
+        dtype="float64",
     )
 
     transform_extra_arguments = (
@@ -203,10 +201,10 @@ def make_cropper(
 def embedding_transformer(
     cropped_image_size,
     embedding,
-    annotation_type,
     cropped_positions,
     fixed_positions=None,
     color_channel="rgb",
+    annotator=None,
 ):
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
@@ -216,18 +214,12 @@ def embedding_transformer(
        This will resize images to the requested `image_size`
 
     """
-    face_cropper = face_crop_solver(
-        cropped_image_size,
-        color_channel=color_channel,
+    face_cropper, transform_extra_arguments = make_cropper(
+        cropped_image_size=cropped_image_size,
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
-        dtype="float64",
-    )
-
-    transform_extra_arguments = (
-        None
-        if (cropped_positions is None or fixed_positions is not None)
-        else (("annotations", "annotations"),)
+        color_channel=color_channel,
+        annotator=annotator,
     )
 
     transformer = make_pipeline(
@@ -240,66 +232,6 @@ def embedding_transformer(
     )
 
     return transformer
-
-
-def embedding_transformer_160x160(
-    embedding, annotation_type, fixed_positions, color_channel="rgb"
-):
-    """
-    Creates a pipeline composed by and FaceCropper and an Embedding extractor.
-    This transformer is suited for Facenet based architectures
-
-    .. warning::
-       This will resize images to :math:`160 \times 160`
-
-    """
-    cropped_positions = embedding_transformer_default_cropping(
-        (160, 160), annotation_type
-    )
-
-    return embedding_transformer(
-        (160, 160),
-        embedding,
-        annotation_type,
-        cropped_positions,
-        fixed_positions,
-        color_channel=color_channel,
-    )
-
-
-def embedding_transformer_112x112(
-    embedding, annotation_type, fixed_positions, color_channel="rgb"
-):
-    """
-    Creates a pipeline composed by and FaceCropper and an Embedding extractor.
-    This transformer is suited for Facenet based architectures
-
-    .. warning::
-       This will resize images to :math:`112 \times 112`
-
-    """
-    cropped_image_size = (112, 112)
-    if annotation_type == "eyes-center":
-        # Hard coding eye positions for backward consistency
-        cropped_positions = {
-            "leye": (55, 81),
-            "reye": (55, 42),
-        }
-
-    else:
-        # Will use default
-        cropped_positions = embedding_transformer_default_cropping(
-            cropped_image_size, annotation_type
-        )
-
-    return embedding_transformer(
-        cropped_image_size,
-        embedding,
-        annotation_type,
-        cropped_positions,
-        fixed_positions,
-        color_channel=color_channel,
-    )
 
 
 def embedding_transformer_224x224(
@@ -319,15 +251,12 @@ def embedding_transformer_224x224(
         cropped_positions = {"leye": (65, 150), "reye": (65, 77)}
     else:
         # Will use default
-        cropped_positions = embedding_transformer_default_cropping(
-            cropped_image_size, annotation_type
-        )
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
     return embedding_transformer(
-        cropped_image_size,
-        embedding,
-        annotation_type,
-        cropped_positions,
-        fixed_positions,
+        cropped_image_size=cropped_image_size,
+        embedding=embedding,
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
         color_channel=color_channel,
     )

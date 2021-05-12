@@ -1,8 +1,8 @@
 import bob.bio.face
-from bob.bio.face.preprocessor import FaceCrop, MultiFaceCrop, Scale
 from sklearn.pipeline import make_pipeline
 from bob.bio.base.wrappers import wrap_sample_preprocessor
 from bob.pipelines import wrap
+from bob.bio.face.helpers import face_crop_solver
 import numpy as np
 import logging
 
@@ -27,45 +27,9 @@ def lookup_config_from_database():
     return annotation_type, fixed_positions, memory_demanding
 
 
-def face_crop_solver(
-    cropped_image_size,
-    cropped_positions=None,
-    color_channel="rgb",
-    fixed_positions=None,
-    annotator=None,
-    dtype="uint8",
-):
-    """
-    Decide which face cropper to use.
-    """
-    # If there's not cropped positions, just resize
-    if cropped_positions is None:
-        return Scale(cropped_image_size)
-    else:
-        # Detects the face and crops it without eye detection
-        if isinstance(cropped_positions, list):
-            return MultiFaceCrop(
-                cropped_image_size=cropped_image_size,
-                cropped_positions_list=cropped_positions,
-                fixed_positions_list=fixed_positions,
-                color_channel=color_channel,
-                dtype=dtype,
-                annotation=annotator,
-            )
-        else:
-            return FaceCrop(
-                cropped_image_size=cropped_image_size,
-                cropped_positions=cropped_positions,
-                color_channel=color_channel,
-                fixed_positions=fixed_positions,
-                dtype=dtype,
-                annotator=annotator,
-            )
-
-
 def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
     """
-    Computes the default cropped positions for the FaceCropper used with Facenet-like 
+    Computes the default cropped positions for the FaceCropper used with Facenet-like
     Embedding extractors, proportionally to the target image size
 
 
@@ -75,7 +39,7 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
           A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
 
        annotation_type: str or list of str
-          Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile', 
+          Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile',
           'right-profile'  and None, or a combination of those as a list
 
     Returns
@@ -147,7 +111,7 @@ def embedding_transformer_default_cropping(cropped_image_size, annotation_type):
 
 def legacy_default_cropping(cropped_image_size, annotation_type):
     """
-    Computes the default cropped positions for the FaceCropper used with legacy extractors, 
+    Computes the default cropped positions for the FaceCropper used with legacy extractors,
     proportionally to the target image size
 
 
@@ -157,7 +121,7 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
           A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
 
        annotation_type: str
-          Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile', 
+          Type of annotations. Possible values are: `bounding-box`, `eyes-center`, 'left-profile',
           'right-profile' and None, or a combination of those as a list
 
     Returns
@@ -220,10 +184,10 @@ def embedding_transformer(
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
-    
+
     .. warning::
        This will resize images to the requested `image_size`
-    
+
     """
     face_cropper = face_crop_solver(
         cropped_image_size,
@@ -257,10 +221,10 @@ def embedding_transformer_160x160(
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
-    
+
     .. warning::
        This will resize images to :math:`160 \times 160`
-    
+
     """
     cropped_positions = embedding_transformer_default_cropping(
         (160, 160), annotation_type
@@ -282,10 +246,10 @@ def embedding_transformer_112x112(
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
-    
+
     .. warning::
        This will resize images to :math:`112 \times 112`
-    
+
     """
     cropped_image_size = (112, 112)
     if annotation_type == "eyes-center":
@@ -317,10 +281,10 @@ def embedding_transformer_224x224(
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
-    
+
     .. warning::
        This will resize images to :math:`112 \times 112`
-    
+
     """
     cropped_image_size = (224, 224)
     if annotation_type == "eyes-center":
@@ -365,7 +329,7 @@ def crop_80x64(annotation_type, fixed_positions=None, color_channel="gray"):
 
       face_cropper:
          A face cropper to be used
-      
+
       transform_extra_arguments:
          The parameters to the transformer
 

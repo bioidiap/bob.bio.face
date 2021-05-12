@@ -232,31 +232,3 @@ def embedding_transformer(
     )
 
     return transformer
-
-
-def embedding_transformer_224x224(
-    embedding, annotation_type, fixed_positions, color_channel="rgb"
-):
-    """
-    Creates a pipeline composed by and FaceCropper and an Embedding extractor.
-    This transformer is suited for Facenet based architectures
-
-    .. warning::
-       This will resize images to :math:`112 \times 112`
-
-    """
-    cropped_image_size = (224, 224)
-    if annotation_type == "eyes-center":
-        # Hard coding eye positions for backward consistency
-        cropped_positions = {"leye": (65, 150), "reye": (65, 77)}
-    else:
-        # Will use default
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
-
-    return embedding_transformer(
-        cropped_image_size=cropped_image_size,
-        embedding=embedding,
-        cropped_positions=cropped_positions,
-        fixed_positions=fixed_positions,
-        color_channel=color_channel,
-    )

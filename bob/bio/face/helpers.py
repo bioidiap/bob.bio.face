@@ -24,7 +24,7 @@ def face_crop_solver(
                 fixed_positions_list=fixed_positions,
                 color_channel=color_channel,
                 dtype=dtype,
-                annotation=annotator,
+                annotator=annotator,
             )
         else:
             return FaceCrop(

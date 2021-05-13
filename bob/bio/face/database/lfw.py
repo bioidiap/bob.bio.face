@@ -45,6 +45,9 @@ class LFWBioDatabase(BioDatabase):
             original_extension=original_extension,
             annotation_type=annotation_type,
             **kwargs)
+		
+    def groups(self):
+        return self._db.groups()
 
     @property
     def original_directory(self):

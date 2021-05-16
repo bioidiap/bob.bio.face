@@ -7,12 +7,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-def lookup_config_from_database():
+def lookup_config_from_database(database):
     """
     Read configuration values that might be already defined in the database configuration
     file.
     """
-    if "database" in locals():
+    if database is not None:
         annotation_type = database.annotation_type
         fixed_positions = database.fixed_positions
         memory_demanding = (

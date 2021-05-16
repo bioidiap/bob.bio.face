@@ -22,7 +22,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
-annotation_type, fixed_positions, memory_demanding = lookup_config_from_database()
+annotation_type, fixed_positions, memory_demanding = lookup_config_from_database(
+    locals().get("database")
+)
 
 
 ####### SOLVING THE FACE CROPPER TO BE USED ##########
@@ -70,9 +72,7 @@ def load(annotation_type, fixed_positions=None):
     ### BIOMETRIC ALGORITHM
 
     algorithm = BioAlgorithmLegacy(
-        lda,
-        base_dir=tempdir,
-        projector_file=os.path.join(tempdir, "Projector.hdf5"),
+        lda, base_dir=tempdir, projector_file=os.path.join(tempdir, "Projector.hdf5"),
     )
 
     return VanillaBiometricsPipeline(transformer, algorithm)

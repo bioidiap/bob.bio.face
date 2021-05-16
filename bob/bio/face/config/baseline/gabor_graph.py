@@ -21,7 +21,9 @@ import logging
 logger = logging.getLogger(__name__)
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
-annotation_type, fixed_positions, memory_demanding = lookup_config_from_database()
+annotation_type, fixed_positions, memory_demanding = lookup_config_from_database(
+    locals().get("database")
+)
 
 
 def get_pipeline(face_cropper, transform_extra_arguments):

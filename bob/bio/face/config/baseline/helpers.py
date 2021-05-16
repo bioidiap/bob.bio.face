@@ -8,6 +8,10 @@ logger = logging.getLogger(__name__)
 
 
 def lookup_config_from_database():
+    """
+    Read configuration values that might be already defined in the database configuration
+    file.
+    """
     if "database" in locals():
         annotation_type = database.annotation_type
         fixed_positions = database.fixed_positions
@@ -170,6 +174,92 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
     return cropped_positions
 
 
+def pad_default_cropping(cropped_image_size, annotation_type):
+    """
+    Computes the default cropped positions for the FaceCropper used in PAD applications,
+    proportionally to the target image size
+
+
+    Parameters
+    ----------
+    cropped_image_size : tuple
+        A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
+
+    annotation_type: str
+        Type of annotations. Possible values are: `bounding-box`, `eyes-center` and None, or a combination of those as a list
+
+    Returns
+    -------
+
+    cropped_positions:
+        The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
+        ``annotation_type`` is a list
+    """
+    if cropped_image_size[0] != cropped_image_size[1]:
+        logger.warning(
+            "PAD cropping is designed for a square cropped image size. Got : {}".format(
+                cropped_image_size
+            )
+        )
+    else:
+        face_size = cropped_image_size[0]
+
+    if annotation_type == "eyes-center":
+        eyes_distance = (face_size + 1) / 2.0
+        eyes_center = (face_size / 4.0, (face_size - 0.5) / 2.0)
+        right_eye = (eyes_center[0], eyes_center[1] - eyes_distance / 2)
+        left_eye = (eyes_center[0], eyes_center[1] + eyes_distance / 2)
+        cropped_positions = {"reye": right_eye, "leye": left_eye}
+
+    elif annotation_type == "bounding-box":
+        cropped_positions = {
+            "topleft": (0, 0),
+            "bottomright": cropped_image_size,
+        }
+    else:
+        logger.warning(
+            f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+        )
+        cropped_positions = None
+
+    return cropped_positions
+
+
+def get_default_cropped_positions(mode, cropped_image_size, annotation_type):
+    """
+    Computes the default cropped positions for the FaceCropper,
+    proportionally to the target image size
+
+
+    Parameters
+    ----------
+    mode: str
+        Which default cropping to use. Available modes are : `legacy` (legacy baselines), `facenet`, `arcface`,
+        and `pad`.
+
+    cropped_image_size : tuple
+        A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
+
+    annotation_type: str
+        Type of annotations. Possible values are: `bounding-box`, `eyes-center` and None, or a combination of those as a list
+
+    Returns
+    -------
+
+    cropped_positions:
+        The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
+        ``annotation_type`` is a list
+    """
+    if mode == "legacy":
+        return legacy_default_cropping(cropped_image_size, annotation_type)
+    elif mode in ["facenet", "arcface"]:
+        return dnn_default_cropping(cropped_image_size, annotation_type)
+    elif mode == "pad":
+        return pad_default_cropping(cropped_image_size, annotation_type)
+    else:
+        raise ValueError("Unknown default cropping mode {}".format(mode))
+
+
 def make_cropper(
     cropped_image_size,
     cropped_positions,
@@ -177,7 +267,11 @@ def make_cropper(
     color_channel="rgb",
     annotator=None,
 ):
+    """
+    Solve the face FaceCropper and additionally returns the necessary
+    transform_extra_arguments for wrapping the cropper with a SampleWrapper.
 
+    """
     face_cropper = face_crop_solver(
         cropped_image_size=cropped_image_size,
         cropped_positions=cropped_positions,

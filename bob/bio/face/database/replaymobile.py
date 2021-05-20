@@ -8,14 +8,14 @@ from bob.db.base.annotations import read_annotation_file
 from bob.extension.download import get_file
 from bob.io.video import reader
 from bob.extension import rc
-import bob.core
 
 from sklearn.pipeline import make_pipeline
 import functools
 import os.path
+import logging
 import numpy
 
-logger = bob.core.log.setup("bob.bio.face")
+logger = logging.getLogger(__name__)
 
 def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     """Loads a single frame from a video file for replay-mobile.
@@ -42,7 +42,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     images: 3D numpy array
         The frame of the video in bob format (channel, height, width)
     """
-    logger.debug(f"Extracting frame {frame} from '{file_name}'")
+    logger.debug(f"Reading frame {frame} from '{file_name}'")
     video_reader = reader(file_name)
     image = video_reader[frame]
     # Image captured by the 'mobile' device are flipped vertically.
@@ -58,7 +58,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
     """A loader transformer returning a specific frame of a video file.
 
     This is specifically tailored for replay-mobile. It uses a specific loader
-    that takes the capturing device as input.
+    that processes the `should_flip` metadata to correctly orient the frames.
     """
     def __init__(
         self,
@@ -75,7 +75,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         self.references_list = []
 
     def convert_row_to_sample(self, row, header):
-        """Creates a set of samples given a row of the CSV protocol definition.
+        """Creates a sample given a row of the CSV protocol definition.
         """
         fields = dict([[str(h).lower(), r] for h, r in zip(header, row)])
 
@@ -102,18 +102,16 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
             else:
                 kwargs["references"] = self.references_list
         # One row leads to multiple samples (different frames)
-        all_samples = [DelayedSample(
+        return DelayedSample(
             functools.partial(
                 load_frame_from_file_replaymobile,
                 file_name=os.path.join(self.dataset_original_directory, fields["path"] + self.extension),
-                frame=frame,
+                frame=int(fields["frame"]),
                 should_flip=fields["should_flip"]=="TRUE",
             ),
-            key=f"{fields['id']}_{frame}",
-            frame=frame,
+            key=fields['id'],
             **kwargs,
-        ) for frame in range(12,251,24)]
-        return all_samples
+        )
 
 
 def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="json"):

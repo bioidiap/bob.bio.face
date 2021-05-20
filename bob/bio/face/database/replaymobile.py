@@ -141,19 +141,9 @@ def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="
 
     video_annotations = read_annotation_file(file_name, annotation_type=annotations_type)
     # read_annotation_file returns an ordered dict with str keys as frame number
-    # Annotations can be "null". Take the last annotated frame in this case
-    offset = 1
-    frame_annotations = video_annotations[f"{frame}"]
+    frame_annotations = video_annotations[str(frame)]
     if frame_annotations is None:
-        logger.warning(f"Annotation for file '{file_name}' at frame {frame} was 'null' retrieving nearest frame's annotations.")
-    while frame_annotations is None:
-        frame_annotations = video_annotations[f"{max(frame-offset, 1)}"]
-        if frame_annotations is not None:
-            break
-        frame_annotations = video_annotations[f"{min(frame+offset, len(video_annotations)-1)}"]
-        offset += 1
-        if frame-offset < 1 and frame+offset > len(video_annotations):
-            raise IOError(f"Annotations file '{file_name}' does not contain any annotations.")
+        logger.warning(f"Annotation for file '{file_name}' at frame {frame} was 'null'.")
     return frame_annotations
 
 class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):

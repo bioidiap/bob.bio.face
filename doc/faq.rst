@@ -15,7 +15,7 @@ The recipe below helps you to set a face cropper based on eye positions.
 
 
 How to choose the cropped positions ?
-=================================
+=====================================
 
 The ideal cropped positions are dependent on the specific application you are using the face cropper in.
 Some face embedding extractors work well on loosely cropped faces, while others require the face to be tightly cropped.
@@ -68,6 +68,6 @@ We present hereafter a visual example of those crops for the `eyes-center` annot
     :align: right
     :alt: PAD crop
     :figclass: align-center
-    
+
     PAD crop (160 x 160)
     

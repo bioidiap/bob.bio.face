@@ -252,12 +252,12 @@ def get_default_cropped_positions(mode, cropped_image_size, annotation_type):
     """
     if mode == "legacy":
         return legacy_default_cropping(cropped_image_size, annotation_type)
-    elif mode in ["facenet", "arcface"]:
+    elif mode in ["dnn", "facenet", "arcface"]:
         return dnn_default_cropping(cropped_image_size, annotation_type)
     elif mode == "pad":
         return pad_default_cropping(cropped_image_size, annotation_type)
     else:
-        raise ValueError("Unknown default cropping mode {}".format(mode))
+        raise ValueError("Unknown default cropping mode `{}`".format(mode))
 
 
 def make_cropper(

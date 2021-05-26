@@ -26,6 +26,7 @@ def arcface_baseline(embedding, annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
+        annotator="mtcnn",
     )
 
     algorithm = Distance()

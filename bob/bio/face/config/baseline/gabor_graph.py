@@ -86,6 +86,7 @@ def load(annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="gray",
+        annotator="mtcnn",
     )
 
     return get_pipeline(face_cropper, transform_extra_arguments)

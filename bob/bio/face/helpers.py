@@ -1,10 +1,5 @@
 from bob.bio.face.preprocessor import FaceCrop, MultiFaceCrop, Scale
-from bob.bio.face.config.baseline.helpers import (
-    legacy_default_cropping,
-    dnn_default_cropping,
-    pad_default_cropping,
-)
-
+import bob.bio.face.config.baseline.helpers as helpers
 
 def face_crop_solver(
     cropped_image_size,
@@ -68,10 +63,10 @@ def get_default_cropped_positions(mode, cropped_image_size, annotation_type):
         ``annotation_type`` is a list
     """
     if mode == "legacy":
-        return legacy_default_cropping(cropped_image_size, annotation_type)
+        return helpers.legacy_default_cropping(cropped_image_size, annotation_type)
     elif mode in ["dnn", "facenet", "arcface"]:
-        return dnn_default_cropping(cropped_image_size, annotation_type)
+        return helpers.dnn_default_cropping(cropped_image_size, annotation_type)
     elif mode == "pad":
-        return pad_default_cropping(cropped_image_size, annotation_type)
+        return helpers.pad_default_cropping(cropped_image_size, annotation_type)
     else:
         raise ValueError("Unknown default cropping mode `{}`".format(mode))

@@ -178,3 +178,100 @@ def test_lgbphs():
         "bob.bio.face.test", "data/lgbphs_with_phase.hdf5"
     )
     _compare(feature, reference)
+
+
+def test_face_crop(height=112, width=112):
+    # read input
+    image, annotation = _image(), _annotation()
+    CROPPED_IMAGE_HEIGHT = height
+    CROPPED_IMAGE_WIDTH = width
+
+    # preprocessor with fixed eye positions (which correspond to th ones
+    fixed_cropper = bob.bio.face.preprocessor.FaceCrop(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        color_channel="rgb",
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+        fixed_positions={"reye": annotation["reye"], "leye": annotation["leye"]},
+    )
+
+    cropped = fixed_cropper.transform([image])
+    return cropped
+
+
+def _image():
+    return bob.io.base.load(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg")
+    )
+
+
+def _annotation():
+
+    return read_annotation_file(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.pos"),
+        "named",
+    )
+
+
+def test_opencv():
+    data = _data()
+    opencv = bob.bio.face.embeddings.GenericOpenCV.OpenCVModel()
+    assert isinstance(opencv, OpenCVModel)
+
+    feature = opencv.transform(test_face_crop(224, 224))
+    reference = pkg_resources.resource_filename("bob.bio.face.test", "data/opencv.hdf5")
+    _compare(feature, reference)
+
+
+def test_tf():
+    data = _data()
+    tf = TensorFlowModel()
+    assert isinstance(tf, TensorFlowModel)
+
+    feature = tf.transform(test_face_crop(160, 160))
+    reference = pkg_resources.resource_filename("bob.bio.face.test", "data/tf.hdf5")
+    _compare(feature, reference)
+
+
+def test_pytorch_v1():
+    data = _data()
+    pytorch_v1 = PyTorchLoadedModel(weights=weights, config=config)
+    assert isinstance(pytorch_v1, PyTorchLoadedModel)
+
+    feature = pytorch_v1.transform(test_face_crop(224, 224))
+
+    reference = pkg_resources.resource_filename(
+        "bob.bio.face.test", "data/pytorch_v1.hdf5"
+    )
+    _compare(feature, reference)
+
+
+"""
+from bob.bio.face.embeddings.PyTorchModel import PyTorchLibraryModel
+from facenet_pytorch import InceptionResnetV1
+def test_pytorch_v2():
+    import h5py
+    data = _data()
+    model = InceptionResnetV1(pretrained='vggface2').eval()
+    pytorch_v2 = PyTorchLibraryModel(model=model)
+    assert isinstance(pytorch_v2, PyTorchLibraryModel)
+    
+    feature = pytorch_v2.transform(test_face_crop(160,160))
+    hf = h5py.File('pytorch_v2.hdf5', 'w')
+    hf.create_dataset('bob.bio.face.test/data/data1',data=feature)
+    hf.close()
+    reference = pkg_resources.resource_filename(
+        "bob.bio.face.test", "data/pytorch_v2.hdf5"
+    )
+    _compare(feature, reference)
+"""
+
+
+def test_mxnet():
+    data = _data()
+    mxnet = MxNetModel()
+    assert isinstance(mxnet, MxNetModel)
+
+    feature = mxnet.transform(test_face_crop(112, 112))
+    reference = pkg_resources.resource_filename("bob.bio.face.test", "data/mxnet.hdf5")
+    _compare(feature, reference)
+

@@ -152,3 +152,33 @@ def test_gabor_graph():
 
 # def test_lda():
 #    run_baseline("lda", get_fake_samples_for_training())
+
+
+@pytest.mark.slow
+@is_library_available("opencv-python")
+def test_opencv_pipe():
+    run_baseline("opencv-pipe", target_scores=None)
+
+
+@pytest.mark.slow
+@is_library_available("mxnet")
+def test_mxnet_pipe():
+    run_baseline("mxnet-pipe", target_scores=None)
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_tf_pipe():
+    run_baseline("tf-pipe", target_scores=None)
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_pytorch_pipe_v1():
+    run_baseline("pytorch-pipe-v1", target_scores=None)
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_pytorch_pipe_v2():
+    run_baseline("pytorch-pipe-v2", target_scores=None)

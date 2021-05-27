@@ -50,9 +50,12 @@ transform_extra_arguments = (
     else (("annotations", "annotations"),)
 )
 
-
 # Extractor
-extractor_transformer = OpenCVModel()
+
+weights = None  # PATH/TO/WEIGHTS
+config = None  # PATH/TO/CONFIG
+
+extractor_transformer = OpenCVModel(weights=weights, config=config)
 
 
 # Algorithm

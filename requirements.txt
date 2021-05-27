@@ -21,7 +21,5 @@ matplotlib   # for plotting
 mxnet
 opencv-python
 six
-mxnet
-opencv-python
 scikit-image
 scikit-learn # for pipelines Tranformers

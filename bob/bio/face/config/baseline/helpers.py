@@ -225,41 +225,6 @@ def pad_default_cropping(cropped_image_size, annotation_type):
     return cropped_positions
 
 
-def get_default_cropped_positions(mode, cropped_image_size, annotation_type):
-    """
-    Computes the default cropped positions for the FaceCropper,
-    proportionally to the target image size
-
-
-    Parameters
-    ----------
-    mode: str
-        Which default cropping to use. Available modes are : `legacy` (legacy baselines), `facenet`, `arcface`,
-        and `pad`.
-
-    cropped_image_size : tuple
-        A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
-
-    annotation_type: str
-        Type of annotations. Possible values are: `bounding-box`, `eyes-center` and None, or a combination of those as a list
-
-    Returns
-    -------
-
-    cropped_positions:
-        The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
-        ``annotation_type`` is a list
-    """
-    if mode == "legacy":
-        return legacy_default_cropping(cropped_image_size, annotation_type)
-    elif mode in ["dnn", "facenet", "arcface"]:
-        return dnn_default_cropping(cropped_image_size, annotation_type)
-    elif mode == "pad":
-        return pad_default_cropping(cropped_image_size, annotation_type)
-    else:
-        raise ValueError("Unknown default cropping mode `{}`".format(mode))
-
-
 def make_cropper(
     cropped_image_size,
     cropped_positions,

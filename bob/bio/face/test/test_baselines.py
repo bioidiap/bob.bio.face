@@ -160,16 +160,16 @@ def test_opencv_pipe():
     run_baseline("opencv-pipe", target_scores=None)
 
 
-@pytest.mark.slow
-@is_library_available("mxnet")
-def test_mxnet_pipe():
-    run_baseline("mxnet-pipe", target_scores=None)
+# @pytest.mark.slow
+# @is_library_available("mxnet")
+# def test_mxnet_pipe():
+# run_baseline("mxnet-pipe", target_scores=None)
 
 
-@pytest.mark.slow
-@is_library_available("tensorflow")
-def test_tf_pipe():
-    run_baseline("tf-pipe", target_scores=None)
+# @pytest.mark.slow
+# @is_library_available("tensorflow")
+# def test_tf_pipe():
+#    run_baseline("tf-pipe", target_scores=None)
 
 
 @pytest.mark.slow

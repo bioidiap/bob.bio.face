@@ -32,6 +32,7 @@ class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+<<<<<<< HEAD:bob/bio/face/extractor/PyTorchModel.py~HEAD
         self.model = None
 
         internal_path = pkg_resources.resource_filename(
@@ -43,6 +44,27 @@ class PyTorchLoadedModel(TransformerMixin, BaseEstimator):
             if rc["bob.bio.face.models.pytorchmodel"] is None
             else rc["bob.bio.face.models.pytorchmodel"]
         )
+=======
+        self.weights = weights
+        self.config = config
+
+        if self.config == None and self.weights == None:
+            internal_path = pkg_resources.resource_filename(
+                __name__, os.path.join("data", "AFFFE-42a53f19", ""),
+            )
+
+            checkpoint_path = (
+                internal_path
+                if rc["bob.bio.face.models.AFFFE"] is None
+                else rc["bob.bio.face.models.AFFFE"]
+            )
+
+            urls = [
+                "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz"
+               ]
+
+            download_model(checkpoint_path, urls, "AFFFE-42a53f19.tar.gz")
+>>>>>>> Update bob/bio/face/extractor/__init__.py, bob/bio/face/test/test_extractors.py, bob/bio/face/embeddings/PyTorchModel.py files:bob/bio/face/embeddings/PyTorchModel.py
 
         self.checkpoint_path = checkpoint_path
         self.device = None

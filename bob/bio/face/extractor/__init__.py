@@ -1,11 +1,6 @@
 from .DCTBlocks import DCTBlocks
 from .GridGraph import GridGraph
 from .LGBPHS import LGBPHS
-from .MxNetModel import MxNetModel
-from .PyTorchModel import PyTorchLoadedModel
-from .PyTorchModel import PyTorchLibraryModel
-from .TensorFlowModel import TensorFlowModel
-from .OpenCVModel import OpenCVModel
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -23,14 +18,5 @@ def __appropriate__(*args):
         obj.__module__ = __name__
 
 
-__appropriate__(
-    DCTBlocks,
-    GridGraph,
-    LGBPHS,
-    MxNetModel,
-    PyTorchLoadedModel,
-    PyTorchLibraryModel,
-    TensorFlowModel,
-    OpenCVModel,
-)
+__appropriate__(DCTBlocks, GridGraph, LGBPHS)
 __all__ = [_ for _ in dir() if not _.startswith("_")]

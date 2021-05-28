@@ -58,11 +58,6 @@ Image Feature Extractors
    bob.bio.face.extractor.DCTBlocks
    bob.bio.face.extractor.GridGraph
    bob.bio.face.extractor.LGBPHS
-   bob.bio.face.extractor.MxNetModel
-   bob.bio.face.extractor.PyTorchLoadedModel
-   bob.bio.face.extractor.PyTorchLibraryModel
-   bob.bio.face.extractor.TensorFlowModel
-   bob.bio.face.extractor.OpenCVModel
 
 
 Face Recognition Algorithms

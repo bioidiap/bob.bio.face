@@ -1,8 +1,7 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.face.extractor import PyTorchLoadedModel
-from bob.bio.base.algorithm import Distance
-from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
+from bob.bio.face.embeddings.opencv import VGG16_Oxford
+from bob.pipelines import wrap
 import scipy.spatial
 from bob.bio.base.pipelines.vanilla_biometrics import Distance
 
@@ -22,16 +21,13 @@ else:
     annotation_type = None
     fixed_positions = None
 
-
-cropped_positions = {"leye": (49, 72), "reye": (49, 38)}
-
-cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
-
+cropped_positions = {"leye": (100, 140), "reye": (100, 95)}
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(224, 224),
-    cropped_positions={"leye": (110, 144), "reye": (110, 96)},
+    cropped_positions=cropped_positions,
     color_channel="rgb",
     fixed_positions=fixed_positions,
+    allow_upside_down_normalized_faces=True,
 )
 
 transform_extra_arguments = (
@@ -40,19 +36,15 @@ transform_extra_arguments = (
     else (("annotations", "annotations"),)
 )
 
-transform_extra_arguments = (
-    None
-    if (cropped_positions is None or fixed_positions is not None)
-    else (("annotations", "annotations"),)
-)
+# Extractor
+
+extractor_transformer = VGG16_Oxford()
 
 
-extractor_transformer = PyTorchLoadedModel()
-
+# Algorithm
 algorithm = Distance(
     distance_function=scipy.spatial.distance.cosine, is_distance_function=True
 )
-
 
 # Chain the Transformers together
 transformer = make_pipeline(

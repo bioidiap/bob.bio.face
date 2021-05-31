@@ -66,6 +66,7 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
     # Regular pipeline
     pipeline = load_resource(baseline, "pipeline")
     scores = pipeline(samples_for_training, biometric_references, probes)
+
     assert len(scores) == 1
     assert len(scores[0]) == 1
 
@@ -174,11 +175,14 @@ def test_opencv_pipe():
 
 @pytest.mark.slow
 @is_library_available("torch")
-def test_pytorch_pipe_v1():
-    run_baseline("pytorch-pipe-v1", target_scores=None)
+def test_afffe():
+    run_baseline("afffe", target_scores=-0.7397219061544165)
 
 
 @pytest.mark.slow
-@is_library_available("torch")
-def test_pytorch_pipe_v2():
-    run_baseline("pytorch-pipe-v2", target_scores=None)
+@is_library_available("cv2")
+def test_vgg16_oxford():
+    import ipdb
+
+    ipdb.set_trace()
+    run_baseline("vgg16-oxford", target_scores=None)

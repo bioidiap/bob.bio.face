@@ -1,11 +1,7 @@
 import bob.bio.base
 from bob.bio.face.preprocessor import FaceCrop
-from bob.bio.base.transformers.preprocessor import PreprocessorTransformer
-from bob.bio.face.extractor import OpenCVModel
-from bob.bio.base.extractor import Extractor
-from bob.bio.base.transformers import ExtractorTransformer
-from bob.bio.base.algorithm import Distance
-from bob.bio.base.pipelines.vanilla_biometrics.legacy import BioAlgorithmLegacy
+from bob.bio.face.embeddings.pytorch import AFFFE_2021
+from bob.pipelines import wrap
 import scipy.spatial
 from bob.bio.base.pipelines.vanilla_biometrics import Distance
 from sklearn.pipeline import make_pipeline
@@ -25,23 +21,14 @@ else:
     annotation_type = None
     fixed_positions = None
 
+cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
 
-cropped_positions = {"leye": (98, 144), "reye": (98, 76)}
-# Preprocessor
 preprocessor_transformer = FaceCrop(
     cropped_image_size=(224, 224),
-    cropped_positions={"leye": (98, 144), "reye": (98, 76)},
+    cropped_positions=cropped_positions,
     color_channel="rgb",
     fixed_positions=fixed_positions,
-)
-
-cropped_positions = {"leye": (98, 144), "reye": (98, 76)}
-# Preprocessor
-preprocessor_transformer = FaceCrop(
-    cropped_image_size=(224, 224),
-    cropped_positions={"leye": (98, 144), "reye": (98, 76)},
-    color_channel="rgb",
-    fixed_positions=fixed_positions,
+    allow_upside_down_normalized_faces=True,
 )
 
 transform_extra_arguments = (
@@ -50,21 +37,12 @@ transform_extra_arguments = (
     else (("annotations", "annotations"),)
 )
 
-# Extractor
-
-weights = None  # PATH/TO/WEIGHTS
-config = None  # PATH/TO/CONFIG
-
-extractor_transformer = OpenCVModel(weights=weights, config=config)
-
+extractor_transformer = AFFFE_2021()
 
 # Algorithm
 algorithm = Distance(
     distance_function=scipy.spatial.distance.cosine, is_distance_function=True
 )
-
-## Creation of the pipeline
-
 
 # Chain the Transformers together
 transformer = make_pipeline(

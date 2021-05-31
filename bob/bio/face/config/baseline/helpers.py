@@ -1,6 +1,6 @@
 from sklearn.pipeline import make_pipeline
 from bob.pipelines import wrap
-from bob.bio.face.helpers import face_crop_solver
+from bob.bio.face import helpers
 import numpy as np
 import logging
 
@@ -237,7 +237,7 @@ def make_cropper(
     transform_extra_arguments for wrapping the cropper with a SampleWrapper.
 
     """
-    face_cropper = face_crop_solver(
+    face_cropper = helpers.face_crop_solver(
         cropped_image_size=cropped_image_size,
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,

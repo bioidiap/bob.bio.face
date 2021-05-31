@@ -38,35 +38,6 @@ There are currently three available modes :
 
 We present hereafter a visual example of those crops for the `eyes-center` annotation type.
 
-.. figure:: img/cropping_example_source.png
-    :height: 250px
-    :align: left
-    :alt: Source image
-    :figclass: align-center
-
-    Original face image
-
-.. figure:: img/cropping_example_legacy.png
-    :height: 250px
-    :align: right
-    :alt: Legacy crop
-    :figclass: align-center
-
-    Legacy crop (160 x 128)
-
-.. figure:: img/cropping_example_dnn.png
-    :height: 250px
-    :align: left
-    :alt: DNN crop
-    :figclass: align-center
-
-    DNN crop (160 x 160)
-
-.. figure:: img/cropping_example_pad.png
-    :height: 250px
-    :align: right
-    :alt: PAD crop
-    :figclass: align-center
-
-    PAD crop (160 x 160)
+.. plot:: plot/default_crops.py
+    :include-source: True
     

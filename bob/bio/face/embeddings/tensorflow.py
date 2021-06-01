@@ -33,7 +33,7 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
        Path containing the checkpoint
 
     preprocessor:
-        Preprocessor function
+        A function that will transform the data right before forward
 
     memory_demanding bool
         If `True`, the `transform` method will run one sample at the time.

@@ -24,6 +24,9 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
       config : str
          json file containing the DNN spec
 
+      preprocessor:
+         A function that will transform the data right before forward. The default transformation is `X=X`
+
       use_gpu: bool
     """
 
@@ -33,6 +36,7 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         config=None,
         use_gpu=False,
         memory_demanding=False,
+        preprocessor=lambda x: x,
         **kwargs,
     ):
         super().__init__(**kwargs)
@@ -41,6 +45,7 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         self.use_gpu = use_gpu
         self.model = None
         self.memory_demanding = memory_demanding
+        self.preprocessor = preprocessor
 
     def _load_model(self):
         import mxnet as mx
@@ -65,6 +70,7 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
             self._load_model()
 
         X = check_array(X, allow_nd=True)
+        X = self.preprocessor(X)
 
         def _transform(X):
             X = mx.nd.array(X)

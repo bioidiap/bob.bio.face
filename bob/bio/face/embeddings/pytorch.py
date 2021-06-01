@@ -13,13 +13,35 @@ from bob.extension.download import get_file
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
     """
+    Base Transformer using pytorch models
+
+
+    Parameters
+    ----------
+
+    checkpoint_path: str
+       Path containing the checkpoint
+
+    config:
+        Path containing some configuration file (e.g. .json, .prototxt)
+
+    preprocessor:
+        A function that will transform the data right before forward. The default transformation is `X/255`
+
     """
 
-    def __init__(self, checkpoint_path=None, config=None, **kwargs):
+    def __init__(
+        self,
+        checkpoint_path=None,
+        config=None,
+        preprocessor=lambda x: x / 255,
+        **kwargs
+    ):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
         self.config = config
         self.model = None
+        self.preprocessor = preprocessor
 
     def transform(self, X):
         """__call__(image) -> feature
@@ -42,7 +64,7 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
             self._load_model()
         X = check_array(X, allow_nd=True)
         X = torch.Tensor(X)
-        X = X / 255
+        X = self.preprocessor(X)
 
         return self.model(X).detach().numpy()
 

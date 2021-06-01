@@ -1,5 +1,5 @@
 from bob.bio.face.embeddings.mobilenet_v2 import MobileNetv2_MsCeleb_ArcFace_2021
-from bob.bio.face.config.baseline.helpers import lookup_config_from_database
+from bob.bio.face.utils import lookup_config_from_database
 from bob.bio.face.config.baseline.templates import arcface_baseline
 
 

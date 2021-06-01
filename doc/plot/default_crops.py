@@ -1,5 +1,5 @@
 import bob.io.image
-from bob.bio.face.helpers import get_default_cropped_positions
+from bob.bio.face.utils import get_default_cropped_positions
 from bob.bio.face.preprocessor import FaceCrop
 import matplotlib.pyplot as plt
 

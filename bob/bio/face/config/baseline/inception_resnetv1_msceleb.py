@@ -1,7 +1,7 @@
 from bob.bio.face.embeddings.tf2_inception_resnet import (
     InceptionResnetv1_MsCeleb_CenterLoss_2018,
 )
-from bob.bio.face.config.baseline.helpers import lookup_config_from_database
+from bob.bio.face.utils import lookup_config_from_database
 from bob.bio.face.config.baseline.templates import facenet_baseline
 
 

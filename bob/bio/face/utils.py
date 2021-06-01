@@ -1,8 +1,10 @@
-from sklearn.pipeline import make_pipeline
-from bob.pipelines import wrap
-from bob.bio.face import helpers
-import numpy as np
 import logging
+
+from .preprocessor import FaceCrop
+from .preprocessor import MultiFaceCrop
+from .preprocessor import Scale
+from bob.pipelines import wrap
+from sklearn.pipeline import make_pipeline
 
 logger = logging.getLogger(__name__)
 
@@ -237,7 +239,7 @@ def make_cropper(
     transform_extra_arguments for wrapping the cropper with a SampleWrapper.
 
     """
-    face_cropper = helpers.face_crop_solver(
+    face_cropper = face_crop_solver(
         cropped_image_size=cropped_image_size,
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
@@ -289,3 +291,74 @@ def embedding_transformer(
     )
 
     return transformer
+
+
+def face_crop_solver(
+    cropped_image_size,
+    cropped_positions=None,
+    color_channel="rgb",
+    fixed_positions=None,
+    annotator=None,
+    dtype="uint8",
+):
+    """
+    Decide which face cropper to use.
+    """
+    # If there's not cropped positions, just resize
+    if cropped_positions is None:
+        return Scale(cropped_image_size)
+    else:
+        # Detects the face and crops it without eye detection
+        if isinstance(cropped_positions, list):
+            return MultiFaceCrop(
+                cropped_image_size=cropped_image_size,
+                cropped_positions_list=cropped_positions,
+                fixed_positions_list=fixed_positions,
+                color_channel=color_channel,
+                dtype=dtype,
+                annotator=annotator,
+            )
+        else:
+            return FaceCrop(
+                cropped_image_size=cropped_image_size,
+                cropped_positions=cropped_positions,
+                color_channel=color_channel,
+                fixed_positions=fixed_positions,
+                dtype=dtype,
+                annotator=annotator,
+            )
+
+
+def get_default_cropped_positions(mode, cropped_image_size, annotation_type):
+    """
+    Computes the default cropped positions for the FaceCropper,
+    proportionally to the target image size
+
+
+    Parameters
+    ----------
+    mode: str
+        Which default cropping to use. Available modes are : `legacy` (legacy baselines), `facenet`, `arcface`,
+        and `pad`.
+
+    cropped_image_size : tuple
+        A tuple (HEIGHT, WIDTH) describing the target size of the cropped image.
+
+    annotation_type: str
+        Type of annotations. Possible values are: `bounding-box`, `eyes-center` and None, or a combination of those as a list
+
+    Returns
+    -------
+
+    cropped_positions:
+        The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
+        ``annotation_type`` is a list
+    """
+    if mode == "legacy":
+        return legacy_default_cropping(cropped_image_size, annotation_type)
+    elif mode in ["dnn", "facenet", "arcface"]:
+        return dnn_default_cropping(cropped_image_size, annotation_type)
+    elif mode == "pad":
+        return pad_default_cropping(cropped_image_size, annotation_type)
+    else:
+        raise ValueError("Unknown default cropping mode `{}`".format(mode))

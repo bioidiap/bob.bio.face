@@ -3,7 +3,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     VanillaBiometricsPipeline,
     BioAlgorithmLegacy,
 )
-from bob.bio.face.config.baseline.helpers import (
+from bob.bio.face.utils import (
     lookup_config_from_database,
     legacy_default_cropping,
     make_cropper,

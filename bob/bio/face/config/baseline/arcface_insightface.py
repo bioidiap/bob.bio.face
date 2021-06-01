@@ -1,5 +1,5 @@
 from bob.bio.face.embeddings.mxnet_models import ArcFaceInsightFace
-from bob.bio.face.config.baseline.helpers import lookup_config_from_database
+from bob.bio.face.utils import lookup_config_from_database
 from bob.bio.face.config.baseline.templates import arcface_baseline
 
 annotation_type, fixed_positions, memory_demanding = lookup_config_from_database(

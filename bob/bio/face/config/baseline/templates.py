@@ -1,4 +1,4 @@
-from bob.bio.face.config.baseline.helpers import (
+from bob.bio.face.utils import (
     dnn_default_cropping,
     embedding_transformer,
 )

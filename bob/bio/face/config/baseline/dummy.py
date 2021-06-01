@@ -5,7 +5,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     VanillaBiometricsPipeline,
 )
 from bob.pipelines.transformers import SampleLinearize
-from bob.bio.face.config.baseline.helpers import lookup_config_from_database
+from bob.bio.face.utils import lookup_config_from_database
 
 annotation_type, fixed_positions, memory_demanding = lookup_config_from_database()
 

@@ -114,41 +114,11 @@ class FaceCrop(Base):
         allow_upside_down_normalized_faces=False,
         **kwargs,
     ):
-
+        # call base class constructor
         Base.__init__(self, **kwargs)
 
         if isinstance(cropped_image_size, int):
             cropped_image_size = (cropped_image_size, cropped_image_size)
-
-        if isinstance(cropped_positions, str):
-            face_size = cropped_image_size[0]
-
-            if cropped_positions == "eyes-center":
-                eyes_distance = (face_size + 1) / 2.0
-                eyes_center = (face_size / 4.0, (face_size - 0.5) / 2.0)
-                right_eye = (eyes_center[0], eyes_center[1] - eyes_distance / 2)
-                left_eye = (eyes_center[0], eyes_center[1] + eyes_distance / 2)
-                cropped_positions = {"reye": right_eye, "leye": left_eye}
-
-            elif cropped_positions == "bounding-box":
-                cropped_positions = {
-                    "topleft": (0, 0),
-                    "bottomright": cropped_image_size,
-                }
-
-            else:
-                raise ValueError(
-                    f"Got {cropped_positions} as cropped_positions "
-                    "while only eyes and bbox strings are supported."
-                )
-
-        # call base class constructor
-        self.cropped_image_size = cropped_image_size
-        self.cropped_positions = cropped_positions
-        self.fixed_positions = fixed_positions
-        self.mask_sigma = mask_sigma
-        self.mask_neighbors = mask_neighbors
-        self.mask_seed = mask_seed
 
         # check parameters
         assert len(cropped_positions) == 2

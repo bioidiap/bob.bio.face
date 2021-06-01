@@ -3,7 +3,11 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     VanillaBiometricsPipeline,
     BioAlgorithmLegacy,
 )
-from bob.bio.face.config.baseline.helpers import crop_80x64
+from bob.bio.face.utils import (
+    lookup_config_from_database,
+    legacy_default_cropping,
+    make_cropper,
+)
 import numpy as np
 import bob.bio.face
 from sklearn.pipeline import make_pipeline
@@ -18,20 +22,27 @@ import logging
 logger = logging.getLogger(__name__)
 
 #### SOLVING IF THERE'S ANY DATABASE INFORMATION
-if "database" in locals():
-    annotation_type = database.annotation_type
-    fixed_positions = database.fixed_positions
-else:
-    annotation_type = None
-    fixed_positions = None
+annotation_type, fixed_positions, memory_demanding = lookup_config_from_database(
+    locals().get("database")
+)
 
 
 ####### SOLVING THE FACE CROPPER TO BE USED ##########
 def load(annotation_type, fixed_positions=None):
 
+    # Define cropped positions
+    CROPPED_IMAGE_HEIGHT = 80
+    CROPPED_IMAGE_WIDTH = CROPPED_IMAGE_HEIGHT * 4 // 5
+    cropped_image_size = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+    cropped_positions = legacy_default_cropping(cropped_image_size, annotation_type)
+
     # Cropping
-    face_cropper, transform_extra_arguments = crop_80x64(
-        annotation_type, fixed_positions, color_channel="gray"
+    face_cropper, transform_extra_arguments = make_cropper(
+        cropped_image_size=cropped_image_size,
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="gray",
+        annotator="mtcnn",
     )
 
     preprocessor = bob.bio.face.preprocessor.TanTriggs(

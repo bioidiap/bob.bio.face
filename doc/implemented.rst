@@ -91,5 +91,9 @@ Algorithms
 
 .. automodule:: bob.bio.face.algorithm
 
+Utilities
+---------
+
+.. automodule:: bob.bio.face.utils
 
 .. include:: links.rst

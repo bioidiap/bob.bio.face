@@ -26,7 +26,7 @@ extensions = [
     'sphinx.ext.napoleon',
     'sphinx.ext.viewcode',
     'sphinx.ext.mathjax',
-    #'matplotlib.sphinxext.plot_directive'
+    'matplotlib.sphinxext.plot_directive'
     ]
 
 # Be picky about warnings

@@ -26,13 +26,7 @@ import math
 import bob.io.base.test_utils
 
 import pkg_resources
-from bob.bio.face.embeddings.GenericOpenCV import OpenCVModel
 from bob.db.base import read_annotation_file
-from bob.bio.face.embeddings.TensorFlowModel import TensorFlowModel
-from bob.bio.face.embeddings.PyTorchModel import PyTorchLoadedModel
-from bob.bio.face.embeddings.MxNetModel import MxNetModel
-from bob.bio.face.embeddings.PyTorchModel import PyTorchLoadedModel
-from bob.bio.face.embeddings.PyTorchModel import PyTorchLibraryModel
 
 import pytest
 from bob.bio.base.test.utils import is_library_available
@@ -220,76 +214,3 @@ def _annotation():
         pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.pos"),
         "named",
     )
-
-
-@pytest.mark.slow
-@is_library_available("opencv-python")
-def test_opencv():
-    data = _data()
-    opencv = bob.bio.face.embeddings.GenericOpenCV.OpenCVModel()
-    assert isinstance(opencv, OpenCVModel)
-
-    feature = opencv.transform(test_face_crop(224, 224))
-    reference = pkg_resources.resource_filename("bob.bio.face.test", "data/opencv.hdf5")
-    _compare(feature, reference)
-
-
-@pytest.mark.slow
-@is_library_available("tensorflow")
-def test_tf():
-    data = _data()
-    tf = TensorFlowModel()
-    assert isinstance(tf, TensorFlowModel)
-
-    feature = tf.transform(test_face_crop(160, 160))
-    reference = pkg_resources.resource_filename("bob.bio.face.test", "data/tf.hdf5")
-    _compare(feature, reference)
-
-
-@pytest.mark.slow
-@is_library_available("torch")
-def test_pytorch_v1():
-    data = _data()
-    pytorch_v1 = PyTorchLoadedModel()
-    assert isinstance(pytorch_v1, PyTorchLoadedModel)
-
-    feature = pytorch_v1.transform(test_face_crop(224, 224))
-
-    reference = pkg_resources.resource_filename(
-        "bob.bio.face.test", "data/pytorch_v1.hdf5"
-    )
-    _compare(feature, reference)
-
-
-"""
-from facenet_pytorch import InceptionResnetV1
-@pytest.mark.slow
-@is_library_available("torch")
-def test_pytorch_v2():
-    import h5py
-    data = _data()
-    model = InceptionResnetV1(pretrained='vggface2').eval()
-    pytorch_v2 = PyTorchLibraryModel(model=model)
-    assert isinstance(pytorch_v2, PyTorchLibraryModel)
-    
-    feature = pytorch_v2.transform(test_face_crop(160,160))
-    hf = h5py.File('pytorch_v2.hdf5', 'w')
-    hf.create_dataset('bob.bio.face.test/data/data1',data=feature)
-    hf.close()
-    reference = pkg_resources.resource_filename(
-        "bob.bio.face.test", "data/pytorch_v2.hdf5"
-    )
-    _compare(feature, reference)
-"""
-
-
-@pytest.mark.slow
-@is_library_available("mxnet")
-def test_mxnet():
-    data = _data()
-    mxnet = MxNetModel()
-    assert isinstance(mxnet, MxNetModel)
-
-    feature = mxnet.transform(test_face_crop(112, 112))
-    reference = pkg_resources.resource_filename("bob.bio.face.test", "data/mxnet.hdf5")
-    _compare(feature, reference)

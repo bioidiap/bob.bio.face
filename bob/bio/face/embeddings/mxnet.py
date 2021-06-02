@@ -159,7 +159,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
 )
 
 
-def arcface_baseline(embedding, annotation_type, fixed_positions=None):
+def arcface_template(embedding, annotation_type, fixed_positions=None):
     # DEFINE CROPPING
     cropped_image_size = (112, 112)
     if annotation_type == "eyes-center":
@@ -184,3 +184,12 @@ def arcface_baseline(embedding, annotation_type, fixed_positions=None):
 
     return VanillaBiometricsPipeline(transformer, algorithm)
 
+
+def arcface_insightFace_lresnet100(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    return arcface_template(
+        ArcFaceInsightFace_LResNet100(memory_demanding=memory_demanding),
+        annotation_type,
+        fixed_positions,
+    )

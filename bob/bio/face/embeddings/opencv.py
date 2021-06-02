@@ -9,6 +9,15 @@ from sklearn.base import TransformerMixin, BaseEstimator
 from sklearn.utils import check_array
 import os
 from bob.extension.download import get_file
+from bob.bio.face.utils import (
+    dnn_default_cropping,
+    embedding_transformer,
+)
+
+from bob.bio.base.pipelines.vanilla_biometrics import (
+    Distance,
+    VanillaBiometricsPipeline,
+)
 
 
 class OpenCVTransformer(TransformerMixin, BaseEstimator):
@@ -143,3 +152,40 @@ class VGG16_Oxford(OpenCVTransformer):
         net = cv2.dnn.readNet(self.checkpoint_path, self.config)
         self.model = net
 
+
+def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
+    """
+    Get the VGG16 pipeline which will crop the face :math:`224 \times 224`
+    use the :py:class:`VGG16_Oxford`
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+    """
+
+    # DEFINE CROPPING
+    cropped_image_size = (224, 224)
+
+    if annotation_type == "eyes-center":
+        # Hard coding eye positions for backward consistency
+        cropped_positions = {"leye": (100, 140), "reye": (100, 95)}
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    transformer = embedding_transformer(
+        cropped_image_size=cropped_image_size,
+        embedding=VGG16_Oxford(),
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="rgb",
+        annotator="mtcnn",
+    )
+
+    algorithm = Distance()
+
+    return VanillaBiometricsPipeline(transformer, algorithm)

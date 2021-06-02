@@ -171,11 +171,11 @@ def test_gabor_graph():
 @is_library_available("torch")
 def test_afffe():
     run_baseline(
-        "afffe", target_scores=-1.0274936425058916,
+        "afffe", target_scores=-0.27480835869298026,
     )
 
 
 @pytest.mark.slow
 @is_library_available("cv2")
 def test_vgg16_oxford():
-    run_baseline("vgg16-oxford", target_scores=-0.9911880900309596)
+    run_baseline("vgg16-oxford", target_scores=-0.0003682451299356071)

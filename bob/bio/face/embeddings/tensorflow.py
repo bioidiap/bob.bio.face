@@ -14,6 +14,16 @@ from sklearn.utils import check_array
 import numpy as np
 import tensorflow as tf
 
+from bob.bio.face.utils import (
+    dnn_default_cropping,
+    embedding_transformer,
+)
+
+from bob.bio.base.pipelines.vanilla_biometrics import (
+    Distance,
+    VanillaBiometricsPipeline,
+)
+
 
 def sanderberg_rescaling():
     # FIXED_STANDARDIZATION from https://github.com/davidsandberg/facenet
@@ -472,3 +482,288 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
         embeddings = tf.math.l2_normalize(prelogits, axis=-1)
         return embeddings
 
+
+def facenet_template(embedding, annotation_type, fixed_positions=None):
+    """
+    Facenet baseline template.
+    This one will crop the face at :math:`160 \times 160`
+    
+    Parameters
+    ----------
+
+      embedding: obj
+         Transformer that takes a cropped face and extract the embeddings
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+    """
+    # DEFINE CROPPING
+    cropped_image_size = (160, 160)
+    cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    # ASSEMBLE TRANSFORMER
+    transformer = embedding_transformer(
+        cropped_image_size=cropped_image_size,
+        embedding=embedding,
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="rgb",
+        annotator="mtcnn",
+    )
+
+    algorithm = Distance()
+
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+
+def resnet_template(embedding, annotation_type, fixed_positions=None):
+    # DEFINE CROPPING
+    cropped_image_size = (112, 112)
+    if annotation_type == "eyes-center":
+        # Hard coding eye positions for backward consistency
+        cropped_positions = {
+            "leye": (55, 81),
+            "reye": (55, 42),
+        }
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    transformer = embedding_transformer(
+        cropped_image_size=cropped_image_size,
+        embedding=embedding,
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="rgb",
+        annotator="mtcnn",
+    )
+
+    algorithm = Distance()
+
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+
+def resnet50_msceleb_arcface_2021(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Resnet50 pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`Resnet50_MsCeleb_ArcFace_2021` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return resnet_template(
+        embedding=Resnet50_MsCeleb_ArcFace_2021(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def resnet50_vgg2_arcface_2021(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Resnet50 pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`Resnet50_VGG2_ArcFace_2021` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return resnet_template(
+        embedding=Resnet50_VGG2_ArcFace_2021(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def mobilenetv2_msceleb_arcface_2021(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the MobileNet pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`MobileNetv2_MsCeleb_ArcFace_2021` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return resnet_template(
+        embedding=MobileNetv2_MsCeleb_ArcFace_2021(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def facenet_sanderberg_20170512_110547(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Facenet pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`FaceNetSanderberg_20170512_110547` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return facenet_template(
+        embedding=FaceNetSanderberg_20170512_110547(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def inception_resnet_v1_casia_centerloss_2018(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Inception Resnet v1 pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`InceptionResnetv1_Casia_CenterLoss_2018` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return facenet_template(
+        embedding=InceptionResnetv1_Casia_CenterLoss_2018(
+            memory_demanding=memory_demanding
+        ),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def inception_resnet_v2_casia_centerloss_2018(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Inception Resnet v2 pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`InceptionResnetv2_Casia_CenterLoss_2018` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return facenet_template(
+        embedding=InceptionResnetv2_Casia_CenterLoss_2018(
+            memory_demanding=memory_demanding
+        ),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def inception_resnet_v1_msceleb_centerloss_2018(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Inception Resnet v1 pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`InceptionResnetv1_MsCeleb_CenterLoss_2018` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return facenet_template(
+        embedding=InceptionResnetv1_MsCeleb_CenterLoss_2018(
+            memory_demanding=memory_demanding
+        ),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def inception_resnet_v2_msceleb_centerloss_2018(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Inception Resnet v2 pipeline which will crop the face :math:`160 \times 160` and 
+    use the :py:class:`InceptionResnetv2_MsCeleb_CenterLoss_2018` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return facenet_template(
+        embedding=InceptionResnetv2_MsCeleb_CenterLoss_2018(
+            memory_demanding=memory_demanding
+        ),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )

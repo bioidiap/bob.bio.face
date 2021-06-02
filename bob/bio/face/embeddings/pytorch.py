@@ -9,6 +9,15 @@ import numpy as np
 import imp
 import os
 from bob.extension.download import get_file
+from bob.bio.face.utils import (
+    dnn_default_cropping,
+    embedding_transformer,
+)
+
+from bob.bio.base.pipelines.vanilla_biometrics import (
+    Distance,
+    VanillaBiometricsPipeline,
+)
 
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
@@ -119,3 +128,40 @@ class AFFFE_2021(PyTorchModel):
 
         self.model = network
 
+
+def afffe_baseline(annotation_type, fixed_positions=None):
+    """
+    Get the AFFFE pipeline which will crop the face :math:`224 \times 224`
+    use the :py:class:`AFFFE_2021`
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+    """
+
+    # DEFINE CROPPING
+    cropped_image_size = (224, 224)
+
+    if annotation_type == "eyes-center":
+        # Hard coding eye positions for backward consistency
+        cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    transformer = embedding_transformer(
+        cropped_image_size=cropped_image_size,
+        embedding=AFFFE_2021(),
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="rgb",
+        annotator="mtcnn",
+    )
+
+    algorithm = Distance()
+
+    return VanillaBiometricsPipeline(transformer, algorithm)

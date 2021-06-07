@@ -1,6 +1,5 @@
 import bob.ip.facedetect.tinyface
 from . import Base
-import cv2 as cv
 
 
 class BobIpTinyface(Base):

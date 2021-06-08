@@ -117,8 +117,9 @@ class CasiaAfricaDatabase(CSVDataset):
         )
 
         super().__init__(
-            filename,
-            protocol,
+            name="casia-africa",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,

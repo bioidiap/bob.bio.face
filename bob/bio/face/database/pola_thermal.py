@@ -103,8 +103,9 @@ class PolaThermalDatabase(CSVDataset):
             return bob.io.base.load(path) / 255
 
         super().__init__(
-            filename,
-            protocol,
+            name="polathermal",
+            protocol=protocol,
+            dataset_protocol_path=filename,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=load,

@@ -68,9 +68,10 @@ class MorphDatabase(CSVDatasetZTNorm):
         self.annotation_type = "eyes-center"
         self.fixed_positions = None
 
-        database = CSVDataset(
-            filename,
-            protocol,
+        super().__init__(
+            name="morph",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -82,8 +83,6 @@ class MorphDatabase(CSVDatasetZTNorm):
                 EyesAnnotations(),
             ),
         )
-
-        super().__init__(database)
 
     @staticmethod
     def urls():

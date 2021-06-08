@@ -59,9 +59,10 @@ class MobioDatabase(CSVDatasetZTNorm):
         self.annotation_type = "eyes-center"
         self.fixed_positions = None
 
-        database = CSVDataset(
-            filename,
-            protocol,
+        super().__init__(
+            name="mobio",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -73,8 +74,6 @@ class MobioDatabase(CSVDatasetZTNorm):
                 EyesAnnotations(),
             ),
         )
-
-        super().__init__(database)
 
     @staticmethod
     def protocols():

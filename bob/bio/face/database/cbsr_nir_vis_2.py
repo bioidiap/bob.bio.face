@@ -81,8 +81,9 @@ class CBSRNirVis2Database(CSVDataset):
                 raise ValueError("File `{0}` not found".format(str(new_filename)))
 
         super().__init__(
-            filename,
-            protocol,
+            name="cbsr-nir-vis2",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=load,

@@ -98,8 +98,9 @@ class MultipieDatabase(CSVDataset):
         self.fixed_positions = None
 
         super().__init__(
-            filename,
-            protocol,
+            name="multipie",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,

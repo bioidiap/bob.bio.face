@@ -139,6 +139,9 @@ setup(
             "mxnet-tinyface = bob.bio.face.config.baseline.mxnet_tinyface:pipeline",
             "afffe = bob.bio.face.config.baseline.afffe:pipeline",
             "vgg16-oxford = bob.bio.face.config.baseline.vgg16_oxford:pipeline",
+            "iresnet34 = bob.bio.face.config.baseline.iresnet34:pipeline",
+            "iresnet50 = bob.bio.face.config.baseline.iresnet50:pipeline",
+            "iresnet100 = bob.bio.face.config.baseline.iresnet100:pipeline",
         ],
         "bob.bio.config": [
             "facenet-sanderberg = bob.bio.face.config.baseline.facenet_sanderberg",
@@ -175,6 +178,9 @@ setup(
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021",
             "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021",
             "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
+            "iresnet34 = bob.bio.face.config.baseline.iresnet34",
+            "iresnet50 = bob.bio.face.config.baseline.iresnet50",
+            "iresnet100 = bob.bio.face.config.baseline.iresnet100",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

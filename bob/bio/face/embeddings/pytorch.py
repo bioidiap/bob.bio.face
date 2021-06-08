@@ -74,7 +74,6 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         X = check_array(X, allow_nd=True)
         X = torch.Tensor(X)
         X = self.preprocessor(X)
-
         return self.model(X).detach().numpy()
 
     def __getstate__(self):
@@ -127,6 +126,205 @@ class AFFFE_2021(PyTorchModel):
         network.to(device)
 
         self.model = network
+
+
+def _get_iresnet_file():
+    urls = [
+        "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet-91a5de61.tar.gz",
+        "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet-91a5de61.tar.gz",
+    ]
+
+    return get_file(
+        "iresnet-91a5de61.tar.gz",
+        urls,
+        cache_subdir="data/pytorch/iresnet-91a5de61/",
+        file_hash="3976c0a539811d888ef5b6217e5de425",
+        extract=True,
+    )
+
+
+class IResnet34(PyTorchModel):
+    """
+    ArcFace model (RESNET 34) from Insightface ported to pytorch
+    """
+
+    def __init__(self):
+
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet-91a5de61.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet-91a5de61.tar.gz",
+        ]
+
+        filename = _get_iresnet_file()
+
+        path = os.path.dirname(filename)
+        config = os.path.join(path, "iresnet.py")
+        checkpoint_path = os.path.join(path, "iresnet34-5b0d0e90.pth")
+
+        super(IResnet34, self).__init__(checkpoint_path, config)
+
+    def _load_model(self):
+
+        model = imp.load_source("module", self.config).iresnet34(self.checkpoint_path)
+        self.model = model
+
+
+class IResnet50(PyTorchModel):
+    """
+    ArcFace model (RESNET 50) from Insightface ported to pytorch
+    """
+
+    def __init__(self):
+
+        filename = _get_iresnet_file()
+
+        path = os.path.dirname(filename)
+        config = os.path.join(path, "iresnet.py")
+        checkpoint_path = os.path.join(path, "iresnet50-7f187506.pth")
+
+        super(IResnet50, self).__init__(checkpoint_path, config)
+
+    def _load_model(self):
+
+        model = imp.load_source("module", self.config).iresnet50(self.checkpoint_path)
+        self.model = model
+
+
+class IResnet100(PyTorchModel):
+    """
+    ArcFace model (RESNET 100) from Insightface ported to pytorch
+    """
+
+    def __init__(self):
+
+        filename = _get_iresnet_file()
+
+        path = os.path.dirname(filename)
+        config = os.path.join(path, "iresnet.py")
+        checkpoint_path = os.path.join(path, "iresnet100-73e07ba7.pth")
+
+        super(IResnet100, self).__init__(checkpoint_path, config)
+
+    def _load_model(self):
+
+        model = imp.load_source("module", self.config).iresnet100(self.checkpoint_path)
+        self.model = model
+
+
+def iresnet_template(embedding, annotation_type, fixed_positions=None):
+    # DEFINE CROPPING
+    cropped_image_size = (112, 112)
+    if annotation_type == "eyes-center":
+        # Hard coding eye positions for backward consistency
+        cropped_positions = {
+            "leye": (55, 81),
+            "reye": (55, 42),
+        }
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    transformer = embedding_transformer(
+        cropped_image_size=cropped_image_size,
+        embedding=embedding,
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="rgb",
+        annotator="mtcnn",
+    )
+
+    algorithm = Distance()
+
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+
+def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the Resnet34 pipeline which will crop the face :math:`112 \times 112` and 
+    use the :py:class:`IResnet34` to extract the features
+
+
+    code referenced from https://raw.githubusercontent.com/nizhib/pytorch-insightface/master/insightface/iresnet.py
+    https://github.com/nizhib/pytorch-insightface
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=IResnet34(),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and 
+    use the :py:class:`IResnet50` to extract the features
+
+
+    code referenced from https://raw.githubusercontent.com/nizhib/pytorch-insightface/master/insightface/iresnet.py
+    https://github.com/nizhib/pytorch-insightface
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=IResnet50(),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the Resnet100 pipeline which will crop the face :math:`112 \times 112` and 
+    use the :py:class:`IResnet100` to extract the features
+
+
+    code referenced from https://raw.githubusercontent.com/nizhib/pytorch-insightface/master/insightface/iresnet.py
+    https://github.com/nizhib/pytorch-insightface
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=IResnet100(),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
 
 
 def afffe_baseline(annotation_type, fixed_positions=None):

@@ -66,7 +66,6 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
     # Regular pipeline
     pipeline = load_resource(baseline, "pipeline")
     scores = pipeline(samples_for_training, biometric_references, probes)
-
     assert len(scores) == 1
     assert len(scores[0]) == 1
 
@@ -81,7 +80,7 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
         assert len(checkpoint_scores[0]) == 1
 
         if target_scores is not None:
-            assert np.allclose(target_scores, scores[0][0].data, atol=10e-3, rtol=10e-3)
+            assert np.allclose(target_scores, scores[0][0].data, atol=10e-5, rtol=10e-5)
 
         assert np.isclose(scores[0][0].data, checkpoint_scores[0][0].data)
 
@@ -172,6 +171,30 @@ def test_gabor_graph():
 def test_afffe():
     run_baseline(
         "afffe", target_scores=-0.27480835869298026,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet34():
+    run_baseline(
+        "iresnet34", target_scores=-0.0003085132478504171,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet50():
+    run_baseline(
+        "iresnet50", target_scores=-0.0013965432856760662,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet100():
+    run_baseline(
+        "iresnet100", target_scores=-0.0002386926047015514,
     )
 
 

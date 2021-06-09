@@ -56,9 +56,6 @@ class MobioDatabase(CSVDatasetZTNorm):
             "mobio.tar.gz", urls, file_hash="42cee778c17a34762d5fc5dd13ce3ee6"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         super().__init__(
             name="mobio",
             dataset_protocol_path=filename,
@@ -74,6 +71,8 @@ class MobioDatabase(CSVDatasetZTNorm):
                 EyesAnnotations(),
             ),
         )
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def protocols():

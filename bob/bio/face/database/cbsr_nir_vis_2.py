@@ -61,8 +61,6 @@ class CBSRNirVis2Database(CSVDataset):
         filename = get_file(
             "cbsr_nir_vis_2.tar.gz", urls, file_hash="116da4537c1099915cdc0f08feb651bd",
         )
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
 
         directory = (
             rc["bob.db.cbsr-nir-vis-2.directory"]
@@ -93,6 +91,8 @@ class CBSRNirVis2Database(CSVDataset):
                 EyesAnnotations(),
             ),
         )
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def protocols():

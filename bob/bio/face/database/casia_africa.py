@@ -107,9 +107,6 @@ class CasiaAfricaDatabase(CSVDataset):
             file_hash="324bd69b581477d30606417be8e30d2a",
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         directory = (
             rc["bob.db.casia-africa.directory"]
             if rc["bob.db.casia-africa.directory "]
@@ -130,6 +127,9 @@ class CasiaAfricaDatabase(CSVDataset):
                 EyesAnnotations(),
             ),
         )
+
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def protocols():

@@ -65,9 +65,6 @@ class MorphDatabase(CSVDatasetZTNorm):
             "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         super().__init__(
             name="morph",
             dataset_protocol_path=filename,
@@ -83,6 +80,9 @@ class MorphDatabase(CSVDatasetZTNorm):
                 EyesAnnotations(),
             ),
         )
+
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def urls():

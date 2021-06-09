@@ -101,9 +101,6 @@ class MEDSDatabase(CSVDatasetZTNorm):
             "meds.tar.gz", urls, file_hash="3b01354d4c170672ac14120b80dace75"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         super().__init__(
             name="meds",
             dataset_protocol_path=filename,
@@ -119,6 +116,9 @@ class MEDSDatabase(CSVDatasetZTNorm):
                 EyesAnnotations(),
             ),
         )
+
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def urls():

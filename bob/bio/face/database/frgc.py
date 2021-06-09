@@ -28,9 +28,6 @@ class FRGCDatabase(CSVDataset):
             "frgc.tar.gz", urls, file_hash="328d2c71ae19a41679defa9585b3140f"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         super().__init__(
             name="frgc",
             dataset_protocol_path=filename,
@@ -46,6 +43,9 @@ class FRGCDatabase(CSVDataset):
                 EyesAnnotations(),
             ),
         )
+
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def protocols():

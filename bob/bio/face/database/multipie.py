@@ -94,9 +94,6 @@ class MultipieDatabase(CSVDataset):
             "multipie.tar.gz", urls, file_hash="6c27c9616c2d0373c5f052b061d80178"
         )
 
-        self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
-        self.fixed_positions = None
-
         super().__init__(
             name="multipie",
             dataset_protocol_path=filename,
@@ -112,6 +109,9 @@ class MultipieDatabase(CSVDataset):
                 MultiposeAnnotations(),
             ),
         )
+
+        self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
+        self.fixed_positions = None
 
     @staticmethod
     def protocols():

@@ -87,9 +87,6 @@ class PolaThermalDatabase(CSVDataset):
             "pola_thermal.tar.gz", urls, file_hash="cfbd7362773c6d49292fe1998e3c3825",
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         directory = (
             rc["bob.db.pola-thermal.directory"]
             if rc["bob.db.pola-thermal.directory"]
@@ -115,6 +112,9 @@ class PolaThermalDatabase(CSVDataset):
                 EyesAnnotations(),
             ),
         )
+
+        self.annotation_type = "eyes-center"
+        self.fixed_positions = None
 
     @staticmethod
     def protocols():

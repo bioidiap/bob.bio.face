@@ -246,13 +246,16 @@ class ReplayMobileBioDatabase(CSVDataset):
     ):
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            name = "bio-face-replaymobile-img-3a584a97.tar.gz"
-            urls = [
-                f"https://www.idiap.ch/software/bob/data/bob/bob.bio.face/{name}",
-                f"http://www.idiap.ch/software/bob/data/bob/bob.bio.face/{name}",
+            proto_def_name = "bio-face-replaymobile-img-3a584a97.tar.gz"
+            proto_def_urls = [
+                f"https://www.idiap.ch/software/bob/data/bob/bob.bio.face/{proto_def_name}",
+                f"http://www.idiap.ch/software/bob/data/bob/bob.bio.face/{proto_def_name}",
             ]
             protocol_definition_path = get_file(
-                filename=name, urls=urls, cache_subdir="datasets", file_hash="3a584a97"
+                filename=proto_def_name,
+                urls=proto_def_urls,
+                cache_subdir="datasets",
+                file_hash="3a584a97",
             )
 
         if data_path is None:
@@ -265,14 +268,14 @@ class ReplayMobileBioDatabase(CSVDataset):
             )
 
         if annotations_path is None:
-            name = "annotations-replaymobile-mtcnn-9cd6e452.tar.xz"
-            [
-                f"https://www.idiap.ch/software/bob/data/bob/bob.pad.face/{name}",
-                f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{name}",
+            annot_name = "annotations-replaymobile-mtcnn-9cd6e452.tar.xz"
+            annot_urls = [
+                f"https://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
+                f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
             ]
             annotations_path = get_file(
-                filename=name,
-                urls=urls,
+                filename=annot_name,
+                urls=annot_urls,
                 cache_subdir="annotations",
                 file_hash="9cd6e452",
             )

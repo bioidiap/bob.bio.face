@@ -108,7 +108,7 @@ class VGG16_Oxford(OpenCVTransformer):
 
     """
 
-    def __init__(self):
+    def __init__(self, embedding_layer="fc7"):
         urls = [
             "https://www.robots.ox.ac.uk/~vgg/software/vgg_face/src/vgg_face_caffe.tar.gz",
             "http://bobconda.lab.idiap.ch/public-upload/data/bob/bob.bio.face/master/caffe/vgg_face_caffe.tar.gz",
@@ -126,6 +126,7 @@ class VGG16_Oxford(OpenCVTransformer):
         checkpoint_path = os.path.join(path, "vgg_face_caffe", "VGG_FACE.caffemodel")
 
         caffe_average_img = [129.1863, 104.7624, 93.5940]
+        self.embedding_layer = embedding_layer
 
         def preprocessor(X):
             """
@@ -151,6 +152,20 @@ class VGG16_Oxford(OpenCVTransformer):
 
         net = cv2.dnn.readNet(self.checkpoint_path, self.config)
         self.model = net
+
+    def transform(self, X):
+        import cv2
+
+        if self.model is None:
+            self._load_model()
+
+        X = check_array(X, allow_nd=True)
+
+        X = self.preprocessor(X)
+
+        self.model.setInput(X)
+
+        return self.model.forward(self.embedding_layer)
 
 
 def vgg16_oxford_baseline(annotation_type, fixed_positions=None):

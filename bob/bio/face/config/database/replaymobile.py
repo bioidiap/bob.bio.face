@@ -22,7 +22,7 @@ from bob.bio.face.database.replaymobile import ReplayMobileBioDatabase
 
 default_protocol = "grandtest"
 
-if 'protocol' not in locals():
+if "protocol" not in locals():
     protocol = default_protocol
 
 database = ReplayMobileBioDatabase(

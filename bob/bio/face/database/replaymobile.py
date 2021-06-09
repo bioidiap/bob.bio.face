@@ -17,6 +17,7 @@ import numpy
 
 logger = logging.getLogger(__name__)
 
+
 def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     """Loads a single frame from a video file for replay-mobile.
 
@@ -54,12 +55,14 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     image = numpy.transpose(image, (0, 2, 1))
     return image
 
+
 class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
     """A loader transformer returning a specific frame of a video file.
 
     This is specifically tailored for replay-mobile. It uses a specific loader
     that processes the `should_flip` metadata to correctly orient the frames.
     """
+
     def __init__(
         self,
         dataset_original_directory="",
@@ -75,8 +78,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         self.references_list = []
 
     def convert_row_to_sample(self, row, header):
-        """Creates a sample given a row of the CSV protocol definition.
-        """
+        """Creates a sample given a row of the CSV protocol definition."""
         fields = dict([[str(h).lower(), r] for h, r in zip(header, row)])
 
         if self.reference_id_equal_subject_id:
@@ -89,10 +91,13 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         if "purpose" not in fields:
             raise ValueError(f"`purpose` not available in {header}")
 
-        kwargs = {k: fields[k] for k in fields.keys() - {"id","should_flip"}}
+        kwargs = {k: fields[k] for k in fields.keys() - {"id", "should_flip"}}
 
         # Retrieve the references list
-        if fields["purpose"].lower() == "enroll" and fields["reference_id"] not in self.references_list:
+        if (
+            fields["purpose"].lower() == "enroll"
+            and fields["reference_id"] not in self.references_list
+        ):
             self.references_list.append(fields["reference_id"])
         # Set the references list in the probes for vanilla-biometrics
         if fields["purpose"].lower() != "enroll":
@@ -105,11 +110,13 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         return DelayedSample(
             functools.partial(
                 load_frame_from_file_replaymobile,
-                file_name=os.path.join(self.dataset_original_directory, fields["path"] + self.extension),
+                file_name=os.path.join(
+                    self.dataset_original_directory, fields["path"] + self.extension
+                ),
                 frame=int(fields["frame"]),
-                should_flip=fields["should_flip"]=="TRUE",
+                should_flip=fields["should_flip"] == "TRUE",
             ),
-            key=fields['id'],
+            key=fields["id"],
             **kwargs,
         )
 
@@ -139,12 +146,17 @@ def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="
     """
     logger.debug(f"Reading annotation file '{file_name}', frame {frame}.")
 
-    video_annotations = read_annotation_file(file_name, annotation_type=annotations_type)
+    video_annotations = read_annotation_file(
+        file_name, annotation_type=annotations_type
+    )
     # read_annotation_file returns an ordered dict with str keys as frame number
     frame_annotations = video_annotations[str(frame)]
     if frame_annotations is None:
-        logger.warning(f"Annotation for file '{file_name}' at frame {frame} was 'null'.")
+        logger.warning(
+            f"Annotation for file '{file_name}' at frame {frame} was 'null'."
+        )
     return frame_annotations
+
 
 class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
     """A transformer that adds bounding-box to a sample from annotations files.
@@ -154,20 +166,18 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
 
     annotation_directory: str or None
     """
-    def __init__(self,
-        annotation_directory=None,
-        annotation_extension=".json",
-        **kwargs
+
+    def __init__(
+        self, annotation_directory=None, annotation_extension=".json", **kwargs
     ):
         super().__init__(
             annotation_directory=annotation_directory,
             annotation_extension=annotation_extension,
-            **kwargs
+            **kwargs,
         )
 
     def transform(self, X):
-        """Adds the bounding-box annotations to a series of samples.
-        """
+        """Adds the bounding-box annotations to a series of samples."""
         if self.annotation_directory is None:
             return None
 
@@ -223,6 +233,7 @@ class ReplayMobileBioDatabase(CSVDataset):
         ``bob.db.replaymobile.annotation_directory`` config.
         If None and the config does not exist: Downloads the file in ``~/bob_data``.
     """
+
     def __init__(
         self,
         protocol="grandtest",
@@ -231,7 +242,7 @@ class ReplayMobileBioDatabase(CSVDataset):
         data_extension=".mov",
         annotations_path=None,
         annotations_extension=".json",
-        **kwargs
+        **kwargs,
     ):
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
@@ -241,10 +252,7 @@ class ReplayMobileBioDatabase(CSVDataset):
                 f"http://www.idiap.ch/software/bob/data/bob/bob.bio.face/{name}",
             ]
             protocol_definition_path = get_file(
-                filename=name,
-                urls=urls,
-                cache_subdir="datasets",
-                file_hash="3a584a97"
+                filename=name, urls=urls, cache_subdir="datasets", file_hash="3a584a97"
             )
 
         if data_path is None:
@@ -269,7 +277,9 @@ class ReplayMobileBioDatabase(CSVDataset):
                 file_hash="9cd6e452",
             )
 
-        logger.info(f"Database: Will read CSV protocol definitions in '{protocol_definition_path}'.")
+        logger.info(
+            f"Database: Will read CSV protocol definitions in '{protocol_definition_path}'."
+        )
         logger.info(f"Database: Will read raw data files in '{data_path}'.")
         logger.info(f"Database: Will read annotation files in '{annotations_path}'.")
         super().__init__(
@@ -287,7 +297,7 @@ class ReplayMobileBioDatabase(CSVDataset):
                 ),
             ),
             fetch_probes=False,
-            **kwargs
+            **kwargs,
         )
         self.annotation_type = "eyes-center"
         self.fixed_positions = None

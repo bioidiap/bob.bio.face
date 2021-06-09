@@ -27,6 +27,49 @@ Databases
    bob.bio.face.database.CBSRNirVis2Database
 
 
+Deep Learning Extractors
+~~~~~~~~~~~~~~~~~~~~~~~~
+   
+
+Tensorflow models
+=================
+
+.. autosummary::
+   bob.bio.face.embeddings.tensorflow.facenet_sanderberg_20170512_110547
+   bob.bio.face.embeddings.tensorflow.resnet50_msceleb_arcface_2021
+   bob.bio.face.embeddings.tensorflow.resnet50_msceleb_arcface_20210521
+   bob.bio.face.embeddings.tensorflow.resnet50_vgg2_arcface_2021
+   bob.bio.face.embeddings.tensorflow.mobilenetv2_msceleb_arcface_2021
+   bob.bio.face.embeddings.tensorflow.inception_resnet_v1_msceleb_centerloss_2018
+   bob.bio.face.embeddings.tensorflow.inception_resnet_v2_msceleb_centerloss_2018
+   bob.bio.face.embeddings.tensorflow.inception_resnet_v1_casia_centerloss_2018
+   bob.bio.face.embeddings.tensorflow.inception_resnet_v2_casia_centerloss_2018
+   
+   
+PyTorch models
+==============
+   
+.. autosummary::
+   bob.bio.face.embeddings.pytorch.afffe_baseline
+   bob.bio.face.embeddings.pytorch.iresnet34
+   bob.bio.face.embeddings.pytorch.iresnet50
+   bob.bio.face.embeddings.pytorch.iresnet100
+
+MxNET models
+============
+   
+.. autosummary::
+   bob.bio.face.embeddings.mxnet.arcface_insightFace_lresnet100
+
+Caffe models
+============
+
+.. autosummary::
+   bob.bio.face.embeddings.opencv.vgg16_oxford_baseline
+
+   
+
+
 Face Image Annotators
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -58,6 +101,9 @@ Image Feature Extractors
    bob.bio.face.extractor.DCTBlocks
    bob.bio.face.extractor.GridGraph
    bob.bio.face.extractor.LGBPHS
+
+   
+
 
 
 Face Recognition Algorithms

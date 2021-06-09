@@ -204,12 +204,13 @@ class ReplayMobileBioDatabase(CSVDataset):
     ----------
 
     protocol_name: str
-        The protocol to use
+        The protocol to use. Must be a sub-folder of ``protocol_definition_path``
 
     protocol_definition_path: str or None
-        Specifies a path to download the database definition to.
-        If None: Downloads and uses the ``bob_data_folder`` config.
+        Specifies a path where to fetch the database definition from.
         (See :py:func:`bob.extension.download.get_file`)
+        If None: Downloads the file in the path from ``bob_data_folder`` config.
+        If None and the config does not exist: Downloads the file in ``~/bob_data``.
 
     data_path: str or None
         Overrides the config-defined data location.
@@ -217,14 +218,14 @@ class ReplayMobileBioDatabase(CSVDataset):
         If None and the config does not exist, set as cwd.
 
     annotation_path: str or None
-        Overrides the config-defined annotation files location.
-        If None: uses the ``bob.db.replaymobile.annotation_directory`` config.
-        If None and the config does not exist, set as
-        ``{data_path}/faceloc/rect``.
+        Specifies a path where the annotation files are located.
+        If None: Downloads the files to the path poited by the
+        ``bob.db.replaymobile.annotation_directory`` config.
+        If None and the config does not exist: Downloads the file in ``~/bob_data``.
     """
     def __init__(
         self,
-        protocol_name="grandtest",
+        protocol="grandtest",
         protocol_definition_path=None,
         data_path=None,
         data_extension=".mov",
@@ -234,31 +235,47 @@ class ReplayMobileBioDatabase(CSVDataset):
     ):
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
+            name = "bio-face-replaymobile-img-3a584a97.tar.gz"
             urls = [
-                "https://www.idiap.ch/software/bob/databases/latest/replay-mobile-csv.tar.gz",
-                "http://www.idiap.ch/software/bob/databases/latest/replay-mobile-csv.tar.gz",
+                f"https://www.idiap.ch/software/bob/data/bob/bob.bio.face/{name}",
+                f"http://www.idiap.ch/software/bob/data/bob/bob.bio.face/{name}",
             ]
-            protocol_definition_path = get_file("replay-mobile-csv.tar.gz", urls)
+            protocol_definition_path = get_file(
+                filename=name,
+                urls=urls,
+                cache_subdir="datasets",
+                file_hash="3a584a97"
+            )
 
         if data_path is None:
-            # Defaults to cwd if config not defined
             data_path = rc.get("bob.db.replaymobile.directory", "")
+        if data_path == "":
+            logger.warning(
+                "Raw data path is not configured. Please set "
+                "'bob.db.replaymobile.directory' with the 'bob config set' command. "
+                "Will now attempt with current directory."
+            )
 
         if annotations_path is None:
             name = "annotations-replaymobile-mtcnn-9cd6e452.tar.xz"
+            [
+                f"https://www.idiap.ch/software/bob/data/bob/bob.pad.face/{name}",
+                f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{name}",
+            ]
             annotations_path = get_file(
-                name,
-                [f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{name}"],
+                filename=name,
+                urls=urls,
                 cache_subdir="annotations",
                 file_hash="9cd6e452",
             )
 
-        logger.info(f"Database: Loading database definition from '{protocol_definition_path}'.")
-        logger.info(f"Database: Defining data files path as '{data_path}'.")
-        logger.info(f"Database: Defining annotation files path as '{annotations_path}'.")
+        logger.info(f"Database: Will read CSV protocol definitions in '{protocol_definition_path}'.")
+        logger.info(f"Database: Will read raw data files in '{data_path}'.")
+        logger.info(f"Database: Will read annotation files in '{annotations_path}'.")
         super().__init__(
-            protocol_definition_path,
-            protocol_name,
+            name="replaymobile-img",
+            protocol=protocol,
+            dataset_protocol_path=protocol_definition_path,
             csv_to_sample_loader=make_pipeline(
                 ReplayMobileCSVFrameSampleLoader(
                     dataset_original_directory=data_path,

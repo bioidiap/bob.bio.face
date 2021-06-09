@@ -513,15 +513,15 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
     def __init__(self, memory_demanding=False):
 
         urls = [
-            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021.tar.gz",
-            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021.tar.gz",
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
         ]
 
         filename = get_file(
-            "mobilenet-v2-msceleb-arcface-2021.tar.gz",
+            "mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
             urls,
-            cache_subdir="data/tensorflow/mobilenet-v2-msceleb-arcface-2021",
-            file_hash="89da9399d36ac89a354b8e8beaed8647",
+            cache_subdir="data/tensorflow/mobilenet-v2-msceleb-arcface-2021-e012cb66",
+            file_hash="dd1399b86f01725c7b07b480b703e02a",
             extract=True,
         )
         checkpoint_path = os.path.dirname(filename)
@@ -531,14 +531,6 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
         )
-
-    def inference(self, X):
-        if self.preprocessor is not None:
-            X = self.preprocessor(tf.cast(X, "float32"))
-
-        prelogits = self.model.predict_on_batch(X)[0]
-        embeddings = tf.math.l2_normalize(prelogits, axis=-1)
-        return embeddings
 
 
 def facenet_template(embedding, annotation_type, fixed_positions=None):

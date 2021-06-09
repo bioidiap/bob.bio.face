@@ -136,7 +136,7 @@ setup(
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021:pipeline",
             "resnet50-msceleb-arcface-20210521 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_20210521:pipeline",
             "resnet50-vgg2-arcface-2021 = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021:pipeline",
-            "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021",
+            "mobilenetv2-msceleb-arcface-2021 = bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021:pipeline",
             "mxnet-tinyface = bob.bio.face.config.baseline.mxnet_tinyface:pipeline",
             "afffe = bob.bio.face.config.baseline.afffe:pipeline",
             "vgg16-oxford = bob.bio.face.config.baseline.vgg16_oxford:pipeline",

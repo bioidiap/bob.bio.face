@@ -158,6 +158,22 @@ def test_arcface_resnet50_vgg2_v1():
     run_baseline("resnet50-vgg2-arcface-2021", target_scores=-0.0035127080413503986)
 
 
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_arcface_mobilenet_msceleb():
+    run_baseline(
+        "mobilenetv2-msceleb-arcface-2021", target_scores=-9.430960384781972e-05
+    )
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_arcface_resnet50_msceleb_20210521():
+    run_baseline(
+        "resnet50-msceleb-arcface-20210521", target_scores=-0.001238845659379595
+    )
+
+
 def test_gabor_graph():
     run_baseline("gabor_graph", target_scores=0.4385451147418939)
 
@@ -201,4 +217,4 @@ def test_iresnet100():
 @pytest.mark.slow
 @is_library_available("cv2")
 def test_vgg16_oxford():
-    run_baseline("vgg16-oxford", target_scores=-0.0003682451299356071)
+    run_baseline("vgg16-oxford", target_scores=-0.0019032474437553626)

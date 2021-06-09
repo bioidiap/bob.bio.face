@@ -48,8 +48,7 @@ Users Guide
    :maxdepth: 2
 
    baselines
-   leaderboard/leaderboard
-   deeplearningextractor
+   leaderboard/leaderboard   
    references
    annotators
    faq

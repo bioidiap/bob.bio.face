@@ -314,15 +314,15 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     def __init__(self, memory_demanding=False):
         urls = [
-            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_msceleb_arcface_2021.tar.gz",
-            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_msceleb_arcface_2021.tar.gz",
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
         ]
 
         filename = get_file(
-            "resnet50_msceleb_arcface_2021.tar.gz",
+            "resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
             urls,
-            cache_subdir="data/tensorflow/resnet50_msceleb_arcface_2021",
-            file_hash="1e4b9791669ef79cf8ed80a6fc830205",
+            cache_subdir="data/tensorflow/resnet50-msceleb-arcface_2021-48ec5cb8",
+            file_hash="17946f121af5ddd18c637c4620e54da6",
             extract=True,
         )
         checkpoint_path = os.path.dirname(filename)
@@ -333,13 +333,71 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
             memory_demanding=memory_demanding,
         )
 
-    def inference(self, X):
-        if self.preprocessor is not None:
-            X = self.preprocessor(tf.cast(X, "float32"))
 
-        prelogits = self.model.predict_on_batch(X)[0]
-        embeddings = tf.math.l2_normalize(prelogits, axis=-1)
-        return embeddings
+class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
+    """
+    Resnet50 Backbone trained with the MSCeleb 1M database. The bottleneck layer (a.k.a embedding) has 512d.
+
+    The difference from this one to :any:`Resnet50_MsCeleb_ArcFace_2021` is the MSCeleb version used to train it.
+    This one uses 100% of the data pruned from annotators.
+
+
+    The configuration file used to trained is:    
+
+    .. warning::
+        This configuration file might change in future releases
+
+
+    ```yaml
+    batch-size: 128
+    face-size: 112
+    face-output_size: 112
+    n-classes: 83009
+
+
+    ## Backbone
+    backbone: 'resnet50'
+    head: 'arcface'
+    s: 30
+    bottleneck: 512
+    m: 0.5
+
+    # Training parameters
+    solver: "sgd"
+    lr: 0.1
+    dropout-rate: 0.5
+    epochs: 300
+
+
+    train-tf-record-path: "<PATH>"
+    validation-tf-record-path: "<PATH>"
+
+    ```
+
+
+    """
+
+    def __init__(self, memory_demanding=False):
+
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
+        ]
+
+        filename = get_file(
+            "resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
+            urls,
+            cache_subdir="data/tensorflow/resnet50-msceleb-arcface_20210521-801991f0",
+            file_hash="e33090eea4951ce80be4620a0dac680d",
+            extract=True,
+        )
+        checkpoint_path = os.path.dirname(filename)
+
+        super(Resnet50_MsCeleb_ArcFace_20210521, self).__init__(
+            checkpoint_path,
+            preprocessor=lambda X: X / 255.0,
+            memory_demanding=memory_demanding,
+        )
 
 
 class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
@@ -549,7 +607,7 @@ def resnet50_msceleb_arcface_2021(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`160 \times 160` and 
+    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and 
     use the :py:class:`Resnet50_MsCeleb_ArcFace_2021` to extract the features
 
     Parameters
@@ -572,11 +630,38 @@ def resnet50_msceleb_arcface_2021(
     )
 
 
+def resnet50_msceleb_arcface_20210521(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and 
+    use the :py:class:`Resnet50_MsCeleb_ArcFace_20210521` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return resnet_template(
+        embedding=Resnet50_MsCeleb_ArcFace_20210521(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
 def resnet50_vgg2_arcface_2021(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`160 \times 160` and 
+    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and 
     use the :py:class:`Resnet50_VGG2_ArcFace_2021` to extract the features
 
     Parameters
@@ -603,7 +688,7 @@ def mobilenetv2_msceleb_arcface_2021(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the MobileNet pipeline which will crop the face :math:`160 \times 160` and 
+    Get the MobileNet pipeline which will crop the face :math:`112 \times 112` and 
     use the :py:class:`MobileNetv2_MsCeleb_ArcFace_2021` to extract the features
 
     Parameters

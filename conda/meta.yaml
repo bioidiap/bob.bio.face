@@ -61,8 +61,8 @@ test:
     # runs tests for package only, report only what is in the package
     # creates html and xml reports and place them in specific directories
     - pytest --verbose --cov {{ name }} --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml --pyargs {{ name }}
-    - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx
-    - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx
+    - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx # [linux]
+    - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx # [linux]
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:

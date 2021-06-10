@@ -9,7 +9,6 @@ Summary
 
 Databases
 ~~~~~~~~~
-
 .. autosummary::
    bob.bio.face.database.ARFaceBioDatabase
    bob.bio.face.database.AtntBioDatabase

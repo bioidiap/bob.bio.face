@@ -55,20 +55,20 @@ Deep learning baselines
 
 * ``inception-resnetv1-casiawebface``: Inception Resnet v1 model trained using the Casia Web dataset in the context of the work published by [TFP18]_
 
-* ``arcface-insightface``: Arcface model from `Insightface <https://github.com/deepinsight/insightface>`_
+* ``arcface-insightface``: Arcface model (Resnet100 backbone) from `Insightface <https://github.com/deepinsight/insightface>`_
 
+* ``resnet50-msceleb-arcface-2021``: Resnet Arcface model trained with MSCeleb dataset (dataset partially prunned)
 
-Deep Learning with different interfaces baselines
-=================================================
+* ``resnet50-msceleb-arcface-20210521``: Arcface model trained with MSCeleb dataset (dataset prunned)
 
-* ``mxnet-pipe``: Arcface Resnet Model using MxNet Interfaces from `Insightface <https://github.com/deepinsight/insightface>`_
+* ``resnet50-vgg2-arcface-2021``: Arcface model trained with VGG2 dataset 
 
-* ``mxnet-tinyface``: Applying `tinyface annoator <https://github.com/chinakook/hr101_mxnet>`_ for the Arcface Resnet Model using MxNet Interfaces from `Insightface <https://github.com/deepinsight/insightface>`_
+* ``iresnet34``: Arcface model (Resnet 34 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
+  
+* ``iresnet50``: Arcface model (Resnet 50 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
+  
+* ``iresnet100``: Arcface model (Resnet 100 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
 
-* ``pytorch-pipe-v1``: Pytorch network that extracts 1000-dimensional features, trained by Manual Gunther, as described in [LGB18]_
+* ``vgg16-oxford``: VGG16 Face model from `Oxford <https://www.robots.ox.ac.uk/~vgg/publications/2015/Parkhi15/>`_
 
-* ``pytorch-pipe-v2``: Inception Resnet face recognition model from `facenet_pytorch <https://github.com/timesler/facenet-pytorch>`_
-
-* ``tf-pipe``: Inception Resnet v2 model trained using the MSCeleb dataset in the context of the work published by [TFP18]_
-
-* ``opencv-pipe``: VGG Face descriptor pretrained models, i.e. `Caffe model <https://www.robots.ox.ac.uk/~vgg/software/vgg_face/>`_
+* ``afffe``: Pytorch network that extracts 1000-dimensional features, trained by Manual Gunther, as described in [LGB18]_

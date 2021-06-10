@@ -107,7 +107,7 @@ setup(
             "multipie-pose     = bob.bio.face.config.database.multipie_pose:database",
             "replay-img-licit  = bob.bio.face.config.database.replay_licit:database",
             "replay-img-spoof  = bob.bio.face.config.database.replay_spoof:database",
-            "replaymobile-img        = bob.bio.face.config.database.replaymobile:database",
+            "replaymobile-img  = bob.bio.face.config.database.replaymobile:database",
             "fargo  = bob.bio.face.config.database.fargo:database",
             "meds = bob.bio.face.config.database.meds:database",
             "morph = bob.bio.face.config.database.morph:database",

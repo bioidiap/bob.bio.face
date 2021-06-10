@@ -26,6 +26,7 @@ from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database
 import bob.core
 from bob.extension.download import get_file
+from nose.plugins.skip import SkipTest
 
 logger = bob.core.log.setup("bob.bio.face")
 
@@ -271,46 +272,36 @@ def test_replay_spoof():
         )
 
 
-@db_available("replaymobile")
-def test_replaymobile_licit():
+def test_replaymobile():
     database = bob.bio.base.load_resource(
-        "replaymobile-img-licit", "database", preferred_package="bob.bio.face"
+        "replaymobile-img", "database", preferred_package="bob.bio.face"
     )
+    samples = database.all_samples(groups=("dev", "eval"))
+    assert len(samples) == 8300, len(samples)
+    sample = samples[0]
+    assert hasattr(sample, "annotations")
+    assert "reye" in sample.annotations
+    assert "leye" in sample.annotations
+    assert hasattr(sample, "path")
+    assert hasattr(sample, "frame")
+    assert len(database.references()) == 16
+    assert len(database.references(group="eval")) == 12
+    assert len(database.probes()) == 4160
+    assert len(database.probes(group="eval")) == 3020
     try:
-        check_database(database, groups=("dev", "eval"))
-    except IOError as e:
-        pytest.skip(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database, topleft=True, limit_files=20)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
-
-
-@db_available("replaymobile")
-def test_replaymobile_spoof():
-    database = bob.bio.base.load_resource(
-        "replaymobile-img-spoof", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database, groups=("dev", "eval"))
-    except IOError as e:
-        pytest.skip(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database, topleft=True, limit_files=20)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
+        assert sample.annotations == {
+            "bottomright": [785, 395],
+            "topleft": [475, 167],
+            "leye": [587, 336],
+            "reye": [588, 238],
+            "mouthleft": [705, 252],
+            "mouthright": [706, 326],
+            "nose": [643, 295],
+        }
+        assert sample.data.shape == (3, 1280, 720)
+        assert sample.data[0, 0, 0] == 87
+    except RuntimeError as e:
+        raise SkipTest(e)
 
 
 def test_ijbc():

@@ -26,6 +26,7 @@ requirements:
     - bob.core
     - bob.io.base
     - bob.io.image
+    - bob.io.video
     - bob.math
     - bob.sp
     - bob.ip.base

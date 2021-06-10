@@ -170,8 +170,6 @@ setup(
             "mobio-all        = bob.bio.face.config.database.mobio_all",
             "multipie          = bob.bio.face.config.database.multipie",
             "multipie-pose     = bob.bio.face.config.database.multipie_pose",
-            "replay-img-licit  = bob.bio.face.config.database.replay_licit",
-            "replay-img-spoof  = bob.bio.face.config.database.replay_spoof",
             "replaymobile-img  = bob.bio.face.config.database.replaymobile",
             "fargo  = bob.bio.face.config.database.fargo",
             "meds = bob.bio.face.config.database.meds",

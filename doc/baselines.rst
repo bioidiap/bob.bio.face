@@ -71,4 +71,4 @@ Deep learning baselines
 
 * ``vgg16-oxford``: VGG16 Face model from `Oxford <https://www.robots.ox.ac.uk/~vgg/publications/2015/Parkhi15/>`_
 
-* ``afffe``: Pytorch network that extracts 1000-dimensional features, trained by Manual Gunther, as described in [LGB18]_
+* ``afffe``: Pytorch network that extracts 1000-dimensional features, trained by Manuel Gunther, as described in [LGB18]_

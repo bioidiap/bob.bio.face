@@ -99,8 +99,8 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
 
 class AFFFE_2021(PyTorchModel):
     """
-    AFFFE from https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz
-
+    AFFFE Pytorch network that extracts 1000-dimensional features, trained by Manuel Gunther, as described in [LGB18]_
+    
     """
 
     def __init__(self, memory_demanding=False):

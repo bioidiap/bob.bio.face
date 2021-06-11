@@ -54,7 +54,7 @@ class CBSRNirVis2Database(CSVDataset):
         One of the database protocols.
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()
@@ -91,8 +91,8 @@ class CBSRNirVis2Database(CSVDataset):
                 EyesAnnotations(),
             ),
         )
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
+        self.annotation_type = annotation_type
+        self.fixed_positions = fixed_positions
 
     @staticmethod
     def protocols():

@@ -86,7 +86,7 @@ class MultipieDatabase(CSVDataset):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MultipieDatabase.urls()

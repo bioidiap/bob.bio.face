@@ -93,7 +93,7 @@ class MEDSDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MEDSDatabase.urls()
@@ -117,8 +117,8 @@ class MEDSDatabase(CSVDatasetZTNorm):
             ),
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
+        self.annotation_type = annotation_type
+        self.fixed_positions = fixed_positions
 
     @staticmethod
     def urls():

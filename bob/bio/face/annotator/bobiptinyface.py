@@ -5,9 +5,15 @@ from . import Base
 class BobIpTinyface(Base):
     """Annotator using tinyface in bob.ip.facedetect"""
 
-    def __init__(self, **kwargs):
+    def __init__(self, prob_thresh=0.5, **kwargs):
         super(BobIpTinyface, self).__init__(**kwargs)
-        self.detector = bob.ip.facedetect.tinyface.TinyFacesDetector(prob_thresh=0.5)
+        self.detector = bob.ip.facedetect.tinyface.TinyFacesDetector(
+            prob_thresh=prob_thresh
+        )
+
+    @property
+    def prob_thresh(self):
+        return self.detector.prob_thresh
 
     def annotate(self, image, **kwargs):
         """Annotates an image using tinyface

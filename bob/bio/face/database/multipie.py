@@ -108,10 +108,9 @@ class MultipieDatabase(CSVDataset):
                 ),
                 MultiposeAnnotations(),
             ),
+            annotation_type=["eyes-center", "left-profile", "right-profile"],
+            fixed_positions=None,
         )
-
-        self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
-        self.fixed_positions = None
 
     @staticmethod
     def protocols():

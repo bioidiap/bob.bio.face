@@ -90,9 +90,9 @@ class CBSRNirVis2Database(CSVDataset):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
-        self.annotation_type = annotation_type
-        self.fixed_positions = fixed_positions
 
     @staticmethod
     def protocols():

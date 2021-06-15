@@ -7,16 +7,12 @@ import bob.io.image
 from functools import partial
 
 
-def load(path):
-    return bob.io.image.load(os.path.join(rc["bob.db.ijbc.directory"], path))
-
-
 def _make_sample_from_template_row(row, image_directory):
     return DelayedSample(
         load=partial(
             bob.io.image.load, path=os.path.join(image_directory, row["FILENAME"])
         ),
-        template_id=str(row["TEMPLATE_ID"]),
+        reference_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
         key=os.path.splitext(row["FILENAME"])[0],
         annotations={
@@ -37,7 +33,7 @@ def _make_sample_set_from_template_group(template_group, image_directory):
         )
     )
     return SampleSet(
-        samples, template_id=samples[0].template_id, subject_id=samples[0].subject_id
+        samples, reference_id=samples[0].template_id, subject_id=samples[0].subject_id
     )
 
 

@@ -6,10 +6,10 @@ annotation_type, fixed_positions, memory_demanding = lookup_config_from_database
 )
 
 
-def load(annotation_type, fixed_positions=None):
+def load(annotation_type, fixed_positions=None, memory_demanding=False):
     return facenet_sanderberg_20170512_110547(
         annotation_type, fixed_positions, memory_demanding
     )
 
 
-pipeline = load(annotation_type, fixed_positions)
+pipeline = load(annotation_type, fixed_positions, memory_demanding)

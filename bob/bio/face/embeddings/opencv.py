@@ -135,13 +135,14 @@ class VGG16_Oxford(OpenCVTransformer):
             Caffe has the shape `C x H x W` and the chanel is BGR and 
 
             """
-            # To BGR
-            X = X[:, ::-1, :, :].astype("float32")
 
             # Subtracting
             X[:, :, :, 0] -= caffe_average_img[0]
             X[:, :, :, 1] -= caffe_average_img[1]
             X[:, :, :, 2] -= caffe_average_img[2]
+
+            # To BGR
+            X = X[:, ::-1, :, :].astype("float32")
 
             return X
 

@@ -1,6 +1,3 @@
-import os
-
-
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
     """Says object was actually declared here, and not in the import module.

@@ -188,7 +188,7 @@ def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
 
     if annotation_type == "eyes-center":
         # Hard coding eye positions for backward consistency
-        cropped_positions = {"leye": (100, 140), "reye": (100, 95)}
+        cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 

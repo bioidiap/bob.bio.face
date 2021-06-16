@@ -26,6 +26,10 @@ import math
 import bob.io.base.test_utils
 
 import pkg_resources
+from bob.db.base import read_annotation_file
+
+import pytest
+from bob.bio.base.test.utils import is_library_available
 
 regenerate_refs = False
 
@@ -178,3 +182,35 @@ def test_lgbphs():
         "bob.bio.face.test", "data/lgbphs_with_phase.hdf5"
     )
     _compare(feature, reference)
+
+
+def test_face_crop(height=112, width=112):
+    # read input
+    image, annotation = _image(), _annotation()
+    CROPPED_IMAGE_HEIGHT = height
+    CROPPED_IMAGE_WIDTH = width
+
+    # preprocessor with fixed eye positions (which correspond to th ones
+    fixed_cropper = bob.bio.face.preprocessor.FaceCrop(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        color_channel="rgb",
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+        fixed_positions={"reye": annotation["reye"], "leye": annotation["leye"]},
+    )
+
+    cropped = fixed_cropper.transform([image])
+    return cropped
+
+
+def _image():
+    return bob.io.base.load(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg")
+    )
+
+
+def _annotation():
+
+    return read_annotation_file(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.pos"),
+        "named",
+    )

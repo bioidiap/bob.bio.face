@@ -79,16 +79,13 @@ class PolaThermalDatabase(CSVDataset):
         One of the database protocols.
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = PolaThermalDatabase.urls()
         filename = get_file(
             "pola_thermal.tar.gz", urls, file_hash="cfbd7362773c6d49292fe1998e3c3825",
         )
-
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
 
         directory = (
             rc["bob.db.pola-thermal.directory"]
@@ -103,8 +100,9 @@ class PolaThermalDatabase(CSVDataset):
             return bob.io.base.load(path) / 255
 
         super().__init__(
-            filename,
-            protocol,
+            name="polathermal",
+            protocol=protocol,
+            dataset_protocol_path=filename,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=load,
@@ -113,6 +111,8 @@ class PolaThermalDatabase(CSVDataset):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
 
     @staticmethod

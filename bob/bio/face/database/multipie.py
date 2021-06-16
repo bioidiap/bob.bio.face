@@ -86,7 +86,7 @@ class MultipieDatabase(CSVDataset):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MultipieDatabase.urls()
@@ -94,12 +94,10 @@ class MultipieDatabase(CSVDataset):
             "multipie.tar.gz", urls, file_hash="6c27c9616c2d0373c5f052b061d80178"
         )
 
-        self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
-        self.fixed_positions = None
-
         super().__init__(
-            filename,
-            protocol,
+            name="multipie",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -110,6 +108,8 @@ class MultipieDatabase(CSVDataset):
                 ),
                 MultiposeAnnotations(),
             ),
+            annotation_type=["eyes-center", "left-profile", "right-profile"],
+            fixed_positions=None,
         )
 
     @staticmethod

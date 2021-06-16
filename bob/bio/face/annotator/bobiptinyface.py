@@ -1,4 +1,3 @@
-import bob.ip.facedetect.tinyface
 from . import Base
 
 
@@ -7,6 +6,8 @@ class BobIpTinyface(Base):
 
     def __init__(self, prob_thresh=0.5, **kwargs):
         super(BobIpTinyface, self).__init__(**kwargs)
+        import bob.ip.facedetect.tinyface
+
         self.detector = bob.ip.facedetect.tinyface.TinyFacesDetector(
             prob_thresh=prob_thresh
         )

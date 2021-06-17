@@ -27,6 +27,17 @@ class MultipieDatabase(CSVDataset):
     different expressions. For each of those expressions, a complete set of 30 pictures is captured that includes
     15 different view points times 20 different illumination conditions (18 with various flashes, plus 2 pictures with no flash at all). 
 
+
+    .. warning::
+      
+      To use this dataset protocol, you need to have the original files of the Multipie dataset.
+      Once you have it downloaded, please run the following command to set the path for Bob
+      
+        .. code-block:: sh
+
+            bob config set bob.bio.face.multipie.directory [IJBC PATH]
+
+
     Available expressions:
 
      - Session 1 : *neutral*, *smile*

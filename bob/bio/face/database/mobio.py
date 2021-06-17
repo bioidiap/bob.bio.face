@@ -29,6 +29,16 @@ class MobioDatabase(CSVDatasetZTNorm):
     One image was extracted from each video by choosing the video frame after 10 seconds.
     The eye positions were manually labelled and distributed with the database.
 
+
+    .. warning::
+      
+      To use this dataset protocol, you need to have the original files of the Mobio dataset.
+      Once you have it downloaded, please run the following command to set the path for Bob
+      
+        .. code-block:: sh
+
+            bob config set bob.bio.face.mobio.directory [IJBC PATH]
+
     For more information check:
 
     .. code-block:: latex

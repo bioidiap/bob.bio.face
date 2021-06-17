@@ -14,6 +14,7 @@ Databases
    bob.bio.face.database.AtntBioDatabase
    bob.bio.face.database.CasiaAfricaDatabase
    bob.bio.face.database.MobioDatabase
+   bob.bio.face.database.IJBCDatabase
    bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
    bob.bio.face.database.GBUBioDatabase

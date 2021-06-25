@@ -87,7 +87,7 @@ class PolaThermalDatabase(CSVDataset):
             "pola_thermal.tar.gz", urls, file_hash="cfbd7362773c6d49292fe1998e3c3825",
         )
 
-        directory = rc.get("bob.db.pola-thermal.directory")
+        directory = rc.get("bob.db.pola-thermal.directory", "")
 
         def load(path):
             """

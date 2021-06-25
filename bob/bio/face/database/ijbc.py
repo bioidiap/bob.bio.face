@@ -17,8 +17,8 @@ def _make_sample_from_template_row(row, image_directory):
 
     return DelayedSample(
         load=partial(bob.io.image.load, os.path.join(image_directory, row["FILENAME"])),
-        reference_id=str(row["TEMPLATE_ID"]),
-        subject_id=str(row["SUBJECT_ID"]),
+        reference_id=row["TEMPLATE_ID"],
+        subject_id=row["SUBJECT_ID"],
         key=os.path.splitext(row["FILENAME"])[0] + "-" + hashstr,
         annotations={
             "topleft": (float(row["FACE_Y"]), float(row["FACE_X"])),
@@ -160,7 +160,7 @@ class IJBCDatabase(Database):
         grouped_matches = self.matches.groupby("PROBE_TEMPLATE_ID")
         for probe_sampleset in self._cached_probes:
             probe_sampleset.references = list(
-                grouped_matches.get_group(int(probe_sampleset.reference_id))[
+                grouped_matches.get_group(probe_sampleset.reference_id)[
                     "REFERENCE_TEMPLATE_ID"
                 ]
             )

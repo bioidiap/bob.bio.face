@@ -317,6 +317,8 @@ def test_ijbc():
     # assert len(database.background_model_samples()) == 140732
     assert len(database.references()) == 3531
     assert len(database.probes()) == 19593
+    num_comparisons = sum([len(item.references) for item in database.probes()])
+    assert num_comparisons == 19557 + 15638932 # Genuine + Impostor
 
 
 @db_available("fargo")

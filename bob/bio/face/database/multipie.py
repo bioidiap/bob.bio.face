@@ -35,7 +35,7 @@ class MultipieDatabase(CSVDataset):
       
         .. code-block:: sh
 
-            bob config set bob.bio.face.multipie.directory [IJBC PATH]
+            bob config set bob.db.multipie.directory [MULTIPIE PATH]
 
 
     Available expressions:

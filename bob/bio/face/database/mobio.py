@@ -37,7 +37,7 @@ class MobioDatabase(CSVDatasetZTNorm):
       
         .. code-block:: sh
 
-            bob config set bob.bio.face.mobio.directory [IJBC PATH]
+            bob config set bob.db.mobio.directory [MOBIO PATH]
 
     For more information check:
 

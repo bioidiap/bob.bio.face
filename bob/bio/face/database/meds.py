@@ -93,7 +93,7 @@ class MEDSDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MEDSDatabase.urls()
@@ -101,12 +101,10 @@ class MEDSDatabase(CSVDatasetZTNorm):
             "meds.tar.gz", urls, file_hash="3b01354d4c170672ac14120b80dace75"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
-        database = CSVDataset(
-            filename,
-            protocol,
+        super().__init__(
+            name="meds",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -117,9 +115,9 @@ class MEDSDatabase(CSVDatasetZTNorm):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
-
-        super().__init__(database)
 
     @staticmethod
     def urls():

@@ -1,23 +1,15 @@
-from bob.bio.face.embeddings.tf2_inception_resnet import (
-    InceptionResnetv1_Casia_CenterLoss_2018,
-)
+from bob.bio.face.embeddings.tensorflow import inception_resnet_v1_casia_centerloss_2018
 from bob.bio.face.utils import lookup_config_from_database
-from bob.bio.face.config.baseline.templates import facenet_baseline
 
 annotation_type, fixed_positions, memory_demanding = lookup_config_from_database(
     locals().get("database")
 )
 
 
-def load(annotation_type, fixed_positions=None):
-    return facenet_baseline(
-        embedding=InceptionResnetv1_Casia_CenterLoss_2018(
-            memory_demanding=memory_demanding
-        ),
-        annotation_type=annotation_type,
-        fixed_positions=fixed_positions,
+def load(annotation_type, fixed_positions=None, memory_demanding=None):
+    return inception_resnet_v1_casia_centerloss_2018(
+        annotation_type, fixed_positions, memory_demanding
     )
 
 
-pipeline = load(annotation_type, fixed_positions)
-transformer = pipeline.transformer
+pipeline = load(annotation_type, fixed_positions, memory_demanding)

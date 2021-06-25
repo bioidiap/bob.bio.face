@@ -97,7 +97,7 @@ class CasiaAfricaDatabase(CSVDataset):
         One of the database protocols. Options are "ID-V-All-Ep1", "ID-V-All-Ep2" and "ID-V-All-Ep3"
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = CasiaAfricaDatabase.urls()
@@ -107,9 +107,6 @@ class CasiaAfricaDatabase(CSVDataset):
             file_hash="324bd69b581477d30606417be8e30d2a",
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
         directory = (
             rc["bob.db.casia-africa.directory"]
             if rc["bob.db.casia-africa.directory "]
@@ -117,8 +114,9 @@ class CasiaAfricaDatabase(CSVDataset):
         )
 
         super().__init__(
-            filename,
-            protocol,
+            name="casia-africa",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -128,6 +126,8 @@ class CasiaAfricaDatabase(CSVDataset):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
 
     @staticmethod

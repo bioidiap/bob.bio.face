@@ -29,6 +29,16 @@ class MobioDatabase(CSVDatasetZTNorm):
     One image was extracted from each video by choosing the video frame after 10 seconds.
     The eye positions were manually labelled and distributed with the database.
 
+
+    .. warning::
+      
+      To use this dataset protocol, you need to have the original files of the Mobio dataset.
+      Once you have it downloaded, please run the following command to set the path for Bob
+      
+        .. code-block:: sh
+
+            bob config set bob.bio.face.mobio.directory [IJBC PATH]
+
     For more information check:
 
     .. code-block:: latex
@@ -48,7 +58,7 @@ class MobioDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MobioDatabase.urls()
@@ -56,12 +66,10 @@ class MobioDatabase(CSVDatasetZTNorm):
             "mobio.tar.gz", urls, file_hash="42cee778c17a34762d5fc5dd13ce3ee6"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
-        database = CSVDataset(
-            filename,
-            protocol,
+        super().__init__(
+            name="mobio",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -72,9 +80,9 @@ class MobioDatabase(CSVDatasetZTNorm):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
-
-        super().__init__(database)
 
     @staticmethod
     def protocols():

@@ -54,15 +54,13 @@ class CBSRNirVis2Database(CSVDataset):
         One of the database protocols.
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()
         filename = get_file(
             "cbsr_nir_vis_2.tar.gz", urls, file_hash="116da4537c1099915cdc0f08feb651bd",
         )
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
 
         directory = (
             rc["bob.db.cbsr-nir-vis-2.directory"]
@@ -81,8 +79,9 @@ class CBSRNirVis2Database(CSVDataset):
                 raise ValueError("File `{0}` not found".format(str(new_filename)))
 
         super().__init__(
-            filename,
-            protocol,
+            name="cbsr-nir-vis2",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=load,
@@ -91,6 +90,8 @@ class CBSRNirVis2Database(CSVDataset):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
 
     @staticmethod

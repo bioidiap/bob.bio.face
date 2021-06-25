@@ -48,7 +48,7 @@ Users Guide
    :maxdepth: 2
 
    baselines
-   leaderboard/leaderboard
+   leaderboard/leaderboard   
    references
    annotators
    faq

@@ -18,11 +18,11 @@ from bob.bio.base.test.utils import is_library_available
 images = dict()
 images["bioref"] = (
     pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg"),
-    {"reye": (131, 176), "leye": (222, 170)},
+    {"reye": (176, 131), "leye": (170, 222)},
 )
 images["probe"] = (
     pkg_resources.resource_filename("bob.bio.face.test", "data/ada.png"),
-    {"reye": (440, 207), "leye": (546, 207)},
+    {"reye": (207, 440), "leye": (207, 546)},
 )
 
 
@@ -80,7 +80,7 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
         assert len(checkpoint_scores[0]) == 1
 
         if target_scores is not None:
-            np.allclose(target_scores, scores[0][0].data, atol=10e-3, rtol=10e-3)
+            assert np.allclose(target_scores, scores[0][0].data, atol=10e-5, rtol=10e-5)
 
         assert np.isclose(scores[0][0].data, checkpoint_scores[0][0].data)
 
@@ -113,42 +113,108 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_facenet_baseline():
-    run_baseline("facenet-sanderberg", target_scores=[-0.9220775737526933])
+    run_baseline("facenet-sanderberg", target_scores=-0.9220775737526933)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_msceleb():
-    run_baseline("inception-resnetv2-msceleb", target_scores=[-0.43447269718504244])
+    run_baseline("inception-resnetv2-msceleb", target_scores=-0.43447269718504244)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv2_casiawebface():
-    run_baseline("inception-resnetv2-casiawebface", target_scores=[-0.634583944368043])
+    run_baseline("inception-resnetv2-casiawebface", target_scores=-0.634583944368043)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_msceleb():
-    run_baseline("inception-resnetv1-msceleb", target_scores=[-0.44497649298306907])
+    run_baseline("inception-resnetv1-msceleb", target_scores=-0.44497649298306907)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_inception_resnetv1_casiawebface():
-    run_baseline("inception-resnetv1-casiawebface", target_scores=[-0.6411599976437636])
+    run_baseline("inception-resnetv1-casiawebface", target_scores=-0.6411599976437636)
 
 
 @pytest.mark.slow
 @is_library_available("mxnet")
 def test_arcface_insightface():
-    run_baseline("arcface-insightface", target_scores=[-0.0005965275677296544])
+    run_baseline("arcface-insightface", target_scores=-0.0005965275677296544)
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_arcface_resnet50_msceleb_v1():
+    run_baseline("resnet50-msceleb-arcface-2021", target_scores=-0.0008105830382632018)
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_arcface_resnet50_vgg2_v1():
+    run_baseline("resnet50-vgg2-arcface-2021", target_scores=-0.0035127080413503986)
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_arcface_mobilenet_msceleb():
+    run_baseline(
+        "mobilenetv2-msceleb-arcface-2021", target_scores=-9.430960384781972e-05
+    )
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_arcface_resnet50_msceleb_20210521():
+    run_baseline(
+        "resnet50-msceleb-arcface-20210521", target_scores=-0.001238845659379595
+    )
 
 
 def test_gabor_graph():
-    run_baseline("gabor_graph", target_scores=[0.4385451147418939])
+    run_baseline("gabor_graph", target_scores=0.4385451147418939)
 
 
 # def test_lda():
 #    run_baseline("lda", get_fake_samples_for_training())
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_afffe():
+    run_baseline(
+        "afffe", target_scores=-0.27480835869298026,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet34():
+    run_baseline(
+        "iresnet34", target_scores=-0.0003085132478504171,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet50():
+    run_baseline(
+        "iresnet50", target_scores=-0.0013965432856760662,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet100():
+    run_baseline(
+        "iresnet100", target_scores=-0.0002386926047015514,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("cv2")
+def test_vgg16_oxford():
+    run_baseline("vgg16-oxford", target_scores=-0.0019032474437553626)

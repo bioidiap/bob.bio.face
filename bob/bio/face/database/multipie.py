@@ -27,6 +27,17 @@ class MultipieDatabase(CSVDataset):
     different expressions. For each of those expressions, a complete set of 30 pictures is captured that includes
     15 different view points times 20 different illumination conditions (18 with various flashes, plus 2 pictures with no flash at all). 
 
+
+    .. warning::
+      
+      To use this dataset protocol, you need to have the original files of the Multipie dataset.
+      Once you have it downloaded, please run the following command to set the path for Bob
+      
+        .. code-block:: sh
+
+            bob config set bob.bio.face.multipie.directory [IJBC PATH]
+
+
     Available expressions:
 
      - Session 1 : *neutral*, *smile*
@@ -86,7 +97,7 @@ class MultipieDatabase(CSVDataset):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MultipieDatabase.urls()
@@ -94,12 +105,10 @@ class MultipieDatabase(CSVDataset):
             "multipie.tar.gz", urls, file_hash="6c27c9616c2d0373c5f052b061d80178"
         )
 
-        self.annotation_type = ["eyes-center", "left-profile", "right-profile"]
-        self.fixed_positions = None
-
         super().__init__(
-            filename,
-            protocol,
+            name="multipie",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -110,6 +119,8 @@ class MultipieDatabase(CSVDataset):
                 ),
                 MultiposeAnnotations(),
             ),
+            annotation_type=["eyes-center", "left-profile", "right-profile"],
+            fixed_positions=None,
         )
 
     @staticmethod

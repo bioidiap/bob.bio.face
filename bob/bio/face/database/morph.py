@@ -57,7 +57,7 @@ class MorphDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol):
+    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
 
         # Downloading model if not exists
         urls = MorphDatabase.urls()
@@ -65,12 +65,10 @@ class MorphDatabase(CSVDatasetZTNorm):
             "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
         )
 
-        self.annotation_type = "eyes-center"
-        self.fixed_positions = None
-
-        database = CSVDataset(
-            filename,
-            protocol,
+        super().__init__(
+            name="morph",
+            dataset_protocol_path=filename,
+            protocol=protocol,
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
@@ -81,9 +79,9 @@ class MorphDatabase(CSVDatasetZTNorm):
                 ),
                 EyesAnnotations(),
             ),
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
-
-        super().__init__(database)
 
     @staticmethod
     def urls():

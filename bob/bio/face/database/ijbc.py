@@ -17,8 +17,8 @@ def _make_sample_from_template_row(row, image_directory):
 
     return DelayedSample(
         load=partial(bob.io.image.load, os.path.join(image_directory, row["FILENAME"])),
-        reference_id=row["TEMPLATE_ID"],
-        subject_id=row["SUBJECT_ID"],
+        reference_id=str(row["TEMPLATE_ID"]),
+        subject_id=str(row["SUBJECT_ID"]),
         key=os.path.splitext(row["FILENAME"])[0] + "-" + hashstr,
         annotations={
             "topleft": (float(row["FACE_Y"]), float(row["FACE_X"])),
@@ -39,7 +39,10 @@ def _make_sample_set_from_template_group(template_group, image_directory):
         )
     )
     return SampleSet(
-        samples, reference_id=samples[0].reference_id, subject_id=samples[0].subject_id
+        samples,
+        reference_id=samples[0].reference_id,
+        subject_id=samples[0].subject_id,
+        key=samples[0].reference_id,
     )
 
 
@@ -102,7 +105,7 @@ class IJBCDatabase(Database):
             name="ijbc",
             protocol=protocol,
             allow_scoring_with_all_biometric_references=False,
-            annotation_type="eyes-center",
+            annotation_type="bounding-box",
             fixed_positions=None,
             memory_demanding=True,
         )
@@ -136,7 +139,7 @@ class IJBCDatabase(Database):
             self.matches = pd.read_csv(
                 os.path.join(self.protocol_directory, "ijbc_11_G1_G2_matches.csv"),
                 names=["REFERENCE_TEMPLATE_ID", "PROBE_TEMPLATE_ID"],
-            )
+            ).astype("str")
         else:
             raise ValueError(
                 f"Protocol `{protocol}` not supported. We do accept merge requests :-)"
@@ -155,15 +158,15 @@ class IJBCDatabase(Database):
                 )
             )
 
-        # Link probes to the references they have to be compared with
-        # We might make that faster if we manage to write it as a Panda instruction
-        grouped_matches = self.matches.groupby("PROBE_TEMPLATE_ID")
-        for probe_sampleset in self._cached_probes:
-            probe_sampleset.references = list(
-                grouped_matches.get_group(probe_sampleset.reference_id)[
-                    "REFERENCE_TEMPLATE_ID"
-                ]
-            )
+            # Link probes to the references they have to be compared with
+            # We might make that faster if we manage to write it as a Panda instruction
+            grouped_matches = self.matches.groupby("PROBE_TEMPLATE_ID")
+            for probe_sampleset in self._cached_probes:
+                probe_sampleset.references = list(
+                    grouped_matches.get_group(probe_sampleset.reference_id)[
+                        "REFERENCE_TEMPLATE_ID"
+                    ]
+                )
 
         return self._cached_probes
 

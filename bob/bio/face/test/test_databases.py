@@ -27,6 +27,7 @@ from bob.bio.base.test.test_database_implementations import check_database
 import bob.core
 from bob.extension.download import get_file
 from nose.plugins.skip import SkipTest
+from bob.extension import rc
 
 logger = bob.core.log.setup("bob.bio.face")
 
@@ -304,24 +305,20 @@ def test_replaymobile():
         raise SkipTest(e)
 
 
+@pytest.mark.skipif(
+    rc.get("bob.bio.face.ijbc.directory") is None,
+    reason="IJBC original protocols not available. Please do `bob config set bob.bio.face.ijbc.directory [IJBC PATH]` to set the IJBC data path.",
+)
 def test_ijbc():
     from bob.bio.face.database import IJBCDatabase
 
-    # Getting the absolute path
-    urls = IJBCDatabase.urls()
-    filename = get_file("ijbc.tar.gz", urls)
-
-    # Removing the file before the test
-    try:
-        os.remove(filename)
-    except Exception:
-        pass
-
     database = IJBCDatabase()
 
-    assert len(database.background_model_samples()) == 140732
+    # assert len(database.background_model_samples()) == 140732
     assert len(database.references()) == 3531
     assert len(database.probes()) == 19593
+    num_comparisons = sum([len(item.references) for item in database.probes()])
+    assert num_comparisons == 19557 + 15638932 # Genuine + Impostor
 
 
 @db_available("fargo")

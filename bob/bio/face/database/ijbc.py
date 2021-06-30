@@ -1,68 +1,260 @@
-#!/usr/bin/env python
-# vim: set fileencoding=utf-8 :
-# Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
-# Sat 20 Aug 15:43:10 CEST 2020
-
-from bob.pipelines.utils import hash_string
-from bob.extension.download import get_file, find_element_in_tarball
-import pickle
+from bob.bio.base.pipelines.vanilla_biometrics.abstract_classes import Database
+import pandas as pd
+from bob.pipelines.sample import DelayedSample, SampleSet
+from bob.extension import rc
 import os
+import bob.io.image
+from functools import partial
+from bob.pipelines.utils import hash_string
 
 
-def load_ijbc_sample(original_path, extension=[".jpg", ".png"]):
-    for e in extension:
-        path = original_path + e
-        if os.path.exists(path):
-            return path
-    else:
-        return ""
+def _make_sample_from_template_row(row, image_directory):
+
+    # Appending this key, so we can handle parallel writting done correctly
+    # paying the penalty of having duplicate files
+    key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["TEMPLATE_ID"])
+
+    return DelayedSample(
+        load=partial(bob.io.image.load, os.path.join(image_directory, row["FILENAME"])),
+        reference_id=str(row["TEMPLATE_ID"]),
+        subject_id=str(row["SUBJECT_ID"]),
+        key=key,
+        gender=row["GENDER"],
+        indoor_outdoor=row["INDOOR_OUTDOOR"],
+        skintone=row["SKINTONE"],
+        yaw=row["YAW"],
+        rool=row["ROLL"],
+        occ1=row["OCC1"],
+        occ2=row["OCC2"],
+        occ3=row["OCC3"],
+        occ4=row["OCC4"],
+        occ5=row["OCC5"],
+        occ6=row["OCC6"],
+        occ7=row["OCC7"],
+        occ8=row["OCC8"],
+        occ9=row["OCC9"],
+        occ10=row["OCC10"],
+        occ11=row["OCC11"],
+        occ12=row["OCC12"],
+        occ13=row["OCC13"],
+        occ14=row["OCC14"],
+        occ15=row["OCC15"],
+        occ16=row["OCC16"],
+        occ17=row["OCC17"],
+        occ18=row["OCC18"],
+        annotations={
+            "topleft": (float(row["FACE_Y"]), float(row["FACE_X"])),
+            "bottomright": (
+                float(row["FACE_Y"]) + float(row["FACE_HEIGHT"]),
+                float(row["FACE_X"]) + float(row["FACE_WIDTH"]),
+            ),
+            "size": (float(row["FACE_HEIGHT"]), float(row["FACE_WIDTH"])),
+        },
+    )
 
 
-class IJBCDatabase:
-    def __init__(self, pkl_directory=None):
-        self.annotation_type = "bounding-box"
-        self.fixed_positions = None
-        self.allow_scoring_with_all_biometric_references = False
-        self.hash_fn = hash_string
-        self.memory_demanding = True
+def _make_sample_set_from_template_group(template_group, image_directory):
 
-        if pkl_directory is None:
-            urls = IJBCDatabase.urls()
-            pkl_directory = get_file(
-                "ijbc.tar.gz", urls, file_hash="4b25d7f10595eb9f97f328a2d448d957"
+    samples = list(
+        template_group.apply(
+            _make_sample_from_template_row, axis=1, image_directory=image_directory
+        )
+    )
+    return SampleSet(
+        samples,
+        reference_id=samples[0].reference_id,
+        subject_id=samples[0].subject_id,
+        key=samples[0].reference_id,
+    )
+
+
+class IJBCDatabase(Database):
+    """
+
+    This package contains the access API and descriptions for the IARPA Janus Benchmark C -- IJB-C database.
+    The actual raw data can be downloaded from the original web page: http://www.nist.gov/programs-projects/face-challenges (note that not everyone might be eligible for downloading the data).
+
+    Included in the database, there are list files defining verification as well as closed- and open-set identification protocols.
+    For verification, two different protocols are provided.
+    For the ``1:1`` protocol, gallery and probe templates are combined using several images and video frames for each subject.
+    Compared gallery and probe templates share the same gender and skin tone -- these have been matched to make the comparisions more realistic and difficult.
+
+    For closed-set identification, the gallery of the ``1:1`` protocol is used, while probes stem from either only images, mixed images and video frames, or plain videos.
+    For open-set identification, the same probes are evaluated, but the gallery is split into two parts, either of which is left out to provide unknown probe templates, i.e., probe templates with no matching subject in the gallery.
+    In any case, scores are computed between all (active) gallery templates and all probes.
+
+    The IJB-C dataset provides additional evaluation protocols for face detection and clustering, but these are (not yet) part of this interface.
+
+
+    .. warning::
+      
+      To use this dataset protocol, you need to have the original files of the IJBC datasets.
+      Once you have it downloaded, please run the following command to set the path for Bob
+
+        .. code-block:: sh
+
+            bob config set bob.bio.face.ijbc.directory [IJBC PATH]
+
+    
+    The code below allows you to fetch the galery and probes of the "1:1" protocol.
+
+    .. code-block:: python
+
+        >>> from bob.bio.face.database import IJBCDatabase
+        >>> ijbc = IJBCDatabase()
+        >>>
+        >>> # Fetching the gallery 
+        >>> references = ijbc.references()
+        >>> # Fetching the probes 
+        >>> probes = ijbc.probes()
+    
+    """
+
+    def __init__(
+        self,
+        protocol="1:1",
+        original_directory=rc.get("bob.bio.face.ijbc.directory"),
+        **kwargs,
+    ):
+
+        if original_directory is None or not os.path.exists(original_directory):
+            raise ValueError(
+                "Invalid or non existant `original_directory`: f{original_directory}"
             )
 
-        self.pkl_directory = pkl_directory
-
-    def _assert_group(self, group):
-        assert (
-            group == "dev"
-        ), "The IJBC database only has a `dev` group. Received : {}".format(group)
-
-    def references(self, group="dev"):
-        self._assert_group(group)
-        return pickle.loads(
-            find_element_in_tarball(self.pkl_directory, "db_references.pickle", True)
+        self._check_protocol(protocol)
+        super().__init__(
+            name="ijbc",
+            protocol=protocol,
+            allow_scoring_with_all_biometric_references=False,
+            annotation_type="bounding-box",
+            fixed_positions=None,
+            memory_demanding=True,
         )
 
-    def probes(self, group="dev"):
-        self._assert_group(group)
-        return pickle.loads(
-            find_element_in_tarball(self.pkl_directory, "db_probes.pickle", True)
-        )
+        self.image_directory = os.path.join(original_directory, "images")
+        self.protocol_directory = os.path.join(original_directory, "protocols")
+        self._cached_probes = None
+        self._cached_references = None
+        self.hash_fn = hash_string
+
+        self._load_metadata(protocol)
+
+    def _load_metadata(self, protocol):
+        # Load CSV files
+        if protocol == "1:1":
+            self.reference_templates = pd.concat(
+                [
+                    pd.read_csv(
+                        os.path.join(self.protocol_directory, "ijbc_1N_gallery_G1.csv")
+                    ),
+                    pd.read_csv(
+                        os.path.join(self.protocol_directory, "ijbc_1N_gallery_G2.csv")
+                    ),
+                ]
+            )
+
+            self.probe_templates = pd.read_csv(
+                os.path.join(self.protocol_directory, "ijbc_1N_probe_mixed.csv")
+            )
+
+            self.matches = pd.read_csv(
+                os.path.join(self.protocol_directory, "ijbc_11_G1_G2_matches.csv"),
+                names=["REFERENCE_TEMPLATE_ID", "PROBE_TEMPLATE_ID"],
+            ).astype("str")
+
+            self.metadata = pd.read_csv(
+                os.path.join(self.protocol_directory, "ijbc_metadata.csv"),
+                usecols=[
+                    "SUBJECT_ID",
+                    "FILENAME",
+                    "SIGHTING_ID",
+                    "FACIAL_HAIR",
+                    "AGE",
+                    "INDOOR_OUTDOOR",
+                    "SKINTONE",
+                    "GENDER",
+                    "YAW",
+                    "ROLL",
+                ]
+                + [f"OCC{i}" for i in range(1, 19)],
+            )
+
+            # LEFT JOIN WITH METADATA
+            self.probe_templates = pd.merge(
+                self.probe_templates,
+                self.metadata,
+                on=["SUBJECT_ID", "FILENAME", "SIGHTING_ID"],
+                how="left",
+            )
+
+            # LEFT JOIN WITH METADATA
+            self.reference_templates = pd.merge(
+                self.reference_templates,
+                self.metadata,
+                on=["SUBJECT_ID", "FILENAME", "SIGHTING_ID"],
+                how="left",
+            )
+
+        else:
+            raise ValueError(
+                f"Protocol `{protocol}` not supported. We do accept merge requests :-)"
+            )
 
     def background_model_samples(self):
-        import cloudpickle
+        return None
 
-        return cloudpickle.loads(
-            find_element_in_tarball(
-                self.pkl_directory, "db_background_model_samples.pickle", True
+    def probes(self, group="dev"):
+        self._check_group(group)
+        if self._cached_probes is None:
+            self._cached_probes = list(
+                self.probe_templates.groupby("TEMPLATE_ID").apply(
+                    _make_sample_set_from_template_group,
+                    image_directory=self.image_directory,
+                )
             )
+
+            # Link probes to the references they have to be compared with
+            # We might make that faster if we manage to write it as a Panda instruction
+            grouped_matches = self.matches.groupby("PROBE_TEMPLATE_ID")
+            for probe_sampleset in self._cached_probes:
+                probe_sampleset.references = list(
+                    grouped_matches.get_group(probe_sampleset.reference_id)[
+                        "REFERENCE_TEMPLATE_ID"
+                    ]
+                )
+
+        return self._cached_probes
+
+    def references(self, group="dev"):
+        self._check_group(group)
+        if self._cached_references is None:
+            self._cached_references = list(
+                self.reference_templates.groupby("TEMPLATE_ID").apply(
+                    _make_sample_set_from_template_group,
+                    image_directory=self.image_directory,
+                )
+            )
+
+        return self._cached_references
+
+    def all_samples(self, group="dev"):
+        self._check_group(group)
+
+        return self.references() + self.probes()
+
+    def groups(self):
+        return ["dev"]
+
+    def protocols(self):
+        return ["1:1"]
+
+    def _check_protocol(self, protocol):
+        assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(
+            protocol, self.protocols()
         )
 
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/ijbc.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/ijbc.tar.gz",
-        ]
+    def _check_group(self, group):
+        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
+            group, self.groups()
+        )

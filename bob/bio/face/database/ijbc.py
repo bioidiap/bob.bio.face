@@ -20,6 +20,29 @@ def _make_sample_from_template_row(row, image_directory):
         reference_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
         key=os.path.splitext(row["FILENAME"])[0] + "-" + hashstr,
+        gender=row["GENDER"],
+        indoor_outdoor=row["INDOOR_OUTDOOR"],
+        skintone=row["SKINTONE"],
+        yaw=row["YAW"],
+        rool=row["ROLL"],
+        occ1=row["OCC1"],
+        occ2=row["OCC2"],
+        occ3=row["OCC3"],
+        occ4=row["OCC4"],
+        occ5=row["OCC5"],
+        occ6=row["OCC6"],
+        occ7=row["OCC7"],
+        occ8=row["OCC8"],
+        occ9=row["OCC9"],
+        occ10=row["OCC10"],
+        occ11=row["OCC11"],
+        occ12=row["OCC12"],
+        occ13=row["OCC13"],
+        occ14=row["OCC14"],
+        occ15=row["OCC15"],
+        occ16=row["OCC16"],
+        occ17=row["OCC17"],
+        occ18=row["OCC18"],
         annotations={
             "topleft": (float(row["FACE_Y"]), float(row["FACE_X"])),
             "bottomright": (
@@ -140,6 +163,40 @@ class IJBCDatabase(Database):
                 os.path.join(self.protocol_directory, "ijbc_11_G1_G2_matches.csv"),
                 names=["REFERENCE_TEMPLATE_ID", "PROBE_TEMPLATE_ID"],
             ).astype("str")
+
+            self.metadata = pd.read_csv(
+                os.path.join(self.protocol_directory, "ijbc_metadata.csv"),
+                usecols=[
+                    "SUBJECT_ID",
+                    "FILENAME",
+                    "SIGHTING_ID",
+                    "FACIAL_HAIR",
+                    "AGE",
+                    "INDOOR_OUTDOOR",
+                    "SKINTONE",
+                    "GENDER",
+                    "YAW",
+                    "ROLL",
+                ]
+                + [f"OCC{i}" for i in range(1, 19)],
+            )
+
+            # LEFT JOIN WITH METADATA
+            self.probe_templates = pd.merge(
+                self.probe_templates,
+                self.metadata,
+                on=["SUBJECT_ID", "FILENAME", "SIGHTING_ID"],
+                how="left",
+            )
+
+            # LEFT JOIN WITH METADATA
+            self.reference_templates = pd.merge(
+                self.reference_templates,
+                self.metadata,
+                on=["SUBJECT_ID", "FILENAME", "SIGHTING_ID"],
+                how="left",
+            )
+
         else:
             raise ValueError(
                 f"Protocol `{protocol}` not supported. We do accept merge requests :-)"

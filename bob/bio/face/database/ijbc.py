@@ -5,21 +5,20 @@ from bob.extension import rc
 import os
 import bob.io.image
 from functools import partial
-import uuid
 from bob.pipelines.utils import hash_string
 
 
 def _make_sample_from_template_row(row, image_directory):
 
-    # Appending this hash, so we can handle parallel writting done correctly
+    # Appending this key, so we can handle parallel writting done correctly
     # paying the penalty of having duplicate files
-    hashstr = str(uuid.uuid4())
+    key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["TEMPLATE_ID"])
 
     return DelayedSample(
         load=partial(bob.io.image.load, os.path.join(image_directory, row["FILENAME"])),
         reference_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
-        key=os.path.splitext(row["FILENAME"])[0] + "-" + hashstr,
+        key=key,
         gender=row["GENDER"],
         indoor_outdoor=row["INDOOR_OUTDOOR"],
         skintone=row["SKINTONE"],

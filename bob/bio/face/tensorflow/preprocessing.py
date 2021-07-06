@@ -110,7 +110,7 @@ def prepare_dataset(
         if shuffle:
             ds = ds.shuffle(ds.cardinality())
 
-    ds = tf.data.TFRecordDataset(ds, num_parallel_reads=n_cpus)
+    ds = tf.data.TFRecordDataset(ds, num_parallel_reads=tf.data.AUTOTUNE)
     if shuffle:
         # ignore order and read files as soon as they come in
         ignore_order = tf.data.Options()

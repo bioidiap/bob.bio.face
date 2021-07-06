@@ -67,8 +67,6 @@ def prepare_dataset(
     output_shape,
     shuffle=False,
     augment=False,
-    autotune=tf.data.experimental.AUTOTUNE,
-    n_cpus=cpu_count(),
     shuffle_buffer=int(2e4),
     ctx=None,
 ):
@@ -89,15 +87,10 @@ def prepare_dataset(
 
     augment: bool
 
-    autotune: int
-
-    n_cpus: int
-
     shuffle_buffer: int
 
     ctx: ``tf.distribute.InputContext``
     """
-    logger.debug(f"Using {n_cpus} cpus to prepare the tensorflow dataset")
 
     ds = tf.data.Dataset.list_files(
         tf_record_paths, shuffle=shuffle if ctx is None else False
@@ -117,7 +110,10 @@ def prepare_dataset(
         ignore_order.experimental_deterministic = False
         ds = ds.with_options(ignore_order)
 
-    ds = ds.map(partial(decode_tfrecords, data_shape=data_shape, num_parallel_calls=tf.data.AUTOTUNE))
+    ds = ds.map(
+        partial(decode_tfrecords, data_shape=data_shape),
+        num_parallel_calls=tf.data.AUTOTUNE,
+    )
 
     if shuffle:
         ds = ds.shuffle(shuffle_buffer)
@@ -126,8 +122,8 @@ def prepare_dataset(
     preprocessor = get_preprocessor(output_shape)
     ds = ds.batch(batch_size).map(
         partial(preprocess, preprocessor, augment=augment),
-        num_parallel_calls=autotune,
+        num_parallel_calls=tf.data.AUTOTUNE,
     )
 
     # Use buffered prefecting on all datasets
-    return ds.prefetch(buffer_size=autotune)
+    return ds.prefetch(buffer_size=tf.data.AUTOTUNE)

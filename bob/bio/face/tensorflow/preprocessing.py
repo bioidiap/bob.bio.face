@@ -117,7 +117,7 @@ def prepare_dataset(
         ignore_order.experimental_deterministic = False
         ds = ds.with_options(ignore_order)
 
-    ds = ds.map(partial(decode_tfrecords, data_shape=data_shape))
+    ds = ds.map(partial(decode_tfrecords, data_shape=data_shape, num_parallel_calls=tf.data.AUTOTUNE))
 
     if shuffle:
         ds = ds.shuffle(shuffle_buffer)

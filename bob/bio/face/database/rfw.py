@@ -6,6 +6,7 @@ import os
 import bob.io.image
 from functools import partial
 import logging
+import numpy as np
 
 logger = logging.getLogger("bob.bio.face")
 
@@ -81,13 +82,19 @@ class RFWDatabase(Database):
         )
 
         self._pairs = dict()
+        self._first_reference_of_subject = dict()  ## Used with the Idiap protocol
         self._inverted_pairs = dict()
-        self._id_race = dict()
+        self._id_race = dict()  # ID -- > RACE
+        self._race_ids = dict()  # RACE --> ID
         self._landmarks = dict()
         self._cached_biometric_references = None
         self._cached_probes = None
         self._discarded_subjects = []  # Some subjects were labeled with both races
         self._load_metadata(target_set="test")
+
+        # Setting the seed for the IDIAP PROTOCOL,
+        # so we have a consisent set of probes
+        self._idiap_protocol_seed = 652
 
     def _get_subject_from_key(self, key):
         return key[:-5]
@@ -144,19 +151,34 @@ class RFWDatabase(Database):
                     self._pairs[dict_key] = []
                 self._pairs[dict_key].append(dict_value)
 
+        ## Picking the first reference
+        if self.protocol == "idiap":
+
+            for p in self._pairs:
+                _, subject_id, _ = p.split("/")
+                if subject_id in self._first_reference_of_subject:
+                    continue
+                self._first_reference_of_subject[subject_id] = p
+
         # Preparing the probes
-        self._invert_dict()
+        self._inverted_pairs = self._invert_dict(self._pairs)
+        self._race_ids = self._invert_dict(self._id_race)
 
-        pass
+    def _invert_dict(self, dict_pairs):
+        inverted_pairs = dict()
 
-    def _invert_dict(self):
-        self._inverted_pairs = dict()
-
-        for k in self._pairs:
-            for v in self._pairs[k]:
-                if v not in self._inverted_pairs:
-                    self._inverted_pairs[v] = []
-                self._inverted_pairs[v].append(k)
+        for k in dict_pairs:
+            if isinstance(dict_pairs[k], list):
+                for v in dict_pairs[k]:
+                    if v not in inverted_pairs:
+                        inverted_pairs[v] = []
+                    inverted_pairs[v].append(k)
+            else:
+                v = dict_pairs[k]
+                if v not in inverted_pairs:
+                    inverted_pairs[v] = []
+                inverted_pairs[v].append(k)
+        return inverted_pairs
 
     def background_model_samples(self):
         return None
@@ -165,14 +187,40 @@ class RFWDatabase(Database):
         self._check_group(group)
         if self._cached_probes is None:
 
+            # Setting the seed for the IDIAP PROTOCOL,
+            # so we have a consisent set of probes
+            np.random.seed(self._idiap_protocol_seed)
+
             self._cached_probes = []
             for key in self._inverted_pairs:
                 sset = self._make_sampleset(key)
                 sset.references = [
                     key.split("/")[-1] for key in self._inverted_pairs[key]
                 ]
-                self._cached_probes.append(sset)
 
+                # If it's the idiap protocol, we should
+                # extend the list of comparisons
+                if self.protocol == "idiap":
+                    # Picking one reference per race
+                    extra_references = []
+                    for k in self._race_ids:
+                        # Discard samples from the same race
+                        if k == sset.race:
+                            continue
+
+                        index = np.random.randint(len(self._race_ids[k]))
+                        random_subject_id = self._race_ids[k][index]
+
+                        # Search for the first reference id in with this identity
+                        extra_references.append(
+                            self._first_reference_of_subject[random_subject_id]
+                        )
+
+                    assert len(extra_references) == 3
+
+                    sset.references += extra_references
+
+                self._cached_probes.append(sset)
         return self._cached_probes
 
     def _fetch_landmarks(self, filename, key):
@@ -242,7 +290,7 @@ class RFWDatabase(Database):
         return ["dev"]
 
     def protocols(self):
-        return ["original", "diap"]
+        return ["original", "idiap"]
 
     def _check_protocol(self, protocol):
         assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(

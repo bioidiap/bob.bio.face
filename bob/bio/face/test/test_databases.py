@@ -422,6 +422,10 @@ def test_polathermal():
     assert len(database.probes()) == 1680
 
 
+@pytest.mark.skipif(
+    rc.get("bob.bio.face.rfw.directory") is None,
+    reason="RFW original protocols not available. Please do `bob config set bob.bio.face.rfw.directory [RFW PATH]` to set the RFW data path.",
+)
 def test_rfw():
 
     from bob.bio.face.database import RFWDatabase
@@ -430,6 +434,11 @@ def test_rfw():
 
     assert len(database.references()) == 22481
     assert len(database.probes()) == 21851
+
+    database = RFWDatabase("idiap")
+    assert len(database.references()) == 22481
+    assert len(database.probes()) == 21851
+    assert sum([len(d.references) for d in database.probes()]) == 89540
 
 
 def test_cbsr_nir_vis_2():

@@ -314,7 +314,7 @@ def test_ijbc():
     assert len(database.references()) == 3531
     assert len(database.probes()) == 19593
     num_comparisons = sum([len(item.references) for item in database.probes()])
-    assert num_comparisons == 19557 + 15638932 # Genuine + Impostor
+    assert num_comparisons == 19557 + 15638932  # Genuine + Impostor
 
 
 @db_available("fargo")
@@ -420,6 +420,16 @@ def test_polathermal():
     database = PolaThermalDatabase("VIS-thermal-overall-split1")
     assert len(database.references()) == 35
     assert len(database.probes()) == 1680
+
+
+def test_rfw():
+
+    from bob.bio.face.database import RFWDatabase
+
+    database = RFWDatabase("original")
+
+    assert len(database.references()) == 22481
+    assert len(database.probes()) == 21851
 
 
 def test_cbsr_nir_vis_2():

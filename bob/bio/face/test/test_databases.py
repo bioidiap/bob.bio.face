@@ -26,7 +26,6 @@ from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database
 import bob.core
 from bob.extension.download import get_file
-from nose.plugins.skip import SkipTest
 from bob.extension import rc
 
 logger = bob.core.log.setup("bob.bio.face")
@@ -277,9 +276,7 @@ def test_replaymobile():
     database = bob.bio.base.load_resource(
         "replaymobile-img", "database", preferred_package="bob.bio.face"
     )
-    samples = database.all_samples(groups=("dev", "eval"))
-    assert len(samples) == 8300, len(samples)
-    sample = samples[0]
+    sample = database.probes()[0][0]
     assert hasattr(sample, "annotations")
     assert "reye" in sample.annotations
     assert "leye" in sample.annotations
@@ -289,20 +286,19 @@ def test_replaymobile():
     assert len(database.references(group="eval")) == 12
     assert len(database.probes()) == 4160
     assert len(database.probes(group="eval")) == 3020
-    try:
+    # Only if data is available
+    if rc.get("bob.db.replaymobile.directory", None):
         assert sample.annotations == {
-            "bottomright": [785, 395],
-            "topleft": [475, 167],
-            "leye": [587, 336],
-            "reye": [588, 238],
-            "mouthleft": [705, 252],
-            "mouthright": [706, 326],
-            "nose": [643, 295],
+            "bottomright": [734, 407],
+            "topleft": [436, 182],
+            "leye": [541, 350],
+            "reye": [540, 245],
+            "mouthleft": [655, 254],
+            "mouthright": [657, 338],
+            "nose": [591, 299],
         }
         assert sample.data.shape == (3, 1280, 720)
-        assert sample.data[0, 0, 0] == 87
-    except RuntimeError as e:
-        raise SkipTest(e)
+        assert sample.data[0, 0, 0] == 110
 
 
 @pytest.mark.skipif(

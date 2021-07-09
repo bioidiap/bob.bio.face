@@ -75,7 +75,6 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
             dataset_original_directory=dataset_original_directory,
         )
         self.reference_id_equal_subject_id = reference_id_equal_subject_id
-        self.references_list = []
 
     def convert_row_to_sample(self, row, header):
         """Creates a sample given a row of the CSV protocol definition."""
@@ -88,25 +87,10 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
                 raise ValueError(f"`subject_id` not available in {header}")
         if "should_flip" not in fields:
             raise ValueError(f"`should_flip` not available in {header}")
-        if "purpose" not in fields:
-            raise ValueError(f"`purpose` not available in {header}")
 
         kwargs = {k: fields[k] for k in fields.keys() - {"id", "should_flip"}}
 
-        # Retrieve the references list
-        if (
-            fields["purpose"].lower() == "enroll"
-            and fields["reference_id"] not in self.references_list
-        ):
-            self.references_list.append(fields["reference_id"])
-        # Set the references list in the probes for vanilla-biometrics
-        if fields["purpose"].lower() != "enroll":
-            if fields["attack_type"]:
-                # Attacks are only compare to their target (no `spoof_neg`)
-                kwargs["references"] = [fields["reference_id"]]
-            else:
-                kwargs["references"] = self.references_list
-        # One row leads to multiple samples (different frames)
+        # One row creates one samples (=> one comparison because of `is_sparse`)
         return DelayedSample(
             functools.partial(
                 load_frame_from_file_replaymobile,
@@ -246,7 +230,10 @@ class ReplayMobileBioDatabase(CSVDataset):
     ):
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            proto_def_name = "bio-face-replaymobile-img-3a584a97.tar.gz"
+            proto_def_hash = "6cd66a5e"
+            proto_def_name = (
+                f"database-protocols-replaymobile-img-{proto_def_hash}.tar.gz"
+            )
             proto_def_urls = [
                 f"https://www.idiap.ch/software/bob/data/bob/bob.bio.face/{proto_def_name}",
                 f"http://www.idiap.ch/software/bob/data/bob/bob.bio.face/{proto_def_name}",
@@ -255,7 +242,7 @@ class ReplayMobileBioDatabase(CSVDataset):
                 filename=proto_def_name,
                 urls=proto_def_urls,
                 cache_subdir="datasets",
-                file_hash="3a584a97",
+                file_hash=proto_def_hash,
             )
 
         if data_path is None:
@@ -268,7 +255,10 @@ class ReplayMobileBioDatabase(CSVDataset):
             )
 
         if annotations_path is None:
-            annot_name = "annotations-replaymobile-mtcnn-9cd6e452.tar.xz"
+            annot_hash = "9cd6e452"
+            annot_name = (
+                f"annotations-replaymobile-mtcnn-{annot_hash}.tar.xz"
+            )
             annot_urls = [
                 f"https://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
                 f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
@@ -277,7 +267,7 @@ class ReplayMobileBioDatabase(CSVDataset):
                 filename=annot_name,
                 urls=annot_urls,
                 cache_subdir="annotations",
-                file_hash="9cd6e452",
+                file_hash=annot_hash,
             )
 
         logger.info(
@@ -299,7 +289,7 @@ class ReplayMobileBioDatabase(CSVDataset):
                     annotation_extension=annotations_extension,
                 ),
             ),
-            fetch_probes=False,
+            is_sparse=True,
             **kwargs,
         )
         self.annotation_type = "eyes-center"

@@ -230,7 +230,7 @@ class ReplayMobileBioDatabase(CSVDataset):
     ):
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            proto_def_hash = "d66b5daf"
+            proto_def_hash = "6cd66a5e"
             proto_def_name = (
                 f"database-protocols-replaymobile-img-{proto_def_hash}.tar.gz"
             )

@@ -26,4 +26,5 @@ database = DatabaseConnector(
         },  # 'subworld' : 'twofolds'
     ),
     allow_scoring_with_all_biometric_references=False,
+    append_purpose=True,
 )

@@ -160,7 +160,7 @@ class IResnet34(PyTorchModel):
     ArcFace model (RESNET 34) from Insightface ported to pytorch
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, preprocessor=lambda x: (x - 127.5) / 128.0, memory_demanding=False):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet-91a5de61.tar.gz",
@@ -188,7 +188,7 @@ class IResnet50(PyTorchModel):
     ArcFace model (RESNET 50) from Insightface ported to pytorch
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, preprocessor=lambda x: (x - 127.5) / 128.0, memory_demanding=False):
 
         filename = _get_iresnet_file()
 
@@ -206,12 +206,12 @@ class IResnet50(PyTorchModel):
         self.model = model
 
 
-class IResnet100(PyTorchModel):
+class IResnet100(PyTorchModel): 
     """
     ArcFace model (RESNET 100) from Insightface ported to pytorch
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, preprocessor=lambda x: (x - 127.5) / 128.0, memory_demanding=False):
 
         filename = _get_iresnet_file()
 

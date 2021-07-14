@@ -19,8 +19,10 @@ class RFWDatabase(Database):
 
     The RFW is a subset of the MS-Celeb 1M dataset, and it's composed of 44332 images split into 11416 identities.
     There are four "race" labels in this dataset (`African`, `Asian`, `Caucasian`, and `Indian`).
+    Furthermore, with the help of https://query.wikidata.org/ we've added information about gender and
+    country of birth.
 
-    About the evaluation protocols, we offer two protocols.
+    We offer two evaluation protocols.
     The first one, called "original" is the original protocol from its publication. It contains ~24k comparisons in total.
     Worth noting that this evaluation protocol has an issue. It considers only comparisons of pairs of images from the same
     "race".
@@ -104,8 +106,6 @@ class RFWDatabase(Database):
         self._idiap_protocol_seed = 652
 
         # Number of samples used to Z-Norm and T-Norm (per race)
-        # self._nzprobes = 50
-        # self._ntreferences = 50
         self._nzprobes = 25
         self._ntreferences = 25
 
@@ -152,7 +152,6 @@ class RFWDatabase(Database):
 
     def _get_subject_from_key(self, key):
         return key[:-5]
-        # return key.split("/")[0]
 
     def _load_metadata(self, target_set="test"):
         for race in self._races:
@@ -168,8 +167,6 @@ class RFWDatabase(Database):
                 key = f"{l[0]}_000{l[1]}"
                 subject_id = self._get_subject_from_key(key)
                 dict_key = f"{race}/{subject_id}/{key}"
-                # subject_id = self._get_subject_from_key(key)
-                # subject_id = key[:-5]
 
                 if subject_id not in self._id_race:
                     self._id_race[subject_id] = race
@@ -187,15 +184,11 @@ class RFWDatabase(Database):
 
                 # Positive or negative pairs
                 if len(l) == 3:
-                    # k = f"{l[0]}_000{l[2]}"
-                    # value = f"{self._get_subject_from_key(key)}/{k}"
                     k_value = f"{l[0]}_000{l[2]}"
                     dict_value = (
                         f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
                     )
                 else:
-                    # k = f"{l[2]}_000{l[3]}"
-                    # value = f"{self._get_subject_from_key(key)}/{k}"
                     k_value = f"{l[2]}_000{l[3]}"
                     dict_value = (
                         f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"

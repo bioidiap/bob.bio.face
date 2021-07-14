@@ -17,6 +17,8 @@ import numpy
 
 logger = logging.getLogger(__name__)
 
+read_annotation_file = functools.lru_cache()(read_annotation_file)
+
 
 def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     """Loads a single frame from a video file for replay-mobile.
@@ -256,9 +258,7 @@ class ReplayMobileBioDatabase(CSVDataset):
 
         if annotations_path is None:
             annot_hash = "9cd6e452"
-            annot_name = (
-                f"annotations-replaymobile-mtcnn-{annot_hash}.tar.xz"
-            )
+            annot_name = f"annotations-replaymobile-mtcnn-{annot_hash}.tar.xz"
             annot_urls = [
                 f"https://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
                 f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
@@ -268,6 +268,10 @@ class ReplayMobileBioDatabase(CSVDataset):
                 urls=annot_urls,
                 cache_subdir="annotations",
                 file_hash=annot_hash,
+                extract=True,
+            )
+            annotations_path = os.path.join(
+                os.path.dirname(annotations_path), "replaymobile-mtcnn-annotations"
             )
 
         logger.info(

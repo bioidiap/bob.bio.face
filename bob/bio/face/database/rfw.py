@@ -7,6 +7,8 @@ import bob.io.image
 from functools import partial
 import logging
 import numpy as np
+import copy
+from bob.extension.download import get_file
 
 logger = logging.getLogger("bob.bio.face")
 
@@ -89,12 +91,64 @@ class RFWDatabase(Database):
         self._landmarks = dict()
         self._cached_biometric_references = None
         self._cached_probes = None
+        self._cached_zprobes = None
+        self._cached_treferences = None
+        self._cached_treferences = None
         self._discarded_subjects = []  # Some subjects were labeled with both races
         self._load_metadata(target_set="test")
+        self._demographics = None
+        self._demographics = self._get_demographics_dict()
 
         # Setting the seed for the IDIAP PROTOCOL,
         # so we have a consisent set of probes
         self._idiap_protocol_seed = 652
+
+        # Number of samples used to Z-Norm and T-Norm (per race)
+        # self._nzprobes = 50
+        # self._ntreferences = 50
+        self._nzprobes = 25
+        self._ntreferences = 25
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+        ]
+
+    def _get_demographics_dict(self):
+        """
+        Get the dictionary with GENDER and COUNTRY of birth.
+        Data obtained using the wiki data `https://query.wikidata.org/` using the following sparql query
+
+        '''
+        SELECT ?item ?itemLabel ?genderLabel ?countryLabel WHERE {
+        ?item wdt:P31 wd:Q5.
+        ?item ?label "{MY_NAME_HERE}"@en .
+        optional{ ?item wdt:P21 ?gender.}
+        optional{ ?item wdt:P27 ?country.}
+        SERVICE wikibase:label { bd:serviceParam wikibase:language "en". }
+        }
+        '''
+
+
+        """
+
+        urls = RFWDatabase.urls()
+        filename = get_file(
+            "msceleb_wikidata_demographics.csv.tar.gz",
+            urls,
+            file_hash="8eb0e3c93647dfa0c13fade5db96d73a",
+            extract=True,
+        )[:-7]
+        if self._demographics is None:
+            self._demographics = dict()
+            with open(filename) as f:
+                for line in f.readlines():
+                    line = line.split(",")
+                    self._demographics[line[0]] = [line[2], line[3].rstrip("\n")]
+
+        return self._demographics
 
     def _get_subject_from_key(self, key):
         return key[:-5]
@@ -153,12 +207,11 @@ class RFWDatabase(Database):
 
         ## Picking the first reference
         if self.protocol == "idiap":
-
             for p in self._pairs:
-                _, subject_id, _ = p.split("/")
+                _, subject_id, reference_id = p.split("/")
                 if subject_id in self._first_reference_of_subject:
                     continue
-                self._first_reference_of_subject[subject_id] = p
+                self._first_reference_of_subject[subject_id] = reference_id
 
         # Preparing the probes
         self._inverted_pairs = self._invert_dict(self._pairs)
@@ -181,7 +234,63 @@ class RFWDatabase(Database):
         return inverted_pairs
 
     def background_model_samples(self):
-        return None
+        return []
+
+    def _get_zt_samples(self, seed):
+
+        cache = []
+
+        # Setting the seed for the IDIAP PROTOCOL,
+        # so we have a consisent set of probes
+        np.random.seed(seed)
+
+        for race in self._races:
+            data_dir = os.path.join(self.original_directory, "train", "data", race)
+            files = os.listdir(data_dir)
+            # SHUFFLING
+            np.random.shuffle(files)
+            files = files[0 : self._nzprobes]
+
+            # RFW original data is not super organized
+            # train data from Caucasians are stored differently
+            if race == "Caucasian":
+                for f in files:
+                    reference_id = os.listdir(os.path.join(data_dir, f))[0]
+                    key = f"{race}/{f}/{reference_id[:-4]}"
+                    cache.append(
+                        self._make_sampleset(
+                            key, target_set="train", get_demographic=False
+                        )
+                    )
+
+            else:
+                for f in files:
+                    key = f"{race}/{race}/{f[:-4]}"
+                    cache.append(
+                        self._make_sampleset(
+                            key, target_set="train", get_demographic=False
+                        )
+                    )
+        return cache
+
+    def zprobes(self, group="dev", proportion=1.0):
+        if self._cached_zprobes is None:
+            self._cached_zprobes = self._get_zt_samples(self._idiap_protocol_seed + 1)
+            references = list(
+                set([s.reference_id for s in self.references(group=group)])
+            )
+            for p in self._cached_zprobes:
+                p.references = copy.deepcopy(references)
+
+        return self._cached_zprobes
+
+    def treferences(self, group="dev", proportion=1.0):
+        if self._cached_treferences is None:
+            self._cached_treferences = self._get_zt_samples(
+                self._idiap_protocol_seed + 2
+            )
+
+        return self._cached_zprobes
 
     def probes(self, group="dev"):
         self._check_group(group)
@@ -230,50 +339,84 @@ class RFWDatabase(Database):
                 for line in f.readlines():
                     line = line.split("\t")
                     # pattern 'm.0c7mh2_0003.jpg'[:-4]
-                    key = line[0].split("/")[-1][:-4]
-                    self._landmarks[key] = dict()
-                    self._landmarks[key]["reye"] = (float(line[3]), float(line[2]))
-                    self._landmarks[key]["leye"] = (float(line[5]), float(line[4]))
+                    k = line[0].split("/")[-1][:-4]
+                    self._landmarks[k] = dict()
+                    self._landmarks[k]["reye"] = (float(line[3]), float(line[2]))
+                    self._landmarks[k]["leye"] = (float(line[5]), float(line[4]))
 
         return self._landmarks[key]
 
-    def _make_sampleset(self, item, target_set="test"):
+    def _make_sampleset(self, item, target_set="test", get_demographic=True):
         race, subject_id, reference_id = item.split("/")
+
+        # RFW original data is not super organized
+        # Test and train data os stored differently
 
         key = f"{race}/{subject_id}/{reference_id}"
 
+        path = (
+            os.path.join(
+                self.original_directory,
+                f"{target_set}/data/{race}",
+                subject_id,
+                reference_id + self._default_extension,
+            )
+            if (target_set == "test" or race == "Caucasian")
+            else os.path.join(
+                self.original_directory,
+                f"{target_set}/data/{race}",
+                reference_id + self._default_extension,
+            )
+        )
+
+        annotations = (
+            self._fetch_landmarks(
+                os.path.join(self.original_directory, "erratum1", "Caucasian_lmk.txt"),
+                reference_id,
+            )
+            if (target_set == "train" and race == "Caucasian")
+            else self._fetch_landmarks(
+                os.path.join(
+                    self.original_directory, f"{target_set}/txts/{race}/{race}_lmk.txt",
+                ),
+                reference_id,
+            )
+        )
+
         samples = [
             DelayedSample(
-                partial(
-                    bob.io.image.load,
-                    os.path.join(
-                        self.original_directory,
-                        f"{target_set}/data/{race}",
-                        subject_id,
-                        reference_id + self._default_extension,
-                    ),
-                ),
+                partial(bob.io.image.load, path,),
                 key=key,
-                annotations=self._fetch_landmarks(
-                    os.path.join(
-                        self.original_directory,
-                        f"{target_set}/txts/{race}/{race}_lmk.txt",
-                    ),
-                    reference_id,
-                ),
+                annotations=annotations,
+                reference_id=reference_id,
             )
         ]
 
-        return SampleSet(
-            samples,
-            key=key,
-            reference_id=reference_id,
-            subject_id=subject_id,
-            race=race,
-        )
+        if get_demographic:
+            gender = self._demographics[subject_id][0]
+            country = self._demographics[subject_id][1]
+
+            return SampleSet(
+                samples,
+                key=key,
+                reference_id=reference_id,
+                subject_id=subject_id,
+                race=race,
+                gender=gender,
+                country=country,
+            )
+        else:
+            return SampleSet(
+                samples,
+                key=key,
+                reference_id=reference_id,
+                subject_id=subject_id,
+                race=race,
+            )
 
     def references(self, group="dev"):
         self._check_group(group)
+
         if self._cached_biometric_references is None:
             self._cached_biometric_references = []
             for key in self._pairs:

@@ -110,6 +110,7 @@ setup(
             "meds = bob.bio.face.config.database.meds:database",
             "morph = bob.bio.face.config.database.morph:database",
             "casia-africa = bob.bio.face.config.database.casia_africa:database",
+            "rfw = bob.bio.face.config.database.rfw:database",
         ],
         "bob.bio.annotator": [
             "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
@@ -165,6 +166,7 @@ setup(
             "replaymobile-img  = bob.bio.face.config.database.replaymobile",
             "fargo  = bob.bio.face.config.database.fargo",
             "meds = bob.bio.face.config.database.meds",
+            "rfw = bob.bio.face.config.database.rfw",
             "casia-africa = bob.bio.face.config.database.casia_africa",
             "morph = bob.bio.face.config.database.morph",
             "resnet50-msceleb-arcface-2021 = bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021",

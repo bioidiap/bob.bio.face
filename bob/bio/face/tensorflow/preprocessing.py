@@ -10,6 +10,9 @@ from functools import partial
 from multiprocessing import cpu_count
 import tensorflow as tf
 from tensorflow.keras import layers
+import logging
+
+logger = logging.getLogger(__name__)
 
 # STANDARD FEATURES FROM OUR TF-RECORDS
 FEATURES = {
@@ -28,9 +31,7 @@ def decode_tfrecords(x, data_shape, data_type=tf.uint8):
 
 
 def get_preprocessor(output_shape):
-    """
-
-    """
+    """"""
     preprocessor = tf.keras.Sequential(
         [
             # rotate before cropping
@@ -66,9 +67,8 @@ def prepare_dataset(
     output_shape,
     shuffle=False,
     augment=False,
-    autotune=tf.data.experimental.AUTOTUNE,
-    n_cpus=cpu_count(),
     shuffle_buffer=int(2e4),
+    ctx=None,
 ):
     """
     Create batches from a list of TF-Records
@@ -87,29 +87,43 @@ def prepare_dataset(
 
     augment: bool
 
-    autotune: int
-
-    n_cpus: int
-
     shuffle_buffer: int
+
+    ctx: ``tf.distribute.InputContext``
     """
 
-    ds = tf.data.Dataset.list_files(tf_record_paths, shuffle=shuffle)
-    ds = tf.data.TFRecordDataset(ds, num_parallel_reads=n_cpus)
+    ds = tf.data.Dataset.list_files(
+        tf_record_paths, shuffle=shuffle if ctx is None else False
+    )
+
+    # if we're in a distributed setting, shard here and shuffle after sharding
+    if ctx is not None:
+        batch_size = ctx.get_per_replica_batch_size(batch_size)
+        ds = ds.shard(ctx.num_replicas_in_sync, ctx.input_pipeline_id)
+        if shuffle:
+            ds = ds.shuffle(ds.cardinality())
+
+    ds = tf.data.TFRecordDataset(ds, num_parallel_reads=tf.data.AUTOTUNE)
     if shuffle:
         # ignore order and read files as soon as they come in
         ignore_order = tf.data.Options()
         ignore_order.experimental_deterministic = False
         ds = ds.with_options(ignore_order)
-    ds = ds.map(partial(decode_tfrecords, data_shape=data_shape)).prefetch(
-        buffer_size=autotune
+
+    ds = ds.map(
+        partial(decode_tfrecords, data_shape=data_shape),
+        num_parallel_calls=tf.data.AUTOTUNE,
     )
+
     if shuffle:
-        ds = ds.shuffle(shuffle_buffer).repeat(epochs)
+        ds = ds.shuffle(shuffle_buffer)
+    ds = ds.repeat(epochs)
+
     preprocessor = get_preprocessor(output_shape)
     ds = ds.batch(batch_size).map(
-        partial(preprocess, preprocessor, augment=augment), num_parallel_calls=autotune,
+        partial(preprocess, preprocessor, augment=augment),
+        num_parallel_calls=tf.data.AUTOTUNE,
     )
 
     # Use buffered prefecting on all datasets
-    return ds.prefetch(buffer_size=autotune)
+    return ds.prefetch(buffer_size=tf.data.AUTOTUNE)

@@ -28,7 +28,9 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
 def sanderberg_rescaling():
     # FIXED_STANDARDIZATION from https://github.com/davidsandberg/facenet
     # [-0.99609375, 0.99609375]
-    preprocessor = tf.keras.layers.experimental.preprocessing.Rescaling(scale=1 / 128, offset=-127.5 / 128)
+    preprocessor = tf.keras.layers.experimental.preprocessing.Rescaling(
+        scale=1 / 128, offset=-127.5 / 128
+    )
     return preprocessor
 
 
@@ -113,7 +115,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
@@ -133,6 +135,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -144,7 +147,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
@@ -164,6 +167,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -175,7 +179,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
@@ -195,6 +199,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -206,7 +211,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
@@ -226,6 +231,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -251,7 +257,7 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
         )
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
         urls = [
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/facenet_sanderberg_20170512_110547.tar.gz"
         ]
@@ -269,6 +275,7 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
             checkpoint_path,
             tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -312,7 +319,7 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
@@ -331,6 +338,7 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -377,7 +385,7 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
@@ -397,6 +405,7 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -440,7 +449,7 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
@@ -459,6 +468,7 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
     def inference(self, X):
@@ -510,7 +520,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
@@ -530,6 +540,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 

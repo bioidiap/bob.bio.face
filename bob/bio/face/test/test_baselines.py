@@ -154,6 +154,18 @@ def test_arcface_resnet50_msceleb_v1():
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
+def test_iresnet50_msceleb_idiap_20210623():
+    run_baseline("iresnet50-msceleb-idiap-20210623", target_scores=-0.00045892492346155667)
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
+def test_iresnet100_msceleb_idiap_20210623():
+    run_baseline("iresnet100-msceleb-idiap-20210623", target_scores=-0.00010635761699118174)
+
+
+@pytest.mark.slow
+@is_library_available("tensorflow")
 def test_arcface_resnet50_vgg2_v1():
     run_baseline("resnet50-vgg2-arcface-2021", target_scores=-0.0035127080413503986)
 

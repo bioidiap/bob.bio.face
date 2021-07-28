@@ -28,7 +28,9 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
 def sanderberg_rescaling():
     # FIXED_STANDARDIZATION from https://github.com/davidsandberg/facenet
     # [-0.99609375, 0.99609375]
-    preprocessor = tf.keras.layers.experimental.preprocessing.Rescaling(scale=1 / 128, offset=-127.5 / 128)
+    preprocessor = tf.keras.layers.experimental.preprocessing.Rescaling(
+        scale=1 / 128, offset=-127.5 / 128
+    )
     return preprocessor
 
 
@@ -113,7 +115,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
@@ -133,6 +135,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -144,7 +147,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
@@ -164,6 +167,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -175,7 +179,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
@@ -195,6 +199,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -206,7 +211,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
@@ -226,6 +231,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -251,7 +257,7 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
         )
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
         urls = [
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/facenet_sanderberg_20170512_110547.tar.gz"
         ]
@@ -269,6 +275,7 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
             checkpoint_path,
             tf.image.per_image_standardization,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -312,7 +319,7 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
@@ -331,6 +338,7 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -377,7 +385,7 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
@@ -394,6 +402,172 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
         checkpoint_path = os.path.dirname(filename)
 
         super(Resnet50_MsCeleb_ArcFace_20210521, self).__init__(
+            checkpoint_path,
+            preprocessor=lambda X: X / 255.0,
+            memory_demanding=memory_demanding,
+            **kwargs,
+        )
+
+
+class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
+    """
+    IResnet50 Backbone trained with the MSCeleb 1M database. The bottleneck layer (a.k.a embedding) has 512d.
+
+    The complete code to reproduce this model is in the (private) repository:
+    bob.project.hardening/-/commit/9ac25c0a17c9628b7a99e84217cd7c680f1a3e1e
+    but you can reproduce it using ``cnn_training/arcface_large_batch.py`` script and the following configuration::
+
+        CONFIG = {
+            "n-workers": 8,
+            "batch-size": 256,
+            "n-train-samples-per-epoch": 256_000 * 1,
+            "real-n-train-samples": 985702,
+            "shuffle-buffer": int(1e6),
+            "face-size": 126,
+            "face-output_size": 112,
+            "n-classes": 83009,
+            "backbone": "resnet50_large_batch",
+            "use-l2-regularizer": False,
+            "batch-norm-decay": 0.9,
+            "batch-norm-epsilon": 1e-5,
+            "head": "arcface",
+            "s": 30,
+            "bottleneck": 512,
+            "m": 0.5,
+            "dropout-rate": 0.0,
+            "learning-rate-schedule": "none",
+            "train-tf-record-path": "/face-tfrecords/126x126/msceleb_facecrop/*.tfrecords",
+            "validation-tf-record-path": "/face-tfrecords/126x126/lfw_sharded/*.tfrecords",
+            "checkpoint-path": "/temp/hardening/arcface_sgd_prelu/w8_b1000_fp16_drp0",
+            "pre-train": False,
+            "epochs": 6000,
+        }
+        strategy_fn = "multi-worker-mirrored-strategy"
+        mixed_precision_policy = "mixed_float16"
+        initial_lr = 0.1 / 512 * CONFIG["batch-size"] * CONFIG["n-workers"]
+        real_n_steps_per_epoch = CONFIG["real-n-train-samples"] / (CONFIG["batch-size"] * CONFIG["n-workers"])
+        params = {
+            "optimizer": {
+                "type": "sgdw",
+                "sgdw": {
+                    "momentum": min(0.9 * initial_lr, 0.999),
+                    "nesterov": False,
+                    "weight_decay": 5e-4,
+                },
+            },
+            "learning_rate": {
+                "type": "stepwise",
+                "stepwise": {
+                    "boundaries": [int(i * real_n_steps_per_epoch) for i in [11, 17, 22]],
+                    "values": [initial_lr / (10 ** i) for i in range(0, 4)],
+                },
+            },
+        }
+
+    The tensorboard logs can be found in: https://tensorboard.dev/experiment/6bBn0ya3SeilJ2elcZZoSg
+    The model at epoch 90 is used.
+    """
+
+    def __init__(self, memory_demanding=False, **kwargs):
+
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
+        ]
+
+        filename = get_file(
+            "arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
+            urls,
+            cache_subdir="data/tensorflow/arcface_iresnet50_msceleb_idiap-089640d2",
+            file_hash="089640d2",
+            extract=True,
+        )
+        checkpoint_path = os.path.dirname(filename)
+
+        super().__init__(
+            checkpoint_path,
+            preprocessor=lambda X: X / 255.0,
+            memory_demanding=memory_demanding,
+            **kwargs,
+        )
+
+
+class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
+    """
+    IResnet100 Backbone trained with the MSCeleb 1M database. The bottleneck layer (a.k.a embedding) has 512d.
+
+    The complete code to reproduce this model is in the (private) repository:
+    bob.project.hardening/-/commit/b162ca60d26fcf8a93f6767f5b5a026a406c1076
+    but you can reproduce it using ``cnn_training/arcface_large_batch.py`` script and the following configuration::
+
+        CONFIG = {
+            "n-workers": 8,
+            "batch-size": 128,
+            "n-train-samples-per-epoch": 256_000 * 1,
+            "real-n-train-samples": 985702,
+            "shuffle-buffer": int(1e5),
+            "face-size": 126,
+            "face-output_size": 112,
+            "n-classes": 83009,
+            "backbone": "iresnet100",
+            "use-l2-regularizer": False,
+            "batch-norm-decay": 0.9,
+            "batch-norm-epsilon": 1e-5,
+            "head": "arcface",
+            "s": 30,
+            "bottleneck": 512,
+            "m": 0.5,
+            "dropout-rate": 0.0,
+            "learning-rate-schedule": "none",
+            "train-tf-record-path": "/face-tfrecords/126x126/msceleb_facecrop/*.tfrecords",
+            "validation-tf-record-path": "/face-tfrecords/126x126/lfw_sharded/*.tfrecords",
+            "checkpoint-path": "/temp/hardening/arcface_sgd_prelu/i100_w8_b128_fp16_drp0",
+            "pre-train": False,
+            "epochs": 6000,
+        }
+        strategy_fn = "multi-worker-mirrored-strategy"
+        mixed_precision_policy = "mixed_float16"
+        initial_lr = 0.1 / 512 * CONFIG["batch-size"] * CONFIG["n-workers"]
+        real_n_steps_per_epoch = CONFIG["real-n-train-samples"] / (CONFIG["batch-size"] * CONFIG["n-workers"])
+        params = {
+            "optimizer": {
+                "type": "sgdw",
+                "sgdw": {
+                    "momentum": min(0.9 * initial_lr, 0.999),
+                    "nesterov": False,
+                    "weight_decay": 5e-4,
+                },
+            },
+            "learning_rate": {
+                # with ReduceLROnPlateau callback
+                "type": "constant",
+                "constant": {
+                    "learning_rate": initial_lr,
+                }
+            },
+        }
+
+    The tensorboard logs can be found in: https://tensorboard.dev/experiment/HYJTPiowRMa36VZHDLJqdg/
+    The model is saved based on best ``epoch_embeddings_embedding_accuracy``, epoch 51
+    """
+
+    def __init__(self, memory_demanding=False):
+
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
+        ]
+
+        filename = get_file(
+            "arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
+            urls,
+            cache_subdir="data/tensorflow/arcface_iresnet100_msceleb_idiap-1b22d544",
+            file_hash="1b22d544",
+            extract=True,
+        )
+        checkpoint_path = os.path.dirname(filename)
+
+        super().__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
@@ -440,7 +614,7 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
@@ -459,6 +633,7 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
     def inference(self, X):
@@ -510,7 +685,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, memory_demanding=False, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
@@ -530,6 +705,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
             memory_demanding=memory_demanding,
+            **kwargs,
         )
 
 
@@ -644,6 +820,60 @@ def resnet50_msceleb_arcface_20210521(
 
     return resnet_template(
         embedding=Resnet50_MsCeleb_ArcFace_20210521(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def iresnet50_msceleb_arcface_20210623(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the iresnet50 pipeline which will crop the face :math:`112 \times 112` and
+    use the :py:class:`IResnet50_MsCeleb_ArcFace_20210623` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+    return resnet_template(
+        embedding=IResnet50_MsCeleb_ArcFace_20210623(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def iresnet100_msceleb_arcface_20210623(
+    annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the iresnet100 pipeline which will crop the face :math:`112 \times 112` and
+    use the :py:class:`IResnet100_MsCeleb_ArcFace_20210623` to extract the features
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+    return resnet_template(
+        embedding=IResnet100_MsCeleb_ArcFace_20210623(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )

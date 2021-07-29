@@ -170,6 +170,10 @@ setup(
             "mobilefacenet                         = bob.bio.face.config.baseline.MobileFaceNet:pipeline",
             "resnet                                = bob.bio.face.config.baseline.ResNet:pipeline",
             "efficientnet                          = bob.bio.face.config.baseline.EfficientNet:pipeline",
+            "tfnas                                 = bob.bio.face.config.baseline.TF_NAS:pipeline",
+            "hrnet                                 = bob.bio.face.config.baseline.HRNet:pipeline",
+            "rexnet                                = bob.bio.face.config.baseline.ReXNet:pipeline",
+            "ghostnet                              = bob.bio.face.config.baseline.GhostNet:pipeline",
         ],
         "bob.bio.config": [
             # pipelines
@@ -198,6 +202,10 @@ setup(
             "mobilefacenet                         = bob.bio.face.config.baseline.MobileFaceNet",
             "resnet                                = bob.bio.face.config.baseline.ResNet",
             "efficientnet                          = bob.bio.face.config.baseline.EfficientNet",
+            "tfnas                                 = bob.bio.face.config.baseline.TF_NAS",
+            "hrnet                                 = bob.bio.face.config.baseline.HRNet",
+            "rexnet                                = bob.bio.face.config.baseline.ReXNet",
+            "ghostnet                              = bob.bio.face.config.baseline.GhostNet",
             # databases
             "atnt                                  = bob.bio.face.config.database.atnt",
             "casia-africa                          = bob.bio.face.config.database.casia_africa",

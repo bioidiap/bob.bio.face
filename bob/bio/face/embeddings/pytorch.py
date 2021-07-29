@@ -504,6 +504,105 @@ def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
     )
 
 
+def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the TF_NAS pipeline which will crop the face :math:`112 \times 112` and
+    use the :py:class:`TF-NAS` to extract the features
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch='TF-NAS', memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the HRNet pipeline which will crop the face :math:`112 \times 112` and
+    use the :py:class:`HRNet` to extract the features
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch='HRNet', memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the ReXNet pipeline which will crop the face :math:`112 \times 112` and
+    use the :py:class:`ReXNet` to extract the features
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch='ReXNet', memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the GhostNet pipeline which will crop the face :math:`112 \times 112` and
+    use the :py:class:`GhostNet` to extract the features
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch='GhostNet', memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
 def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
     """
     Get the Resnet34 pipeline which will crop the face :math:`112 \times 112` and

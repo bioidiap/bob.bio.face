@@ -294,10 +294,7 @@ class FaceXZooModel(PyTorchModel):
     ):
 
         self.arch=arch
-
         _model= FaceXZooModelFactory(self.arch)
-
-        # self.model = _model.get_model()
         filename = _model.get_facexzoo_file()
         checkpoint_name = _model.get_checkpoint_name()
         config=None
@@ -319,11 +316,6 @@ class FaceXZooModel(PyTorchModel):
 
         self.model = _model.get_model()
 
-        print('self.checkpoint_path',self.checkpoint_path)
-        print('self.arch',self.arch)
-        #print('self.model', self.model)
-
-     
         model_dict = self.model.state_dict()
         pretrained_dict = torch.load(self.checkpoint_path, map_location=torch.device('cpu'))['state_dict']
 

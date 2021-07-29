@@ -165,6 +165,11 @@ setup(
             "resnet50-msceleb-arcface-20210521     = bob.bio.face.config.baseline.resnet50_msceleb_arcface_20210521:pipeline",
             "resnet50-vgg2-arcface-2021            = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021:pipeline",
             "vgg16-oxford                          = bob.bio.face.config.baseline.vgg16_oxford:pipeline",
+            "attentionnet                          = bob.bio.face.config.baseline.AttentionNet:pipeline",
+            "resnest                               = bob.bio.face.config.baseline.ResNeSt:pipeline",
+            "mobilefacenet                         = bob.bio.face.config.baseline.MobileFaceNet:pipeline",
+            "resnet                                = bob.bio.face.config.baseline.ResNet:pipeline",
+            "efficientnet                          = bob.bio.face.config.baseline.EfficientNet:pipeline",
         ],
         "bob.bio.config": [
             # pipelines
@@ -188,6 +193,11 @@ setup(
             "resnet50-msceleb-arcface-20210521     = bob.bio.face.config.baseline.resnet50_msceleb_arcface_20210521",
             "resnet50-vgg2-arcface-2021            = bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021",
             "vgg16-oxford                          = bob.bio.face.config.baseline.vgg16_oxford",
+            "attentionnet                          = bob.bio.face.config.baseline.AttentionNet",
+            "resnest                               = bob.bio.face.config.baseline.ResNeSt",
+            "mobilefacenet                         = bob.bio.face.config.baseline.MobileFaceNet",
+            "resnet                                = bob.bio.face.config.baseline.ResNet",
+            "efficientnet                          = bob.bio.face.config.baseline.EfficientNet",
             # databases
             "atnt                                  = bob.bio.face.config.database.atnt",
             "casia-africa                          = bob.bio.face.config.database.casia_africa",

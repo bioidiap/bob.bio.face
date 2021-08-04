@@ -1,7 +1,7 @@
 import logging
 
 from .preprocessor import FaceCrop
-from .preprocessor import MultiFaceCrop
+from .preprocessor import MultiFaceCrop, BoundingBoxAnnotatorCrop
 from .preprocessor import Scale
 from bob.pipelines import wrap
 from sklearn.pipeline import make_pipeline
@@ -348,14 +348,26 @@ def face_crop_solver(
                 annotator=annotator,
             )
         else:
-            return FaceCrop(
-                cropped_image_size=cropped_image_size,
-                cropped_positions=cropped_positions,
-                color_channel=color_channel,
-                fixed_positions=fixed_positions,
-                dtype=dtype,
-                annotator=annotator,
-            )
+            # If the eyes annotations are provides
+            if "topleft" in cropped_positions or "bottomright" in cropped_positions:
+                return BoundingBoxAnnotatorCrop(
+                    cropped_image_size=cropped_image_size,
+                    cropped_positions=cropped_positions,
+                    color_channel=color_channel,
+                    fixed_positions=fixed_positions,
+                    dtype=dtype,
+                    annotator=annotator,
+                )
+
+            else:
+                return FaceCrop(
+                    cropped_image_size=cropped_image_size,
+                    cropped_positions=cropped_positions,
+                    color_channel=color_channel,
+                    fixed_positions=fixed_positions,
+                    dtype=dtype,
+                    annotator=annotator,
+                )
 
 
 def get_default_cropped_positions(mode, cropped_image_size, annotation_type):

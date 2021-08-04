@@ -7,6 +7,7 @@ from sklearn.base import TransformerMixin, BaseEstimator
 
 logger = logging.getLogger("bob.bio.face")
 from bob.bio.base import load_resource
+from .Scale import scale
 
 
 class FaceCrop(Base):
@@ -443,6 +444,107 @@ class MultiFaceCrop(Base):
 
         # Gather the results
         return [item for sublist in transformed_subsets.values() for item in sublist]
+
+    def fit(self, X, y=None):
+        return self
+
+
+class BoundingBoxAnnotatorCrop(Base):
+    """
+    In case we have databases whose annotation type is `bounding-box`, we can use an annotator to,
+    from that bounding box, get the coordinates
+
+    """
+
+    def __init__(
+        self,
+        cropped_image_size,
+        cropped_positions,
+        mask_sigma=None,
+        mask_neighbors=5,
+        mask_seed=None,
+        annotator=None,
+        allow_upside_down_normalized_faces=False,
+        color_channel="rgb",
+        **kwargs,
+    ):
+
+        # We need to have the four coordinates
+        assert "leye" in cropped_positions
+        assert "reye" in cropped_positions
+        assert "topleft" in cropped_positions
+        assert "bottomright" in cropped_positions
+
+        # copy parameters (sklearn convention : each explicit __init__ argument *has* to become an attribute of the estimator)
+        self.cropped_image_size = cropped_image_size
+        self.cropped_positions = cropped_positions
+        self.mask_sigma = mask_sigma
+        self.mask_neighbors = mask_neighbors
+        self.mask_seed = mask_seed
+        if isinstance(annotator, str):
+            annotator = load_resource(annotator, "annotator")
+        self.annotator = annotator
+        self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
+        self.color_channel = color_channel
+
+        ## Eyes cropper
+        eyes_position = dict()
+        eyes_position["leye"] = cropped_positions["leye"]
+        eyes_position["reye"] = cropped_positions["reye"]
+        self.eyes_cropper = FaceCrop(
+            cropped_image_size,
+            eyes_position,
+            fixed_positions=None,
+            mask_sigma=mask_sigma,
+            mask_neighbors=mask_neighbors,
+            mask_seed=mask_seed,
+            allow_upside_down_normalized_faces=allow_upside_down_normalized_faces,
+            color_channel=color_channel,
+        )
+
+    def transform(self, X, annotations=None):
+        faces = []
+
+        for x, annot in zip(X, annotations):
+
+            # If it's grayscaled, expand dims
+            if x.ndim == 2:
+                logger.warning(
+                    "Gray-scaled image. Expanding the channels before detection"
+                )
+                x = numpy.repeat(numpy.expand_dims(x, 0), 3, axis=0)
+
+            # Crop the faces from the given BB
+            face_crop = x[
+                :,
+                int(annot["topleft"][0]) : int(annot["bottomright"][0]),
+                int(annot["topleft"][1]) : int(annot["bottomright"][1]),
+            ]
+
+            # get the coordinates with the annotator
+            annotator_annotations = self.annotator([face_crop])[0]
+
+            # {'topleft': (37.54800033569336, 20.506881713867188),
+            # 'bottomright': (412.7398986816406, 217.26947021484375),
+            # 'reye': (205.87582397460938, 55.644386291503906),
+            # 'leye': (199.37875366210938, 53.77899169921875),
+            # 'nose': (273.61456298828125, -9.664451599121094),
+            # 'mouthright': (344.772216796875, 49.96607971191406),
+            # 'mouthleft': (334.73406982421875, 40.578887939453125), 'quality': 0.9996933937072754}
+
+            # If nothing was detected OR if the annotations are swaped, return the cropped face
+            if (
+                annotator_annotations is None
+                or annotator_annotations["reye"][0] > annotator_annotations["leye"][0]
+            ):
+                face_crop = scale(face_crop, self.cropped_image_size)
+                faces.append(face_crop)
+            else:
+                faces.append(
+                    self.eyes_cropper.transform([face_crop], [annotator_annotations])[0]
+                )
+
+        return faces
 
     def fit(self, X, y=None):
         return self

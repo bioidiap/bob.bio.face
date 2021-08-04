@@ -31,6 +31,27 @@ def lookup_config_from_database(database):
     return annotation_type, fixed_positions, memory_demanding
 
 
+def cropped_positions_112x112():
+    """
+    Returns the 112 x 112 crop used in iResnet based models
+    The crop follows the following rule:
+
+        - In X --> (112/2)-1
+        - In Y, leye --> 16+(112/2) --> 72
+        - In Y, reye --> (112/2)-16 --> 40
+
+    This will leave 16 pixels between left eye and left border and right eye and right border
+
+    """
+
+    cropped_positions = {
+        "leye": (55, 72),
+        "reye": (55, 40),
+    }
+
+    return cropped_positions
+
+
 def dnn_default_cropping(cropped_image_size, annotation_type):
     """
     Computes the default cropped positions for the FaceCropper used with Neural-Net based

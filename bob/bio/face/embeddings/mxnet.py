@@ -152,6 +152,7 @@ class ArcFaceInsightFace_LResNet100(MxNetTransformer):
 from bob.bio.face.utils import (
     dnn_default_cropping,
     embedding_transformer,
+    cropped_positions_112x112,
 )
 from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
@@ -164,10 +165,8 @@ def arcface_template(embedding, annotation_type, fixed_positions=None):
     cropped_image_size = (112, 112)
     if annotation_type == "eyes-center":
         # Hard coding eye positions for backward consistency
-        cropped_positions = {
-            "leye": (55, 81),
-            "reye": (55, 42),
-        }
+        # cropped_positions = {
+        cropped_positions = cropped_positions_112x112()
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 

@@ -31,7 +31,7 @@ def lookup_config_from_database(database):
     return annotation_type, fixed_positions, memory_demanding
 
 
-def cropped_positions_112x112():
+def cropped_positions_arcface():
     """
     Returns the 112 x 112 crop used in iResnet based models
     The crop follows the following rule:

@@ -11,7 +11,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import Distance
 from bob.bio.base.pipelines.vanilla_biometrics import VanillaBiometricsPipeline
 from bob.bio.face.utils import dnn_default_cropping
 from bob.bio.face.utils import embedding_transformer
-from bob.bio.face.utils import cropped_positions_112x112
+from bob.bio.face.utils import cropped_positions_arcface
 from bob.extension.download import get_file
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
@@ -283,7 +283,7 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
     cropped_image_size = (112, 112)
     if annotation_type == "eyes-center":
         # Hard coding eye positions for backward consistency
-        cropped_positions = cropped_positions_112x112()
+        cropped_positions = cropped_positions_arcface()
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 

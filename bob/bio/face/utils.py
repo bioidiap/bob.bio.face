@@ -31,6 +31,35 @@ def lookup_config_from_database(database):
     return annotation_type, fixed_positions, memory_demanding
 
 
+def cropped_positions_arcface():
+    """
+    Returns the 112 x 112 crop used in iResnet based models
+    The crop follows the following rule:
+
+        - In X --> (112/2)-1
+        - In Y, leye --> 16+(112/2) --> 72
+        - In Y, reye --> (112/2)-16 --> 40
+
+    This will leave 16 pixels between left eye and left border and right eye and right border
+
+    For reference, https://github.com/deepinsight/insightface/blob/master/recognition/arcface_mxnet/common/face_align.py 
+    contains the cropping code for training the original ArcFace-InsightFace model. Due to this code not being very explicit,
+    we choose to pick our own default cropped positions. They have been tested to provide good evaluation performance
+    on the Mobio dataset.
+
+    For sensitive applications, you can use custom cropped position that you optimize for your specific dataset,
+    such as is done in https://gitlab.idiap.ch/bob/bob.bio.face/-/blob/master/notebooks/50-shades-of-face.ipynb
+
+    """
+
+    cropped_positions = {
+        "leye": (55, 72),
+        "reye": (55, 40),
+    }
+
+    return cropped_positions
+
+
 def dnn_default_cropping(cropped_image_size, annotation_type):
     """
     Computes the default cropped positions for the FaceCropper used with Neural-Net based

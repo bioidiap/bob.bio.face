@@ -42,6 +42,14 @@ def cropped_positions_arcface():
 
     This will leave 16 pixels between left eye and left border and right eye and right border
 
+    For reference, https://github.com/deepinsight/insightface/blob/master/recognition/arcface_mxnet/common/face_align.py 
+    contains the cropping code for training the original ArcFace-InsightFace model. Due to this code not being very explicit,
+    we choose to pick our own default cropped positions. They have been tested to provide good evaluation performance
+    on the Mobio dataset.
+
+    For sensitive applications, you can use custom cropped position that you optimize for your specific dataset,
+    such as is done in https://gitlab.idiap.ch/bob/bob.bio.face/-/blob/master/notebooks/50-shades-of-face.ipynb
+
     """
 
     cropped_positions = {

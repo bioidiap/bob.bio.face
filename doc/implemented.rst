@@ -17,7 +17,7 @@ Databases
    bob.bio.face.database.IJBCDatabase
    bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
-   bob.bio.face.database.GBUBioDatabase
+   bob.bio.face.database.GBUDatabase
    bob.bio.face.database.LFWBioDatabase
    bob.bio.face.database.MultipieDatabase
    bob.bio.face.database.FargoBioDatabase

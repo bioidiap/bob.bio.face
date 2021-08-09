@@ -450,3 +450,27 @@ def test_cbsr_nir_vis_2():
 
     assert len(database.references()) == 358
     assert len(database.probes()) == 6123
+
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.face.gbu.directory") is None,
+    reason="GBU original protocols not available. Please do `bob config set bob.bio.face.gbu.directory [GBU PATH]` to set the GBU data path.",
+)
+def test_gbu():
+
+    from bob.bio.face.database import GBUDatabase
+
+    database = GBUDatabase("Good")
+    assert len(database.references()) == 1085
+    assert len(database.probes()) == 1085
+
+    database = GBUDatabase("Bad")
+    assert len(database.references()) == 1085
+    assert len(database.probes()) == 1085
+
+    database = GBUDatabase("Ugly")
+    assert len(database.references()) == 1085
+    assert len(database.probes()) == 1085
+
+    assert len(database.background_model_samples()) == 3910
+

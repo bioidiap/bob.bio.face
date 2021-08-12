@@ -16,7 +16,7 @@ def _make_sample_from_template_row(row, image_directory):
 
     # Appending this key, so we can handle parallel writting done correctly
     # paying the penalty of having duplicate files
-    key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["TEMPLATE_ID"])
+    key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["SUBJECT_ID"])
 
     return DelayedSample(
         load=partial(bob.io.image.load, os.path.join(image_directory, row["FILENAME"])),

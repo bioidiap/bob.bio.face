@@ -2,4 +2,4 @@
 
 from bob.bio.face.database import IJBCDatabase
 
-database = IJBCDatabase()
+database = IJBCDatabase(protocol="test1")

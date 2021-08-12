@@ -308,13 +308,40 @@ def test_replaymobile():
 def test_ijbc():
     from bob.bio.face.database import IJBCDatabase
 
-    database = IJBCDatabase()
+    ##### test1 #####
+
+    database = IJBCDatabase(protocol="test1")
 
     # assert len(database.background_model_samples()) == 140732
     assert len(database.references()) == 3531
     assert len(database.probes()) == 19593
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 19557 + 15638932  # Genuine + Impostor
+
+    ##### test2 #####
+    database = IJBCDatabase(protocol="test2")
+
+    assert len(database.references()) == 140739
+    assert len(database.probes()) == 140739
+
+    num_comparisons = sum([len(item.references) for item in database.probes()])
+    assert num_comparisons == 39208203
+
+    ##### test4 G1 #####
+    database = IJBCDatabase(protocol="test4-G1")
+
+    assert len(database.references()) == 1772
+    assert len(database.probes()) == 19593
+    num_comparisons = sum([len(item.references) for item in database.probes()])
+    assert num_comparisons == 34718796
+
+    ##### test4 G2 #####
+    database = IJBCDatabase(protocol="test4-G2")
+
+    assert len(database.references()) == 1759
+    assert len(database.probes()) == 19593
+    num_comparisons = sum([len(item.references) for item in database.probes()])
+    assert num_comparisons == 34464087
 
 
 @db_available("fargo")

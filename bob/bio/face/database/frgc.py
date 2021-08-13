@@ -35,7 +35,7 @@ class FRGCDatabase(CSVDataset):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc.get("bob.db.frgc.directory", ""),
+                    dataset_original_directory=rc.get("bob.bio.face.frgc.directory", ""),
                     extension="",
                 ),
                 EyesAnnotations(),

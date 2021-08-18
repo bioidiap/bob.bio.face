@@ -423,21 +423,40 @@ def test_frgc():
 
     from bob.bio.face.database import FRGCDatabase
 
-    database = FRGCDatabase("2.0.1")
+    def _check_samples(samples, n_templates, n_subjects, template_size=0):
+        assert len(samples) == n_templates
+        assert len(set([x.reference_id for x in samples])) == n_templates
+        assert len(set([x.subject_id for x in samples])) == n_subjects
 
-    assert len(database.background_model_samples()) == 12776
-    assert len(database.references()) == 7572
-    assert len(database.probes()) == 8456
+        if template_size > 0:
+            assert all([len(x) == template_size for x in samples])
+
+    database = FRGCDatabase("2.0.1")
+    _check_samples(
+        database.background_model_samples(), n_templates=12776, n_subjects=222
+    )
+    _check_samples(
+        database.references(), n_templates=7572, n_subjects=370, template_size=1
+    )
+    _check_samples(database.probes(), n_templates=8456, n_subjects=345, template_size=1)
 
     database = FRGCDatabase("2.0.2")
-    assert len(database.background_model_samples()) == 12776
-    assert len(database.references()) == 1893
-    assert len(database.probes()) == 8456
+    _check_samples(
+        database.background_model_samples(), n_templates=12776, n_subjects=222
+    )
+    _check_samples(
+        database.references(), n_templates=1893, n_subjects=370, template_size=4
+    )
+    _check_samples(database.probes(), n_templates=2114, n_subjects=345, template_size=4)
 
     database = FRGCDatabase("2.0.4")
-    assert len(database.background_model_samples()) == 12776
-    assert len(database.references()) == 7572
-    assert len(database.probes()) == 4228
+    _check_samples(
+        database.background_model_samples(), n_templates=12776, n_subjects=222
+    )
+    _check_samples(
+        database.references(), n_templates=7572, n_subjects=370, template_size=1
+    )
+    _check_samples(database.probes(), n_templates=4228, n_subjects=345, template_size=1)
 
 
 def test_polathermal():
@@ -500,4 +519,3 @@ def test_gbu():
     assert len(database.probes()) == 1085
 
     assert len(database.background_model_samples()) == 3910
-

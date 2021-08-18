@@ -4,6 +4,7 @@ from sklearn.utils import check_array
 from bob.io.image import to_matplotlib, to_bob
 import numpy as np
 
+
 def scale(images, target_img_size):
     """Scales a list of images to the target size
 
@@ -24,7 +25,7 @@ def scale(images, target_img_size):
 
     # images are always batched
     images = check_array(images, allow_nd=True)
-    
+
     output_shape = tuple(target_img_size)
     output_shape = tuple(images.shape[0:1]) + output_shape
 
@@ -32,11 +33,11 @@ def scale(images, target_img_size):
     if images.ndim > 3:
         images = to_matplotlib(images)
         images = resize(images, output_shape=output_shape)
-        return to_bob(images)
+        return to_bob(images) * 255
     else:
         # If it's Bob batched gray scaled images
         images = resize(images, output_shape=output_shape)
-        return images
+        return images * 255
 
 
 def Scale(target_img_size):

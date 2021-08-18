@@ -4,7 +4,7 @@ from . import Base
 class BobIpMTCNN(Base):
     """Annotator using mtcnn in bob.ip.facedetect"""
 
-    def __init__(self, min_size=40, factor=0.709, thresholds=(0.6, 0.7, 0.7), **kwargs):
+    def __init__(self, min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2), **kwargs):
         super(BobIpMTCNN, self).__init__(**kwargs)
         from bob.ip.facedetect.mtcnn import MTCNN
 

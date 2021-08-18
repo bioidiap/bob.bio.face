@@ -593,13 +593,6 @@ class BoundingBoxAnnotatorCrop(Base):
             )
             right_expanded = int(numpy.minimum(right + self.margin * width, x.shape[2]))
 
-            # Crop the faces from the given BB
-            # face_crop = x[
-            #    :,
-            #    int(annot["topleft"][0]) : int(annot["bottomright"][0]),
-            #    int(annot["topleft"][1]) : int(annot["bottomright"][1]),
-            # ]
-
             face_crop = x[
                 :, top_expanded:bottom_expanded, left_expanded:right_expanded,
             ]
@@ -615,7 +608,6 @@ class BoundingBoxAnnotatorCrop(Base):
                 logger.warning(
                     f"Wrong annotations: {annotator_annotations}. Rescaling images"
                 )
-                # print(f"Wrong annotations: {annotator_annotations}. Rescaling images")
 
                 face_crop = scale(face_crop, self.cropped_image_size)
                 faces.append(face_crop)

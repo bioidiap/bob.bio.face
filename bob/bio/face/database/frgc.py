@@ -25,7 +25,9 @@ class FRGCDatabase(CSVDataset):
         # Downloading model if not exists
         urls = FRGCDatabase.urls()
         filename = get_file(
-            "frgc.tar.gz", urls, file_hash="328d2c71ae19a41679defa9585b3140f"
+            "frgc.tar.gz",
+            urls,
+            file_hash="270394e3eee9a80b6a68a5a1b6f7db2ff0773738b48284561cb1996358e5a3c1",
         )
 
         super().__init__(
@@ -35,15 +37,18 @@ class FRGCDatabase(CSVDataset):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc["bob.db.frgc.directory"]
-                    if rc["bob.db.frgc.directory"]
-                    else "",
-                    extension=".JPG",
+                    dataset_original_directory=rc.get(
+                        "bob.bio.face.frgc.directory", ""
+                    ),
+                    extension="",
+                    reference_id_equal_subject_id=False,
                 ),
                 EyesAnnotations(),
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
+            allow_scoring_with_all_biometric_references=True,
+            group_probes_by_reference_id=True,
         )
 
     @staticmethod
@@ -52,12 +57,12 @@ class FRGCDatabase(CSVDataset):
         return [
             "2.0.1",
             "2.0.2",
-            "2.0.3",
+            "2.0.4",
         ]
 
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/frgc.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/frgc.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/frgc-270394e3.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/frgc-270394e3.tar.gz",
         ]

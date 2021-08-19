@@ -519,15 +519,22 @@ class BoundingBoxAnnotatorCrop(Base):
         self,
         cropped_image_size,
         cropped_positions,
+        annotator,
         mask_sigma=None,
         mask_neighbors=5,
         mask_seed=None,
-        annotator=None,
         allow_upside_down_normalized_faces=False,
         color_channel="rgb",
         margin=0.5,
         **kwargs,
     ):
+
+        if annotator is None:
+            raise ValueError(f"A valid annotator needs to be set.")
+
+        if isinstance(annotator, str):
+            annotator = load_resource(annotator, "annotator")
+        self.annotator = annotator
 
         # We need to have the four coordinates
         assert "leye" in cropped_positions
@@ -541,9 +548,6 @@ class BoundingBoxAnnotatorCrop(Base):
         self.mask_sigma = mask_sigma
         self.mask_neighbors = mask_neighbors
         self.mask_seed = mask_seed
-        if isinstance(annotator, str):
-            annotator = load_resource(annotator, "annotator")
-        self.annotator = annotator
         self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
         self.color_channel = color_channel
 

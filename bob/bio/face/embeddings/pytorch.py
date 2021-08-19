@@ -16,6 +16,7 @@ from bob.extension.download import get_file
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
 from sklearn.utils import check_array
+from bob.bio.face.annotator import BobIpMTCNN
 
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
@@ -281,12 +282,20 @@ class IResnet100(PyTorchModel):
 def iresnet_template(embedding, annotation_type, fixed_positions=None):
     # DEFINE CROPPING
     cropped_image_size = (112, 112)
-    if annotation_type == "eyes-center":
+    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
         # Hard coding eye positions for backward consistency
+        # cropped_positions = {
         cropped_positions = cropped_positions_arcface()
+        if annotation_type == "bounding-box":
+            # This will allow us to use `BoundingBoxAnnotatorCrop`
+            cropped_positions.update(
+                {"topleft": (0, 0), "bottomright": cropped_image_size}
+            )
+
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
+    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=embedding,

@@ -24,6 +24,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
     VanillaBiometricsPipeline,
 )
+from bob.bio.face.annotator import BobIpMTCNN
 
 
 def sanderberg_rescaling():
@@ -748,13 +749,28 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
 
 def resnet_template(embedding, annotation_type, fixed_positions=None):
     # DEFINE CROPPING
+    # cropped_image_size = (112, 112)
+    # if annotation_type == "eyes-center":
+    #    # Hard coding eye positions for backward consistency
+    #    cropped_positions = cropped_positions_arcface()
+    # else:
+    #    cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+    # DEFINE CROPPING
     cropped_image_size = (112, 112)
-    if annotation_type == "eyes-center":
+    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
         # Hard coding eye positions for backward consistency
+        # cropped_positions = {
         cropped_positions = cropped_positions_arcface()
+        if annotation_type == "bounding-box":
+            # This will allow us to use `BoundingBoxAnnotatorCrop`
+            cropped_positions.update(
+                {"topleft": (0, 0), "bottomright": cropped_image_size}
+            )
+
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
+    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=embedding,

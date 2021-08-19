@@ -87,6 +87,8 @@ Image Preprocessors
 .. autosummary::
    bob.bio.face.preprocessor.Base
    bob.bio.face.preprocessor.FaceCrop
+   bob.bio.face.preprocessor.MultiFaceCrop
+   bob.bio.face.preprocessor.BoundingBoxAnnotatorCrop
 
    bob.bio.face.preprocessor.TanTriggs
    bob.bio.face.preprocessor.HistogramEqualization

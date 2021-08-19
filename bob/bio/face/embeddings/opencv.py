@@ -18,6 +18,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
     VanillaBiometricsPipeline,
 )
+from bob.bio.face.annotator import BobIpMTCNN
 
 
 class OpenCVTransformer(TransformerMixin, BaseEstimator):
@@ -199,6 +200,7 @@ def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
+    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=VGG16_Oxford(),

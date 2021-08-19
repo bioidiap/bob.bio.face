@@ -78,7 +78,6 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
         assert len(checkpoint_scores[0]) == 1
-
         if target_scores is not None:
             assert np.allclose(target_scores, scores[0][0].data, atol=10e-5, rtol=10e-5)
 
@@ -143,47 +142,43 @@ def test_inception_resnetv1_casiawebface():
 @pytest.mark.slow
 @is_library_available("mxnet")
 def test_arcface_insightface():
-    run_baseline("arcface-insightface", target_scores=-0.0005965275677296544)
+    run_baseline("arcface-insightface", target_scores=-0.8541907225411619)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_arcface_resnet50_msceleb_v1():
-    run_baseline("resnet50-msceleb-arcface-2021", target_scores=-0.0008105830382632018)
+    run_baseline("resnet50-msceleb-arcface-2021", target_scores=-0.799834989589404)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_iresnet50_msceleb_idiap_20210623():
-    run_baseline("iresnet50-msceleb-idiap-20210623", target_scores=-0.00045892492346155667)
+    run_baseline("iresnet50-msceleb-idiap-20210623", target_scores=-1.0540606303938558)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_iresnet100_msceleb_idiap_20210623():
-    run_baseline("iresnet100-msceleb-idiap-20210623", target_scores=-0.00010635761699118174)
+    run_baseline("iresnet100-msceleb-idiap-20210623", target_scores=-1.0353392904250978)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_arcface_resnet50_vgg2_v1():
-    run_baseline("resnet50-vgg2-arcface-2021", target_scores=-0.0035127080413503986)
+    run_baseline("resnet50-vgg2-arcface-2021", target_scores=-0.949471222980922)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_arcface_mobilenet_msceleb():
-    run_baseline(
-        "mobilenetv2-msceleb-arcface-2021", target_scores=-9.430960384781972e-05
-    )
+    run_baseline("mobilenetv2-msceleb-arcface-2021", target_scores=-0.5688437955767786)
 
 
 @pytest.mark.slow
 @is_library_available("tensorflow")
 def test_arcface_resnet50_msceleb_20210521():
-    run_baseline(
-        "resnet50-msceleb-arcface-20210521", target_scores=-0.001238845659379595
-    )
+    run_baseline("resnet50-msceleb-arcface-20210521", target_scores=-0.9628566738931277)
 
 
 def test_gabor_graph():
@@ -206,7 +201,7 @@ def test_afffe():
 @is_library_available("torch")
 def test_iresnet34():
     run_baseline(
-        "iresnet34", target_scores=-0.0003085132478504171,
+        "iresnet34", target_scores=-0.8302991105719331,
     )
 
 
@@ -214,7 +209,7 @@ def test_iresnet34():
 @is_library_available("torch")
 def test_iresnet50():
     run_baseline(
-        "iresnet50", target_scores=-0.0013965432856760662,
+        "iresnet50", target_scores=-0.8016123867448196,
     )
 
 
@@ -222,11 +217,11 @@ def test_iresnet50():
 @is_library_available("torch")
 def test_iresnet100():
     run_baseline(
-        "iresnet100", target_scores=-0.0002386926047015514,
+        "iresnet100", target_scores=-0.8541905958816157,
     )
 
 
 @pytest.mark.slow
 @is_library_available("cv2")
 def test_vgg16_oxford():
-    run_baseline("vgg16-oxford", target_scores=-0.0019032474437553626)
+    run_baseline("vgg16-oxford", target_scores=-0.4142390683487125)

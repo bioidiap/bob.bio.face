@@ -98,29 +98,6 @@ def test_atnt():
         )
 
 
-@db_available("gbu")
-def test_gbu():
-    database = bob.bio.base.load_resource(
-        "gbu", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database, models_depend=True)
-        check_database(database, protocol="Bad", models_depend=True)
-        check_database(database, protocol="Ugly", models_depend=True)
-    except IOError as e:
-        pytest.skip(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database, limit_files=1000)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
-
-
 @db_available("lfw")
 def test_lfw():
     database = bob.bio.base.load_resource(

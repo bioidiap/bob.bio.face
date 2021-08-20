@@ -26,6 +26,7 @@ Databases
    bob.bio.face.database.PolaThermalDatabase
    bob.bio.face.database.CBSRNirVis2Database
    bob.bio.face.database.SCFaceDatabase
+   bob.bio.face.database.CaspealDatabase
 
 
 Deep Learning Extractors

@@ -551,3 +551,43 @@ def test_gbu():
     assert len(database.probes()) == 1085
 
     assert len(database.background_model_samples()) == 3910
+
+
+def test_caspeal():
+
+    from bob.bio.face.database import CaspealDatabase
+
+    # protocols = ['accessory', 'aging', 'background', 'distance', 'expression', 'lighting', 'pose']
+
+    database = CaspealDatabase("accessory")
+    assert len(database.references()) == 1040
+    assert len(database.probes()) == 2285
+    assert len(database.background_model_samples()) == 1200
+
+    database = CaspealDatabase("aging")
+    assert len(database.references()) == 1040
+    assert len(database.probes()) == 66
+    assert len(database.background_model_samples()) == 1200
+
+    database = CaspealDatabase("background")
+    assert len(database.references()) == 1040
+    assert len(database.probes()) == 553
+    assert len(database.background_model_samples()) == 1200
+
+    database = CaspealDatabase("distance")
+    assert len(database.references()) == 1040
+    assert len(database.probes()) == 275
+    assert len(database.background_model_samples()) == 1200
+
+    database = CaspealDatabase("expression")
+    assert len(database.references()) == 1040
+    assert len(database.probes()) == 1570
+    assert len(database.background_model_samples()) == 1200
+
+    database = CaspealDatabase("lighting")
+    assert len(database.references()) == 1040
+    assert len(database.probes()) == 2243
+    assert len(database.background_model_samples()) == 1200
+
+    ### There's no pose protocol
+

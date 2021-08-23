@@ -488,6 +488,61 @@ def test_rfw():
     assert sum([len(d.references) for d in database.probes()]) == 89540
 
 
+def test_scface():
+    from bob.bio.face.database import SCFaceDatabase
+
+    # Getting the absolute path
+    urls = SCFaceDatabase.urls()
+    filename = get_file("scface.tar.gz", urls)
+
+    # Removing the file before the test
+    try:
+        os.remove(filename)
+    except Exception:
+        pass
+
+    N_WORLD, N_DEV, N_EVAL = 43, 44, 43
+
+    N_WORLD_DISTANCES = 3
+    N_RGB_CAMS, N_IR_CAMS = 5, 2
+    N_RGB_MUGSHOTS, N_IR_MUGSHOTS = 1, 1
+
+    def _check_protocol(p, n_mugshots, n_cams, n_distances):
+        database = SCFaceDatabase(protocol=p)
+
+        assert len(database.background_model_samples()) == N_WORLD * (
+            n_mugshots + N_WORLD_DISTANCES * n_cams
+        )
+
+        assert len(database.references(group="dev")) == N_DEV * n_mugshots
+        assert len(database.probes(group="dev")) == N_DEV * n_distances * n_cams
+
+        assert len(database.references(group="eval")) == N_EVAL * n_mugshots
+        assert len(database.probes(group="eval")) == N_EVAL * n_distances * n_cams
+
+        return p
+
+    checked_protocols = []
+    checked_protocols.append(
+        _check_protocol("combined", N_RGB_MUGSHOTS, N_RGB_CAMS, n_distances=3)
+    )
+    checked_protocols.append(
+        _check_protocol("close", N_RGB_MUGSHOTS, N_RGB_CAMS, n_distances=1)
+    )
+    checked_protocols.append(
+        _check_protocol("medium", N_RGB_MUGSHOTS, N_RGB_CAMS, n_distances=1)
+    )
+    checked_protocols.append(
+        _check_protocol("far", N_RGB_MUGSHOTS, N_RGB_CAMS, n_distances=1)
+    )
+    checked_protocols.append(
+        _check_protocol("IR", N_IR_MUGSHOTS, N_IR_CAMS, n_distances=1)
+    )
+
+    for p in SCFaceDatabase.protocols():
+        assert p in checked_protocols, "Protocol {} untested".format(p)
+
+
 def test_cbsr_nir_vis_2():
 
     from bob.bio.face.database import CBSRNirVis2Database

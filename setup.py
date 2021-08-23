@@ -120,6 +120,11 @@ setup(
             "pola-thermal             = bob.bio.face.config.database.pola_thermal:database",
             "replaymobile-img         = bob.bio.face.config.database.replaymobile:database",
             "rfw                      = bob.bio.face.config.database.rfw:database",
+            "scface                   = bob.bio.face.config.database.scface_combined:database",
+            "scface-close             = bob.bio.face.config.database.scface_close:database",
+            "scface-medium            = bob.bio.face.config.database.scface_medium:database",
+            "scface-far               = bob.bio.face.config.database.scface_far:database",
+            "scface-ir                = bob.bio.face.config.database.scface_ir:database",
         ],
         "bob.bio.annotator": [
             "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
@@ -200,6 +205,11 @@ setup(
             "pola-thermal                          = bob.bio.face.config.database.pola_thermal",
             "replaymobile-img                      = bob.bio.face.config.database.replaymobile",
             "rfw                                   = bob.bio.face.config.database.rfw",
+            "scface                                = bob.bio.face.config.database.scface_combined",
+            "scface-close                          = bob.bio.face.config.database.scface_close",
+            "scface-medium                         = bob.bio.face.config.database.scface_medium",
+            "scface-far                            = bob.bio.face.config.database.scface_far",
+            "scface-ir                             = bob.bio.face.config.database.scface_ir",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

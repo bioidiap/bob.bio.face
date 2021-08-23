@@ -20,6 +20,7 @@ from .pola_thermal import PolaThermalDatabase
 from .cbsr_nir_vis_2 import CBSRNirVis2Database
 from .rfw import RFWDatabase
 from .scface import SCFaceDatabase
+from .caspeal import CaspealDatabase
 
 # gets sphinx autodoc done right - don't remove it
 
@@ -58,5 +59,6 @@ __appropriate__(
     FRGCDatabase,
     RFWDatabase,
     SCFaceDatabase,
+    CaspealDatabase,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

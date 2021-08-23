@@ -31,7 +31,8 @@ class CaspealDatabase(CSVDataset):
 
     This package only contains the Bob_ accessor methods to use the DB directly from python, with our certified protocols.
     We have implemented the default face identification protocols ``'accessory'``, ``'aging'``, ``'background'``, ``'distance'``, ``'expression'`` and ``'lighting'``.
-    We do not provide the ``'pose'`` protocol (yet) since the training set of the `CAS-PEAL`_ database does not contain pose images:
+    We do not provide the ``'pose'`` protocol (yet) since the training set of the `CAS-PEAL <http://www.jdl.ac.cn/peal/files/IEEE_SMC_A_gao_CAS-PEAL.pdf>`_
+    database does not contain pose images:
 
 
     .. code-block:: latex

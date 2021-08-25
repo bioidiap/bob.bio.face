@@ -43,7 +43,7 @@ class EyesAnnotations(TransformerMixin, BaseEstimator):
                 ),
             }
 
-            sample = DelayedSample(x._load, parent=x, annotations=eyes)
+            sample = DelayedSample.from_sample(x, annotations=eyes)
             [delattr(sample, a) for a in ["leye_x", "leye_y", "reye_x", "reye_y"]]
             annotated_samples.append(sample)
 
@@ -108,7 +108,7 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
             else:
                 raise ValueError("Annotations not available")
 
-            sample = DelayedSample(x._load, parent=x, annotations=annotations)
+            sample = DelayedSample.from_sample(x, annotations=annotations)
             [
                 delattr(sample, a)
                 for a in [

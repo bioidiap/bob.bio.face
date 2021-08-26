@@ -171,9 +171,7 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
         for x in X:
             # Adds the annotations as delayed_attributes, loading them when needed
             annotated_samples.append(
-                DelayedSample(
-                    x._load,
-                    parent=x,
+                DelayedSample.from_sample(x,
                     delayed_attributes=dict(
                         annotations=functools.partial(
                             read_frame_annotation_file_replaymobile,

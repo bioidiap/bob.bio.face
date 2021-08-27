@@ -74,8 +74,8 @@ class CaspealDatabase(CSVDataset):
                 ),
                 EyesAnnotations(),
             ),
-            annotation_type="eyes-center",
-            fixed_positions=None,
+            annotation_type=annotation_type,
+            fixed_positions=fixed_positions,
         )
 
     @staticmethod

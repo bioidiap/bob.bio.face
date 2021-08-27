@@ -17,11 +17,11 @@ from sklearn.pipeline import make_pipeline
 
 class ARFaceDatabase(CSVDataset):
     """
-    This package contains the access API and descriptions for the `AR face`_ database.
+    This package contains the access API and descriptions for the AR face database.
     It only contains the Bob_ accessor methods to use the DB directly from python, with our certified protocols.
     The actual raw data for the database should be downloaded from the original URL (though we were not able to contact the corresponding Professor).
 
-    Our version of the `AR face`_ database contains 3312 images from 136 persons, 76 men and 60 women.
+    Our version of the AR face database contains 3312 images from 136 persons, 76 men and 60 women.
     We split the database into several protocols that we have designed ourselves.
     The identities are split up into three groups:
 

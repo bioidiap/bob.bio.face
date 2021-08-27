@@ -6,7 +6,6 @@ from .mobio import MobioDatabase
 from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase
 from .gbu import GBUDatabase
-from .arface import ARFaceBioDatabase
 from .lfw import LFWBioDatabase
 from .multipie import MultipieDatabase
 from .ijbc import IJBCDatabase
@@ -21,6 +20,7 @@ from .cbsr_nir_vis_2 import CBSRNirVis2Database
 from .rfw import RFWDatabase
 from .scface import SCFaceDatabase
 from .caspeal import CaspealDatabase
+from .arface import ARFaceDatabase
 
 # gets sphinx autodoc done right - don't remove it
 
@@ -46,7 +46,6 @@ __appropriate__(
     ReplayBioDatabase,
     AtntBioDatabase,
     GBUDatabase,
-    ARFaceBioDatabase,
     LFWBioDatabase,
     MultipieDatabase,
     ReplayMobileBioDatabase,
@@ -60,5 +59,6 @@ __appropriate__(
     RFWDatabase,
     SCFaceDatabase,
     CaspealDatabase,
+    ARFaceDatabase,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

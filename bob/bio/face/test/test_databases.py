@@ -63,27 +63,6 @@ def _check_annotations(
         logger.warn("Some annotations were None for {}".format(database_legacy.name))
 
 
-@db_available("arface")
-def test_arface():
-    database = bob.bio.base.load_resource(
-        "arface", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database, groups=("dev", "eval"))
-    except IOError as e:
-        pytest.skip(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
-
-
 @db_available("atnt")
 def test_atnt():
     database = bob.bio.base.load_resource(
@@ -590,4 +569,116 @@ def test_caspeal():
     assert len(database.background_model_samples()) == 1200
 
     ### There's no pose protocol
+
+
+def test_arface():
+    def assert_attributes(samplesets, attribute, references):
+        assert sorted(set([getattr(sset, attribute) for sset in samplesets])) == sorted(
+            references
+        )
+
+    from bob.bio.face.database import ARFaceDatabase
+
+    # protocols = 'all','expression', 'illumination', 'occlusion', 'occlusion_and_illumination'
+    expression_choices = ("neutral", "smile", "anger", "scream")
+    illumination_choices = ("front", "left", "right", "all")
+    occlusion_choices = ("none", "sunglasses", "scarf")
+    session_choices = ("first", "second")
+
+    database = ARFaceDatabase("all")
+    assert len(database.references(group="dev")) == 43
+    assert len(database.probes(group="dev")) == 1032
+    assert len(database.references(group="eval")) == 43
+    assert len(database.probes(group="eval")) == 1032
+    assert len(database.background_model_samples()) == 1076
+
+    database = ARFaceDatabase("expression")
+    assert len(database.references(group="dev")) == 43
+    assert len(database.probes(group="dev")) == 258
+    assert len(database.references(group="eval")) == 43
+    assert len(database.probes(group="eval")) == 258
+    for group in ["dev", "eval"]:
+        assert_attributes(
+            database.probes(group=group),
+            attribute="expression",
+            references=("smile", "anger", "scream"),
+        )
+        assert_attributes(
+            database.probes(group="dev"),
+            attribute="illumination",
+            references=("front",),
+        )
+        assert_attributes(
+            database.probes(group="dev"), attribute="occlusion", references=("none",),
+        )
+
+    assert len(database.background_model_samples()) == 1076
+
+    database = ARFaceDatabase("illumination")
+    assert len(database.references(group="dev")) == 43
+    assert len(database.probes(group="dev")) == 258
+    assert len(database.references(group="eval")) == 43
+    assert len(database.probes(group="eval")) == 258
+    assert len(database.background_model_samples()) == 1076
+    for group in ["dev", "eval"]:
+        assert_attributes(
+            database.probes(group=group),
+            attribute="expression",
+            references=("neutral",),
+        )
+        assert_attributes(
+            database.probes(group="dev"),
+            attribute="illumination",
+            references=("left", "right", "all"),
+        )
+        assert_attributes(
+            database.probes(group="dev"), attribute="occlusion", references=("none",),
+        )
+
+    database = ARFaceDatabase("occlusion")
+    assert len(database.references(group="dev")) == 43
+    assert len(database.probes(group="dev")) == 172
+    assert len(database.references(group="eval")) == 43
+    assert len(database.probes(group="eval")) == 172
+    assert len(database.background_model_samples()) == 1076
+    for group in ["dev", "eval"]:
+        assert_attributes(
+            database.probes(group=group),
+            attribute="expression",
+            references=("neutral",),
+        )
+        assert_attributes(
+            database.probes(group="dev"),
+            attribute="illumination",
+            references=("front",),
+        )
+        assert_attributes(
+            database.probes(group="dev"),
+            attribute="occlusion",
+            references=("sunglasses", "scarf"),
+        )
+
+    database = ARFaceDatabase("occlusion_and_illumination")
+    assert len(database.references(group="dev")) == 43
+    assert len(database.probes(group="dev")) == 344
+    assert len(database.references(group="eval")) == 43
+    assert len(database.probes(group="eval")) == 344
+    assert len(database.background_model_samples()) == 1076
+
+    for group in ["dev", "eval"]:
+        assert_attributes(
+            database.probes(group=group),
+            attribute="expression",
+            references=("neutral",),
+        )
+        assert_attributes(
+            database.probes(group="dev"),
+            attribute="illumination",
+            references=("left", "right"),
+        )
+        assert_attributes(
+            database.probes(group="dev"),
+            attribute="occlusion",
+            references=("sunglasses", "scarf"),
+        )
 

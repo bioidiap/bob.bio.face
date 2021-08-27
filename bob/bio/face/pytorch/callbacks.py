@@ -33,7 +33,7 @@ class VanillaBiometricsCallback(Callback):
         self.config = config
         self.fmr = fmr
         self.output_path = output_path
-        self.scores_dev = os.path.join(output_path, "scores-dev")
+        self.scores_dev = os.path.join(output_path, "scores-dev.csv")
         super(VanillaBiometricsCallback, self).__init__()
 
     def on_train_epoch_end(self, epoch, logs=None):
@@ -45,7 +45,7 @@ class VanillaBiometricsCallback(Callback):
             standalone_mode=False,
         )
 
-        neg, pos = bob.bio.base.score.load.split_four_column(self.scores_dev)
+        neg, pos = bob.bio.base.score.load.split_csv_scores(self.scores_dev)
         far_thres = bob.measure.far_threshold(neg, pos, self.fmr)
         fmr, fnmr = bob.measure.fprfnr(neg, pos, far_thres)
 

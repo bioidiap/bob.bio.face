@@ -57,12 +57,22 @@ class MorphDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self,
+        protocol,
+        annotation_type="eyes-center",
+        fixed_positions=None,
+        dataset_original_directory=rc.get("bob.db.morph.directory"),
+        dataset_original_extension=".JPG",
+    ):
 
         # Downloading model if not exists
         urls = MorphDatabase.urls()
         filename = get_file(
             "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
+        )
+        dataset_original_directory = (
+            dataset_original_directory if dataset_original_directory is not None else ""
         )
 
         super().__init__(
@@ -72,10 +82,8 @@ class MorphDatabase(CSVDatasetZTNorm):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc["bob.db.morph.directory"]
-                    if rc["bob.db.morph.directory"]
-                    else "",
-                    extension=".JPG",
+                    dataset_original_directory=dataset_original_directory,
+                    extension=dataset_original_extension,
                 ),
                 EyesAnnotations(),
             ),

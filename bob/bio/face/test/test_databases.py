@@ -77,41 +77,6 @@ def test_atnt():
         )
 
 
-@db_available("lfw")
-def test_lfw():
-    database = bob.bio.base.load_resource(
-        "lfw-restricted", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database, training_depends=True, models_depend=True)
-        check_database(
-            database,
-            groups=("dev", "eval"),
-            protocol="fold1",
-            training_depends=True,
-            models_depend=True,
-        )
-        check_database(
-            bob.bio.base.load_resource(
-                "lfw-unrestricted", "database", preferred_package="bob.bio.face"
-            ),
-            training_depends=True,
-            models_depend=True,
-        )
-    except IOError as e:
-        pytest.skip(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database, limit_files=1000)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
-
-
 def test_mobio():
     from bob.bio.face.database import MobioDatabase
 
@@ -682,3 +647,19 @@ def test_arface():
             references=("sunglasses", "scarf"),
         )
 
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.face.lfw.directory") is None,
+    reason="LFW original protocols not available. Please do `bob config set bob.bio.face.gbu.directory [GBU PATH]` to set the GBU data path.",
+)
+def test_lfw():
+
+    from bob.bio.face.database import LFWDatabase
+
+    database = LFWDatabase(protocol="view2")
+    references = database.references()
+    probes = database.probes()
+    assert len(references) == 4564
+    assert len(probes) == 4576
+    # We need to have 6000 comparisons
+    assert sum([len(p.references) for p in probes]) == 6000

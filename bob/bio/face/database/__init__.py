@@ -6,7 +6,8 @@ from .mobio import MobioDatabase
 from .replay import ReplayBioDatabase
 from .atnt import AtntBioDatabase
 from .gbu import GBUDatabase
-from .lfw import LFWBioDatabase
+from .arface import ARFaceDatabase
+from .lfw import LFWDatabase
 from .multipie import MultipieDatabase
 from .ijbc import IJBCDatabase
 from .replaymobile import ReplayMobileBioDatabase
@@ -46,7 +47,8 @@ __appropriate__(
     ReplayBioDatabase,
     AtntBioDatabase,
     GBUDatabase,
-    LFWBioDatabase,
+    ARFaceDatabase,
+    LFWDatabase,
     MultipieDatabase,
     ReplayMobileBioDatabase,
     FargoBioDatabase,

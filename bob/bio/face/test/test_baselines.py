@@ -66,6 +66,7 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
     # Regular pipeline
     pipeline = load_resource(baseline, "pipeline")
     scores = pipeline(samples_for_training, biometric_references, probes)
+    return scores
     assert len(scores) == 1
     assert len(scores[0]) == 1
 
@@ -218,6 +219,78 @@ def test_iresnet50():
 def test_iresnet100():
     run_baseline(
         "iresnet100", target_scores=-0.8541905958816157,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_attentionnet():
+
+    run_baseline(
+        "attentionnet", target_scores=-0.8856203334291886,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_resnest():
+
+    run_baseline(
+        "resnest", target_scores=-0.8548176067335934,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_mobilefacenet():
+
+    run_baseline(
+        "mobilefacenet", target_scores=-0.8398221143605292,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_efficientnet():
+
+    run_baseline(
+        "efficientnet", target_scores=-0.7978759562781405,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_tfnas():
+
+    run_baseline(
+        "tfnas", target_scores=-0.7823820403380854,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_hrnet():
+
+    run_baseline(
+        "hrnet", target_scores=-0.6428357755937835,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_rexnet():
+
+    run_baseline(
+        "rexnet", target_scores=-0.7886427683602303,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_ghostnet():
+
+    run_baseline(
+        "ghostnet", target_scores=-0.7886787784251782,
     )
 
 

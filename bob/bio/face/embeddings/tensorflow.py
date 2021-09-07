@@ -84,7 +84,16 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
         X = check_array(X, allow_nd=True)
 
         if self.memory_demanding:
-            return np.array([_transform(x[None, ...]) for x in X])
+            features = np.array([_transform(x[None, ...]) for x in X])
+
+            # If we ndim is > than 3. We should stack them all
+            # The enroll_features can come from a source where there are `N` samples containing
+            # nxd samples
+            if features.ndim >= 3:
+                features = np.vstack(features)
+
+            return features
+
         else:
             return _transform(X)
 

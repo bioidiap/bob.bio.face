@@ -377,7 +377,7 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
 
 def AttentionNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the AttentionNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the AttentionNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`AttentionNet` to extract the features
 
 
@@ -408,7 +408,7 @@ def AttentionNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def ResNeSt(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the ResNeSt pipeline which will crop the face :math:`112 \times 112` and
+    Get the ResNeSt pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`ResNeSt` to extract the features
 
     .. warning::
@@ -439,7 +439,7 @@ def ResNeSt(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def MobileFaceNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the MobileFaceNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the MobileFaceNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`MobileFaceNet` to extract the features
 
     .. warning::
@@ -472,7 +472,7 @@ def MobileFaceNet(annotation_type, fixed_positions=None, memory_demanding=False)
 
 def ResNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the ResNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the ResNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`ResNet` to extract the features
 
 
@@ -503,7 +503,7 @@ def ResNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the EfficientNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the EfficientNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`EfficientNet` to extract the features
 
 
@@ -535,7 +535,7 @@ def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the TF_NAS pipeline which will crop the face :math:`112 \times 112` and
+    Get the TF_NAS pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`TF-NAS` to extract the features
 
 
@@ -567,7 +567,7 @@ def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the HRNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the HRNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`HRNet` to extract the features
 
 
@@ -598,7 +598,7 @@ def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the ReXNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the ReXNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`ReXNet` to extract the features
 
     .. warning::
@@ -629,7 +629,7 @@ def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the GhostNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the GhostNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`GhostNet` to extract the features
 
 
@@ -660,7 +660,7 @@ def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the Resnet34 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet34 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet34` to extract the features
 
 
@@ -690,7 +690,7 @@ def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet50` to extract the features
 
 
@@ -720,7 +720,7 @@ def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the Resnet100 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet100 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet100` to extract the features
 
 
@@ -750,7 +750,7 @@ def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def afffe_baseline(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the AFFFE pipeline which will crop the face :math:`224 \times 224`
+    Get the AFFFE pipeline which will crop the face :math:`224 \\times 224`
     use the :py:class:`AFFFE_2021`
 
     Parameters

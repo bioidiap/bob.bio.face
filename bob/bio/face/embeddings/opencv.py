@@ -172,7 +172,7 @@ class VGG16_Oxford(OpenCVTransformer):
 
 def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
     """
-    Get the VGG16 pipeline which will crop the face :math:`224 \times 224`
+    Get the VGG16 pipeline which will crop the face :math:`224 \\times 224`
     use the :py:class:`VGG16_Oxford`
 
     Parameters

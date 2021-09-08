@@ -14,5 +14,4 @@ def __appropriate__(*args):
         obj.__module__ = __name__
 
 
-__appropriate__()
 __all__ = [_ for _ in dir() if not _.startswith("_")]

@@ -739,7 +739,23 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
     """
     # DEFINE CROPPING
     cropped_image_size = (160, 160)
-    cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
+        # Hard coding eye positions for backward consistency
+        # cropped_positions = {
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type="eyes-center"
+        )
+        if annotation_type == "bounding-box":
+            # This will allow us to use `BoundingBoxAnnotatorCrop`
+            cropped_positions.update(
+                {"topleft": (0, 0), "bottomright": cropped_image_size}
+            )
+
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
 
     # ASSEMBLE TRANSFORMER
     transformer = embedding_transformer(
@@ -748,7 +764,7 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
-        annotator="mtcnn",
+        annotator=annotator,
     )
 
     algorithm = Distance()

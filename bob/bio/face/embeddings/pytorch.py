@@ -367,7 +367,7 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
-        annotator="mtcnn",
+        annotator=annotator,
     )
 
     algorithm = Distance()

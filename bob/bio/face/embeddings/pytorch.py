@@ -5,7 +5,7 @@
 
 import imp
 import os
-
+import torch
 import numpy as np
 from bob.bio.base.pipelines.vanilla_biometrics import Distance
 from bob.bio.base.pipelines.vanilla_biometrics import VanillaBiometricsPipeline
@@ -17,6 +17,8 @@ from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
 from sklearn.utils import check_array
 from bob.bio.face.annotator import BobIpMTCNN
+
+from bob.learn.pytorch.architectures.facexzoo import FaceXZooModelFactory
 
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
@@ -85,7 +87,16 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
                 return self.model(X.to(self.device)).cpu().detach().numpy()
 
         if self.memory_demanding:
-            return np.array([_transform(x[None, ...]) for x in X])
+            features = np.array([_transform(x[None, ...]) for x in X])
+
+            # If we ndim is > than 3. We should stack them all
+            # The enroll_features can come from a source where there are `N` samples containing
+            # nxd samples
+            if features.ndim >= 3:
+                features = np.vstack(features)
+
+            return features
+
         else:
             return _transform(X)
 
@@ -271,9 +282,63 @@ class IResnet100(PyTorchModel):
         )
 
     def _load_model(self):
-
         model = imp.load_source("module", self.config).iresnet100(self.checkpoint_path)
         self.model = model
+
+        self.model.eval()
+        self.place_model_on_device()
+
+
+class FaceXZooModel(PyTorchModel):
+    """
+    FaceXZoo models
+    """
+
+    def __init__(
+        self,
+        preprocessor=lambda x: (x - 127.5) / 128.0,
+        memory_demanding=False,
+        device=None,
+        arch="AttentionNet",
+        **kwargs,
+    ):
+
+        self.arch = arch
+        _model = FaceXZooModelFactory(self.arch)
+        filename = _model.get_facexzoo_file()
+        checkpoint_name = _model.get_checkpoint_name()
+        config = None
+        path = os.path.dirname(filename)
+        checkpoint_path = os.path.join(path, self.arch + ".pt")
+
+        super(FaceXZooModel, self).__init__(
+            checkpoint_path,
+            config,
+            memory_demanding=memory_demanding,
+            preprocessor=preprocessor,
+            device=device,
+            **kwargs,
+        )
+
+    def _load_model(self):
+
+        _model = FaceXZooModelFactory(self.arch)
+        self.model = _model.get_model()
+
+        model_dict = self.model.state_dict()
+
+        pretrained_dict = torch.load(
+            self.checkpoint_path, map_location=torch.device("cpu")
+        )["state_dict"]
+
+        pretrained_dict_keys = pretrained_dict.keys()
+        model_dict_keys = model_dict.keys()
+
+        new_pretrained_dict = {}
+        for k in model_dict:
+            new_pretrained_dict[k] = pretrained_dict["backbone." + k]
+        model_dict.update(new_pretrained_dict)
+        self.model.load_state_dict(model_dict)
 
         self.model.eval()
         self.place_model_on_device()
@@ -302,7 +367,7 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
-        annotator="mtcnn",
+        annotator=annotator,
     )
 
     algorithm = Distance()
@@ -310,9 +375,292 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
     return VanillaBiometricsPipeline(transformer, algorithm)
 
 
+def AttentionNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the AttentionNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`AttentionNet` to extract the features
+
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="AttentionNet", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def ResNeSt(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the ResNeSt pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`ResNeSt` to extract the features
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="ResNeSt", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def MobileFaceNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the MobileFaceNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`MobileFaceNet` to extract the features
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(
+            arch="MobileFaceNet", memory_demanding=memory_demanding
+        ),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def ResNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the ResNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`ResNet` to extract the features
+
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="ResNet", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the EfficientNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`EfficientNet` to extract the features
+
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="EfficientNet", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the TF_NAS pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`TF-NAS` to extract the features
+
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="TF-NAS", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the HRNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`HRNet` to extract the features
+
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="HRNet", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the ReXNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`ReXNet` to extract the features
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="ReXNet", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the GhostNet pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`GhostNet` to extract the features
+
+
+    .. warning::
+
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=FaceXZooModel(arch="GhostNet", memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
 def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the Resnet34 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet34 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet34` to extract the features
 
 
@@ -342,7 +690,7 @@ def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet50` to extract the features
 
 
@@ -372,7 +720,7 @@ def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the Resnet100 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet100 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet100` to extract the features
 
 
@@ -402,7 +750,7 @@ def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
 
 def afffe_baseline(annotation_type, fixed_positions=None, memory_demanding=False):
     """
-    Get the AFFFE pipeline which will crop the face :math:`224 \times 224`
+    Get the AFFFE pipeline which will crop the face :math:`224 \\times 224`
     use the :py:class:`AFFFE_2021`
 
     Parameters

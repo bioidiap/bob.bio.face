@@ -84,7 +84,16 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
         X = check_array(X, allow_nd=True)
 
         if self.memory_demanding:
-            return np.array([_transform(x[None, ...]) for x in X])
+            features = np.array([_transform(x[None, ...]) for x in X])
+
+            # If we ndim is > than 3. We should stack them all
+            # The enroll_features can come from a source where there are `N` samples containing
+            # nxd samples
+            if features.ndim >= 3:
+                features = np.vstack(features)
+
+            return features
+
         else:
             return _transform(X)
 
@@ -714,7 +723,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
 def facenet_template(embedding, annotation_type, fixed_positions=None):
     """
     Facenet baseline template.
-    This one will crop the face at :math:`160 \times 160`
+    This one will crop the face at :math:`160 \\times 160`
 
     Parameters
     ----------
@@ -730,7 +739,23 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
     """
     # DEFINE CROPPING
     cropped_image_size = (160, 160)
-    cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
+        # Hard coding eye positions for backward consistency
+        # cropped_positions = {
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type="eyes-center"
+        )
+        if annotation_type == "bounding-box":
+            # This will allow us to use `BoundingBoxAnnotatorCrop`
+            cropped_positions.update(
+                {"topleft": (0, 0), "bottomright": cropped_image_size}
+            )
+
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
 
     # ASSEMBLE TRANSFORMER
     transformer = embedding_transformer(
@@ -739,7 +764,7 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
-        annotator="mtcnn",
+        annotator=annotator,
     )
 
     algorithm = Distance()
@@ -789,7 +814,7 @@ def resnet50_msceleb_arcface_2021(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`Resnet50_MsCeleb_ArcFace_2021` to extract the features
 
     Parameters
@@ -816,7 +841,7 @@ def resnet50_msceleb_arcface_20210521(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`Resnet50_MsCeleb_ArcFace_20210521` to extract the features
 
     Parameters
@@ -843,7 +868,7 @@ def iresnet50_msceleb_arcface_20210623(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the iresnet50 pipeline which will crop the face :math:`112 \times 112` and
+    Get the iresnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet50_MsCeleb_ArcFace_20210623` to extract the features
 
     Parameters
@@ -869,7 +894,7 @@ def iresnet100_msceleb_arcface_20210623(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the iresnet100 pipeline which will crop the face :math:`112 \times 112` and
+    Get the iresnet100 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet100_MsCeleb_ArcFace_20210623` to extract the features
 
     Parameters
@@ -897,7 +922,7 @@ def resnet50_vgg2_arcface_2021(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Resnet50 pipeline which will crop the face :math:`112 \times 112` and
+    Get the Resnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`Resnet50_VGG2_ArcFace_2021` to extract the features
 
     Parameters
@@ -924,7 +949,7 @@ def mobilenetv2_msceleb_arcface_2021(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the MobileNet pipeline which will crop the face :math:`112 \times 112` and
+    Get the MobileNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`MobileNetv2_MsCeleb_ArcFace_2021` to extract the features
 
     Parameters
@@ -951,7 +976,7 @@ def facenet_sanderberg_20170512_110547(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Facenet pipeline which will crop the face :math:`160 \times 160` and
+    Get the Facenet pipeline which will crop the face :math:`160 \\times 160` and
     use the :py:class:`FaceNetSanderberg_20170512_110547` to extract the features
 
     Parameters
@@ -978,7 +1003,7 @@ def inception_resnet_v1_casia_centerloss_2018(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Inception Resnet v1 pipeline which will crop the face :math:`160 \times 160` and
+    Get the Inception Resnet v1 pipeline which will crop the face :math:`160 \\times 160` and
     use the :py:class:`InceptionResnetv1_Casia_CenterLoss_2018` to extract the features
 
     Parameters
@@ -1007,7 +1032,7 @@ def inception_resnet_v2_casia_centerloss_2018(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Inception Resnet v2 pipeline which will crop the face :math:`160 \times 160` and
+    Get the Inception Resnet v2 pipeline which will crop the face :math:`160 \\times 160` and
     use the :py:class:`InceptionResnetv2_Casia_CenterLoss_2018` to extract the features
 
     Parameters
@@ -1036,7 +1061,7 @@ def inception_resnet_v1_msceleb_centerloss_2018(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Inception Resnet v1 pipeline which will crop the face :math:`160 \times 160` and
+    Get the Inception Resnet v1 pipeline which will crop the face :math:`160 \\times 160` and
     use the :py:class:`InceptionResnetv1_MsCeleb_CenterLoss_2018` to extract the features
 
     Parameters
@@ -1065,7 +1090,7 @@ def inception_resnet_v2_msceleb_centerloss_2018(
     annotation_type, fixed_positions=None, memory_demanding=False
 ):
     """
-    Get the Inception Resnet v2 pipeline which will crop the face :math:`160 \times 160` and
+    Get the Inception Resnet v2 pipeline which will crop the face :math:`160 \\times 160` and
     use the :py:class:`InceptionResnetv2_MsCeleb_CenterLoss_2018` to extract the features
 
     Parameters

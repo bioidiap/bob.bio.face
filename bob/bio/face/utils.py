@@ -89,14 +89,18 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
 
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
+    cropped_positions = {}
+
     if annotation_type == "bounding-box":
 
         TOP_LEFT_POS = (0, 0)
         BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-        cropped_positions = {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+        cropped_positions.update(
+            {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+        )
 
-    elif annotation_type == "eyes-center":
-
+    if annotation_type in ["bounding-box", "eyes-center"]:
+        # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
         RIGHT_EYE_POS = (
             round(2 / 7 * CROPPED_IMAGE_HEIGHT),
             round(1 / 3 * CROPPED_IMAGE_WIDTH),
@@ -105,7 +109,7 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
             round(2 / 7 * CROPPED_IMAGE_HEIGHT),
             round(2 / 3 * CROPPED_IMAGE_WIDTH),
         )
-        cropped_positions = {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+        cropped_positions.update({"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS})
 
     elif annotation_type == "left-profile":
 
@@ -117,7 +121,7 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
             round(5 / 7 * CROPPED_IMAGE_HEIGHT),
             round(3 / 8 * CROPPED_IMAGE_WIDTH),
         )
-        cropped_positions = {"leye": EYE_POS, "mouth": MOUTH_POS}
+        cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
 
     elif annotation_type == "right-profile":
 
@@ -129,7 +133,7 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
             round(5 / 7 * CROPPED_IMAGE_HEIGHT),
             round(5 / 8 * CROPPED_IMAGE_WIDTH),
         )
-        cropped_positions = {"reye": EYE_POS, "mouth": MOUTH_POS}
+        cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
 
     else:
 
@@ -171,29 +175,34 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
+    cropped_positions = {}
+
     if annotation_type == "bounding-box":
 
         TOP_LEFT_POS = (0, 0)
         BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-        cropped_positions = {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+        cropped_positions.update(
+            {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+        )
 
-    elif annotation_type == "eyes-center":
+    if annotation_type in ["bounding-box", "eyes-center"]:
+        # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
 
         RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
         LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
-        cropped_positions = {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+        cropped_positions.update({"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS})
 
     elif annotation_type == "left-profile":
         # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
         EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
         MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
-        cropped_positions = {"leye": EYE_POS, "mouth": MOUTH_POS}
+        cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
 
     elif annotation_type == "right-profile":
         # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
         EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
         MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
-        cropped_positions = {"reye": EYE_POS, "mouth": MOUTH_POS}
+        cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
 
     else:
 
@@ -235,18 +244,22 @@ def pad_default_cropping(cropped_image_size, annotation_type):
     else:
         face_size = cropped_image_size[0]
 
-    if annotation_type == "eyes-center":
+    cropped_positions = {}
+
+    if annotation_type == "bounding-box":
+        cropped_positions.update(
+            {"topleft": (0, 0), "bottomright": cropped_image_size,}
+        )
+
+    if annotation_type in ["bounding-box", "eyes-center"]:
+        # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
+
         eyes_distance = (face_size + 1) / 2.0
         eyes_center = (face_size / 4.0, (face_size - 0.5) / 2.0)
         right_eye = (eyes_center[0], eyes_center[1] - eyes_distance / 2)
         left_eye = (eyes_center[0], eyes_center[1] + eyes_distance / 2)
-        cropped_positions = {"reye": right_eye, "leye": left_eye}
+        cropped_positions.update({"reye": right_eye, "leye": left_eye})
 
-    elif annotation_type == "bounding-box":
-        cropped_positions = {
-            "topleft": (0, 0),
-            "bottomright": cropped_image_size,
-        }
     else:
         logger.warning(
             f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."

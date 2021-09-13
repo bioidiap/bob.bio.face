@@ -13,6 +13,7 @@ from bob.extension import rc
 from bob.extension.download import get_file
 import bob.io.base
 from sklearn.pipeline import make_pipeline
+from bob.pipelines.utils import hash_string
 
 
 class FRGCDatabase(CSVDataset):
@@ -49,7 +50,10 @@ class FRGCDatabase(CSVDataset):
             fixed_positions=fixed_positions,
             allow_scoring_with_all_biometric_references=True,
             group_probes_by_reference_id=True,
+            memory_demanding=True,
         )
+
+        self.hash_fn = hash_string
 
     @staticmethod
     def protocols():

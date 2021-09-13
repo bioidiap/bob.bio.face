@@ -28,7 +28,7 @@ class FRGCDatabase(CSVDataset):
         filename = get_file(
             "frgc.tar.gz",
             urls,
-            file_hash="270394e3eee9a80b6a68a5a1b6f7db2ff0773738b48284561cb1996358e5a3c1",
+            file_hash="75c41cae36c3c942e64bc82d4c47786460f0615ee52fc53fd174e64cc1d9c650",
         )
 
         super().__init__(
@@ -67,6 +67,6 @@ class FRGCDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/frgc-270394e3.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/frgc-270394e3.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/frgc-75c41cae.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/frgc-75c41cae.tar.gz",
         ]

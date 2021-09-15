@@ -13,6 +13,7 @@ from bob.extension import rc
 from bob.extension.download import get_file
 import bob.io.base
 from sklearn.pipeline import make_pipeline
+from bob.pipelines.utils import hash_string
 
 
 class FRGCDatabase(CSVDataset):
@@ -27,7 +28,7 @@ class FRGCDatabase(CSVDataset):
         filename = get_file(
             "frgc.tar.gz",
             urls,
-            file_hash="270394e3eee9a80b6a68a5a1b6f7db2ff0773738b48284561cb1996358e5a3c1",
+            file_hash="75c41cae36c3c942e64bc82d4c47786460f0615ee52fc53fd174e64cc1d9c650",
         )
 
         super().__init__(
@@ -49,7 +50,10 @@ class FRGCDatabase(CSVDataset):
             fixed_positions=fixed_positions,
             allow_scoring_with_all_biometric_references=True,
             group_probes_by_reference_id=True,
+            memory_demanding=True,
         )
+
+        self.hash_fn = hash_string
 
     @staticmethod
     def protocols():
@@ -63,6 +67,6 @@ class FRGCDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/frgc-270394e3.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/frgc-270394e3.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/frgc-75c41cae.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/frgc-75c41cae.tar.gz",
         ]

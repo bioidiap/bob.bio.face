@@ -109,7 +109,7 @@ class TanTriggs(Base):
     """
 
         def _crop_one_sample(image, annotations=None):
-            image = self.change_color_channel(image)
+
             if self.cropper is not None:
                 # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
                 image = (
@@ -117,17 +117,22 @@ class TanTriggs(Base):
                     if annotations is None
                     else self.cropper.transform([image], [annotations])
                 )
-                image = self.tan_triggs(image[0])
+                # We change the color channel *after* cropping : some croppers use MTCNN internally, that works on multichannel images
+                image = self.change_color_channel(image[0])
+                image = self.tan_triggs(image)
             else:
                 # Handle with the cropper is None
+                image = self.change_color_channel(image)
                 image = self.tan_triggs(image)
-            
+
             return self.data_type(image)
 
         if annotations is None:
             return [_crop_one_sample(data) for data in X]
         else:
-            return [_crop_one_sample(data, annot) for data, annot in zip(X, annotations)]
+            return [
+                _crop_one_sample(data, annot) for data, annot in zip(X, annotations)
+            ]
 
     def __getstate__(self):
         d = dict(self.__dict__)

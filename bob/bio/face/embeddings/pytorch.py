@@ -289,6 +289,57 @@ class IResnet100(PyTorchModel):
         self.place_model_on_device()
 
 
+class IResnet100Elastic(PyTorchModel):
+    """
+    iResnet100 model from the paper.
+
+    Boutros, Fadi, et al. "ElasticFace: Elastic Margin Loss for Deep Face Recognition." arXiv preprint arXiv:2109.09416 (2021).
+    """
+
+    def __init__(
+        self,
+        preprocessor=lambda x: (x - 127.5) / 128.0,
+        memory_demanding=False,
+        device=None,
+        **kwargs,
+    ):
+
+
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
+        ]
+
+        filename= get_file(
+            "iresnet100-elastic.tar.gz",
+            urls,
+            cache_subdir="data/pytorch/iresnet100-elastic/",
+            file_hash="0ac36db3f0f94930993afdb27faa4f02",
+            extract=True,
+        )
+
+        path = os.path.dirname(filename)
+        config = os.path.join(path, "iresnet.py")
+        checkpoint_path = os.path.join(path, "iresnet100-elastic.pt")
+
+
+        super(IResnet100Elastic, self).__init__(
+            checkpoint_path,
+            config,
+            memory_demanding=memory_demanding,
+            preprocessor=preprocessor,
+            device=device,
+            **kwargs,
+        )
+
+    def _load_model(self):
+        model = imp.load_source("module", self.config).iresnet100(self.checkpoint_path)
+        self.model = model
+
+        self.model.eval()
+        self.place_model_on_device()
+
+
 class FaceXZooModel(PyTorchModel):
     """
     FaceXZoo models
@@ -743,6 +794,36 @@ def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
 
     return iresnet_template(
         embedding=IResnet100(memory_demanding=memory_demanding),
+        annotation_type=annotation_type,
+        fixed_positions=fixed_positions,
+    )
+
+
+def iresnet100_elastic(annotation_type, fixed_positions=None, memory_demanding=False):
+    """
+    Get the Resnet100 pipeline which will crop the face :math:`112 \\times 112` and
+    use the :py:class:`IResnet100` to extract the features
+
+
+    code referenced from https://raw.githubusercontent.com/nizhib/pytorch-insightface/master/insightface/iresnet.py
+    https://github.com/nizhib/pytorch-insightface
+
+
+    Parameters
+    ----------
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+
+      memory_demanding: bool
+
+    """
+
+    return iresnet_template(
+        embedding=IResnet100Elastic(memory_demanding=memory_demanding),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )

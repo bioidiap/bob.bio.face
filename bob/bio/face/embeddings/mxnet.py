@@ -172,6 +172,7 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
 def arcface_template(embedding, annotation_type, fixed_positions=None):
     # DEFINE CROPPING
     cropped_image_size = (112, 112)
+
     if annotation_type == "eyes-center" or annotation_type == "bounding-box":
         # Hard coding eye positions for backward consistency
         # cropped_positions = {
@@ -182,6 +183,8 @@ def arcface_template(embedding, annotation_type, fixed_positions=None):
                 {"topleft": (0, 0), "bottomright": cropped_image_size}
             )
 
+    elif isinstance(annotation_type, list):
+        cropped_positions = cropped_positions_arcface(annotation_type)
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 

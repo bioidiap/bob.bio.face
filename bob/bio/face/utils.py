@@ -31,7 +31,7 @@ def lookup_config_from_database(database):
     return annotation_type, fixed_positions, memory_demanding
 
 
-def cropped_positions_arcface():
+def cropped_positions_arcface(annotation_type="eyes-center"):
     """
     Returns the 112 x 112 crop used in iResnet based models
     The crop follows the following rule:
@@ -52,10 +52,22 @@ def cropped_positions_arcface():
 
     """
 
-    cropped_positions = {
-        "leye": (55, 72),
-        "reye": (55, 40),
-    }
+    if isinstance(annotation_type, list):
+        return [cropped_positions_arcface(item) for item in annotation_type]
+
+
+    if annotation_type == "eyes-center":
+        cropped_positions = {
+            "leye": (55, 72),
+            "reye": (55, 40),
+        }
+    elif annotation_type == "left-profile":
+
+        cropped_positions = {"leye": (40, 30), "mouth": (85, 30)}
+    elif annotation_type == "right-profile":
+        return {"reye": (40, 82), "mouth": (85, 82)}
+    else:
+        raise ValueError(f"Annotations of the type `{annotation_type}` not supported")
 
     return cropped_positions
 

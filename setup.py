@@ -154,6 +154,7 @@ setup(
             "inception-resnetv2-casiawebface       = bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline",
             "inception-resnetv2-msceleb            = bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline",
             "iresnet100                            = bob.bio.face.config.baseline.iresnet100:pipeline",
+            "iresnet100-elastic                    = bob.bio.face.config.baseline.iresnet100_elastic:pipeline",
             "iresnet100-msceleb-idiap-20210623     = bob.bio.face.config.baseline.iresnet100_msceleb_arcface_20210623:pipeline",
             "iresnet34                             = bob.bio.face.config.baseline.iresnet34:pipeline",
             "iresnet50                             = bob.bio.face.config.baseline.iresnet50:pipeline",

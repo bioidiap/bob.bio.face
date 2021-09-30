@@ -610,7 +610,7 @@ class BoundingBoxAnnotatorCrop(Base):
                 or annotator_annotations["reye"][1] > annotator_annotations["leye"][1]
             ):
                 logger.warning(
-                    f"Wrong annotations: {annotator_annotations}. Rescaling images"
+                    f"Unable to detect face in bounding box. Got : {annotator_annotations}. Cropping will be only based on bounding-box."
                 )
 
                 face_crop = scale(face_crop, self.cropped_image_size)

@@ -31,13 +31,13 @@ Databases
 
 Deep Learning Extractors
 ~~~~~~~~~~~~~~~~~~~~~~~~
-   
+
 
 PyTorch models
 ==============
-   
+
 #.. autosummary::
-  
+
    - bob.bio.face.embeddings.pytorch.afffe_baseline
    - bob.bio.face.embeddings.pytorch.iresnet34
    - bob.bio.face.embeddings.pytorch.iresnet50
@@ -66,12 +66,12 @@ Tensorflow models
    bob.bio.face.embeddings.tensorflow.inception_resnet_v2_msceleb_centerloss_2018
    bob.bio.face.embeddings.tensorflow.inception_resnet_v1_casia_centerloss_2018
    bob.bio.face.embeddings.tensorflow.inception_resnet_v2_casia_centerloss_2018
-    
-   
+
+
 
 MxNET models
 ============
-   
+
 .. autosummary::
    bob.bio.face.embeddings.mxnet.arcface_insightFace_lresnet100
 
@@ -81,7 +81,7 @@ Caffe models
 .. autosummary::
    bob.bio.face.embeddings.opencv.vgg16_oxford_baseline
 
-   
+
 
 
 Face Image Annotators
@@ -106,7 +106,6 @@ Image Preprocessors
 
    bob.bio.face.preprocessor.TanTriggs
    bob.bio.face.preprocessor.HistogramEqualization
-   bob.bio.face.preprocessor.SelfQuotientImage
    bob.bio.face.preprocessor.INormLBP
 
 
@@ -118,7 +117,7 @@ Image Feature Extractors
    bob.bio.face.extractor.GridGraph
    bob.bio.face.extractor.LGBPHS
 
-   
+
 
 
 

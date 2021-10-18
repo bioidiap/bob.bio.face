@@ -4,7 +4,6 @@ from .FaceCrop import FaceCrop, MultiFaceCrop, BoundingBoxAnnotatorCrop
 from .TanTriggs import TanTriggs
 from .INormLBP import INormLBP
 from .HistogramEqualization import HistogramEqualization
-from .SelfQuotientImage import SelfQuotientImage
 from .Scale import Scale
 
 # gets sphinx autodoc done right - don't remove it
@@ -24,6 +23,6 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    Base, FaceCrop, TanTriggs, INormLBP, HistogramEqualization, SelfQuotientImage, Scale
+    Base, FaceCrop, TanTriggs, INormLBP, HistogramEqualization, Scale
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

@@ -92,18 +92,6 @@ def test_TanTriggs():
     assert assert_picklable_with_exceptions(preprocessor)
 
 
-def test_SQI():
-    face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
-    )
-    preprocessor = bob.bio.face.preprocessor.SelfQuotientImage(
-      face_cropper = face_cropper
-    )
-
-    assert assert_picklable_with_exceptions(preprocessor)
-
-
 def test_HistogramEqualization():
 
     face_cropper = bob.bio.face.preprocessor.FaceCrop(

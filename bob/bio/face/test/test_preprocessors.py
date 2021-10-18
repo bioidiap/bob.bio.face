@@ -180,7 +180,7 @@ def test_multi_face_crop():
     ]
 
     eye_cropped, bbox_cropped = cropper.transform([image, image], [eye_annotation, bbox_annotation])
-    
+
     # Compare the cropped results to the reference
     _compare(eye_cropped, eye_reference)
     _compare(bbox_cropped, bbox_reference)
@@ -297,33 +297,3 @@ def test_heq():
     )
     assert preprocessor.cropper is None
     # load the preprocessor landmark detection
-
-
-def test_sqi():
-    # read input
-    image, annotation = _image(), _annotation()
-
-    face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
-    )
-    preprocessor = bob.bio.face.preprocessor.SelfQuotientImage(
-      face_cropper = face_cropper
-    )
-
-    assert isinstance(preprocessor, bob.bio.face.preprocessor.SelfQuotientImage)
-    assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
-    assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
-    # execute preprocessor
-    _compare(
-        preprocessor.transform([image], [annotation]),
-        pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/self_quotient_cropped.hdf5"
-        )
-    )
-
-    # load the preprocessor without cropping
-    preprocessor = bob.bio.face.preprocessor.SelfQuotientImage(
-      face_cropper = None
-    )
-    assert preprocessor.cropper is None

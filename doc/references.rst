@@ -12,7 +12,6 @@ References
 .. [ZSG05]  *W. Zhang, S. Shan, W. Gao, X. Chen and H. Zhang*. **Local Gabor binary pattern histogram sequence (LGBPHS): a novel non-statistical model for face representation and recognition**. Computer Vision, IEEE International Conference on, 1:786-791, 2005.
 .. [WMM11]  *R. Wallace, M. McLaren, C. McCool and S. Marcel*. **Inter-session variability modelling and joint factor analysis for face authentication**. International Joint Conference on Biometrics. 2011.
 .. [TT10]    *X. Tan and B. Triggs*. **Enhanced local texture feature sets for face recognition under difficult lighting conditions**. IEEE Transactions on Image Processing, 19(6):1635-1650, 2010.
-.. [WLW04]   *H. Wang, S.Z. Li and Y. Wang*. **Face recognition under varying lighting conditions using self quotient image**. In IEEE International Conference on Automatic Face and Gesture Recognition (AFGR), pages 819-824. 2004.
 .. [WFK97]   *L. Wiskott, J.-M. Fellous, N. Krüger and C.v.d. Malsburg*. **Face recognition by elastic bunch graph matching**. IEEE Transactions on Pattern Analysis and Machine Intelligence, 19:775-779, 1997.
 .. [ZSQ09]  *W. Zhang, S. Shan, L. Qing, X. Chen and W. Gao*. **Are Gabor phases really useless for face recognition?** Pattern Analysis & Applications, 12:301-307, 2009.
 .. [TFP18] de Freitas Pereira, Tiago, André Anjos, and Sébastien Marcel. "Heterogeneous face recognition using domain specific units." IEEE Transactions on Information Forensics and Security 14.7 (2018): 1803-1816.

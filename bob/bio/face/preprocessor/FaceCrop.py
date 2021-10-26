@@ -145,7 +145,7 @@ class FaceCrop(Base):
             right_eye=cropped_positions[self.cropped_keys[0]],
             left_eye=cropped_positions[self.cropped_keys[1]],
         )
-        self.cropped_mask = numpy.ndarray(cropped_image_size, numpy.bool)
+        self.cropped_mask = numpy.ndarray(cropped_image_size, bool)
 
         self._init_non_pickables()
 
@@ -221,7 +221,7 @@ class FaceCrop(Base):
                 )
 
         # create output
-        mask = numpy.ones(image.shape[-2:], dtype=numpy.bool)
+        mask = numpy.ones(image.shape[-2:], dtype=bool)
         shape = (
             self.cropped_image_size
             if image.ndim == 2

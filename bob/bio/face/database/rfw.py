@@ -382,6 +382,7 @@ class RFWDatabase(Database):
                 key=key,
                 annotations=annotations,
                 reference_id=reference_id,
+                subject_id=subject_id,
             )
         ]
 

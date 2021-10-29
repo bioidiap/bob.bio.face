@@ -397,7 +397,7 @@ def test_rfw():
 
     from bob.bio.face.database import RFWDatabase
 
-    database = RFWDatabase("original")
+    database = RFWDatabase("original")    
     assert len(database.references()) == 22481
     assert len(database.probes()) == 21851
 

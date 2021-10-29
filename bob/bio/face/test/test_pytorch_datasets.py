@@ -1,5 +1,16 @@
-from bob.bio.face.pytorch_datasets.webface42m import WebFace42M
+from bob.bio.face.pytorch.datasets.webface42m import WebFace42M
+from bob.bio.face.pytorch.datasets.demographics import (
+    MedsTorchDataset,
+    MorphTorchDataset,
+    RFWTorchDataset,
+)
+
 from bob.extension import rc
+
+# https://pytorch.org/docs/stable/data.html
+from torch.utils.data import DataLoader
+import os
+
 
 import pytest
 
@@ -28,3 +39,65 @@ def test_webface42M():
     assert sample["label"] == 2059905
     assert sample["data"].shape == (3, 112, 112)
 
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.demographics.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+)
+def test_meds():
+
+    database_path = os.path.join(
+        rc.get("bob.bio.demographics.directory"), "meds", "samplewrapper"
+    )
+
+    dataset = MedsTorchDataset(
+        protocol="verification_fold1",
+        database_path=database_path,
+    )
+
+    dataloader = DataLoader(
+        dataset, batch_size=64, shuffle=True, pin_memory=True, num_workers=2
+    )
+
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.demographics.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+)
+def test_morph():
+
+    database_path = os.path.join(
+        rc.get("bob.bio.demographics.directory"), "morph", "samplewrapper"
+    )
+
+    dataset = MorphTorchDataset(
+        protocol="verification_fold1",
+        database_path=database_path,
+    )
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.demographics.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+)
+def test_rfw():
+
+    database_path = os.path.join(
+        rc.get("bob.bio.demographics.directory"), "rfw", "samplewrapper"
+    )
+
+    # RFW still not working
+
+    # dataset = RFWTorchDataset(protocol="original", database_path=database_path,)
+
+    # dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)

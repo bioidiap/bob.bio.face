@@ -35,7 +35,7 @@ class BobIpTinyface(Base):
         # return the annotations for the first/largest face
         annotations = self.detector.detect(image)
 
-        if annotations is not None:
+        if annotations:
             return annotations[0]
         else:
             return None

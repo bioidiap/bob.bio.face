@@ -42,7 +42,7 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
 
     This will leave 16 pixels between left eye and left border and right eye and right border
 
-    For reference, https://github.com/deepinsight/insightface/blob/master/recognition/arcface_mxnet/common/face_align.py 
+    For reference, https://github.com/deepinsight/insightface/blob/master/recognition/arcface_mxnet/common/face_align.py
     contains the cropping code for training the original ArcFace-InsightFace model. Due to this code not being very explicit,
     we choose to pick our own default cropped positions. They have been tested to provide good evaluation performance
     on the Mobio dataset.
@@ -287,6 +287,7 @@ def make_cropper(
     fixed_positions=None,
     color_channel="rgb",
     annotator=None,
+    **kwargs
 ):
     """
     Solve the face FaceCropper and additionally returns the necessary
@@ -300,6 +301,7 @@ def make_cropper(
         annotator=annotator,
         color_channel=color_channel,
         dtype="float64",
+        **kwargs
     )
 
     transform_extra_arguments = (
@@ -318,6 +320,7 @@ def embedding_transformer(
     fixed_positions=None,
     color_channel="rgb",
     annotator=None,
+    **kwargs
 ):
     """
     Creates a pipeline composed by and FaceCropper and an Embedding extractor.
@@ -333,6 +336,7 @@ def embedding_transformer(
         fixed_positions=fixed_positions,
         color_channel=color_channel,
         annotator=annotator,
+        **kwargs
     )
 
     transformer = make_pipeline(
@@ -354,6 +358,7 @@ def face_crop_solver(
     fixed_positions=None,
     annotator=None,
     dtype="uint8",
+    **kwargs
 ):
     """
     Decide which face cropper to use.
@@ -371,6 +376,7 @@ def face_crop_solver(
                 color_channel=color_channel,
                 dtype=dtype,
                 annotator=annotator,
+                **kwargs
             )
         else:
             # If the eyes annotations are provides
@@ -382,6 +388,7 @@ def face_crop_solver(
                     fixed_positions=fixed_positions,
                     dtype=dtype,
                     annotator=annotator,
+                    **kwargs
                 )
 
             else:
@@ -392,6 +399,7 @@ def face_crop_solver(
                     fixed_positions=fixed_positions,
                     dtype=dtype,
                     annotator=annotator,
+                    **kwargs
                 )
 
 

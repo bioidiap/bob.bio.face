@@ -144,7 +144,7 @@ class LFWDatabase(Database):
             protocol=protocol,
             allow_scoring_with_all_biometric_references=False,
             annotation_type=annotation_type,
-            fixed_positions=None,
+            fixed_positions=fixed_positions,
             memory_demanding=False,
         )
 

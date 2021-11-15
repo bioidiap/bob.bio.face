@@ -349,7 +349,7 @@ class MultiFaceCrop(Base):
     Initialization and usage is similar to the FaceCrop, but the main difference here is that one specifies
     a *list* of cropped_positions, and optionally a *list* of associated fixed positions.
 
-    For each set of cropped_positions in the list, a new FaceCrop will be instanciated that handles this
+    For each set of cropped_positions in the list, a new FaceCrop will be instantiated that handles this
     exact set of annotations.
     When calling the *transform* method, the MultiFaceCrop matches each sample to its associated cropper
     based on the received annotation, then performs the cropping of each subset, and finally gathers the results.
@@ -454,7 +454,7 @@ class BoundingBoxAnnotatorCrop(Base):
     This face cropper uses a 2 stage strategy to crop and align faces in case `annotation_type` has a bounding-box.
     In the first stage, it crops the face using the {`topleft`, `bottomright`} parameters and expands them using a `margin` factor.
     In the second stage, it uses the `annotator` to estimate {`leye` and `reye`} to make the crop using :py:class:`bob.ip.base.FaceEyesNorm`.
-    In case the annotator doesn't work, it returnds the cropped face using the `bounding-box` coordinates.
+    In case the annotator doesn't work, it returns the cropped face using the `bounding-box` coordinates.
 
 
     .. warning::
@@ -470,15 +470,20 @@ class BoundingBoxAnnotatorCrop(Base):
 
     cropped_positions : dict
       The coordinates in the cropped image, where the annotated points should be
-      put to. This parameter is a dictionary with usually two elements, e.g.,
-      ``{'reye':(RIGHT_EYE_Y, RIGHT_EYE_X) , 'leye':(LEFT_EYE_Y, LEFT_EYE_X)}``.
-      However, also other parameters, such as ``{'topleft' : ..., 'bottomright' :
-      ...}`` are supported, as long as the ``annotations`` in the `__call__`
-      function are present.
+      put to. Here, we require for positions to be set:
+      ``{'reye':(RIGHT_EYE_Y, RIGHT_EYE_X) , 'leye':(LEFT_EYE_Y, LEFT_EYE_X)}``
+      as well as ``{'topleft' : ..., 'bottomright' : ...}`` are supported,
+      The eye locations will be used if the annotator has been working correctly,
+      while the bounding box coordinates will be used on the original (non-expanded) bounding box
+      when the annotator fails.
+
+    annotator : :any:`bob.bio.base.annotator.Annotator`
+      This is the annotator that will be used to detect faces in the cropped images.
 
     fixed_positions : dict or None
       If specified, ignore the annotations from the database and use these fixed
-      positions throughout.
+      positions throughout. Here, we assume that ``{'topleft' : ..., 'bottomright' :
+      ...}`` are selected as fixed positions.
 
     mask_sigma : float or None
       Fill the area outside of image boundaries with random pixels from the
@@ -505,12 +510,8 @@ class BoundingBoxAnnotatorCrop(Base):
       your database easily. If you are sure about your input, you can set this flag to
       ``True``.
 
-    annotator : :any:`bob.bio.base.annotator.Annotator`
-      If provided, the annotator will be used if the required annotations are
-      missing.
-
     margin: float
-       The cropped face will be scaled to this factor (proportionally to the bouding-box width and height). Default to `0.5`.
+       The cropped face will be scaled to this factor (proportionally to the bounding-box width and height). Default to `0.5`.
 
 
     """
@@ -520,6 +521,7 @@ class BoundingBoxAnnotatorCrop(Base):
         cropped_image_size,
         cropped_positions,
         annotator,
+        fixed_positions = None,
         mask_sigma=None,
         mask_neighbors=5,
         mask_seed=None,
@@ -545,6 +547,7 @@ class BoundingBoxAnnotatorCrop(Base):
         # copy parameters (sklearn convention : each explicit __init__ argument *has* to become an attribute of the estimator)
         self.cropped_image_size = cropped_image_size
         self.cropped_positions = cropped_positions
+        self.fixed_positions = fixed_positions
         self.mask_sigma = mask_sigma
         self.mask_neighbors = mask_neighbors
         self.mask_seed = mask_seed
@@ -565,11 +568,28 @@ class BoundingBoxAnnotatorCrop(Base):
             allow_upside_down_normalized_faces=allow_upside_down_normalized_faces,
             color_channel=color_channel,
         )
+
+        bbx_position = dict()
+        bbx_position["topleft"] = cropped_positions["topleft"]
+        bbx_position["bottomright"] = cropped_positions["bottomright"]
+
+        self.bbx_cropper = FaceCrop(
+            cropped_image_size,
+            bbx_position,
+            fixed_positions=None,
+            mask_sigma=mask_sigma,
+            mask_neighbors=mask_neighbors,
+            mask_seed=mask_seed,
+            allow_upside_down_normalized_faces=allow_upside_down_normalized_faces,
+            color_channel=color_channel,
+        )
+
         self.margin = margin
 
     def transform(self, X, annotations=None):
         faces = []
 
+        annotations = annotations or [self.fixed_positions] * len(X)
         for x, annot in zip(X, annotations):
 
             # If it's grayscaled, expand dims
@@ -613,8 +633,8 @@ class BoundingBoxAnnotatorCrop(Base):
                     f"Unable to detect face in bounding box. Got : {annotator_annotations}. Cropping will be only based on bounding-box."
                 )
 
-                face_crop = scale(face_crop, self.cropped_image_size)
-                faces.append(face_crop)
+                # append original image cropped with original bounding boxes
+                faces.append(self.bbx_cropper.transform([x], [annot])[0])
             else:
 
                 faces.append(

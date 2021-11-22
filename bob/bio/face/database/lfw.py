@@ -13,6 +13,7 @@ import copy
 
 import logging
 import numpy as np
+from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
 
@@ -98,23 +99,39 @@ class LFWDatabase(Database):
                 "Please, do `bob config set bob.bio.face.lfw.directory PATH` to set the LFW data directory."
             )
 
-        if annotation_directory is None or not os.path.exists(annotation_directory):
-            logger.warning(
-                "Invalid or non existent `annotation_directory`: f{annotation_directory}."
-                "As a result, `SampleSet` will not contain annotations"
-                "Please, do `bob config set bob.bio.face.lfw.annotation_directory PATH` to set the LFW annotation directory."
-            )
-
         if annotation_issuer not in ("funneled", "idiap", "named"):
             raise ValueError(
                 f"Invalid annotation issuer: {annotation_issuer}. Possible values are `idiap`, `funneled` or `named`"
             )
+
+        if annotation_directory is None or not os.path.exists(annotation_directory):
+            # Downloading annotations if not exists
+            annotation_urls = LFWDatabase.urls()
+
+            logger.info(
+                f"`annotation_directory`: {annotation_directory} not set. "
+                f"Fetching it from {annotation_urls[0]}"
+            )
+
+            annotation_directory = get_file(
+                "lfw_annotations.tar.gz",
+                annotation_urls,
+                file_hash="c0ce6e090e19d0ed159172fcba2e8252",
+                extract=True,
+            )
+
+            # Removing extension
+            annotation_directory = annotation_directory[:-7]
+
+            # Attaching the issuer sub-directory
+            annotation_directory = os.path.join(annotation_directory, annotation_issuer)
+
         self.annotation_issuer = annotation_issuer
         # Hard-coding the extension of the annotations
         # I don't think we need this exposed
         # Please, open an issue if otherwise
         self.annotation_extension = (
-            ".jpg.pts"  if annotation_issuer == "funneled" else ".pos"
+            ".jpg.pts" if annotation_issuer == "funneled" else ".pos"
         )
 
         self._check_protocol(protocol)
@@ -224,11 +241,10 @@ class LFWDatabase(Database):
 
     def _extract(self, annotation_file):
         return {
-            "funneled" : self._extract_funneled,
-            "idiap" : self._extract_idiap,
-            "named" : self._extract_named
+            "funneled": self._extract_funneled,
+            "idiap": self._extract_idiap,
+            "named": self._extract_named,
         }[self.annotation_issuer](annotation_file)
-
 
     def load_pairs(self):
         pairs_path = os.path.join(self.original_directory, "view2", "pairs.txt")
@@ -375,3 +391,11 @@ class LFWDatabase(Database):
         assert group in self.groups(), "Unvalid group `{}` not in {}".format(
             group, self.groups()
         )
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/annotations/lfw_annotations.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/annotations/lfw_annotations.tar.gz",
+        ]
+

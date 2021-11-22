@@ -663,3 +663,18 @@ def test_lfw():
     assert len(probes) == 4576
     # We need to have 6000 comparisons
     assert sum([len(p.references) for p in probes]) == 6000
+
+    # Funneled annotations
+    database = LFWDatabase(protocol="view2", annotation_issuer="funneled")
+    references = database.references()
+    assert references[0][0].annotations["leye"] == (114.086957, 131.5434785)
+
+    # Idiap annotations
+    database = LFWDatabase(protocol="view2", annotation_issuer="idiap")
+    references = database.references()
+    assert references[0][0].annotations["leye"] == (139.0, 107.0)
+
+    database = LFWDatabase(protocol="view2", annotation_issuer="named")
+    references = database.references()
+    assert references[0][0].annotations["leye"] == (114.0, 132.0)
+

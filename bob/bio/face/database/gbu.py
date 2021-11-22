@@ -105,7 +105,7 @@ class GBUDatabase(Database):
 
 
     .. warning::
-      
+
       To use this dataset protocol, you need to have the original files of the IJBC datasets.
       Once you have it downloaded, please run the following command to set the path for Bob
 
@@ -113,7 +113,7 @@ class GBUDatabase(Database):
 
             bob config set bob.bio.face.gbu.directory [GBU PATH]
 
-    
+
     The code below allows you to fetch the galery and probes of the "Good" protocol.
 
     .. code-block:: python
@@ -121,9 +121,9 @@ class GBUDatabase(Database):
         >>> from bob.bio.face.database import GBUDatabase
         >>> gbu = GBUDatabase(protocol="Good")
         >>>
-        >>> # Fetching the gallery 
+        >>> # Fetching the gallery
         >>> references = gbu.references()
-        >>> # Fetching the probes 
+        >>> # Fetching the probes
         >>> probes = gbu.probes()
 
 
@@ -165,7 +165,7 @@ class GBUDatabase(Database):
             protocol=protocol,
             allow_scoring_with_all_biometric_references=True,
             annotation_type="eyes-center",
-            fixed_positions=None,
+            fixed_positions=fixed_positions,
             memory_demanding=True,
         )
 
@@ -277,4 +277,3 @@ class GBUDatabase(Database):
                 )
             )
         return samplesets
-

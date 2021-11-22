@@ -48,7 +48,7 @@ requirements:
   run:
     - python
     - setuptools
-    - {{ pin_compatible('matplotlib') }}
+    - {{ pin_compatible('matplotlib', max_pin="x.x") }}
     - {{ pin_compatible('six') }}
     - {{ pin_compatible('scikit-image') }}
   run_constrained:

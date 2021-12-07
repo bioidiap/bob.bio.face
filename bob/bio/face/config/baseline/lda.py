@@ -25,6 +25,7 @@ logger = logging.getLogger(__name__)
 annotation_type, fixed_positions, memory_demanding = lookup_config_from_database(
     locals().get("database")
 )
+db_name = "" if locals().get("database") is None else database.name + "-"
 
 
 ####### SOLVING THE FACE CROPPER TO BE USED ##########
@@ -52,14 +53,16 @@ def load(annotation_type, fixed_positions=None):
     #### FEATURE EXTRACTOR ######
 
     # Set default temporary directory
-    tempdir = bob.bio.base.pipelines.vanilla_biometrics.legacy.get_temp_directory("lda")
+    tempdir = bob.bio.base.pipelines.vanilla_biometrics.legacy.get_temp_directory(
+        f"{db_name}lda"
+    )
 
     lda = bob.bio.base.algorithm.LDA(use_pinv=True, pca_subspace_dimension=0.90)
 
     lda_transformer = AlgorithmTransformer(
         lda, projector_file=os.path.join(tempdir, "Projector.hdf5")
     )
-
+    fit_extra_arguments = (("y", "subject_id"),)
     transformer = make_pipeline(
         wrap(
             ["sample"],
@@ -67,7 +70,7 @@ def load(annotation_type, fixed_positions=None):
             transform_extra_arguments=transform_extra_arguments,
         ),
         SampleLinearize(),
-        wrap(["sample"], lda_transformer),
+        wrap(["sample"], lda_transformer, fit_extra_arguments=fit_extra_arguments),
     )
 
     ### BIOMETRIC ALGORITHM

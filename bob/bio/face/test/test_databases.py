@@ -105,7 +105,7 @@ def test_mobio():
 
     # Sanity check on mobio-male
     database = MobioDatabase(protocol="mobile0-male")
-    assert len(database.treferences()) == 8
+    assert len(database.treferences()) == 24
     assert len(database.zprobes()) == 960
     assert len(database.background_model_samples()) == 9600
 

@@ -138,9 +138,9 @@ class VGG16_Oxford(OpenCVTransformer):
             """
 
             # Subtracting
-            X[:, :, :, 0] -= caffe_average_img[0]
-            X[:, :, :, 1] -= caffe_average_img[1]
-            X[:, :, :, 2] -= caffe_average_img[2]
+            X[:, 0, :, :] -= caffe_average_img[0]
+            X[:, 1, :, :] -= caffe_average_img[1]
+            X[:, 2, :, :] -= caffe_average_img[2]
 
             # To BGR
             X = X[:, ::-1, :, :].astype("float32")
@@ -207,7 +207,7 @@ def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
-        annotator="mtcnn",
+        annotator=annotator,
     )
 
     algorithm = Distance()

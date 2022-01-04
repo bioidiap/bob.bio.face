@@ -18,7 +18,7 @@ from sklearn.base import TransformerMixin
 from sklearn.utils import check_array
 from bob.bio.face.annotator import BobIpMTCNN
 
-from bob.learn.pytorch.architectures.facexzoo import FaceXZooModelFactory
+from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
 
 
 class PyTorchModel(TransformerMixin, BaseEstimator):

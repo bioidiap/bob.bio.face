@@ -176,6 +176,10 @@ setup(
             "hrnet                                 = bob.bio.face.config.baseline.hr_net:pipeline",
             "rexnet                                = bob.bio.face.config.baseline.rex_net:pipeline",
             "ghostnet                              = bob.bio.face.config.baseline.ghost_net:pipeline",
+            "oxford-resnet50-scratch-dag-vgg2              = bob.bio.face.config.baseline.oxford_resnet50_scratch_dag_vgg2:pipeline",
+            "oxford-resnet50-ft-dag-vgg2              = bob.bio.face.config.baseline.oxford_resnet50_ft_dag_vgg2:pipeline",
+            "oxford-senet50-scratch-dag-vgg2              = bob.bio.face.config.baseline.oxford_senet50_scratch_dag_vgg2:pipeline",
+            "oxford-senet50-ft-dag-vgg2              = bob.bio.face.config.baseline.oxford_senet50_ft_dag_vgg2:pipeline",
         ],
         "bob.bio.config": [
             # pipelines
@@ -250,6 +254,10 @@ setup(
             "caspeal-distance = bob.bio.face.config.database.caspeal_distance",
             "caspeal-expression = bob.bio.face.config.database.caspeal_expression",
             "caspeal-lighting = bob.bio.face.config.database.caspeal_lighting",
+            "oxford-resnet50-scratch-dag-vgg2              = bob.bio.face.config.baseline.oxford_resnet50_scratch_dag_vgg2",
+            "oxford-resnet50-ft-dag-vgg2              = bob.bio.face.config.baseline.oxford_resnet50_ft_dag_vgg2",
+            "oxford-senet50-scratch-dag-vgg2              = bob.bio.face.config.baseline.oxford_senet50_scratch_dag_vgg2",
+            "oxford-senet50-ft-dag-vgg2              = bob.bio.face.config.baseline.oxford_senet50_ft_dag_vgg2",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

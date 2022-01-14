@@ -56,7 +56,9 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         self.model = None
         self.preprocessor = preprocessor
         self.memory_demanding = memory_demanding
-        self.device = torch.device(device or "cuda" if torch.cuda.is_available() else "cpu")
+        self.device = torch.device(
+            device or "cuda" if torch.cuda.is_available() else "cpu"
+        )
 
     def transform(self, X):
         """__call__(image) -> feature
@@ -282,6 +284,156 @@ class IResnet100(PyTorchModel):
         self.place_model_on_device()
 
 
+class OxfordVGG2Resnets(PyTorchModel):
+    """
+    Get the transformer for the resnet based models from Oxford.
+    All these models were training the the VGG2 dataset.
+
+    Models taken from: https://www.robots.ox.ac.uk/~albanie
+
+
+    Parameters
+    ----------
+
+    model_name: str
+      One of the 4 models available (`resnet50_scratch_dag`, `resnet50_ft_dag`, `senet50_ft_dag`, `senet50_scratch_dag`).
+
+    """
+
+    def __init__(
+        self,
+        model_name,
+        memory_demanding=False,
+        device=None,
+        **kwargs,
+    ):
+
+        urls = [
+            "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/oxford_resnet50_vgg2.tar.gz",
+            "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/oxford_resnet50_vgg2.tar.gz",
+        ]
+
+        filename = get_file(
+            "oxford_resnet50_vgg2.tar.gz",
+            urls,
+            cache_subdir="data/pytorch/oxford_resnet50_vgg2/",
+            file_hash="c8e1ed3715d83647b4a02e455213aaf0",
+            extract=True,
+        )
+
+        models_available = [
+            "resnet50_scratch_dag",
+            "resnet50_ft_dag",
+            "senet50_ft_dag",
+            "senet50_scratch_dag",
+        ]
+        if model_name not in models_available:
+            raise ValueError(
+                f"Invalid model {model_name}. The models available are {models_available}"
+            )
+
+        self.model_name = model_name
+        path = os.path.dirname(filename)
+        config = os.path.join(path, model_name, f"{model_name}.py")
+        checkpoint_path = os.path.join(path, model_name, f"{model_name}.pth")
+
+        super(OxfordVGG2Resnets, self).__init__(
+            checkpoint_path,
+            config,
+            memory_demanding=memory_demanding,
+            preprocessor=self.dag_preprocessor,
+            device=device,
+            **kwargs,
+        )
+
+    def dag_preprocessor(self, X):
+        """
+        Normalize using `self.meta`
+
+        Caffe has the shape `H x W x C` and the chanel is BGR and
+
+        """
+
+        # Convert to H x W x C
+        # X = torch.moveaxis(X, 1, 3)
+
+        # Subtracting
+        X[:, 0, :, :] = (X[:, 0, :, :] - self.meta["mean"][0]) / self.meta["std"][0]
+        X[:, 1, :, :] = (X[:, 1, :, :] - self.meta["mean"][1]) / self.meta["std"][1]
+        X[:, 2, :, :] = (X[:, 2, :, :] - self.meta["mean"][2]) / self.meta["std"][2]
+
+        return X
+
+    def _load_model(self):
+        if self.model_name == "resnet50_scratch_dag":
+            model = imp.load_source("module", self.config).resnet50_scratch_dag(
+                weights_path=self.checkpoint_path
+            )
+        elif self.model_name == "resnet50_ft_dag":
+            model = imp.load_source("module", self.config).resnet50_ft_dag(
+                weights_path=self.checkpoint_path
+            )
+        elif self.model_name == "senet50_scratch_dag":
+            model = imp.load_source("module", self.config).senet50_scratch_dag(
+                weights_path=self.checkpoint_path
+            )
+        else:
+            model = imp.load_source("module", self.config).senet50_ft_dag(
+                weights_path=self.checkpoint_path
+            )
+
+        self.model = model
+        self.meta = self.model.meta
+
+        self.model.eval()
+        self.place_model_on_device()
+
+    def transform(self, X):
+        """__call__(image) -> feature
+
+        Extracts the features from the given image.
+
+        **Parameters:**
+
+        image : 2D :py:class:`numpy.ndarray` (floats)
+        The image to extract the features from.
+
+        **Returns:**
+
+        feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
+        The list of features extracted from the image.
+        """
+        import torch
+
+        if self.model is None:
+            self._load_model()
+        X = check_array(X, allow_nd=True)
+        X = torch.Tensor(X)
+        with torch.no_grad():
+            X = self.preprocessor(X)
+
+        def _transform(X):
+            with torch.no_grad():
+                # Fetching the pool5_7x7_s1 layer which
+                return (
+                    self.model(X.to(self.device))[1].cpu().detach().numpy()[:, :, 0, 0]
+                )
+
+        if self.memory_demanding:
+            features = np.array([_transform(x[None, ...]) for x in X])
+
+            # If we ndim is > than 3. We should stack them all
+            # The enroll_features can come from a source where there are `N` samples containing
+            # nxd samples
+            if features.ndim >= 3:
+                features = np.vstack(features)
+
+            return features
+
+        else:
+            return _transform(X)
+
+
 class IResnet100Elastic(PyTorchModel):
     """
     iResnet100 model from the paper.
@@ -297,13 +449,12 @@ class IResnet100Elastic(PyTorchModel):
         **kwargs,
     ):
 
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
         ]
 
-        filename= get_file(
+        filename = get_file(
             "iresnet100-elastic.tar.gz",
             urls,
             cache_subdir="data/pytorch/iresnet100-elastic/",
@@ -314,7 +465,6 @@ class IResnet100Elastic(PyTorchModel):
         path = os.path.dirname(filename)
         config = os.path.join(path, "iresnet.py")
         checkpoint_path = os.path.join(path, "iresnet100-elastic.pt")
-
 
         super(IResnet100Elastic, self).__init__(
             checkpoint_path,
@@ -849,6 +999,52 @@ def afffe_baseline(annotation_type, fixed_positions=None, memory_demanding=False
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=AFFFE_2021(memory_demanding=memory_demanding),
+        cropped_positions=cropped_positions,
+        fixed_positions=fixed_positions,
+        color_channel="rgb",
+        annotator="mtcnn",
+    )
+
+    algorithm = Distance()
+
+    return VanillaBiometricsPipeline(transformer, algorithm)
+
+
+def oxford_vgg2_resnets(
+    model_name, annotation_type, fixed_positions=None, memory_demanding=False
+):
+    """
+    Get the pipeline for the resnet based models from Oxford.
+    All these models were training the the VGG2 dataset.
+
+    Models taken from: https://www.robots.ox.ac.uk/~albanie
+
+    Parameters
+    ----------
+      model_name: str
+         One of the 4 models available (`resnet50_scratch_dag`, `resnet50_ft_dag`, `senet50_ft_dag`, `senet50_scratch_dag`).
+
+      annotation_type: str
+         Type of the annotations (e.g. `eyes-center')
+
+      fixed_positions: dict
+         Set it if in your face images are registered to a fixed position in the image
+    """
+
+    # DEFINE CROPPING
+    cropped_image_size = (224, 224)
+
+    if annotation_type == "eyes-center":
+        # Coordinates taken from : https://www.merlin.uzh.ch/contributionDocument/download/14240
+        cropped_positions = {"leye": (100, 159), "reye": (100, 65)}
+    else:
+        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+
+    transformer = embedding_transformer(
+        cropped_image_size=cropped_image_size,
+        embedding=OxfordVGG2Resnets(
+            model_name=model_name, memory_demanding=memory_demanding
+        ),
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",

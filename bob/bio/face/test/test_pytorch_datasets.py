@@ -3,6 +3,7 @@ from bob.bio.face.pytorch.datasets.demographics import (
     MedsTorchDataset,
     MorphTorchDataset,
     RFWTorchDataset,
+    MobioTorchDataset,
 )
 
 from bob.extension import rc
@@ -10,7 +11,7 @@ from bob.extension import rc
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader
 import os
-
+import numpy as np
 
 import pytest
 
@@ -62,6 +63,10 @@ def test_meds():
     batch = next(iter(dataloader))
     batch["data"].shape == (64, 3, 112, 112)
 
+    # Testing class weights
+    weights = dataset.get_demographic_class_weights()
+    assert np.allclose(sum(weights), 1)
+
 
 @pytest.mark.skipif(
     rc.get("bob.bio.demographics.directory") is None,
@@ -82,6 +87,10 @@ def test_morph():
     batch = next(iter(dataloader))
     batch["data"].shape == (64, 3, 112, 112)
 
+    weights = dataset.get_demographic_class_weights()
+
+    assert np.allclose(sum(weights), 1)
+
 
 @pytest.mark.skipif(
     rc.get("bob.bio.demographics.directory") is None,
@@ -101,3 +110,28 @@ def test_rfw():
 
     batch = next(iter(dataloader))
     batch["data"].shape == (64, 3, 112, 112)
+
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.demographics.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+)
+def test_mobio():
+
+    database_path = os.path.join(
+        rc.get("bob.bio.demographics.directory"), "mobio", "samplewrapper"
+    )
+
+    dataset = MobioTorchDataset(
+        protocol="mobile0-male-female",
+        database_path=database_path,
+    )
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+    # Testing class weights
+    weights = dataset.get_demographic_class_weights()
+
+    assert np.allclose(sum(weights), 1)

@@ -9,6 +9,7 @@ from bob.bio.face.annotator import (
 from bob.bio.base.annotator import FailSafe
 from bob.bio.face.annotator import BobIpMTCNN
 from bob.bio.face.annotator import BobIpTinyface
+from bob.bio.face.annotator import FaceX106Landmarks, FaceXDetector
 import numpy
 
 from bob.bio.base.test.utils import is_library_available
@@ -59,6 +60,26 @@ def test_mtcnn_annotator():
     _assert_mtcnn(annot_batch[0])
 
 
+def test_faceX106_annotator():
+    """
+    FaceX-Zoo annotator
+    """
+    faceX_annotator = FaceX106Landmarks()
+    batch = [face_image]
+    annot_batch = faceX_annotator(batch)[0]
+    assert annot_batch.shape == (106, 2)
+
+
+def test_faceX_detector():
+    """
+    FaceX-Zoo annotator
+    """
+    faceX_annotator = FaceXDetector()
+    batch = [face_image]
+    annot_batch = faceX_annotator(batch)
+    assert annot_batch[0].shape == (5,)
+
+
 @is_library_available("mxnet")
 def test_tinyface_annotator():
     """
@@ -86,7 +107,8 @@ def test_bob_ip_facedetect_eyes():
 
 def test_fail_safe():
     annotator = FailSafe(
-        [BobIpFacedetect(eye_estimate=True)], required_keys=("reye", "leye"),
+        [BobIpFacedetect(eye_estimate=True)],
+        required_keys=("reye", "leye"),
     )
     batch = [face_image]
     annot = annotator(batch)
@@ -97,7 +119,8 @@ def test_fail_safe():
 
 def test_bob_ip_flandmark():
     annotator = FailSafe(
-        [BobIpFacedetect(), BobIpFlandmark()], required_keys=("reye", "leye"),
+        [BobIpFacedetect(), BobIpFlandmark()],
+        required_keys=("reye", "leye"),
     )
     batch = [face_image]
     annot = annotator(batch)

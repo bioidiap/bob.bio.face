@@ -2,7 +2,7 @@
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-# Tranformers based on tensorflow
+# Transformers based on tensorflow
 
 
 import os
@@ -40,11 +40,19 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
     """
     Base Transformer for Tensorflow architectures.
 
+    You can provide the model in two different ways.
+    When providing the `checkpoint_path`, the model will be loaded from these files in a lazy way, i.e., the first time it is needed.
+    You can also provide the `model` directly, but this might be conflicting with parallelization.
+
+
     Parameters
     ----------
 
     checkpoint_path: str
        Path containing the checkpoint
+
+    model : tensorflow model
+        The preloaded keras model
 
     preprocessor:
         A function that will transform the data right before forward
@@ -55,11 +63,16 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
     """
 
     def __init__(
-        self, checkpoint_path, preprocessor=None, memory_demanding=False, **kwargs
+        self,
+        checkpoint_path=None,
+        model=None,
+        preprocessor=None,
+        memory_demanding=False,
+        **kwargs
     ):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
-        self.model = None
+        self.model = model
         self.preprocessor = preprocessor
         self.memory_demanding = memory_demanding
 

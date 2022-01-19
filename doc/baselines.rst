@@ -9,7 +9,7 @@ Executing Baseline Algorithms
 =============================
 
 
-In this section we introduce the baselines available in this pakcage.
+In this section we introduce the baselines available in this package.
 To execute one of then in the databases available just run the following command::
 
 $ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
@@ -18,14 +18,14 @@ $ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
   Both, `[DATABASE_NAME]` and `[BASELINE]` can be either python resources or
   python files.
 
-  Please, refer to :ref:`bob.bio.base <bob.bio.base>` for more information.  
+  Please, refer to :ref:`bob.bio.base <bob.bio.base>` for more information.
 
 
 
 Baselines available
 -------------------
 
-The algorithms below constains all the face recognition baselines available.
+The algorithms below contain all the face recognition baselines available.
 It is split in two groups, before and after deep learning era.
 
 
@@ -61,12 +61,12 @@ Deep learning baselines
 
 * ``resnet50-msceleb-arcface-20210521``: Arcface model trained with MSCeleb dataset (dataset prunned)
 
-* ``resnet50-vgg2-arcface-2021``: Arcface model trained with VGG2 dataset 
+* ``resnet50-vgg2-arcface-2021``: Arcface model trained with VGG2 dataset
 
 * ``iresnet34``: Arcface model (Resnet 34 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
-  
+
 * ``iresnet50``: Arcface model (Resnet 50 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
-  
+
 * ``iresnet100``: Arcface model (Resnet 100 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
 
 * ``vgg16-oxford``: VGG16 Face model from `Oxford <https://www.robots.ox.ac.uk/~vgg/publications/2015/Parkhi15/>`_

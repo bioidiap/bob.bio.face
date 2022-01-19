@@ -50,30 +50,33 @@ Deep Learning Extractors
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-PyTorch models
-==============
-
-#.. autosummary::
-
-   - bob.bio.face.embeddings.pytorch.afffe_baseline
-   - bob.bio.face.embeddings.pytorch.iresnet34
-   - bob.bio.face.embeddings.pytorch.iresnet50
-   - bob.bio.face.embeddings.pytorch.iresnet100
-   - bob.bio.face.embeddings.pytorch.GhostNet
-   - bob.bio.face.embeddings.pytorch.ReXNet
-   - bob.bio.face.embeddings.pytorch.HRNet
-   - bob.bio.face.embeddings.pytorch.TF_NAS
-   - bob.bio.face.embeddings.pytorch.ResNet
-   - bob.bio.face.embeddings.pytorch.EfficientNet
-   - bob.bio.face.embeddings.pytorch.MobileFaceNet
-   - bob.bio.face.embeddings.pytorch.ResNeSt
-   - bob.bio.face.embeddings.pytorch.AttentionNet
-
-
-Tensorflow models
+PyTorch Interface
 =================
 
 .. autosummary::
+
+   bob.bio.face.embeddings.pytorch.PyTorchModel
+   bob.bio.face.embeddings.pytorch.afffe_baseline
+   bob.bio.face.embeddings.pytorch.iresnet34
+   bob.bio.face.embeddings.pytorch.iresnet50
+   bob.bio.face.embeddings.pytorch.iresnet100
+   bob.bio.face.embeddings.pytorch.GhostNet
+   bob.bio.face.embeddings.pytorch.ReXNet
+   bob.bio.face.embeddings.pytorch.HRNet
+   bob.bio.face.embeddings.pytorch.TF_NAS
+   bob.bio.face.embeddings.pytorch.ResNet
+   bob.bio.face.embeddings.pytorch.EfficientNet
+   bob.bio.face.embeddings.pytorch.MobileFaceNet
+   bob.bio.face.embeddings.pytorch.ResNeSt
+   bob.bio.face.embeddings.pytorch.AttentionNet
+
+
+Tensorflow Interface
+====================
+
+.. autosummary::
+
+   bob.bio.face.embeddings.tensorflow.TensorflowTransformer
    bob.bio.face.embeddings.tensorflow.facenet_sanderberg_20170512_110547
    bob.bio.face.embeddings.tensorflow.resnet50_msceleb_arcface_2021
    bob.bio.face.embeddings.tensorflow.resnet50_msceleb_arcface_20210521
@@ -86,16 +89,20 @@ Tensorflow models
 
 
 
-MxNET models
-============
+MxNET Interface
+===============
 
 .. autosummary::
+
+   bob.bio.face.embeddings.mxnet.MxNetTransformer
    bob.bio.face.embeddings.mxnet.arcface_insightFace_lresnet100
 
-Caffe models
-============
+OpenCV Interface
+================
 
 .. autosummary::
+
+   bob.bio.face.embeddings.opencv.OpenCVTransformer
    bob.bio.face.embeddings.opencv.vgg16_oxford_baseline
 
 
@@ -146,9 +153,19 @@ Face Recognition Algorithms
    bob.bio.face.algorithm.Histogram
 
 
+
 Databases
 ---------
 .. automodule:: bob.bio.face.database
+
+Deep Learning Transformers
+--------------------------
+
+.. automodule:: bob.bio.face.embeddings.pytorch
+.. automodule:: bob.bio.face.embeddings.tensorflow
+.. automodule:: bob.bio.face.embeddings.mxnet
+.. automodule:: bob.bio.face.embeddings.opencv
+
 
 Annotators
 ----------

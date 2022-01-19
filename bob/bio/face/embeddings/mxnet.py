@@ -16,6 +16,10 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
     """
     Base Transformer for MxNet architectures.
 
+    You can provide the model in two different ways.
+    When providing the `checkpoint_path` and the `config`, the model will be loaded from these files in a lazy way, i.e., the first time it is needed.
+    You can also provide the `model` directly, but this might be conflicting with parallelization.
+
     Parameters:
     -----------
 
@@ -25,17 +29,22 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
       config : str
          json file containing the DNN spec
 
+      model : mxnet.gluon.nn model
+          an instantiated mxnet model with pre-loaded weights
+
       preprocessor:
          A function that will transform the data right before forward. The default transformation is `X=X`
 
-      use_gpu: bool
+      gpu_id: int or None
+        The logical index of the desired GPU to use, or ``None`` for running on CPU only.
     """
 
     def __init__(
         self,
         checkpoint_path=None,
         config=None,
-        use_gpu=False,
+        model=None,
+        gpu_id=None,
         memory_demanding=False,
         preprocessor=lambda x: x,
         **kwargs,
@@ -43,8 +52,8 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
         self.config = config
-        self.use_gpu = use_gpu
-        self.model = None
+        self.gpu_id = gpu_id
+        self.model = model
         self.memory_demanding = memory_demanding
         self.preprocessor = preprocessor
 
@@ -53,7 +62,7 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         from mxnet import gluon
         import warnings
 
-        ctx = mx.gpu() if self.use_gpu else mx.cpu()
+        ctx = mx.gpu(self.gpu_id) if self.gpu_id is not None else mx.cpu()
 
         with warnings.catch_warnings():
             warnings.simplefilter("ignore")
@@ -106,12 +115,12 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
 class ArcFaceInsightFace_LResNet100(MxNetTransformer):
     """
     Extracts features using deep face recognition models under MxNet Interfaces.
-  
-    Users can download the pretrained face recognition models with MxNet Interface. The path to downloaded models (and weights) should be specified while calling this class, usually in the configuration file of an experiment. 
- 
-    Examples: (Pretrained ResNet models): `LResNet100E-IR,ArcFace@ms1m-refine-v2 <https://github.com/deepinsight/insightface>`_  
-  
-    The extracted features can be combined with different the algorithms.  
+
+    Users can download the pretrained face recognition models with MxNet Interface. The path to downloaded models (and weights) should be specified while calling this class, usually in the configuration file of an experiment.
+
+    Examples: (Pretrained ResNet models): `LResNet100E-IR,ArcFace@ms1m-refine-v2 <https://github.com/deepinsight/insightface>`_
+
+    The extracted features can be combined with different the algorithms.
 
     """
 

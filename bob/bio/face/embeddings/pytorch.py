@@ -23,20 +23,31 @@ from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
     """
-    Base Transformer using pytorch models
+    Base Transformer using pytorch models.
 
+    You can provide the model in two different ways.
+    When providing the `checkpoint_path` and the `config`, the model will be loaded from these files in a lazy way, i.e., the first time it is needed.
+    You can also provide the `model` directly, but this might be conflicting with parallelization.
 
     Parameters
     ----------
 
     checkpoint_path: str
-       Path containing the checkpoint
+        Path containing the checkpoint
 
-    config:
+    config: str
         Path containing some configuration file (e.g. .json, .prototxt)
+
+    model : torch.nn.Module
+        An instantiated pytorch model with pre-loaded weights.
 
     preprocessor:
         A function that will transform the data right before forward. The default transformation is `X/255`
+
+
+    device : str or torch.device
+        A string representing the device, such as "cpu" or "cuda:3".
+        If not provided, "cuda" will be assumed if a GPU is accessible, otherwise "cpu".
 
     """
 
@@ -44,6 +55,7 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         self,
         checkpoint_path=None,
         config=None,
+        model=None,
         preprocessor=lambda x: x / 255,
         memory_demanding=False,
         device=None,
@@ -53,7 +65,7 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
         self.config = config
-        self.model = None
+        self.model = model
         self.preprocessor = preprocessor
         self.memory_demanding = memory_demanding
         self.device = torch.device(

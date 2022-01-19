@@ -124,7 +124,7 @@ class ArcFaceInsightFace_LResNet100(MxNetTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, use_gpu=False):
+    def __init__(self, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz",
@@ -143,8 +143,7 @@ class ArcFaceInsightFace_LResNet100(MxNetTransformer):
         super(ArcFaceInsightFace_LResNet100, self).__init__(
             checkpoint_path=checkpoint_path,
             config=config,
-            use_gpu=use_gpu,
-            memory_demanding=memory_demanding,
+            **kwargs
         )
 
     def _load_model(self):

@@ -99,7 +99,7 @@ Finally, we can run an experiment using the hand-labeled images from the SCface 
 
 .. code-block:: bash
 
-  bob bio pipelines scface facenet_pytorch.py
+  bob bio pipelines vanilla-biometrics scface facenet_pytorch.py
 
 
 Applying a self-trained tensorflow network
@@ -125,10 +125,8 @@ Let's write our configuration file:
    :linenos:
 
 
-
-
 Finally, we can run an experiment using the open-set face recognition protocols defined on IJB-C, after you have set up the dataset itself, via:
 
 .. code-block:: bash
 
-  bob bio pipelines ijbc-test4-g1 mymodel_tensorflow.py
+  bob bio pipelines vanilla-biometrics ijbc-test4-g1 mymodel_tensorflow.py

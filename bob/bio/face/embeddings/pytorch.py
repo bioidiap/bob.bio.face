@@ -135,7 +135,7 @@ class AFFFE_2021(PyTorchModel):
 
     """
 
-    def __init__(self, memory_demanding=False, device=None, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz",
@@ -156,8 +156,6 @@ class AFFFE_2021(PyTorchModel):
         super(AFFFE_2021, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
-            device=device,
             **kwargs,
         )
 
@@ -194,8 +192,6 @@ class IResnet34(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -208,9 +204,7 @@ class IResnet34(PyTorchModel):
         super(IResnet34, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -231,8 +225,6 @@ class IResnet50(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -245,9 +237,7 @@ class IResnet50(PyTorchModel):
         super(IResnet50, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -268,8 +258,6 @@ class IResnet100(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -282,9 +270,7 @@ class IResnet100(PyTorchModel):
         super(IResnet100, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -315,8 +301,6 @@ class OxfordVGG2Resnets(PyTorchModel):
     def __init__(
         self,
         model_name,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -352,9 +336,7 @@ class OxfordVGG2Resnets(PyTorchModel):
         super(OxfordVGG2Resnets, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=self.dag_preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -456,8 +438,6 @@ class IResnet100Elastic(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -481,9 +461,7 @@ class IResnet100Elastic(PyTorchModel):
         super(IResnet100Elastic, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -503,8 +481,6 @@ class FaceXZooModel(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         arch="AttentionNet",
         **kwargs,
     ):
@@ -520,9 +496,7 @@ class FaceXZooModel(PyTorchModel):
         super(FaceXZooModel, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 

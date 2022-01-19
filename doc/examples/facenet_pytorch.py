@@ -1,5 +1,6 @@
 import bob.bio.base
 import bob.bio.face
+import bob.bio.face.embeddings.pytorch
 import facenet_pytorch
 
 # define aligned image details

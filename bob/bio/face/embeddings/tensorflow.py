@@ -139,7 +139,7 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
@@ -158,7 +158,6 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
         super(InceptionResnetv2_MsCeleb_CenterLoss_2018, self).__init__(
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -171,7 +170,7 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
@@ -190,7 +189,6 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
         super(InceptionResnetv2_Casia_CenterLoss_2018, self).__init__(
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -203,7 +201,7 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
@@ -222,7 +220,6 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
         super(InceptionResnetv1_Casia_CenterLoss_2018, self).__init__(
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -235,7 +232,7 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
@@ -254,7 +251,6 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
         super(InceptionResnetv1_MsCeleb_CenterLoss_2018, self).__init__(
             checkpoint_path,
             preprocessor=tf.image.per_image_standardization,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -281,7 +277,7 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
         )
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
         urls = [
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/facenet_sanderberg_20170512_110547.tar.gz"
         ]
@@ -297,8 +293,7 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
 
         super(FaceNetSanderberg_20170512_110547, self).__init__(
             checkpoint_path,
-            tf.image.per_image_standardization,
-            memory_demanding=memory_demanding,
+            preprocessor=tf.image.per_image_standardization,
             **kwargs,
         )
 
@@ -343,7 +338,7 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
@@ -361,7 +356,6 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
         super(Resnet50_MsCeleb_ArcFace_2021, self).__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -409,7 +403,7 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
@@ -428,7 +422,6 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
         super(Resnet50_MsCeleb_ArcFace_20210521, self).__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -476,7 +469,7 @@ class Resnet101_MsCeleb_ArcFace_20210521(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet101-msceleb-arcface_20210521.tar.gz",
@@ -495,7 +488,6 @@ class Resnet101_MsCeleb_ArcFace_20210521(TensorflowTransformer):
         super(Resnet101_MsCeleb_ArcFace_20210521, self).__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -559,7 +551,7 @@ class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
     The model at epoch 90 is used.
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
@@ -578,7 +570,6 @@ class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
         super().__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -642,7 +633,7 @@ class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
     The model is saved based on best ``epoch_embeddings_embedding_accuracy``, epoch 51
     """
 
-    def __init__(self, memory_demanding=False):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
@@ -661,7 +652,7 @@ class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
         super().__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
+            **kwargs
         )
 
 
@@ -705,7 +696,7 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
@@ -723,7 +714,6 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
         super(Resnet50_VGG2_ArcFace_2021, self).__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -776,7 +766,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
 
     """
 
-    def __init__(self, memory_demanding=False, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
@@ -795,7 +785,6 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
         super(MobileNetv2_MsCeleb_ArcFace_2021, self).__init__(
             checkpoint_path,
             preprocessor=lambda X: X / 255.0,
-            memory_demanding=memory_demanding,
             **kwargs,
         )
 
@@ -882,7 +871,7 @@ def resnet_template(embedding, annotation_type, fixed_positions=None):
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",
-        annotator="mtcnn",
+        annotator=annotator,
     )
 
     algorithm = Distance()

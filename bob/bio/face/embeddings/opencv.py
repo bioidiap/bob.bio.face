@@ -109,7 +109,7 @@ class VGG16_Oxford(OpenCVTransformer):
 
     """
 
-    def __init__(self, embedding_layer="fc7"):
+    def __init__(self, embedding_layer="fc7", **kwargs):
         urls = [
             "https://www.robots.ox.ac.uk/~vgg/software/vgg_face/src/vgg_face_caffe.tar.gz",
             "http://bobconda.lab.idiap.ch/public-upload/data/bob/bob.bio.face/master/caffe/vgg_face_caffe.tar.gz",
@@ -133,7 +133,7 @@ class VGG16_Oxford(OpenCVTransformer):
             """
             Normalize using data from caffe
 
-            Caffe has the shape `C x H x W` and the chanel is BGR and 
+            Caffe has the shape `C x H x W` and the chanel is BGR and
 
             """
 
@@ -147,7 +147,7 @@ class VGG16_Oxford(OpenCVTransformer):
 
             return X
 
-        super(VGG16_Oxford, self).__init__(checkpoint_path, config, preprocessor)
+        super(VGG16_Oxford, self).__init__(checkpoint_path, config, preprocessor, **kwargs)
 
     def _load_model(self):
         import cv2

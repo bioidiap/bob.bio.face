@@ -34,7 +34,7 @@ For this, you can provide a ``preprocessor``, which is a function taking ``numpy
 Instead of providing the files to load the pre-trained models from, you can always also provide the pre-loaded ``model``.
 
 .. note::
-  Since not all of the models are ``pickle``able, though, you might have difficulties with parallelization of the experiments when using these models.
+  Since not all of the models are ``pickle``'able, though, you might have difficulties with parallelization of the experiments when using these models.
 
 Several models also provide the possibility to assign GPUs for the extraction of features.
 By default, features are extracted in CPU mode only.

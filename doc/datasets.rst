@@ -1,7 +1,7 @@
 .. vim: set fileencoding=utf-8 :
 .. author: Manuel Günther <siebenkopf@googlemail.com>
 
-.. _bob.bio.face.datasets
+.. _bob.bio.face.datasets:
 
 Setting up Facial Image Databases
 =================================
@@ -17,6 +17,7 @@ You can list all available datasets and protocols by calling:
 We use the default bob configuration system for setting up database interfaces, which basically translates to:
 
 .. code-block:: bash
+
   bob config set <key> <value>
 
 Mainly, we need to tell the system where the original files can be located.

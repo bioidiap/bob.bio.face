@@ -32,10 +32,12 @@ In the following, find a list of all current databases, their configuration para
   - annotations: eye centers (provided in the interface)
   - notes: The original files are stored in a raw format and need to be converted into some image format.
 
+
 * AT&T dataset of faces, previously known as the ORL dataset (:any:`bob.bio.face.database.AtntBioDatabase`)
 
   - annotations: none, faces are already aligned
   - notes: The dataset will be downloaded completely, including all images. No special setup required.
+
 
 * Casia Africa Database (:any:`bob.bio.face.database.CasiaAfricaDatabase`)
 
@@ -53,12 +55,14 @@ In the following, find a list of all current databases, their configuration para
   - protocols: ``accessory, aging, background, distance, expression, lighting``,
   - annotations: eye centers (provided in the interface)
 
+
 * `CASIA NIR-VIS 2.0 <http://www.cbsr.ia.ac.cn/english/NIR-VIS-2.0-Database.html>`__ (:any:`bob.bio.face.database.CBSRNirVis2Database`)
 
   - directory key: ``bob.db.cbsr-nir-vis-2.directory``; the directory containing all the images
   - expected extension: ``[".jpg", ".bmp"]``
   - protocols: ``view2_1, view2_2, view2_3, view2_4, view2_5, view2_6, view2_7, view2_8, view2_9, view2_10``
   - annotations: eye centers (provided in the interface)
+
 
 * Face Recognition Grand Challenge (FRGC) v2.0 (:any:`bob.bio.face.database.FRGCDatabase`)
 
@@ -103,6 +107,7 @@ In the following, find a list of all current databases, their configuration para
   - genders: male
   - annotations: eye centers (provided in the interface)
 
+
 *  `MOBIO dataset <https://www.idiap.ch/en/dataset/mobio>`__ (:any:`bob.bio.face.database.MobioDatabase`)
 
   - directory key: ``bob.db.mobio.directory``; the directory containing all the images
@@ -121,12 +126,14 @@ In the following, find a list of all current databases, their configuration para
   - genders: male, female
   - annotations: eye centers (provided in the interface)
 
+
 *  `CMU Multi-PIE face database <http://www.cs.cmu.edu/afs/cs/project/PIE/MultiPie/Multi-Pie/Home.html>`__  (:any:`bob.bio.face.database.MultipieDatabase`)
 
   - directory key: ``bob.db.multipie.directory``; the directory containing all the images
   - extension: ``.png``
   - protocols: ``G, E, U, M, P, P240, P191, P130, P010, P041, P051, P050, P110, P140, P200, P190, P120, P080, P081, P090,``
   - annotations: eye centers (provided in the interface)
+
 
 * PolaThermal database (:any:`bob.bio.face.database.PolaThermalDatabase`)
 

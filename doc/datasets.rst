@@ -82,7 +82,7 @@ In the following, find a list of all current databases, their configuration para
 
 * `IARPA Janus Benchmark C <http://www.nist.gov/programs-projects/face-challenges>`__
 
-  - directory key: ``bob.bio.face.ijbc.directory``; the base directory containing the `img` and `frames` folders
+  - directory key: ``bob.bio.face.ijbc.directory``; the base directory containing the `images` and `protocols` folders (besides others)
   - expected extensions: ``.jpg`` and ``.png``
   - implemented protocols: ``test1, test2, test4-G1, test4-G2``
   - annotations: bounding boxes (``topleft, bottomright``); there might be several faces in one image -- you need to rely on the bounding box in order to get the correct one

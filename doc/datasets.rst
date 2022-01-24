@@ -14,13 +14,20 @@ You can list all available datasets and protocols by calling:
   resources.py --types databases
 
 
-We use the default bob configuration system for setting up database interfaces, which basically translates to:
+To use one of the available databases in an experiment, we need to tell the system where the original files can be located.
+We use the default bob configuration system for setting this us, which basically translates to:
 
 .. code-block:: bash
 
   bob config set <key> <value>
 
-Mainly, we need to tell the system where the original files can be located.
+Follow below an example using this command to set the database path for one of the supported datasets.
+
+.. code-block:: bash
+
+  bob config set bob.bio.face.scface.directory [PATH_TO_SCFACE_DATASET]
+
+
 In some circumstances, the filename extension of the datasets can change from version to version, so they can be setup as well.
 In the following, find a list of all current databases, their configuration parameters, and their provided protocols, in alphabetic order.
 
@@ -159,3 +166,6 @@ In the following, find a list of all current databases, their configuration para
   - expected extension:
   - protocols: ``close, medium, far, combined, IR``
   - annotations: eye centers (provided in the interface)
+
+
+

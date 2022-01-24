@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  Multipie database implementation 
+  Multipie database implementation
 """
 
 from bob.bio.base.database import CSVDataset
@@ -41,10 +41,10 @@ class ARFaceDatabase(CSVDataset):
 
 
     .. warning::
-      
+
       To use this dataset protocol, you need to have the original files of the Mobio dataset.
       Once you have it downloaded, please run the following command to set the path for Bob
-      
+
         .. code-block:: sh
 
             bob config set bob.bio.face.arface.directory [ARFACE PATH]
@@ -81,7 +81,9 @@ class ARFaceDatabase(CSVDataset):
                     dataset_original_directory=rc["bob.bio.face.arface.directory"]
                     if rc["bob.bio.face.arface.directory"]
                     else "",
-                    extension=".ppm",
+                    extension=rc["bob.bio.face.arface.extension"]
+                    if rc["bob.bio.face.arface.extension"]
+                    else ".ppm",
                 ),
                 EyesAnnotations(),
             ),

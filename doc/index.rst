@@ -33,13 +33,13 @@ Check out all the face recognition algorithms available by doing::
 $ resources.py --types p
 
 
-Get Started, serious 
+Get Started, serious
 ====================
 
 For detailed information on how this package is structured and how
 to run experiments with it, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`
 and get to know the vanilla biometrics and how to integrate both, algorithm and database protocols with it.
- 
+
 
 Users Guide
 ===========
@@ -48,7 +48,8 @@ Users Guide
    :maxdepth: 2
 
    baselines
-   leaderboard/leaderboard   
+   datasets
+   leaderboard/leaderboard
    references
    annotators
    faq

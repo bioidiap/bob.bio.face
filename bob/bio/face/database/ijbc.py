@@ -81,7 +81,7 @@ class IJBCDatabase(Database):
     Included in the database, there are list files defining verification as well as closed- and open-set identification protocols.
     For verification, two different protocols are provided.
     For the ``1:1`` protocol, gallery and probe templates are combined using several images and video frames for each subject.
-    Compared gallery and probe templates share the same gender and skin tone -- these have been matched to make the comparisions more realistic and difficult.
+    Compared gallery and probe templates share the same gender and skin tone -- these have been matched to make the comparisons more realistic and difficult.
 
     For closed-set identification, the gallery of the ``1:1`` protocol is used, while probes stem from either only images, mixed images and video frames, or plain videos.
     For open-set identification, the same probes are evaluated, but the gallery is split into two parts, either of which is left out to provide unknown probe templates, i.e., probe templates with no matching subject in the gallery.
@@ -91,7 +91,7 @@ class IJBCDatabase(Database):
 
 
     .. warning::
-      
+
       To use this dataset protocol, you need to have the original files of the IJBC datasets.
       Once you have it downloaded, please run the following command to set the path for Bob
 
@@ -99,7 +99,7 @@ class IJBCDatabase(Database):
 
             bob config set bob.bio.face.ijbc.directory [IJBC PATH]
 
-    
+
     The code below allows you to fetch the galery and probes of the "1:1" protocol.
 
     .. code-block:: python
@@ -107,11 +107,11 @@ class IJBCDatabase(Database):
         >>> from bob.bio.face.database import IJBCDatabase
         >>> ijbc = IJBCDatabase(protocol="test1")
         >>>
-        >>> # Fetching the gallery 
+        >>> # Fetching the gallery
         >>> references = ijbc.references()
-        >>> # Fetching the probes 
+        >>> # Fetching the probes
         >>> probes = ijbc.probes()
-    
+
     """
 
     def __init__(
@@ -123,7 +123,7 @@ class IJBCDatabase(Database):
 
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(
-                "Invalid or non existant `original_directory`: f{original_directory}"
+                "Invalid or non existent `original_directory`: f{original_directory}"
             )
 
         self._check_protocol(protocol)
@@ -252,7 +252,7 @@ class IJBCDatabase(Database):
                 )
             )
 
-            # Wirering probes with references
+            # Wiring probes with references
             if self.protocol == "test1" or self.protocol == "test2":
                 # Link probes to the references they have to be compared with
                 # We might make that faster if we manage to write it as a Panda instruction
@@ -302,11 +302,11 @@ class IJBCDatabase(Database):
         return ["test1", "test2", "test4-G1", "test4-G2"]
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(
+        assert protocol in self.protocols(), "Invalid protocol `{}` not in {}".format(
             protocol, self.protocols()
         )
 
     def _check_group(self, group):
-        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
+        assert group in self.groups(), "Invalid group `{}` not in {}".format(
             group, self.groups()
         )

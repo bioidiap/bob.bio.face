@@ -4,6 +4,7 @@ from bob.bio.face.pytorch.datasets.demographics import (
     MorphTorchDataset,
     RFWTorchDataset,
     MobioTorchDataset,
+    MSCelebTorchDataset,
 )
 
 from bob.extension import rc
@@ -128,6 +129,7 @@ def test_mobio():
     )
 
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+
     batch = next(iter(dataloader))
     batch["data"].shape == (64, 3, 112, 112)
 
@@ -135,3 +137,43 @@ def test_mobio():
     weights = dataset.get_demographic_class_weights()
 
     assert np.allclose(sum(weights), 1)
+
+
+# @pytest.mark.skipif(
+# rc.get("bob.bio.face.msceleb.directory") is None,
+# reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+# )
+def test_msceleb():
+
+    # database_path = os.path.join(
+    #    rc.get("bob.bio.demographics.directory"), "mobio", "samplewrapper"
+    # )
+
+    ### WITH UNKNOW DEMOGRAPHICS
+    database_path = "/idiap/temp/tpereira/databases/msceleb/112x112-eyes-crop/"
+
+    dataset = MSCelebTorchDataset(database_path, include_unknow_demographics=True)
+    assert dataset.n_classes == 89735
+    assert len(dataset.demographic_keys) == 18
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+    # WITHOUT UNKNOW DEMOGRAPHICS
+
+    dataset = MSCelebTorchDataset(database_path, include_unknow_demographics=False)
+    assert dataset.n_classes == 81279
+    assert len(dataset.demographic_keys) == 15
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+    weights = dataset.get_demographic_class_weights()
+
+    assert np.allclose(sum(weights), 1)
+
+    pass

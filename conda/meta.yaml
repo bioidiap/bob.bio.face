@@ -27,7 +27,6 @@ requirements:
     - bob.core
     - bob.io.base
     - bob.io.image
-    - bob.io.video
     - bob.math
     - bob.sp
     - bob.ip.base
@@ -45,6 +44,7 @@ requirements:
     - scikit-image {{ scikit_image }}
     - six {{ six }}
     - tensorflow {{ tensorflow }}  # [linux]
+    - imageio-ffmpeg
   run:
     - python
     - setuptools
@@ -80,6 +80,7 @@ test:
     - bob.db.atnt
     - bob.learn.tensorflow  # [linux]
     - tensorflow  # [linux]
+    - imageio-ffmpeg
 
 about:
   home: https://www.idiap.ch/software/bob/

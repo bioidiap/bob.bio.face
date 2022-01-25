@@ -6,7 +6,7 @@ from bob.pipelines.sample_loaders import AnnotationsLoader
 from bob.pipelines.sample import DelayedSample
 from bob.db.base.annotations import read_annotation_file
 from bob.extension.download import get_file
-from bob.io.video import reader
+import imageio
 from bob.extension import rc
 
 from sklearn.pipeline import make_pipeline
@@ -46,8 +46,8 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
         The frame of the video in bob format (channel, height, width)
     """
     logger.debug(f"Reading frame {frame} from '{file_name}'")
-    video_reader = reader(file_name)
-    image = video_reader[frame]
+    video_reader = imageio.get_reader(file_name)
+    image = video_reader.get_data(frame)
     # Image captured by the 'mobile' device are flipped vertically.
     # (Images were captured horizontally and bob.io.video does not read the
     #   metadata correctly, whether it was on the right or left side)

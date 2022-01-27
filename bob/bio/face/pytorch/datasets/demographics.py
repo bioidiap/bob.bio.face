@@ -1,5 +1,11 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
+# Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
+
+"""
+Datasets that handles demographic information
+
+"""
 
 
 import logging
@@ -28,6 +34,19 @@ logger = logging.getLogger(__name__)
 
 
 class DemoraphicTorchDataset(Dataset):
+    """
+    Pytorch base dataset that handles demographic information
+
+    Parameters
+    ----------
+
+        bob_dataset:
+          Instance of a bob database object
+
+        transform=None
+
+    """
+
     def __init__(self, bob_dataset, transform=None):
 
         self.bob_dataset = bob_dataset
@@ -46,6 +65,10 @@ class DemoraphicTorchDataset(Dataset):
         return self._demographic_keys
 
     def __getitem__(self, idx):
+        """
+        It dumps a dictionary containing the following keys: data, label, demography
+
+        """
 
         sample = self.bucket[idx]
 
@@ -80,10 +103,6 @@ class DemoraphicTorchDataset(Dataset):
         # sum(np.array(all_demographics) == d)
 
         n_demographics = len(subjects_per_demographics)
-
-        # weight_per_demographic = 1-(samples_per_demographic/n_classes) / (n_demographics-1)
-        # weight per subject = weight_per_demographic/samples_per_demographic
-        #
 
         # I'll do it in 2 lines to make it readable
         weight_per_demographic = lambda x: (1 - (x / n_identities)) / (
@@ -494,5 +513,3 @@ class MSCelebTorchDataset(DemoraphicTorchDataset):
         demography = self.get_demographics(subject_id)
 
         return {"data": image, "label": label, "demography": demography}
-
-    pass

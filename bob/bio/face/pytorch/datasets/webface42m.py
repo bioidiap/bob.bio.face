@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
-
+# Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 from torch.utils.data import Dataset
 
@@ -18,9 +18,9 @@ from bob.extension.download import get_file, search_file
 
 class WebFace42M(Dataset):
     """
-    Pytorch Daset for the WebFace42M dataset mentioned in 
+    Pytorch Daset for the WebFace42M dataset mentioned in
 
-    
+
     .. latex::
 
         @inproceedings {zhu2021webface260m,
@@ -28,15 +28,15 @@ class WebFace42M(Dataset):
                 author=  {Zheng Zhu, Guan Huang, Jiankang Deng, Yun Ye, Junjie Huang, Xinze Chen,
                     Jiagang Zhu, Tian Yang, Jiwen Lu, Dalong Du, Jie Zhou},
                 booktitle=  {IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
-                year=  {2021}              
+                year=  {2021}
         }
 
 
     .. warning::
-      
+
       To use this dataset protocol, you need to have the original files of the WebFace42M dataset.
       Once you have it downloaded, please run the following command to set the path for Bob
-      
+
         .. code-block:: sh
 
             bob config set bob.bio.face.webface42M.directory [WEBFACE42M PATH]
@@ -156,4 +156,3 @@ class WebFace42M(Dataset):
         zero_labels = np.where(label_checker == 0)[0]
         if zero_labels.shape[0] > 0:
             print(zero_labels)
-

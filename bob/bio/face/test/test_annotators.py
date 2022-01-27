@@ -60,6 +60,7 @@ def test_mtcnn_annotator():
     _assert_mtcnn(annot_batch[0])
 
 
+@is_library_available("cv2")
 def test_faceX106_annotator():
     """
     FaceX-Zoo annotator
@@ -70,6 +71,7 @@ def test_faceX106_annotator():
     assert annot_batch.shape == (106, 2)
 
 
+@is_library_available("cv2")
 def test_faceX_detector():
     """
     FaceX-Zoo annotator

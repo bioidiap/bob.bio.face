@@ -44,7 +44,7 @@ requirements:
     - scikit-image {{ scikit_image }}
     - six {{ six }}
     - tensorflow {{ tensorflow }}  # [linux]
-    - imageio-ffmpeg
+    - imageio-ffmpeg    
   run:
     - python
     - setuptools
@@ -52,11 +52,12 @@ requirements:
     - {{ pin_compatible('six') }}
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
-    - {{ pin_compatible('torchvision', max_pin="x.x") }}
+    - {{ pin_compatible('torchvision', max_pin="x.x") }}    
 
   run_constrained:
     - bob.learn.tensorflow
-    - {{ pin_compatible('tensorflow') }}  # [linux]
+    - {{ pin_compatible('tensorflow') }}  # [linux]    
+
 
 test:
   imports:

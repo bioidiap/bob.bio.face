@@ -6,7 +6,6 @@ import numpy as np
 from bob.io.image import bob_to_opencvbgr
 from math import ceil
 from itertools import product as product
-import cv2
 import os
 import logging
 from bob.extension.download import get_file
@@ -396,6 +395,8 @@ class FaceX106Landmarks(Base):
 
     # Adapted from https://github.com/Hsintao/pfld_106_face_landmarks/blob/master/data/prepare.py
     def _preprocess(self, image, det):
+        import cv2
+
         """Preprocess the input image, cutting the input image through the face detection information.
         Using the face detection result(dets) to get the face position in the input image.
         After determining the center of face position and the box size of face, crop the image

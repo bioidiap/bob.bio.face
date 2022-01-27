@@ -134,6 +134,8 @@ setup(
             "scface-medium            = bob.bio.face.config.database.scface_medium:database",
             "scface-far               = bob.bio.face.config.database.scface_far:database",
             "scface-ir                = bob.bio.face.config.database.scface_ir:database",
+            "vgg2-full                = bob.bio.face.config.database.vgg2_full:database",
+            "vgg2-short                = bob.bio.face.config.database.vgg2_short:database",
         ],
         "bob.bio.annotator": [
             "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
@@ -258,6 +260,8 @@ setup(
             "oxford-resnet50-ft-dag-vgg2           = bob.bio.face.config.baseline.oxford_resnet50_ft_dag_vgg2",
             "oxford-senet50-scratch-dag-vgg2       = bob.bio.face.config.baseline.oxford_senet50_scratch_dag_vgg2",
             "oxford-senet50-ft-dag-vgg2            = bob.bio.face.config.baseline.oxford_senet50_ft_dag_vgg2",
+            "vgg2-short                            = bob.bio.face.config.database.vgg2_short",
+            "vgg2-full                            = bob.bio.face.config.database.vgg2_full",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

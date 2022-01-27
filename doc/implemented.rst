@@ -9,6 +9,11 @@ Summary
 
 Databases
 ~~~~~~~~~
+
+
+Bob databases (used for biometric testing)
+==========================================
+
 .. autosummary::
    bob.bio.face.database.ARFaceDatabase
    bob.bio.face.database.AtntBioDatabase
@@ -27,6 +32,18 @@ Databases
    bob.bio.face.database.CBSRNirVis2Database
    bob.bio.face.database.SCFaceDatabase
    bob.bio.face.database.CaspealDatabase
+
+Pytorch databases (used on pytorch)
+===================================
+
+.. autosummary::
+   bob.bio.face.pytorch.datasets.WebFace42M
+   bob.bio.face.pytorch.datasets.MedsTorchDataset
+   bob.bio.face.pytorch.datasets.MorphTorchDataset
+   bob.bio.face.pytorch.datasets.MobioTorchDataset
+   bob.bio.face.pytorch.datasets.MSCelebTorchDataset
+
+
 
 
 Deep Learning Extractors

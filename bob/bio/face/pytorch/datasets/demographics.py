@@ -21,7 +21,6 @@ from bob.bio.face.database import (
 
 import torchvision.transforms as transforms
 
-from bob.bio.demographics.script.demographics import demographics
 import numpy as np
 import pandas as pd
 import os

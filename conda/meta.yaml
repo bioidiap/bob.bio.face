@@ -53,7 +53,7 @@ requirements:
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('torchvision', max_pin="x.x") }}    
-    - pytorch-lightning
+    - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}
 
   run_constrained:
     - bob.learn.tensorflow
@@ -82,8 +82,7 @@ test:
     - bob.db.atnt
     - bob.learn.tensorflow  # [linux]
     - tensorflow  # [linux]
-    - imageio-ffmpeg
-    - pytorch-lightning
+    - imageio-ffmpeg    
 
 about:
   home: https://www.idiap.ch/software/bob/

@@ -4,14 +4,16 @@
 import torchvision
 from bob.extension import rc
 import os
+from torch.nn import Module
+from torch import nn
 
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader
 from bob.bio.face.pytorch.lightning import BackboneHeadModel
-from bob.learn.pytorch.architectures.lenet import Lenet5
+
+
 from bob.bio.face.pytorch.head import ArcFace, Regular
 from functools import partial
-import pytorch_lightning as pl
 import torch
 from torch.utils.data import Dataset
 
@@ -41,6 +43,31 @@ def convert_dataset(dataset):
 
 
 def test_boring_model():
+    import pytorch_lightning as pl
+
+    class Lenet5Short(Module):
+        def __init__(self, num_features=30):
+            super(Lenet5Short, self).__init__()
+            self.conv1 = nn.Conv2d(1, 6, 5)
+            self.relu1 = nn.ReLU()
+            self.pool1 = nn.MaxPool2d(2)
+            self.conv2 = nn.Conv2d(6, 8, 5)
+            self.relu2 = nn.ReLU()
+            self.pool2 = nn.MaxPool2d(2)
+            self.fc1 = nn.Linear(128, num_features)
+            self.relu3 = nn.ReLU()
+
+        def forward(self, x):
+            y = self.conv1(x)
+            y = self.relu1(y)
+            y = self.pool1(y)
+            y = self.conv2(y)
+            y = self.relu2(y)
+            y = self.pool2(y)
+            y = y.view(y.shape[0], -1)
+            y = self.fc1(y)
+            y = self.relu3(y)
+            return y
 
     root_path = rc.get(
         "bob_data_folder", os.path.join(os.path.expanduser("~"), "bob_data")
@@ -50,7 +77,7 @@ def test_boring_model():
         convert_dataset(
             torchvision.datasets.FashionMNIST(root_path, download=True, train=True)
         ),
-        batch_size=128,
+        batch_size=512,
         shuffle=True,
         persistent_workers=True,
         num_workers=2,
@@ -62,10 +89,11 @@ def test_boring_model():
         batch_size=128,
     )
 
-    backbone = Lenet5()
-    # head = ArcFace(feat_dim=30, num_class=10)
-    head = Regular(feat_dim=84, num_class=10)
-    optimizer = partial(torch.optim.SGD, lr=0.1, momentum=0.9)
+    num_features = 30
+    backbone = Lenet5Short(num_features=num_features)
+    head = ArcFace(feat_dim=num_features, num_class=10)
+    # head = Regular(feat_dim=84, num_class=10)
+    optimizer = partial(torch.optim.SGD, lr=0.01, momentum=0.9)
 
     # Preparing lightining model
     model = BackboneHeadModel(
@@ -86,7 +114,7 @@ def test_boring_model():
         # debug flags
         # limit_train_batches=10,  # https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#limit-train-batches
         # limit_val_batches=1,
-        amp_level="00",  # https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#amp-level
+        # amp_level="00",  # https://pytorch-lightning.readthedocs.io/en/latest/common/trainer.html#amp-level
     )
 
     trainer.fit(
@@ -95,5 +123,6 @@ def test_boring_model():
         val_dataloaders=validation_dataloader,
     )
 
-    ## Assert the accuracy
-    # assert trainer.validate()[0]["validation/accuracy"] > 0.5
+    acc = trainer.validate(dataloaders=validation_dataloader)[0]["validation/accuracy"]
+
+    assert acc > 0.4

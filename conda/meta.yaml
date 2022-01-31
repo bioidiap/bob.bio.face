@@ -54,6 +54,7 @@ requirements:
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('torchvision', max_pin="x.x") }}    
     - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}
+    - pydeprecate==0.3.1
 
   run_constrained:
     - bob.learn.tensorflow
@@ -82,7 +83,8 @@ test:
     - bob.db.atnt
     - bob.learn.tensorflow  # [linux]
     - tensorflow  # [linux]
-    - imageio-ffmpeg    
+    - imageio-ffmpeg
+    - pydeprecate==0.3.1
 
 about:
   home: https://www.idiap.ch/software/bob/

@@ -28,6 +28,7 @@ import bob.io.base
 import bob.io.image
 from bob.extension.download import get_file
 from bob.extension import rc
+import torch
 
 logger = logging.getLogger(__name__)
 
@@ -120,7 +121,7 @@ class DemoraphicTorchDataset(Dataset):
             for k, v in self.subject_demographic.items()
         ]
 
-        return weights
+        return torch.Tensor(weights)
 
 
 class MedsTorchDataset(DemoraphicTorchDataset):
@@ -502,8 +503,6 @@ class MSCelebTorchDataset(DemoraphicTorchDataset):
         image = bob.io.base.load(os.path.join(self.database_path, sample))
 
         image = image if self.transform is None else self.transform(image)
-
-        image = image.astype("float32")
 
         label = self.labels[subject_id]
 

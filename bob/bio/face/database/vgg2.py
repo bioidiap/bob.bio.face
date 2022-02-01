@@ -111,6 +111,7 @@ class VGG2Database(CSVDatasetZTNorm):
 
     As metadata, this dataset contains the gender labels "m" and "f" for, respectively, male and female.
     It also contains the following race labels:
+
         - A: Asian in general (Chinese, Japanese, Filipino, Korean, Polynesian, Indonesian, Samoan, or any other Pacific Islander
         - B: A person having origins in any of the black racial groups of Africa
         - I: American Indian, Asian Indian, Eskimo, or Alaskan native
@@ -118,7 +119,7 @@ class VGG2Database(CSVDatasetZTNorm):
         - W: Caucasian, Mexican, Puerto Rican, Cuban, Central or South American, or other Spanish culture or origin, Regardless of race
         - N: None of the above
 
-    Race labels are taken from: MasterEBTSv10.0.809302017_Final.pdf
+    Race labels are taken from: MasterEBTSv10.0.809302017_Final.pdf.
 
     This dataset also contains sets for `T-Norm` and `Z-Norm`, normalization.
 
@@ -133,7 +134,6 @@ class VGG2Database(CSVDatasetZTNorm):
 
 
     All the landmarks and face crops provided in the original dataset is provided with this inteface.
-
 
     .. warning::
 
@@ -157,8 +157,6 @@ class VGG2Database(CSVDatasetZTNorm):
             year={2018},
             organization={IEEE}
         }
-
-
     """
 
     def __init__(

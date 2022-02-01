@@ -161,12 +161,19 @@ class VGG2Database(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self,
+        protocol,
+        dataset_original_directory=rc.get("bob.bio.face.vgg2.directory", ""),
+        dataset_original_extension=rc.get("bob.bio.face.vgg2.extension", ".jpg"),
+        annotation_type="eyes-center",
+        fixed_positions=None,
+    ):
 
         # Downloading model if not exists
         urls = VGG2Database.urls()
         filename = get_file(
-            "vgg2.tar.gz", urls, file_hash="5d1f45feb7b493e1be3825ca82b1f12d"
+            "vgg2.tar.gz", urls, file_hash="e264d6e7389acdf19fdbf0420eba678c"
         )
 
         super().__init__(
@@ -176,10 +183,8 @@ class VGG2Database(CSVDatasetZTNorm):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc.get(
-                        "bob.bio.face.vgg2.directory", ""
-                    ),
-                    extension=rc.get("bob.bio.face.vgg2.extension", ".jpg"),
+                    dataset_original_directory=dataset_original_directory,
+                    extension=dataset_original_extension,
                 ),
                 VGG2Annotations(),
             ),

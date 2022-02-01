@@ -10,12 +10,13 @@ Datasets that handles demographic information
 
 import logging
 from torch.utils.data import Dataset
-
+import cloudpickle
 from bob.bio.face.database import (
     MEDSDatabase,
     MorphDatabase,
     RFWDatabase,
     MobioDatabase,
+    VGG2Database,
 )
 
 
@@ -159,6 +160,145 @@ class MedsTorchDataset(DemoraphicTorchDataset):
 
     def get_demographics(self, sample):
         demographic_key = getattr(sample, "rac")
+        return self._demographic_keys[demographic_key]
+
+
+class VGG2TorchDataset(DemoraphicTorchDataset):
+    """
+    VGG2 for torch.
+
+    This interface make usage of :any:`bob.bio.face.database.VGG2Database`.
+
+    The "race" labels below were annotated by the students from the period 2018-2020. Race labels taken from: MasterEBTSv10.0.809302017_Final.pdf
+
+    - A: Asian in general (Chinese, Japanese, Filipino, Korean, Polynesian, Indonesian, Samoan, or any other Pacific Islander
+    - B: A person having origins in any of the black racial groups of Africa
+    - I: American Indian, Asian Indian, Eskimo, or Alaskan native
+    - U: Of indeterminable race
+    - W: Caucasian, Mexican, Puerto Rican, Cuban, Central or South American, or other Spanish culture or origin, Regardless of race
+    - N: None of the above
+
+
+    Gender information was taken from the original dataset
+    There are the following genders available:
+     - male
+     - female
+
+
+    .. note::
+        Some important information about this interface.
+        We have the following statistics:
+            - n_classes = 8631
+            - n_demographics: 12 ['m-A': 0, 'm-B': 1, 'm-I': 2, 'm-U': 3, 'm-W': 4, 'm-N': 5, 'f-A': 6, 'f-B': 7, 'f-I': 8, 'f-U': 9, 'f-W': 10, 'f-N': 11]
+
+
+    Parameters
+    ----------
+        database_path: str
+           Path containing the raw data
+
+        database_extension:
+
+        load_bucket_from_cache: bool
+          If set, it will load the list of available samples from the cache
+
+
+    """
+
+    def __init__(
+        self,
+        protocol,
+        database_path,
+        database_extension=".jpg",
+        transform=None,
+        load_bucket_from_cache=True,
+    ):
+
+        bob_dataset = VGG2Database(
+            protocol=protocol,
+            dataset_original_directory=database_path,
+            dataset_original_extension=database_extension,
+        )
+        self.load_bucket_from_cache = load_bucket_from_cache
+
+        super().__init__(bob_dataset, transform=transform)
+
+    def decode_race(self, race):
+        return race if race in self._possible_races else "N"
+
+    def get_key(self, sample):
+        return f"{sample.gender}-{self.decode_race(sample.race)}"
+
+    def get_cache_path(self):
+
+        filename = (
+            "vgg2_short_cached_bucket.pickle"
+            if self.bob_dataset.protocol == "vgg2-short"
+            else "vgg2_full_cached_bucket.pickle"
+        )
+
+        return os.path.join(
+            rc.get(
+                "bob_data_folder", os.path.join(os.path.expanduser("~"), "bob_data")
+            ),
+            "datasets",
+            f"{filename}",
+        )
+
+    def cache_bucket(self, bucket):
+        """
+        Cache the list of samples into a temporary directory
+        """
+        bucket_filename = self.get_cache_path()
+        os.makedirs(os.path.dirname(bucket_filename), exist_ok=True)
+        with open(bucket_filename, "wb") as f:
+            cloudpickle.dump(bucket, f)
+
+    def load_cached_bucket(self):
+        bucket_filename = self.get_cache_path()
+        with open(bucket_filename, "rb") as f:
+            bucket = cloudpickle.load(f)
+        return bucket
+
+    def load_bucket(self):
+
+        # All possible metadata
+        self._possible_genders = ["m", "f"]
+
+        self._possible_races = ["A", "B", "I", "U", "W", "N"]
+
+        # Defining the demographics keys
+        self._demographic_keys = [
+            f"{gender}-{race}"
+            for gender in self._possible_genders
+            for race in self._possible_races
+        ]
+        self._demographic_keys = dict(
+            [(d, i) for i, d in enumerate(self._demographic_keys)]
+        )
+
+        # Loading the buket from cache
+
+        if self.load_bucket_from_cache and os.path.exists(self.get_cache_path()):
+            self.bucket = self.load_cached_bucket()
+        else:
+            self.bucket = [s for s in self.bob_dataset.background_model_samples()]
+            # Caching the bucket
+            self.cache_bucket(self.bucket)
+
+        # Mapping subject_id with labels
+        self.labels = sorted(list(set([s.subject_id for s in self.bucket])))
+        self.labels = dict([(l, i) for i, l in enumerate(self.labels)])
+
+        # Mapping subject and demographics for fast access
+        self.subject_demographic = dict()
+
+        for s in self.bucket:
+            if s.subject_id not in self.subject_demographic:
+                self.subject_demographic[s.subject_id] = self.get_key(s)
+
+    def get_demographics(self, sample):
+        demographic_key = self.get_key(sample)
         return self._demographic_keys[demographic_key]
 
 

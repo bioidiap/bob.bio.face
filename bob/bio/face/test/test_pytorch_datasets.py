@@ -4,6 +4,7 @@ from bob.bio.face.pytorch.datasets import (
     MorphTorchDataset,
     MobioTorchDataset,
     MSCelebTorchDataset,
+    VGG2TorchDataset,
 )
 
 from bob.extension import rc
@@ -139,19 +140,15 @@ def test_mobio():
     assert np.allclose(sum(weights), 1)
 
 
-# @pytest.mark.skipif(
-# rc.get("bob.bio.face.msceleb.directory") is None,
-# reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
-# )
+@pytest.mark.skipif(
+    rc.get("bob.bio.face.msceleb.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.face.msceleb.directory [PATH]` to set the base features path.",
+)
 def test_msceleb():
 
-    # database_path = os.path.join(
-    #    rc.get("bob.bio.demographics.directory"), "mobio", "samplewrapper"
-    # )
+    database_path = rc.get("bob.bio.face.msceleb.directory")
 
     ### WITH UNKNOW DEMOGRAPHICS
-    database_path = "/idiap/temp/tpereira/databases/msceleb/112x112-eyes-crop/"
-
     dataset = MSCelebTorchDataset(database_path, include_unknow_demographics=True)
     assert dataset.n_classes == 89735
     assert len(dataset.demographic_keys) == 18
@@ -174,6 +171,27 @@ def test_msceleb():
 
     weights = dataset.get_demographic_class_weights()
 
-    assert np.allclose(sum(weights), 1)
+    assert np.allclose(sum(weights), 1, atol=0.001)
 
-    pass
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.face.vgg2-crops.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.face.vgg2-crops.directory [PATH]` to set the base features path.",
+)
+def test_vgg2():
+
+    database_path = rc.get("bob.bio.face.vgg2-crops.directory")
+
+    dataset = VGG2TorchDataset(protocol="vgg2-short", database_path=database_path)
+
+    assert dataset.n_classes == 8631
+    assert len(dataset.demographic_keys) == 12
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+    weights = dataset.get_demographic_class_weights()
+
+    assert np.allclose(sum(weights), 1, atol=0.001)

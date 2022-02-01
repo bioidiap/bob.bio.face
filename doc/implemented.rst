@@ -42,7 +42,7 @@ Pytorch databases (used on pytorch)
    bob.bio.face.pytorch.datasets.MorphTorchDataset
    bob.bio.face.pytorch.datasets.MobioTorchDataset
    bob.bio.face.pytorch.datasets.MSCelebTorchDataset
-
+   bob.bio.face.pytorch.datasets.VGG2TorchDataset
 
 
 

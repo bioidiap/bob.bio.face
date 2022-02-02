@@ -167,5 +167,14 @@ In the following, find a list of all current databases, their configuration para
   - protocols: ``close, medium, far, combined, IR``
   - annotations: eye centers (provided in the interface)
 
+* `VGG2 Face Database <https://arxiv.org/abs/1710.08092>`__  (:any:`bob.bio.face.database.VGG2Database`)
+
+  - directory key: ``bob.bio.face.vgg2.directory``; the directory containing all the images
+  - expected extension: ``.jpg`` or set by ``bob.bio.face.vgg2.extension``
+  - protocols: ``vgg2-short, vgg2-full``
+  - genders: ``m`` and ``f``
+  - races:  ``A, B, I, U, W, N``
+  - annotations: eye centers, nose, mouth, and face bounding box (provided in the interface)
+
 
 

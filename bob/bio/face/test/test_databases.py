@@ -708,3 +708,19 @@ def test_vgg2():
     assert len(database.background_model_samples()) == 86310
     assert len(database.references()) == 500
     assert len(database.probes()) == 2500
+
+    p = "vgg2-short-with-eval"
+
+    database = VGG2Database(protocol=p)
+
+    ## Sanity check on vgg2-short
+    assert len(database.treferences()) == 194
+    assert len(database.zprobes()) == 200
+
+    # vgg2-full has 3'141'890 SAMPLES
+    assert len(database.background_model_samples()) == 86310
+    assert len(database.references(group="dev")) == 250
+    assert len(database.probes(group="dev")) == 1250
+
+    assert len(database.references(group="eval")) == 250
+    assert len(database.probes(group="eval")) == 1250

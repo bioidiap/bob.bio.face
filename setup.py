@@ -262,6 +262,8 @@ setup(
             "oxford-senet50-ft-dag-vgg2            = bob.bio.face.config.baseline.oxford_senet50_ft_dag_vgg2",
             "vgg2-short                            = bob.bio.face.config.database.vgg2_short",
             "vgg2-full                            = bob.bio.face.config.database.vgg2_full",
+            "vgg2-short-with-eval                  = bob.bio.face.config.database.vgg2_short_with_eval",
+            "vgg2-full-with-eval                  = bob.bio.face.config.database.vgg2_full_with_eval",
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",

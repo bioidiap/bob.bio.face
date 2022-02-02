@@ -124,13 +124,15 @@ class VGG2Database(CSVDatasetZTNorm):
     This dataset also contains sets for `T-Norm` and `Z-Norm`, normalization.
 
 
-    We provide two protocols; `vgg2-short` and `vgg2-full`.
+    We provide four protocols; `vgg2-short`, `vgg2-full`,`vgg2-short-with-eval`, `vgg2-full-with-eval`.
     The `vgg2-short` and `vgg2-full` present the sample amount of identities but
     varies with respect to the number of samples per identity.
     The `vgg2-full` preserves the number of samples per identity from the original dataset.
     On the other hand, the `vgg2-short` presents 10 samples per identity at the probe and training sets.
     With that the training set of `vgg2-short` contains 86'310 samples instead of 3'141'890 samples
-    from `vgg2-full`
+    from `vgg2-full`.
+    The protocols with the suffix `-with-eval`, splits the orinal test set into a dev and eval sets
+    containing 250 identities each.
 
 
     All the landmarks and face crops provided in the original dataset is provided with this inteface.
@@ -171,7 +173,7 @@ class VGG2Database(CSVDatasetZTNorm):
         # Downloading model if not exists
         urls = VGG2Database.urls()
         filename = get_file(
-            "vgg2.tar.gz", urls, file_hash="e264d6e7389acdf19fdbf0420eba678c"
+            "vgg2.tar.gz", urls, file_hash="65d5b49a2ee8ae6bcd60379edaa4a78f"
         )
 
         super().__init__(
@@ -203,6 +205,8 @@ class VGG2Database(CSVDatasetZTNorm):
         return [
             "vgg2-short",
             "vgg2-full",
+            "vgg2-short-with-eval",
+            "vgg2-full-with-eval",
         ]
 
     @staticmethod

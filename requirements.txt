@@ -24,4 +24,4 @@ scikit-learn # for pipelines Tranformers
 torch
 torchvision
 imageio-ffmpeg
-
+pytorch-lightning

@@ -93,7 +93,14 @@ class MEDSDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self,
+        protocol,
+        annotation_type="eyes-center",
+        fixed_positions=None,
+        dataset_original_directory=rc.get("bob.db.meds.directory", ""),
+        dataset_original_extension=".jpg",
+    ):
 
         # Downloading model if not exists
         urls = MEDSDatabase.urls()
@@ -108,10 +115,10 @@ class MEDSDatabase(CSVDatasetZTNorm):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc["bob.db.meds.directory"]
-                    if rc["bob.db.meds.directory"]
+                    dataset_original_directory=dataset_original_directory
+                    if dataset_original_directory
                     else "",
-                    extension=".jpg",
+                    extension=dataset_original_extension,
                 ),
                 EyesAnnotations(),
             ),

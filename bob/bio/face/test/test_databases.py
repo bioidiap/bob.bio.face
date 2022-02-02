@@ -574,7 +574,9 @@ def test_arface():
             references=("front",),
         )
         assert_attributes(
-            database.probes(group="dev"), attribute="occlusion", references=("none",),
+            database.probes(group="dev"),
+            attribute="occlusion",
+            references=("none",),
         )
 
     assert len(database.background_model_samples()) == 1076
@@ -597,7 +599,9 @@ def test_arface():
             references=("left", "right", "all"),
         )
         assert_attributes(
-            database.probes(group="dev"), attribute="occlusion", references=("none",),
+            database.probes(group="dev"),
+            attribute="occlusion",
+            references=("none",),
         )
 
     database = ARFaceDatabase("occlusion")
@@ -678,3 +682,45 @@ def test_lfw():
     references = database.references()
     assert references[0][0].annotations["leye"] == (114.0, 132.0)
 
+
+def test_vgg2():
+    from bob.bio.face.database import VGG2Database
+
+    ## Getting the absolute path
+    urls = VGG2Database.urls()
+    filename = get_file("vgg2.tar.gz", urls)
+
+    ## Removing the file before the test
+    try:
+        os.remove(filename)
+    except Exception:
+        pass
+
+    p = "vgg2-short"
+
+    database = VGG2Database(protocol=p)
+
+    ## Sanity check on vgg2-short
+    assert len(database.treferences()) == 194
+    assert len(database.zprobes()) == 200
+
+    # vgg2-full has 3'141'890 SAMPLES
+    assert len(database.background_model_samples()) == 86310
+    assert len(database.references()) == 500
+    assert len(database.probes()) == 2500
+
+    p = "vgg2-short-with-eval"
+
+    database = VGG2Database(protocol=p)
+
+    ## Sanity check on vgg2-short
+    assert len(database.treferences()) == 194
+    assert len(database.zprobes()) == 200
+
+    # vgg2-full has 3'141'890 SAMPLES
+    assert len(database.background_model_samples()) == 86310
+    assert len(database.references(group="dev")) == 250
+    assert len(database.probes(group="dev")) == 1250
+
+    assert len(database.references(group="eval")) == 250
+    assert len(database.probes(group="eval")) == 1250

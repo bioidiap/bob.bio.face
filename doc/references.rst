@@ -17,5 +17,4 @@ References
 .. [TFP18]  *T. de Freitas Pereira, André Anjos, and Sébastien Marcel. **Heterogeneous face recognition using domain specific units.** IEEE Transactions on Information Forensics and Security 14.7 (2018): 1803-1816.
 .. [HRM06]   *G. Heusch, Y. Rodriguez, and S. Marcel*. **Local Binary Patterns as an Image Preprocessing for Face Authentication**. In IEEE International Conference on Automatic Face and Gesture Recognition (AFGR), 2006.
 .. [LGB18]    *C. Li, M. Günther and T. E. Boult*. **ECLIPSE: Ensembles of Centroids Leveraging Iteratively Processed Spatial Eclipse Clustering**. IEEE Winter Conference on Applications of Computer Vision (WACV), 2018.
-.. [GRB17]    *M. Günther, A. Rozsa, T. E. Boult*. **AFFACT: Alignment-Free Facial Attribute Classification Technique**. International Joint Conference on Biometrics (IJCB), 2017.
 .. [GCR17]    *M. Günther, S. Cruz,  E. M. Rudd, T. E. Boult*. **Toward Open-Set Face Recognition**. Conference on Computer Vision and Pattern Recognition (CVPR) Biometrics Workshop, 2017.

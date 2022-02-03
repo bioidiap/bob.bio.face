@@ -354,8 +354,8 @@ class MultiFaceCrop(Base):
     When calling the *transform* method, the MultiFaceCrop matches each sample to its associated cropper
     based on the received annotation, then performs the cropping of each subset, and finally gathers the results.
 
-    In case of ambiguity (when no cropper is a match for the received annotations, or when several croppers
-    match the received annotations), raises a ValueError.
+    If there is more than one cropper matching with the annotations, the **first valid** cropper will be taken.
+    In case none of the croppers match with the received annotations, a ``ValueError`` is raised.
 
     """
 
@@ -421,17 +421,16 @@ class MultiFaceCrop(Base):
             ]
 
             # Ensure exactly one cropper is a match
-            if len(valid_keys) != 1:
+            if len(valid_keys) == 0:
                 raise ValueError(
-                    "Cropper selection from the annotations is ambiguous ({} valid croppers)".format(
-                        len(valid_keys)
-                    )
-                )
-            else:
-                # Assign the sample to this particuler cropper
-                cropper_key = valid_keys[0]
-                subsets[cropper_key]["X"].append(X_elem)
-                subsets[cropper_key]["annotations"].append(annotations_elem)
+                    F"No cropper is matching the annotations {annotations_elem.keys()}")
+            elif len(valid_keys) > 1:
+                logger.debug(F"{len(valid_keys)} croppers are matching your annotations {annotations_elem.keys()}, taking the first valid one")
+
+            # Assign the sample to the first valid cropper
+            cropper_key = valid_keys[0]
+            subsets[cropper_key]["X"].append(X_elem)
+            subsets[cropper_key]["annotations"].append(annotations_elem)
 
         # Assign each sample to its matching cropper
         for X_elem, annotations_elem in zip(X, annotations):

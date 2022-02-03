@@ -654,12 +654,13 @@ def test_arface():
 
 @pytest.mark.skipif(
     rc.get("bob.bio.face.lfw.directory") is None,
-    reason="LFW original protocols not available. Please do `bob config set bob.bio.face.gbu.directory [GBU PATH]` to set the GBU data path.",
+    reason="LFW original protocols not available. Please do `bob config set bob.bio.face.lfw.directory [LFW PATH]` to set the LFW data path.",
 )
 def test_lfw():
 
     from bob.bio.face.database import LFWDatabase
 
+    # protocol view2
     database = LFWDatabase(protocol="view2")
     references = database.references()
     probes = database.probes()
@@ -681,6 +682,45 @@ def test_lfw():
     database = LFWDatabase(protocol="view2", annotation_issuer="named")
     references = database.references()
     assert references[0][0].annotations["leye"] == (114.0, 132.0)
+
+    # protocol o1
+    database = LFWDatabase(protocol="o1")
+    references = database.references()
+    probes = database.probes()
+
+    assert len(references) == 610
+    assert len(probes) == 6264
+
+    # check training set
+    training = database.background_model_samples()
+    assert len(training) == 611
+    assert len(training[-1].samples) == 1070
+
+    # check that we enroll from 3 images each and probe with 1
+    assert all(len(r.samples) == 3 for r in references)
+    assert all(len(p.samples) == 1 for p in probes)
+
+    # check the number of known and unknown probe samples
+    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(1 for p in probes if p.subject_id != "unknown")
+    assert sum(1 for p in probes if p.subject_id == "unknown") == 1361, sum(1 for p in probes if p.subject_id == "unknown")
+
+    # protocol o2
+    database = LFWDatabase(protocol="o2")
+    references = database.references()
+    probes = database.probes()
+
+    # check the number of known and unknown probe samples
+    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(1 for p in probes if p.subject_id != "unknown")
+    assert sum(1 for p in probes if p.subject_id == "unknown") == 4069, sum(1 for p in probes if p.subject_id == "unknown")
+
+    # protocol o3
+    database = LFWDatabase(protocol="o3")
+    references = database.references()
+    probes = database.probes()
+
+    # check the number of known and unknown probe samples
+    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(1 for p in probes if p.subject_id != "unknown")
+    assert sum(1 for p in probes if p.subject_id == "unknown") == 5430, sum(1 for p in probes if p.subject_id == "unknown")
 
 
 def test_vgg2():

@@ -154,16 +154,17 @@ class LFWDatabase(Database):
             self.subject_id_from_filename(x), x
         )
 
-        self.load_pairs()
-
         super().__init__(
             name="lfw",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=False,
+            allow_scoring_with_all_biometric_references=protocol[0] == 'o',
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             memory_demanding=False,
         )
+
+        self.load_pairs()
+
 
     def _extract_funneled(self, annotation_path):
         """Interprets the annotation string as if it came from the funneled images.
@@ -247,50 +248,128 @@ class LFWDatabase(Database):
         }[self.annotation_issuer](annotation_file)
 
     def load_pairs(self):
-        pairs_path = os.path.join(self.original_directory, "view2", "pairs.txt")
-        self.pairs = {}
+        if self.protocol == "view2":
+            # view 2
 
-        make_filename = lambda name, index: f"{name}_{index.zfill(4)}"
+            pairs_path = os.path.join(self.original_directory, "view2", "pairs.txt")
+            self.pairs = {}
 
-        with open(pairs_path) as f:
-            for i, line in enumerate(f.readlines()):
-                # Skip the first line
-                if i == 0:
-                    continue
+            make_filename = lambda name, index: f"{name}_{index.zfill(4)}"
 
-                line = line.split("\t")
+            with open(pairs_path) as f:
+                for i, line in enumerate(f.readlines()):
+                    # Skip the first line
+                    if i == 0:
+                        continue
 
-                # Three lines, genuine pairs otherwise impostor
-                if len(line) == 3:
-                    # self.subject_id_from_filename()
-                    key_filename = make_filename(line[0], line[1].rstrip("\n"))
-                    value_filename = make_filename(line[0], line[2].rstrip("\n"))
+                    line = line.split("\t")
 
-                else:
-                    key_filename = make_filename(line[0], line[1].rstrip("\n"))
-                    value_filename = make_filename(line[2], line[3].rstrip("\n"))
+                    # Three lines, genuine pairs otherwise impostor
+                    if len(line) == 3:
+                        # self.subject_id_from_filename()
+                        key_filename = make_filename(line[0], line[1].rstrip("\n"))
+                        value_filename = make_filename(line[0], line[2].rstrip("\n"))
 
-                key = self.make_path_from_filename(key_filename)
-                value = self.make_path_from_filename(value_filename)
+                    else:
+                        key_filename = make_filename(line[0], line[1].rstrip("\n"))
+                        value_filename = make_filename(line[2], line[3].rstrip("\n"))
 
-                if key not in self.pairs:
-                    self.pairs[key] = []
-                self.pairs[key].append(value)
+                    key = self.make_path_from_filename(key_filename)
+                    value = self.make_path_from_filename(value_filename)
 
-        self._create_probe_reference_dict()
+                    if key not in self.pairs:
+                        self.pairs[key] = []
+                    self.pairs[key].append(value)
+
+            self._create_probe_reference_dict()
+
+        elif self.protocol[0] == 'o':
+            self.pairs = {"enroll":{}, "training-unknown":[], "probe":{}, "o1":[], "o2":[]}
+            # parse directory for open-set protocols
+            for d in os.listdir(os.path.join(self.original_directory,self.image_relative_path)):
+                dd = os.path.join(self.original_directory,self.image_relative_path,d)
+                if os.path.isdir(dd):
+                    # count the number of images
+                    images = sorted([os.path.splitext(i)[0] for i in os.listdir(dd) if os.path.splitext(i)[1] == self.extension])
+
+                    if len(images) > 3:
+                        # take the first three images for enrollment
+                        self.pairs["enroll"][d] = images[:3]
+                        # and the remaining images for known probes
+                        self.pairs["probe"][d] = images[3:]
+                    elif len(images) > 1:
+                        # take the first image as known unknown for training (ignored in our case)
+                        self.pairs["training-unknown"].append(images[0])
+                        # and the remaining as known unknown probe
+                        self.pairs["o1"].extend(images[1:])
+                    else:
+                        # one image -> use as unknown unknown probe
+                        self.pairs["o2"].append(images[0])
 
     @staticmethod
     def protocols():
-        return ["view2"]
+        return ["view2", "o1", "o2", "o3"]
+
 
     def background_model_samples(self):
-        return []
+        """This function returns the training set for the open-set protocols o1, o2 and o3.
+        It returns the :py:meth:`references` and the training samples with known unknowns, which get the subject id "unknown".
+
+        Returns
+        -------
+
+        [bob.pipelines.SampleSet]
+            The training samples, where each sampleset contains all images of one subject.
+            Only the samples of the "unknown" subject are collected from several subjects.
+
+        """
+        if self.protocol[0] != "o":
+            return [0]
+
+        # return a list of samplesets for each enrollment image and each known unknown training sample
+        enrollmentset = self.references()
+        data = {}
+        for image in self.pairs["training-unknown"]:
+            # get image path
+            image_path = os.path.join(
+                self.original_directory,
+                self.image_relative_path,
+                self.make_path_from_filename(image) + self.extension,
+            )
+            # load annotations
+            if self.annotation_directory is not None:
+                annotation_path = os.path.join(
+                    self.annotation_directory, self.make_path_from_filename(image) + self.annotation_extension,
+                )
+                annotations = self._extract(annotation_path)
+            else:
+                annotations = None
+            data[image] = (image_path,annotations)
+
+        # generate one sampleset from images of the unknown unknowns
+        sset = SampleSet(
+            key="unknown",
+            reference_id="unknown",
+            subject_id="unknown",
+            samples=[
+                DelayedSample(
+                    key=image,
+                    load=partial(bob.io.image.load, data[image][0]),
+                    annotations=data[image][1],
+                )
+                for image in data
+            ]
+        )
+        return enrollmentset + [sset]
 
     def _create_probe_reference_dict(self):
         """
         Returns a dictionary whose each key (probe key) holds the list of biometric references
         where that probe should be compared with.
         """
+
+        if self.protocol[0] == 'o':
+            return
 
         self.probe_reference_keys = {}
         for key in self.pairs:
@@ -301,78 +380,169 @@ class LFWDatabase(Database):
 
                 self.probe_reference_keys[value].append(key)
 
+
     def probes(self, group="dev"):
         if self.protocol not in self.probes_dict:
             self.probes_dict[self.protocol] = []
 
-            for key in self.probe_reference_keys:
-                image_path = os.path.join(
-                    self.original_directory,
-                    self.image_relative_path,
-                    key + self.extension,
-                )
-                if self.annotation_directory is not None:
-                    annotation_path = os.path.join(
-                        self.annotation_directory, key + self.annotation_extension,
+            if self.protocol == "view2":
+                for key in self.probe_reference_keys:
+                    image_path = os.path.join(
+                        self.original_directory,
+                        self.image_relative_path,
+                        key + self.extension,
                     )
-                    annotations = self._extract(annotation_path)
-                else:
-                    annotations = None
-
-                sset = SampleSet(
-                    key=key,
-                    reference_id=key,
-                    subject_id=self.subject_id_from_filename(key),
-                    references=copy.deepcopy(
-                        self.probe_reference_keys[key]
-                    ),  # deep copying to avoid bizarre issues with dask
-                    samples=[
-                        DelayedSample(
-                            key=key,
-                            load=partial(bob.io.image.load, image_path),
-                            annotations=annotations,
+                    if self.annotation_directory is not None:
+                        annotation_path = os.path.join(
+                            self.annotation_directory, key + self.annotation_extension,
                         )
-                    ],
-                )
-                self.probes_dict[self.protocol].append(sset)
+                        annotations = self._extract(annotation_path)
+                    else:
+                        annotations = None
+
+                    sset = SampleSet(
+                        key=key,
+                        reference_id=key,
+                        subject_id=self.subject_id_from_filename(key),
+                        references=copy.deepcopy(
+                            self.probe_reference_keys[key]
+                        ),  # deep copying to avoid bizarre issues with dask
+                        samples=[
+                            DelayedSample(
+                                key=key,
+                                load=partial(bob.io.image.load, image_path),
+                                annotations=annotations,
+                            )
+                        ],
+                    )
+                    self.probes_dict[self.protocol].append(sset)
+
+            elif self.protocol[0] == 'o':
+                # add known probes
+                # collect probe samples:
+                probes = [
+                            (image,key)
+                            for key in self.pairs["probe"]
+                            for image in  self.pairs["probe"][key]
+                         ]
+                if self.protocol in ("o1", "o3"):
+                    probes += [
+                                (image,"unknown")
+                                for image in self.pairs["o1"]
+                            ]
+                if self.protocol in ("o2", "o3"):
+                    probes += [
+                                (image,"unknown")
+                                for image in self.pairs["o2"]
+                            ]
+
+                for image, key in probes:
+                    # get image path
+                    image_path = os.path.join(
+                        self.original_directory,
+                        self.image_relative_path,
+                        self.make_path_from_filename(image) + self.extension,
+                    )
+                    # load annotations
+                    if self.annotation_directory is not None:
+                        annotation_path = os.path.join(
+                            self.annotation_directory, self.make_path_from_filename(image) + self.annotation_extension,
+                        )
+                        annotations = self._extract(annotation_path)
+                    else:
+                        annotations = None
+
+                    # one probe sample per image
+                    sset = SampleSet(
+                        key=image,
+                        reference_id=image,
+                        subject_id=key,
+                        samples=[
+                            DelayedSample(
+                                key=image,
+                                load=partial(bob.io.image.load, image_path),
+                                annotations=annotations,
+                            )
+                        ],
+                    )
+                    self.probes_dict[self.protocol].append(sset)
+
 
         return self.probes_dict[self.protocol]
+
 
     def references(self, group="dev"):
 
         if self.protocol not in self.references_dict:
             self.references_dict[self.protocol] = []
 
-            for key in self.pairs:
+            if self.protocol == "view2":
+                for key in self.pairs:
 
-                image_path = os.path.join(
-                    self.original_directory,
-                    self.image_relative_path,
-                    key + self.extension,
-                )
-                if self.annotation_directory is not None:
-                    annotation_path = os.path.join(
-                        self.annotation_directory, key + self.annotation_extension,
+                    image_path = os.path.join(
+                        self.original_directory,
+                        self.image_relative_path,
+                        key + self.extension,
                     )
-                    annotations = self._extract(annotation_path)
-                else:
-                    annotations = None
-
-                sset = SampleSet(
-                    key=key,
-                    reference_id=key,
-                    subject_id=self.subject_id_from_filename(key),
-                    samples=[
-                        DelayedSample(
-                            key=key,
-                            load=partial(bob.io.image.load, image_path),
-                            annotations=annotations,
+                    if self.annotation_directory is not None:
+                        annotation_path = os.path.join(
+                            self.annotation_directory, key + self.annotation_extension,
                         )
-                    ],
-                )
-                self.references_dict[self.protocol].append(sset)
+                        annotations = self._extract(annotation_path)
+                    else:
+                        annotations = None
+
+                    sset = SampleSet(
+                        key=key,
+                        reference_id=key,
+                        subject_id=self.subject_id_from_filename(key),
+                        samples=[
+                            DelayedSample(
+                                key=key,
+                                load=partial(bob.io.image.load, image_path),
+                                annotations=annotations,
+                            )
+                        ],
+                    )
+                    self.references_dict[self.protocol].append(sset)
+            elif self.protocol[0] == 'o':
+                for key in self.pairs["enroll"]:
+                    data = {}
+                    for image in self.pairs["enroll"][key]:
+                        # get image path
+                        image_path = os.path.join(
+                            self.original_directory,
+                            self.image_relative_path,
+                            self.make_path_from_filename(image) + self.extension,
+                        )
+                        # load annotations
+                        if self.annotation_directory is not None:
+                            annotation_path = os.path.join(
+                                self.annotation_directory, self.make_path_from_filename(image) + self.annotation_extension,
+                            )
+                            annotations = self._extract(annotation_path)
+                        else:
+                            annotations = None
+                        data[image] = (image_path,annotations)
+
+                    # generate one sampleset from several (should be 3) images of the same person
+                    sset = SampleSet(
+                        key=key,
+                        reference_id=key,
+                        subject_id=key,
+                        samples=[
+                            DelayedSample(
+                                key=image,
+                                load=partial(bob.io.image.load, data[image][0]),
+                                annotations=data[image][1],
+                            )
+                            for image in data
+                        ]
+                    )
+                    self.references_dict[self.protocol].append(sset)
 
         return self.references_dict[self.protocol]
+
 
     def groups(self):
         return ["dev"]
@@ -380,15 +550,18 @@ class LFWDatabase(Database):
     def all_samples(self, group="dev"):
         self._check_group(group)
 
-        return self.references() + self.probes()
+        if self.protocol == "view2":
+            return self.references() + self.probes()
+        elif self.protocol[0] == 'o':
+            return self.background_model_samples() + self.probes()
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(
+        assert protocol in self.protocols(), "Invalid protocol `{}` not in {}".format(
             protocol, self.protocols()
         )
 
     def _check_group(self, group):
-        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
+        assert group in self.groups(), "Invalid group `{}` not in {}".format(
             group, self.groups()
         )
 
@@ -398,4 +571,3 @@ class LFWDatabase(Database):
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/annotations/lfw_annotations.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/annotations/lfw_annotations.tar.gz",
         ]
-

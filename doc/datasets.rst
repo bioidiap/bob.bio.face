@@ -101,7 +101,7 @@ In the following, find a list of all current databases, their configuration para
   - directory key: ``bob.bio.face.lfw.directory``; the directory containing all the images
   - expected extension: ``.jpg``
   - protocols:
--
+
     + ``view2`` is a combination of the 10 folds in view2; no training data is provided for this protocol
     + ``o1``, ``o2``, ``o3`` are the open-set protocols implemented in [GCR17]_
 

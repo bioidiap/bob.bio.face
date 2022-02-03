@@ -10,7 +10,6 @@ from functools import partial
 from bob.extension import rc
 import bob.io.image
 import copy
-import collections
 
 import logging
 import numpy as np

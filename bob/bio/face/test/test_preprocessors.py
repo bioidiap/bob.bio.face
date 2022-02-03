@@ -193,13 +193,10 @@ def test_multi_face_crop():
     except ValueError:
         pass
 
-    # test a ValueError is raised if the annotations match several croppers
-    try:
-        annot = {**eye_annotation, **bbox_annotation}
-        cropper.transform([image], [annot])
-        assert 0, "MultiFaceCrop did not raise a ValueError for annotations matching several croppers"
-    except ValueError:
-        pass
+    # test that the first annotator is taken when multiple exist
+    annot = {**eye_annotation, **bbox_annotation}
+    eye_cropped = cropper.transform([image], [annot])
+    _compare(eye_cropped, eye_reference)
 
 
 def test_tan_triggs():

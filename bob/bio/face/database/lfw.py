@@ -313,7 +313,7 @@ class LFWDatabase(Database):
 
     def background_model_samples(self):
         """This function returns the training set for the open-set protocols o1, o2 and o3.
-        It returns the :any:`references` and the training samples with known unknowns, which get the subject id "unknown".
+        It returns the :py:meth:`references` and the training samples with known unknowns, which get the subject id "unknown".
 
         Returns
         -------

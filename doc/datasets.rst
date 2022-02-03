@@ -109,6 +109,16 @@ In the following, find a list of all current databases, their configuration para
   - notes: LFW comes either as the original images, or as aligned versions. The provided annotations are valid **only for the "images aligned with funneling"**, not for the original images.
 
 
+* `VGG2 Face Database <https://arxiv.org/abs/1710.08092>`__  (:any:`bob.bio.face.database.VGG2Database`)
+
+  - directory key: ``bob.bio.face.vgg2.directory``; the directory containing all the images
+  - expected extension: ``.jpg`` or set by ``bob.bio.face.vgg2.extension``
+  - protocols: ``vgg2-short, vgg2-full``
+  - genders: ``m`` and ``f``
+  - races:  ``A, B, I, U, W, N``
+  - annotations: eye centers, nose, mouth, and face bounding box (provided in the interface)
+
+
 *  MEDS II (:any:`bob.bio.face.database.MEDSDatabase`)
 
   - directory key: ``bob.db.meds.directory``; the directory containing all the images

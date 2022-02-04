@@ -1,3 +1,4 @@
+from torchvision import transforms
 from bob.bio.face.pytorch.datasets import WebFace42M
 from bob.bio.face.pytorch.datasets import (
     MedsTorchDataset,
@@ -13,7 +14,8 @@ from bob.extension import rc
 from torch.utils.data import DataLoader
 import os
 import numpy as np
-
+import pkg_resources
+import bob.io.base
 import pytest
 
 
@@ -195,3 +197,34 @@ def test_vgg2():
     weights = dataset.get_demographic_class_weights()
 
     assert np.allclose(sum(weights), 1, atol=0.001)
+
+    ### Testing dev
+
+    dataset = VGG2TorchDataset(
+        protocol="vgg2-short", database_path=database_path, train=False
+    )
+
+    assert dataset.n_classes == 8631
+    assert len(dataset.demographic_keys) == 12
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+    weights = dataset.get_demographic_class_weights()
+
+    assert np.allclose(sum(weights), 1, atol=0.001)
+
+
+def test_data_augmentation():
+
+    image = bob.io.base.load(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg")
+    )
+
+    from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
+
+    transform = get_standard_data_augmentation()
+    transformed = transform(image)
+
+    assert transformed.shape == (3, 531, 354)

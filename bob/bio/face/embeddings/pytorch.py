@@ -569,7 +569,12 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
     return VanillaBiometricsPipeline(transformer, algorithm)
 
 
-def AttentionNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def AttentionNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the AttentionNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`AttentionNet` to extract the features
@@ -594,13 +599,20 @@ def AttentionNet(annotation_type, fixed_positions=None, memory_demanding=False):
 
     """
     return iresnet_template(
-        embedding=FaceXZooModel(arch="AttentionNet", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="AttentionNet", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def ResNeSt(annotation_type, fixed_positions=None, memory_demanding=False):
+def ResNeSt(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the ResNeSt pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`ResNeSt` to extract the features
@@ -625,13 +637,20 @@ def ResNeSt(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="ResNeSt", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="ResNeSt", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def MobileFaceNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def MobileFaceNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the MobileFaceNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`MobileFaceNet` to extract the features
@@ -657,14 +676,19 @@ def MobileFaceNet(annotation_type, fixed_positions=None, memory_demanding=False)
 
     return iresnet_template(
         embedding=FaceXZooModel(
-            arch="MobileFaceNet", memory_demanding=memory_demanding
+            arch="MobileFaceNet", memory_demanding=memory_demanding, device=device
         ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def ResNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def ResNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the ResNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`ResNet` to extract the features
@@ -689,13 +713,20 @@ def ResNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="ResNet", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="ResNet", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def EfficientNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the EfficientNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`EfficientNet` to extract the features
@@ -721,13 +752,20 @@ def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="EfficientNet", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="EfficientNet", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
+def TF_NAS(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the TF_NAS pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`TF-NAS` to extract the features
@@ -753,13 +791,20 @@ def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="TF-NAS", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="TF-NAS", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def HRNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the HRNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`HRNet` to extract the features
@@ -784,13 +829,20 @@ def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="HRNet", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="HRNet", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def ReXNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the ReXNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`ReXNet` to extract the features
@@ -821,7 +873,12 @@ def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
     )
 
 
-def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
+def GhostNet(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the GhostNet pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`GhostNet` to extract the features
@@ -846,13 +903,20 @@ def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="GhostNet", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="GhostNet", memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
+def iresnet34(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the Resnet34 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet34` to extract the features
@@ -876,13 +940,18 @@ def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=IResnet34(memory_demanding=memory_demanding),
+        embedding=IResnet34(memory_demanding=memory_demanding, device=device),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
+def iresnet50(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the Resnet50 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet50` to extract the features
@@ -906,13 +975,18 @@ def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=IResnet50(memory_demanding=memory_demanding),
+        embedding=IResnet50(memory_demanding=memory_demanding, device=device),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
+def iresnet100(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the Resnet100 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet100` to extract the features
@@ -936,13 +1010,18 @@ def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
     """
 
     return iresnet_template(
-        embedding=IResnet100(memory_demanding=memory_demanding),
+        embedding=IResnet100(memory_demanding=memory_demanding, device=device),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def iresnet100_elastic(annotation_type, fixed_positions=None, memory_demanding=False):
+def iresnet100_elastic(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the Resnet100 pipeline which will crop the face :math:`112 \\times 112` and
     use the :py:class:`IResnet100` to extract the features
@@ -966,13 +1045,18 @@ def iresnet100_elastic(annotation_type, fixed_positions=None, memory_demanding=F
     """
 
     return iresnet_template(
-        embedding=IResnet100Elastic(memory_demanding=memory_demanding),
+        embedding=IResnet100Elastic(memory_demanding=memory_demanding, device=device),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
 
 
-def afffe_baseline(annotation_type, fixed_positions=None, memory_demanding=False):
+def afffe_baseline(
+    annotation_type,
+    fixed_positions=None,
+    memory_demanding=False,
+    device=torch.device("cpu"),
+):
     """
     Get the AFFFE pipeline which will crop the face :math:`224 \\times 224`
     use the :py:class:`AFFFE_2021`
@@ -998,7 +1082,7 @@ def afffe_baseline(annotation_type, fixed_positions=None, memory_demanding=False
 
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
-        embedding=AFFFE_2021(memory_demanding=memory_demanding),
+        embedding=AFFFE_2021(memory_demanding=memory_demanding, device=device),
         cropped_positions=cropped_positions,
         fixed_positions=fixed_positions,
         color_channel="rgb",

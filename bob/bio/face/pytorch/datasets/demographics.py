@@ -62,6 +62,10 @@ class DemoraphicTorchDataset(Dataset):
         return len(self.labels)
 
     @property
+    def n_samples(self):
+        return len(self.bucket)
+
+    @property
     def demographic_keys(self):
         return self._demographic_keys
 
@@ -202,6 +206,9 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         load_bucket_from_cache: bool
           If set, it will load the list of available samples from the cache
 
+        train: bool
+          If set it will prepare a bucket for training.
+
 
     """
 
@@ -212,6 +219,7 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         database_extension=".jpg",
         transform=None,
         load_bucket_from_cache=True,
+        train=True,
     ):
 
         bob_dataset = VGG2Database(
@@ -220,6 +228,10 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
             dataset_original_extension=database_extension,
         )
         self.load_bucket_from_cache = load_bucket_from_cache
+
+        # Percentage of the samples used for training
+        self._percentage_for_training = 0.8
+        self.train = train
 
         super().__init__(bob_dataset, transform=transform)
 
@@ -278,7 +290,6 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         )
 
         # Loading the buket from cache
-
         if self.load_bucket_from_cache and os.path.exists(self.get_cache_path()):
             self.bucket = self.load_cached_bucket()
         else:
@@ -289,6 +300,25 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         # Mapping subject_id with labels
         self.labels = sorted(list(set([s.subject_id for s in self.bucket])))
         self.labels = dict([(l, i) for i, l in enumerate(self.labels)])
+
+        # Spliting the bucket into training and developement set
+        all_indexes = np.array([self.labels[x.subject_id] for x in self.bucket])
+        indexes = []
+        if self.train:
+            for i in range(self.n_classes):
+                ind = np.where(all_indexes == i)[0]
+                indexes += list(
+                    ind[0 : int(np.floor(len(ind) * self._percentage_for_training))]
+                )
+        else:
+            for i in range(self.n_classes):
+                ind = np.where(all_indexes == i)[0]
+                indexes += list(
+                    ind[int(np.floor(len(ind) * self._percentage_for_training)) :]
+                )
+
+        # Redefining the bucket
+        self.bucket = list(np.array(self.bucket)[indexes])
 
         # Mapping subject and demographics for fast access
         self.subject_demographic = dict()

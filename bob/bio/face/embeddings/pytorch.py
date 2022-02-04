@@ -571,7 +571,7 @@ def AttentionNet(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -601,7 +601,7 @@ def ResNeSt(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -632,7 +632,7 @@ def MobileFaceNet(annotation_type, fixed_positions=None, memory_demanding=False)
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -665,7 +665,7 @@ def ResNet(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -697,7 +697,7 @@ def EfficientNet(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -729,7 +729,7 @@ def TF_NAS(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -760,7 +760,7 @@ def HRNet(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -791,7 +791,7 @@ def ReXNet(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -822,7 +822,7 @@ def GhostNet(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -852,7 +852,7 @@ def iresnet34(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -882,7 +882,7 @@ def iresnet50(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -912,7 +912,7 @@ def iresnet100(annotation_type, fixed_positions=None, memory_demanding=False):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -942,7 +942,7 @@ def iresnet100_elastic(annotation_type, fixed_positions=None, memory_demanding=F
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -967,7 +967,7 @@ def afffe_baseline(annotation_type, fixed_positions=None, memory_demanding=False
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1011,7 +1011,7 @@ def oxford_vgg2_resnets(
          One of the 4 models available (`resnet50_scratch_dag`, `resnet50_ft_dag`, `senet50_ft_dag`, `senet50_scratch_dag`).
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image

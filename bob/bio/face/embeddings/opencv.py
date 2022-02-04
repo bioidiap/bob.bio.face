@@ -179,7 +179,7 @@ def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image

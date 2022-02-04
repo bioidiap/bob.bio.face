@@ -801,7 +801,7 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
          Transformer that takes a cropped face and extract the embeddings
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -890,7 +890,7 @@ def resnet50_msceleb_arcface_2021(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -917,7 +917,7 @@ def resnet50_msceleb_arcface_20210521(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -944,7 +944,7 @@ def resnet101_msceleb_arcface_20210521(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -971,7 +971,7 @@ def iresnet50_msceleb_arcface_20210623(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -997,7 +997,7 @@ def iresnet100_msceleb_arcface_20210623(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1025,7 +1025,7 @@ def resnet50_vgg2_arcface_2021(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1052,7 +1052,7 @@ def mobilenetv2_msceleb_arcface_2021(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1079,7 +1079,7 @@ def facenet_sanderberg_20170512_110547(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1106,7 +1106,7 @@ def inception_resnet_v1_casia_centerloss_2018(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1135,7 +1135,7 @@ def inception_resnet_v2_casia_centerloss_2018(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1164,7 +1164,7 @@ def inception_resnet_v1_msceleb_centerloss_2018(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1193,7 +1193,7 @@ def inception_resnet_v2_msceleb_centerloss_2018(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image

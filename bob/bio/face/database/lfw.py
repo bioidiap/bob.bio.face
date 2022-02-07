@@ -157,14 +157,13 @@ class LFWDatabase(Database):
         super().__init__(
             name="lfw",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=protocol[0] == 'o',
+            allow_scoring_with_all_biometric_references=protocol[0] == "o",
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             memory_demanding=False,
         )
 
         self.load_pairs()
-
 
     def _extract_funneled(self, annotation_path):
         """Interprets the annotation string as if it came from the funneled images.
@@ -283,14 +282,28 @@ class LFWDatabase(Database):
 
             self._create_probe_reference_dict()
 
-        elif self.protocol[0] == 'o':
-            self.pairs = {"enroll":{}, "training-unknown":[], "probe":{}, "o1":[], "o2":[]}
+        elif self.protocol[0] == "o":
+            self.pairs = {
+                "enroll": {},
+                "training-unknown": [],
+                "probe": {},
+                "o1": [],
+                "o2": [],
+            }
             # parse directory for open-set protocols
-            for d in os.listdir(os.path.join(self.original_directory,self.image_relative_path)):
-                dd = os.path.join(self.original_directory,self.image_relative_path,d)
+            for d in os.listdir(
+                os.path.join(self.original_directory, self.image_relative_path)
+            ):
+                dd = os.path.join(self.original_directory, self.image_relative_path, d)
                 if os.path.isdir(dd):
                     # count the number of images
-                    images = sorted([os.path.splitext(i)[0] for i in os.listdir(dd) if os.path.splitext(i)[1] == self.extension])
+                    images = sorted(
+                        [
+                            os.path.splitext(i)[0]
+                            for i in os.listdir(dd)
+                            if os.path.splitext(i)[1] == self.extension
+                        ]
+                    )
 
                     if len(images) > 3:
                         # take the first three images for enrollment
@@ -309,7 +322,6 @@ class LFWDatabase(Database):
     @staticmethod
     def protocols():
         return ["view2", "o1", "o2", "o3"]
-
 
     def background_model_samples(self):
         """This function returns the training set for the open-set protocols o1, o2 and o3.
@@ -339,12 +351,13 @@ class LFWDatabase(Database):
             # load annotations
             if self.annotation_directory is not None:
                 annotation_path = os.path.join(
-                    self.annotation_directory, self.make_path_from_filename(image) + self.annotation_extension,
+                    self.annotation_directory,
+                    self.make_path_from_filename(image) + self.annotation_extension,
                 )
                 annotations = self._extract(annotation_path)
             else:
                 annotations = None
-            data[image] = (image_path,annotations)
+            data[image] = (image_path, annotations)
 
         # generate one sampleset from images of the unknown unknowns
         sset = SampleSet(
@@ -358,7 +371,7 @@ class LFWDatabase(Database):
                     annotations=data[image][1],
                 )
                 for image in data
-            ]
+            ],
         )
         return enrollmentset + [sset]
 
@@ -368,7 +381,7 @@ class LFWDatabase(Database):
         where that probe should be compared with.
         """
 
-        if self.protocol[0] == 'o':
+        if self.protocol[0] == "o":
             return
 
         self.probe_reference_keys = {}
@@ -379,7 +392,6 @@ class LFWDatabase(Database):
                     self.probe_reference_keys[value] = []
 
                 self.probe_reference_keys[value].append(key)
-
 
     def probes(self, group="dev"):
         if self.protocol not in self.probes_dict:
@@ -394,7 +406,8 @@ class LFWDatabase(Database):
                     )
                     if self.annotation_directory is not None:
                         annotation_path = os.path.join(
-                            self.annotation_directory, key + self.annotation_extension,
+                            self.annotation_directory,
+                            key + self.annotation_extension,
                         )
                         annotations = self._extract(annotation_path)
                     else:
@@ -410,6 +423,7 @@ class LFWDatabase(Database):
                         samples=[
                             DelayedSample(
                                 key=key,
+                                reference_id=key,
                                 load=partial(bob.io.image.load, image_path),
                                 annotations=annotations,
                             )
@@ -417,24 +431,18 @@ class LFWDatabase(Database):
                     )
                     self.probes_dict[self.protocol].append(sset)
 
-            elif self.protocol[0] == 'o':
+            elif self.protocol[0] == "o":
                 # add known probes
                 # collect probe samples:
                 probes = [
-                            (image,key)
-                            for key in self.pairs["probe"]
-                            for image in  self.pairs["probe"][key]
-                         ]
+                    (image, key)
+                    for key in self.pairs["probe"]
+                    for image in self.pairs["probe"][key]
+                ]
                 if self.protocol in ("o1", "o3"):
-                    probes += [
-                                (image,"unknown")
-                                for image in self.pairs["o1"]
-                            ]
+                    probes += [(image, "unknown") for image in self.pairs["o1"]]
                 if self.protocol in ("o2", "o3"):
-                    probes += [
-                                (image,"unknown")
-                                for image in self.pairs["o2"]
-                            ]
+                    probes += [(image, "unknown") for image in self.pairs["o2"]]
 
                 for image, key in probes:
                     # get image path
@@ -446,7 +454,9 @@ class LFWDatabase(Database):
                     # load annotations
                     if self.annotation_directory is not None:
                         annotation_path = os.path.join(
-                            self.annotation_directory, self.make_path_from_filename(image) + self.annotation_extension,
+                            self.annotation_directory,
+                            self.make_path_from_filename(image)
+                            + self.annotation_extension,
                         )
                         annotations = self._extract(annotation_path)
                     else:
@@ -460,6 +470,7 @@ class LFWDatabase(Database):
                         samples=[
                             DelayedSample(
                                 key=image,
+                                reference_id=image,
                                 load=partial(bob.io.image.load, image_path),
                                 annotations=annotations,
                             )
@@ -467,9 +478,7 @@ class LFWDatabase(Database):
                     )
                     self.probes_dict[self.protocol].append(sset)
 
-
         return self.probes_dict[self.protocol]
-
 
     def references(self, group="dev"):
 
@@ -486,7 +495,8 @@ class LFWDatabase(Database):
                     )
                     if self.annotation_directory is not None:
                         annotation_path = os.path.join(
-                            self.annotation_directory, key + self.annotation_extension,
+                            self.annotation_directory,
+                            key + self.annotation_extension,
                         )
                         annotations = self._extract(annotation_path)
                     else:
@@ -499,13 +509,14 @@ class LFWDatabase(Database):
                         samples=[
                             DelayedSample(
                                 key=key,
+                                reference_id=key,
                                 load=partial(bob.io.image.load, image_path),
                                 annotations=annotations,
                             )
                         ],
                     )
                     self.references_dict[self.protocol].append(sset)
-            elif self.protocol[0] == 'o':
+            elif self.protocol[0] == "o":
                 for key in self.pairs["enroll"]:
                     data = {}
                     for image in self.pairs["enroll"][key]:
@@ -518,12 +529,14 @@ class LFWDatabase(Database):
                         # load annotations
                         if self.annotation_directory is not None:
                             annotation_path = os.path.join(
-                                self.annotation_directory, self.make_path_from_filename(image) + self.annotation_extension,
+                                self.annotation_directory,
+                                self.make_path_from_filename(image)
+                                + self.annotation_extension,
                             )
                             annotations = self._extract(annotation_path)
                         else:
                             annotations = None
-                        data[image] = (image_path,annotations)
+                        data[image] = (image_path, annotations)
 
                     # generate one sampleset from several (should be 3) images of the same person
                     sset = SampleSet(
@@ -533,16 +546,16 @@ class LFWDatabase(Database):
                         samples=[
                             DelayedSample(
                                 key=image,
+                                reference_id=key,
                                 load=partial(bob.io.image.load, data[image][0]),
                                 annotations=data[image][1],
                             )
                             for image in data
-                        ]
+                        ],
                     )
                     self.references_dict[self.protocol].append(sset)
 
         return self.references_dict[self.protocol]
-
 
     def groups(self):
         return ["dev"]
@@ -552,7 +565,7 @@ class LFWDatabase(Database):
 
         if self.protocol == "view2":
             return self.references() + self.probes()
-        elif self.protocol[0] == 'o':
+        elif self.protocol[0] == "o":
             return self.background_model_samples() + self.probes()
 
     def _check_protocol(self, protocol):

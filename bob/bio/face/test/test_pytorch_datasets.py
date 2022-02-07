@@ -6,6 +6,7 @@ from bob.bio.face.pytorch.datasets import (
     MobioTorchDataset,
     MSCelebTorchDataset,
     VGG2TorchDataset,
+    SiameseDemographicWrapper,
 )
 
 from bob.extension import rc
@@ -16,6 +17,8 @@ import os
 import numpy as np
 import pkg_resources
 import bob.io.base
+from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
+
 import pytest
 
 
@@ -228,3 +231,32 @@ def test_data_augmentation():
     transformed = transform(image)
 
     assert transformed.shape == (3, 531, 354)
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.demographics.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+)
+def test_siamese():
+    transforms = get_standard_data_augmentation()
+
+    database_path = os.path.join(
+        rc.get("bob.bio.demographics.directory"), "mobio", "samplewrapper"
+    )
+
+    dataset = MobioTorchDataset(
+        protocol="mobile0-male-female",
+        database_path=database_path,
+        transform=transforms,
+    )
+
+    siamese_dataset = SiameseDemographicWrapper(dataset)
+
+    dataloader = DataLoader(siamese_dataset, batch_size=64, shuffle=True)
+
+    batch = next(iter(dataloader))
+    # batch["data"].shape == (64, 3, 112, 112)
+
+    # Testing class weights
+    # weights = dataset.get_demographic_class_weights()
+
+    # assert np.allclose(sum(weights), 1)

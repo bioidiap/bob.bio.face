@@ -9,6 +9,7 @@ Datasets that handles demographic information
 
 
 import logging
+from more_itertools import bucket
 from torch.utils.data import Dataset
 import cloudpickle
 from bob.bio.face.database import (
@@ -18,7 +19,7 @@ from bob.bio.face.database import (
     MobioDatabase,
     VGG2Database,
 )
-
+import random
 
 import torchvision.transforms as transforms
 
@@ -30,6 +31,7 @@ import bob.io.image
 from bob.extension.download import get_file
 from bob.extension import rc
 import torch
+import itertools
 
 logger = logging.getLogger(__name__)
 
@@ -681,3 +683,130 @@ class MSCelebTorchDataset(DemoraphicTorchDataset):
         demography = self.get_demographics(subject_id)
 
         return {"data": image, "label": label, "demography": demography}
+
+
+class SiameseDemographicWrapper(Dataset):
+    """
+    This class wraps the current demographic interface and
+    dumps random positive and negative pairs of samples
+
+    """
+
+    def __init__(
+        self,
+        demographic_dataset,
+        max_positive_pairs_per_identity=20,
+        negative_pairs_per_subject=2,
+    ):
+
+        self.demographic_dataset = demographic_dataset
+        self.max_positive_pairs_per_identity = max_positive_pairs_per_identity
+        self.negative_pairs_per_subject = negative_pairs_per_subject
+
+        # Creating a bucket mapping the items of the bucket with their respective identities
+        self.siamese_bucket = dict()
+        for b in demographic_dataset.bucket:
+            if b.subject_id not in self.siamese_bucket:
+                self.siamese_bucket[b.subject_id] = []
+
+            self.siamese_bucket[b.subject_id].append(b)
+
+        positive_pairs = self.create_positive_pairs()
+        negative_pairs = self.create_negative_pairs()
+
+        # Redefining the bucket
+        self.siamese_bucket = negative_pairs + positive_pairs
+
+        self.labels = np.hstack(
+            (np.zeros(len(negative_pairs)), np.ones(len(positive_pairs)))
+        )
+
+        pass
+
+    def __len__(self):
+        return len(self.siamese_bucket)
+
+    def create_positive_pairs(self):
+
+        # Creating positive pairs for each identity
+        positives = []
+        random.seed(0)
+        for b in self.siamese_bucket:
+            samples = self.siamese_bucket[b]
+            random.shuffle(samples)
+
+            # All possible pair combinations
+            samples = itertools.combinations(samples, 2)
+
+            positives += [
+                s for s in list(samples)[0 : self.max_positive_pairs_per_identity]
+            ]
+            pass
+
+        return positives
+
+    def create_negative_pairs(self):
+        """
+        Creating negative pairs.
+        Here we create only negative pairs from the same demographic group,
+        since we know that pairs from different demographics leads to
+        poor scores
+        """
+
+        # Inverting subject
+        random.seed(0)
+        negatives = []
+
+        # Creating the dictionary containing the demographics--> subjects
+        demographic_subject = dict()
+        for k, v in self.demographic_dataset.subject_demographic.items():
+            demographic_subject[v] = demographic_subject.get(v, []) + [k]
+
+        # For each demographic, pic the negative pairs
+        for d in demographic_subject:
+
+            subject_combinations = itertools.combinations(demographic_subject[d], 2)
+
+            for s_c in subject_combinations:
+                subject_i = self.siamese_bucket[s_c[0]]
+                subject_j = self.siamese_bucket[s_c[1]]
+                random.shuffle(subject_i)
+                random.shuffle(subject_j)
+
+                # All possible combinations
+                for i, p in enumerate(itertools.product(subject_i, subject_j)):
+                    if i == self.negative_pairs_per_subject:
+                        break
+                    negatives += ((p[0], p[1]),)
+
+        return negatives
+
+    def __getitem__(self, idx):
+
+        sample = self.siamese_bucket[idx]
+        label = self.labels[idx]
+
+        # subject_id = sample.split("/")[-2]
+
+        # Transforming the image
+        image_i = sample[0].data
+        image_j = sample[1].data
+
+        image_i = (
+            image_i
+            if self.demographic_dataset.transform is None
+            else self.demographic_dataset.transform(image_i)
+        )
+        image_j = (
+            image_j
+            if self.demographic_dataset.transform is None
+            else self.demographic_dataset.transform(image_j)
+        )
+
+        demography = self.demographic_dataset.get_demographics(sample[0])
+
+        ## Getting the demographics
+
+        # demography = self.get_demographics(subject_id)
+
+        return {"data": (image_i, image_j), "label": label, "demography": demography}

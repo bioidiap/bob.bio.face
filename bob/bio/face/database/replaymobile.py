@@ -6,8 +6,10 @@ from bob.pipelines.sample_loaders import AnnotationsLoader
 from bob.pipelines.sample import DelayedSample
 from bob.db.base.annotations import read_annotation_file
 from bob.extension.download import get_file
+from bob.pipelines.utils import hash_string
 import imageio
 from bob.extension import rc
+import bob.io.image
 
 from sklearn.pipeline import make_pipeline
 import functools
@@ -46,6 +48,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
         The frame of the video in bob format (channel, height, width)
     """
     logger.debug(f"Reading frame {frame} from '{file_name}'")
+
     video_reader = imageio.get_reader(file_name)
     image = video_reader.get_data(frame)
     # Image captured by the 'mobile' device are flipped vertically.
@@ -54,7 +57,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     if should_flip:
         image = numpy.flip(image, 2)
     # Convert to bob format (channel, height, width)
-    image = numpy.transpose(image, (0, 2, 1))
+    image = bob.io.image.to_bob(image)
     return image
 
 
@@ -171,7 +174,8 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
         for x in X:
             # Adds the annotations as delayed_attributes, loading them when needed
             annotated_samples.append(
-                DelayedSample.from_sample(x,
+                DelayedSample.from_sample(
+                    x,
                     delayed_attributes=dict(
                         annotations=functools.partial(
                             read_frame_annotation_file_replaymobile,
@@ -228,6 +232,7 @@ class ReplayMobileBioDatabase(CSVDataset):
         annotations_extension=".json",
         **kwargs,
     ):
+
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
             proto_def_hash = "6cd66a5e"
@@ -296,3 +301,4 @@ class ReplayMobileBioDatabase(CSVDataset):
         )
         self.annotation_type = "eyes-center"
         self.fixed_positions = None
+        self.hash_fn = hash_string

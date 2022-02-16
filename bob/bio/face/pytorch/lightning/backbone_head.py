@@ -1,7 +1,10 @@
+from pickletools import optimize
 import numpy as np
 import pytorch_lightning as pl
 import torch
 import scipy.spatial
+
+from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 class BackboneHeadModel(pl.LightningModule):
@@ -16,7 +19,7 @@ class BackboneHeadModel(pl.LightningModule):
 
 
         .. note::
-          The `validation_step` of this module runs a validation in the level of embeddings, doing 
+          The `validation_step` of this module runs a validation in the level of embeddings, doing
           closed-set identification.
           Hence, it's mandatory to have a validation dataloader containg pairs of samples of the same identity in a sequence
 
@@ -24,7 +27,7 @@ class BackboneHeadModel(pl.LightningModule):
 
         Parameters
         ----------
-          
+
             backbone: `torch.nn.Module`
               Backbone module
 
@@ -103,4 +106,12 @@ class BackboneHeadModel(pl.LightningModule):
 
     def configure_optimizers(self):
         # optimizer = torch.optim.Adam(self.parameters(), lr=1e-3)
-        return self.optimizer_fn(params=self.parameters())
+
+        config = dict()
+        optimizer = self.optimizer_fn(params=self.parameters())
+        config["optimizer"] = optimizer
+
+        lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5)
+        config["lr_scheduler"] = lr_scheduler
+
+        return config

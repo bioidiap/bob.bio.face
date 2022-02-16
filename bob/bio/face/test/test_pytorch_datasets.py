@@ -232,6 +232,7 @@ def test_data_augmentation():
 
     assert transformed.shape == (3, 531, 354)
 
+
 @pytest.mark.skipif(
     rc.get("bob.bio.demographics.directory") is None,
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
@@ -248,15 +249,11 @@ def test_siamese():
         database_path=database_path,
         transform=transforms,
     )
-
     siamese_dataset = SiameseDemographicWrapper(dataset)
 
     dataloader = DataLoader(siamese_dataset, batch_size=64, shuffle=True)
 
     batch = next(iter(dataloader))
-    # batch["data"].shape == (64, 3, 112, 112)
 
-    # Testing class weights
-    # weights = dataset.get_demographic_class_weights()
-
-    # assert np.allclose(sum(weights), 1)
+    batch["data"][0].shape == (64, 3, 112, 112)
+    batch["data"][1].shape == (64, 3, 112, 112)

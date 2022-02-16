@@ -423,8 +423,11 @@ class MobioTorchDataset(DemoraphicTorchDataset):
     def __init__(
         self, protocol, database_path, database_extension=".h5", transform=None
     ):
-
-        bob_dataset = MobioDatabase(protocol=protocol)
+        bob_dataset = MobioDatabase(
+            protocol=protocol,
+            dataset_original_directory=database_path,
+            dataset_original_extension=database_extension,
+        )
 
         super().__init__(bob_dataset, transform=transform)
 

@@ -22,7 +22,7 @@ class MobioDatabase(CSVDatasetZTNorm):
     """
     The MOBIO dataset is a video database containing bimodal data (face/speaker).
     It is composed by 152 people (split in the two genders male and female), mostly Europeans, split in 5 sessions (few weeks time lapse between sessions).
-    The database was recorded using two types of mobile devices: mobile phones (NOKIA N93i) and laptop 
+    The database was recorded using two types of mobile devices: mobile phones (NOKIA N93i) and laptop
     computers(standard 2008 MacBook).
 
     For face recognition images are used instead of videos.
@@ -31,10 +31,10 @@ class MobioDatabase(CSVDatasetZTNorm):
 
 
     .. warning::
-      
+
       To use this dataset protocol, you need to have the original files of the Mobio dataset.
       Once you have it downloaded, please run the following command to set the path for Bob
-      
+
         .. code-block:: sh
 
             bob config set bob.db.mobio.directory [MOBIO PATH]
@@ -58,7 +58,14 @@ class MobioDatabase(CSVDatasetZTNorm):
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self,
+        protocol,
+        annotation_type="eyes-center",
+        fixed_positions=None,
+        dataset_original_directory=rc.get("bob.db.mobio.directory", ""),
+        dataset_original_extension=rc.get("bob.db.mobio.extension", ".png"),
+    ):
 
         # Downloading model if not exists
         urls = MobioDatabase.urls()
@@ -73,10 +80,8 @@ class MobioDatabase(CSVDatasetZTNorm):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc["bob.db.mobio.directory"]
-                    if rc["bob.db.mobio.directory"]
-                    else "",
-                    extension=".png",
+                    dataset_original_directory=dataset_original_directory,
+                    extension=dataset_original_extension,
                 ),
                 EyesAnnotations(),
             ),

@@ -3,12 +3,21 @@ import numpy as np
 import pytorch_lightning as pl
 import torch
 import scipy.spatial
+import os
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
 
 class BackboneHeadModel(pl.LightningModule):
-    def __init__(self, backbone, head, loss_fn, optimizer_fn, **kwargs):
+    def __init__(
+        self,
+        backbone,
+        head,
+        loss_fn,
+        optimizer_fn,
+        backbone_checkpoint_path=None,
+        **kwargs
+    ):
         """
         Pytorch-lightining (https://pytorch-lightning.readthedocs.io/) model composed of two `torch.nn.Module`:
         `backbone` and `head`.
@@ -40,6 +49,9 @@ class BackboneHeadModel(pl.LightningModule):
             optimizer_fn:
                 A `torch.optim` function
 
+            backbone_checkpoint_path:
+                Path for the backbone
+
 
         Example
         -------
@@ -54,13 +66,22 @@ class BackboneHeadModel(pl.LightningModule):
         self.head = head
         self.loss_fn = loss_fn
         self.optimizer_fn = optimizer_fn
+        self.backbone_checkpoint_path = backbone_checkpoint_path
 
     def forward(self, inputs):
         # in lightning, forward defines the prediction/inference actions
         return self.backbone(inputs)
 
-    # def training_epoch_end(self, training_step_outputs):
-    #    pass
+    def training_epoch_end(self, training_step_outputs):
+
+        if self.backbone_checkpoint_path is not None:
+
+            cleaned_state_dict = {
+                k.partition("backbone.")[2]: v
+                for k, v in self.backbone.state_dict().items()
+            }
+
+            torch.save(cleaned_state_dict, os.path.join(self.backbone_checkpoint_path, "backbone.pth"))
 
     # def training_step_end(self, losses):
     #    pass

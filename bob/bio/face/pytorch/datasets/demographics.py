@@ -698,12 +698,13 @@ class SiameseDemographicWrapper(Dataset):
     def __init__(
         self,
         demographic_dataset,
-        max_positive_pairs_per_identity=20,
-        negative_pairs_per_subject=2,
+        max_positive_pairs_per_subject=20,
+        negative_pairs_per_subject=3,
+        dense_negatives=False,
     ):
 
         self.demographic_dataset = demographic_dataset
-        self.max_positive_pairs_per_identity = max_positive_pairs_per_identity
+        self.max_positive_pairs_per_subject = max_positive_pairs_per_subject
         self.negative_pairs_per_subject = negative_pairs_per_subject
 
         # Creating a bucket mapping the items of the bucket with their respective identities
@@ -715,7 +716,10 @@ class SiameseDemographicWrapper(Dataset):
             self.siamese_bucket[b.subject_id].append(b)
 
         positive_pairs = self.create_positive_pairs()
-        negative_pairs = self.create_negative_pairs()
+        if dense_negatives:
+            negative_pairs = self.create_dense_negative_pairs()
+        else:
+            negative_pairs = self.create_light_negative_pairs()
 
         # Redefining the bucket
         self.siamese_bucket = negative_pairs + positive_pairs
@@ -742,18 +746,31 @@ class SiameseDemographicWrapper(Dataset):
             samples = itertools.combinations(samples, 2)
 
             positives += [
-                s for s in list(samples)[0 : self.max_positive_pairs_per_identity]
+                s for s in list(samples)[0 : self.max_positive_pairs_per_subject]
             ]
             pass
 
         return positives
 
-    def create_negative_pairs(self):
+    def create_dense_negative_pairs(self):
         """
         Creating negative pairs.
         Here we create only negative pairs from the same demographic group,
         since we know that pairs from different demographics leads to
         poor scores
+
+
+        .. warning:
+           The list of negative pairs is dense.
+           For each combination of subjects for a particular demographic,
+           we will take `negative_pairs_per_subject` samples.
+           Hence, the number of negative pairs can explode as a function
+           of number of subjects.
+           For example, a combination pairs with 1000 identities gives us
+           499500 pairs. Taking `3` pairs of images for these combinations
+           of identities will give us ~1.5M negative pairs.
+           Hence, be careful with that.
+
         """
 
         # Inverting subject
@@ -781,6 +798,57 @@ class SiameseDemographicWrapper(Dataset):
                     if i == self.negative_pairs_per_subject:
                         break
                     negatives += ((p[0], p[1]),)
+
+        return negatives
+
+    def create_light_negative_pairs(self):
+        """
+        Creating negative pairs.
+        Here we create only negative pairs from the same demographic group,
+        since we know that pairs from different demographics leads to
+        poor scores
+
+        .. warning:
+            This function generates a light set of negative pairs.
+            The number of pairs is composed by the number
+            of subjects in a particular demographic
+            multiplied by the number of `negative_pairs_per_subject`.
+            For example, a combination pairs with 1000 identities gives us
+            1000 pairs. Taking `3` pairs of images for these combinations
+            of identities will give us 3000 negative pairs.
+
+        """
+
+        # Inverting subject
+        random.seed(0)
+        negatives = []
+
+        # Creating the dictionary containing the demographics--> subjects
+        demographic_subject = dict()
+        for k, v in self.demographic_dataset.subject_demographic.items():
+            demographic_subject[v] = demographic_subject.get(v, []) + [k]
+
+        # For each demographic, pic the negative pairs
+
+        for d in demographic_subject:
+
+            n_subjects = len(demographic_subject[d])
+
+            subject_combinations = list(
+                itertools.combinations(demographic_subject[d], 2)
+            )
+            # Shuffling these combinations
+            random.shuffle(subject_combinations)
+
+            for s_c in subject_combinations[
+                0 : n_subjects * self.negative_pairs_per_subject
+            ]:
+                subject_i = self.siamese_bucket[s_c[0]]
+                subject_j = self.siamese_bucket[s_c[1]]
+                random.shuffle(subject_i)
+                random.shuffle(subject_j)
+
+                negatives += ((subject_i[0], subject_j[0]),)
 
         return negatives
 

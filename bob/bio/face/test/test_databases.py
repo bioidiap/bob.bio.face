@@ -198,6 +198,11 @@ def test_replaymobile():
         "replaymobile-img", "database", preferred_package="bob.bio.face"
     )
     sample = database.probes()[0][0]
+    assert (
+        sample.path == "devel/real/client005_session02_authenticate_mobile_adverse"
+    ), sample.path
+    assert sample.frame == "12", sample.frame
+    assert sample.should_flip, sample
     assert hasattr(sample, "annotations")
     assert "reye" in sample.annotations
     assert "leye" in sample.annotations
@@ -207,19 +212,40 @@ def test_replaymobile():
     assert len(database.references(group="eval")) == 12
     assert len(database.probes()) == 4160
     assert len(database.probes(group="eval")) == 3020
+    assert sample.annotations == {
+        "bottomright": [734, 407],
+        "topleft": [436, 182],
+        "leye": [541, 350],
+        "reye": [540, 245],
+        "mouthleft": [655, 254],
+        "mouthright": [657, 338],
+        "nose": [591, 299],
+    }
+
+    # test another sample where should_flip is False
+    sample2 = [s for s in database.all_samples() if not s.should_flip][0]
+    assert (
+        sample2.path == "enroll/train/client001_session01_enroll_tablet_lightoff"
+    ), sample2.path
+    assert sample2.frame == "12", sample2.frame
+    assert not sample2.should_flip, sample2
+    assert sample2.annotations == {
+        "reye": [515, 267],
+        "leye": [516, 399],
+        "nose": [576, 332],
+        "mouthleft": [662, 282],
+        "mouthright": [664, 384],
+        "topleft": [372, 196],
+        "bottomright": [761, 480],
+    }, dict(sample2.annotations)
+
     # Only if data is available
     if rc.get("bob.db.replaymobile.directory", None):
-        assert sample.annotations == {
-            "bottomright": [734, 407],
-            "topleft": [436, 182],
-            "leye": [541, 350],
-            "reye": [540, 245],
-            "mouthleft": [655, 254],
-            "mouthright": [657, 338],
-            "nose": [591, 299],
-        }
-        assert sample.data.shape == (3, 1280, 720)
-        assert sample.data[0, 0, 0] == 110
+        assert sample.data.shape == (3, 1280, 720), sample.data.shape
+        assert sample.data[0, 0, 0] == 94, sample.data[0, 0, 0]
+
+        assert sample2.data.shape == (3, 1280, 720), sample2.data.shape
+        assert sample2.data[0, 0, 0] == 129, sample2.data[0, 0, 0]
 
 
 @pytest.mark.skipif(
@@ -701,8 +727,12 @@ def test_lfw():
     assert all(len(p.samples) == 1 for p in probes)
 
     # check the number of known and unknown probe samples
-    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(1 for p in probes if p.subject_id != "unknown")
-    assert sum(1 for p in probes if p.subject_id == "unknown") == 1361, sum(1 for p in probes if p.subject_id == "unknown")
+    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(
+        1 for p in probes if p.subject_id != "unknown"
+    )
+    assert sum(1 for p in probes if p.subject_id == "unknown") == 1361, sum(
+        1 for p in probes if p.subject_id == "unknown"
+    )
 
     # protocol o2
     database = LFWDatabase(protocol="o2")
@@ -710,8 +740,12 @@ def test_lfw():
     probes = database.probes()
 
     # check the number of known and unknown probe samples
-    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(1 for p in probes if p.subject_id != "unknown")
-    assert sum(1 for p in probes if p.subject_id == "unknown") == 4069, sum(1 for p in probes if p.subject_id == "unknown")
+    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(
+        1 for p in probes if p.subject_id != "unknown"
+    )
+    assert sum(1 for p in probes if p.subject_id == "unknown") == 4069, sum(
+        1 for p in probes if p.subject_id == "unknown"
+    )
 
     # protocol o3
     database = LFWDatabase(protocol="o3")
@@ -719,8 +753,12 @@ def test_lfw():
     probes = database.probes()
 
     # check the number of known and unknown probe samples
-    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(1 for p in probes if p.subject_id != "unknown")
-    assert sum(1 for p in probes if p.subject_id == "unknown") == 5430, sum(1 for p in probes if p.subject_id == "unknown")
+    assert sum(1 for p in probes if p.subject_id != "unknown") == 4903, sum(
+        1 for p in probes if p.subject_id != "unknown"
+    )
+    assert sum(1 for p in probes if p.subject_id == "unknown") == 5430, sum(
+        1 for p in probes if p.subject_id == "unknown"
+    )
 
 
 def test_vgg2():

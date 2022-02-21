@@ -51,13 +51,17 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
 
     video_reader = imageio.get_reader(file_name)
     image = video_reader.get_data(frame)
+    # Convert to bob format (channel, height, width)
+    image = bob.io.image.to_bob(image)
+
     # Image captured by the 'mobile' device are flipped vertically.
     # (Images were captured horizontally and bob.io.video does not read the
     #   metadata correctly, whether it was on the right or left side)
-    if should_flip:
+    if not should_flip:
+        # after changing from bob.io.video to imageio-ffmpeg, turns out tablet
+        # videos should be flipped to match previous behavior.
         image = numpy.flip(image, 2)
-    # Convert to bob format (channel, height, width)
-    image = bob.io.image.to_bob(image)
+
     return image
 
 
@@ -96,6 +100,7 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         kwargs = {k: fields[k] for k in fields.keys() - {"id", "should_flip"}}
 
         # One row creates one samples (=> one comparison because of `is_sparse`)
+        should_flip = fields["should_flip"].lower() == "true"
         return DelayedSample(
             functools.partial(
                 load_frame_from_file_replaymobile,
@@ -103,9 +108,10 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
                     self.dataset_original_directory, fields["path"] + self.extension
                 ),
                 frame=int(fields["frame"]),
-                should_flip=fields["should_flip"] == "TRUE",
+                should_flip=should_flip,
             ),
             key=fields["id"],
+            should_flip=should_flip,
             **kwargs,
         )
 

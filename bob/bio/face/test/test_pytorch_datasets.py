@@ -240,16 +240,40 @@ def test_data_augmentation():
 def test_siamese():
     transforms = get_standard_data_augmentation()
 
-    database_path = os.path.join(
-        rc.get("bob.bio.demographics.directory"), "mobio", "samplewrapper"
-    )
+    # database_path = os.path.join(
+    #    rc.get("bob.bio.demographics.directory"), "morph", "samplewrapper"
+    # )
 
-    dataset = MobioTorchDataset(
-        protocol="mobile0-male-female",
+    database_path = rc.get("bob.bio.face.vgg2-crops.directory")
+
+    # dataset = MobioTorchDataset(
+    #    protocol="mobile0-male-female",
+    #    database_path=database_path,
+    #    transform=transforms,
+    # )
+    # dataset = MedsTorchDataset(
+    #    protocol="verification_fold1",
+    #    database_path=database_path,
+    #    transform=transforms,
+    #    take_from_znorm=False,
+    # )
+    dataset = VGG2TorchDataset(
+        protocol="vgg2-short",
         database_path=database_path,
+        database_extension=".jpg",
         transform=transforms,
     )
-    siamese_dataset = SiameseDemographicWrapper(dataset)
+
+    # dataset = MorphTorchDataset(
+    #    protocol="verification_fold1",
+    #    database_path=database_path,
+    #    transform=transforms,
+    #    take_from_znorm=False,
+    # )
+
+    siamese_dataset = SiameseDemographicWrapper(
+        dataset, max_positive_pairs_per_subject=5, negative_pairs_per_subject=3
+    )
 
     dataloader = DataLoader(siamese_dataset, batch_size=64, shuffle=True)
 

@@ -9,6 +9,7 @@ Datasets that handles demographic information
 
 
 import logging
+from tokenize import group
 from more_itertools import bucket
 from torch.utils.data import Dataset
 import cloudpickle
@@ -132,8 +133,46 @@ class DemoraphicTorchDataset(Dataset):
 
 
 class MedsTorchDataset(DemoraphicTorchDataset):
+    """
+    MEDS torch interface
+
+    .. warning::
+       Unfortunatelly, in this dataset there are several identities that has only ONE sample.
+       Hence, it is impossible to properly use this dataset to do contrastive learning, for instance.
+       If this is thecase, please set `take_from_znorm=True`, so the `dev` or the `eval` sets are used.
+
+
+    Parameters
+    ----------
+
+    protocol: str
+        One of the MEDS available protocols, check :py:class:`bob.bio.face.database.MEDSDatabase`
+
+    database_path: str
+        Database path
+
+    database_extension: str
+        Database extension
+
+    transform: callable
+       Transformation function to the input sample
+
+    take_from_znorm: bool
+       If `True`, it will take the samples from `treferences` and `zprobes` methods that comes from the training set
+       If `False`, it will take the samples from `references` and `probes` methods. Then, the variable `group` is considered.
+
+    group: str
+
+    """
+
     def __init__(
-        self, protocol, database_path, database_extension=".h5", transform=None
+        self,
+        protocol,
+        database_path,
+        database_extension=".h5",
+        transform=None,
+        take_from_znorm=False,
+        group="dev",
     ):
 
         bob_dataset = MEDSDatabase(
@@ -141,13 +180,23 @@ class MedsTorchDataset(DemoraphicTorchDataset):
             dataset_original_directory=database_path,
             dataset_original_extension=database_extension,
         )
+        self.take_from_znorm = take_from_znorm
+        self.group = group
         super().__init__(bob_dataset, transform=transform)
 
     def load_bucket(self):
         self._target_metadata = "rac"
 
-        self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
-        self.bucket += [s for sset in self.bob_dataset.treferences() for s in sset]
+        if self.take_from_znorm:
+            self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
+            self.bucket += [s for sset in self.bob_dataset.treferences() for s in sset]
+        else:
+            self.bucket = [
+                s for sset in self.bob_dataset.probes(group=group) for s in sset
+            ]
+            self.bucket += [
+                s for sset in self.bob_dataset.references(group=group) for s in sset
+            ]
 
         offset = 0
         self.labels = dict()
@@ -335,8 +384,46 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
 
 
 class MorphTorchDataset(DemoraphicTorchDataset):
+    """
+    MORPH torch interface
+
+    .. warning::
+       Unfortunatelly, in this dataset there are several identities that has only ONE sample.
+       Hence, it is impossible to properly use this dataset to do contrastive learning, for instance.
+       If this is thecase, please set `take_from_znorm=True`, so the `dev` or the `eval` sets are used.
+
+
+    Parameters
+    ----------
+
+    protocol: str
+        One of the Morph available protocols, check :py:class:`bob.bio.face.database.MEDSDatabase`
+
+    database_path: str
+        Database path
+
+    database_extension: str
+        Database extension
+
+    transform: callable
+       Transformation function to the input sample
+
+    take_from_znorm: bool
+       If `True`, it will take the samples from `treferences` and `zprobes` methods that comes from the training set
+       If `False`, it will take the samples from `references` and `probes` methods. Then, the variable `group` is considered.
+
+    group: str
+
+    """
+
     def __init__(
-        self, protocol, database_path, database_extension=".h5", transform=None
+        self,
+        protocol,
+        database_path,
+        database_extension=".h5",
+        transform=None,
+        take_from_znorm=True,
+        group="dev",
     ):
 
         bob_dataset = MorphDatabase(
@@ -344,11 +431,14 @@ class MorphTorchDataset(DemoraphicTorchDataset):
             dataset_original_directory=database_path,
             dataset_original_extension=database_extension,
         )
+        self.take_from_znorm = take_from_znorm
+        self.group = group
         super().__init__(bob_dataset, transform=transform)
 
     def load_bucket(self):
 
         # Morph dataset has an intersection in between zprobes and treferences
+        # Those are the
         self.excluding_list = [
             "190276",
             "332158",
@@ -363,13 +453,21 @@ class MorphTorchDataset(DemoraphicTorchDataset):
             "286810",
         ]
 
-        self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
-        self.bucket += [
-            s
-            for sset in self.bob_dataset.treferences()
-            for s in sset
-            if sset.subject_id not in self.excluding_list
-        ]
+        if self.take_from_znorm:
+            self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
+            self.bucket += [
+                s
+                for sset in self.bob_dataset.treferences()
+                for s in sset
+                if sset.subject_id not in self.excluding_list
+            ]
+        else:
+            self.bucket = [
+                s for sset in self.bob_dataset.probes(group=group) for s in sset
+            ]
+            self.bucket += [
+                s for sset in self.bob_dataset.references(group=group) for s in sset
+            ]
 
         offset = 0
         self.labels = dict()

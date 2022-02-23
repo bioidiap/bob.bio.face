@@ -42,7 +42,7 @@ class MorphDatabase(CSVDatasetZTNorm):
     | verification_fold2 |      69       |     67    |   6734    |   6737    |
     +--------------------+---------------+-----------+-----------+-----------+
     | verification_fold3 |      70       |     66    |   6736    |   6740    |
-    +--------------------+---------------+-----------+-----------+-----------+ 
+    +--------------------+---------------+-----------+-----------+-----------+
 
     .. warning::
         Use the command below to set the path of the real data::
@@ -69,7 +69,7 @@ class MorphDatabase(CSVDatasetZTNorm):
         # Downloading model if not exists
         urls = MorphDatabase.urls()
         filename = get_file(
-            "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
+            "morph.tar.gz", urls, file_hash="0f1a9576faf75d51bcb549077c9dd58a"
         )
 
         super().__init__(

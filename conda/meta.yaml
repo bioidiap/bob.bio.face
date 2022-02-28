@@ -38,7 +38,6 @@ requirements:
     - bob.db.base
     - bob.db.atnt
     - bob.bio.base
-    - bob.ip.facedetect
     - bob.pipelines
     - matplotlib {{ matplotlib }}
     - scikit-image {{ scikit_image }}
@@ -52,13 +51,13 @@ requirements:
     - {{ pin_compatible('six') }}
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
-    - {{ pin_compatible('torchvision', max_pin="x.x") }}    
+    - {{ pin_compatible('torchvision', max_pin="x.x") }}
     - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}
     - pydeprecate==0.3.1
 
   run_constrained:
     - bob.learn.tensorflow
-    - {{ pin_compatible('tensorflow') }}  # [linux]    
+    - {{ pin_compatible('tensorflow') }}  # [linux]
 
 
 test:

@@ -1,4 +1,5 @@
 import math
+import numpy as np
 
 available_sources = {
     "direct": ("topleft", "bottomright"),
@@ -498,6 +499,101 @@ def expected_eye_positions(bounding_box, padding=None):
             bounding_box.right_f - right / 2.0 * inter_eye_distance,
         ),
     }
+
+def average_detections(detections, predictions, relative_prediction_threshold=0.25):
+    """average_detections(detections, predictions, [relative_prediction_threshold]) -> bounding_box, prediction
+
+    Computes the weighted average of the given detections, where the weights are computed based on the prediction values.
+
+    **Parameters:**
+
+    ``detections`` : [:py:class:`BoundingBox`]
+      The overlapping bounding boxes.
+
+    ``predictions`` : [float]
+      The predictions for the ``detections``.
+
+    ``relative_prediction_threshold`` : float between 0 and 1
+      Limits the bounding boxes to those that have a prediction value higher then ``relative_prediction_threshold * max(predictions)``
+
+    **Returns:**
+
+    ``bounding_box`` : :py:class:`BoundingBox`
+      The bounding box which has been merged from the detections
+
+    ``prediction`` : float
+      The prediction value of the bounding box, which is a weighted sum of the predictions with minimum overlap
+    """
+    # remove the predictions that are too low
+    prediction_threshold = relative_prediction_threshold * max(predictions)
+    detections, predictions = zip(
+        *[[d, p] for d, p in zip(detections, predictions) if p >= prediction_threshold]
+    )
+
+    # turn remaining predictions into weights
+    s = sum(predictions)
+    weights = [p / s for p in predictions]
+    # compute weighted average of bounding boxes
+    top = sum(w * b.topleft_f[0] for w, b in zip(weights, detections))
+    left = sum(w * b.topleft_f[1] for w, b in zip(weights, detections))
+    bottom = sum(w * b.bottomright_f[0] for w, b in zip(weights, detections))
+    right = sum(w * b.bottomright_f[1] for w, b in zip(weights, detections))
+
+    # compute the average prediction value
+    value = sum(w * p for w, p in zip(weights, predictions))
+
+    # return the average bounding box
+    return BoundingBox((top, left), (bottom - top, right - left)), value
+
+
+def best_detection(
+    detections, predictions, minimum_overlap=0.2, relative_prediction_threshold=0.25
+):
+    """best_detection(detections, predictions, [minimum_overlap], [relative_prediction_threshold]) -> bounding_box, prediction
+
+    Computes the best detection for the given detections and according predictions.
+
+    This is achieved by computing a weighted sum of detections that overlap with the best detection (the one with the highest prediction), where the weights are based on the predictions.
+    Only detections with according prediction values > 0 are considered.
+
+    **Parameters:**
+
+    ``detections`` : [:py:class:`BoundingBox`]
+      The detected bounding boxes.
+
+    ``predictions`` : [float]
+      The predictions for the ``detections``.
+
+    ``minimum_overlap`` : float between 0 and 1
+      The minimum overlap (in terms of Jaccard :py:meth:`BoundingBox.similarity`) of bounding boxes with the best detection to be considered.
+
+    ``relative_prediction_threshold`` : float between 0 and 1
+      Limits the bounding boxes to those that have a prediction value higher then ``relative_prediction_threshold * max(predictions)``
+
+    **Returns:**
+
+    ``bounding_box`` : :py:class:`BoundingBox`
+      The bounding box which has been merged from the detections
+
+    ``prediction`` : float
+      The prediction value of the bounding box, which is a weighted sum of the predictions with minimum overlap
+    """
+    # remove all negative predictions since they harm the calculation of the weights
+    detections = [detections[i] for i in range(len(detections)) if predictions[i] > 0]
+    predictions = [
+        predictions[i] for i in range(len(predictions)) if predictions[i] > 0
+    ]
+
+    if not detections:
+        raise ValueError("No detections with a prediction value > 0 have been found")
+
+    # keep only the bounding boxes with the highest overlap
+    detections, predictions = overlapping_detections(
+        detections, np.array(predictions), minimum_overlap
+    )
+
+    return average_detections(detections, predictions, relative_prediction_threshold)
+
 
 
 def bounding_box_to_annotations(bbx):

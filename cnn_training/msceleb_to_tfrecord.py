@@ -9,9 +9,9 @@ Usage:
     msceleb_to_tfrecord.py -h | --help
 
 Options:
-  -h --help             Show this screen.    
+  -h --help             Show this screen.
   --keys=<arg>          Pickle with the keys
-  --image-size=<arg>    Final image size [default: 126]  
+  --image-size=<arg>    Final image size [default: 126]
   --use-eyes            Use eyes annotations. If not set, it will use the face crop only
 
 """
@@ -148,7 +148,7 @@ def generate_tfrecord(
                 if os.path.splitext(image_path)[-1] != ".png":
                     continue
                 image = bob.io.image.load(image_path)
-                annotations = detector(image)
+                annotations = detector.annotations(image)
 
                 if len(annotations) == 0:
                     continue
@@ -270,7 +270,7 @@ if __name__ == "__main__":
 
     chunk_id = all_chunks[CURRENT_CHUNK]
 
-    from bob.ip.facedetect.mtcnn import MTCNN
+    from bob.bio.face.annotator import MTCNN
 
     detector = MTCNN()
 

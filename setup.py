@@ -141,9 +141,6 @@ setup(
             "vgg2-short                = bob.bio.face.config.database.vgg2_short:database",
         ],
         "bob.bio.annotator": [
-            "facedetect               = bob.bio.face.config.annotator.facedetect:annotator",
-            "facedetect-eye-estimate  = bob.bio.face.config.annotator.facedetect_eye_estimate:annotator",
-            "flandmark                = bob.bio.face.config.annotator.flandmark:annotator",
             "mtcnn                    = bob.bio.face.config.annotator.mtcnn:annotator",
             "tinyface                 = bob.bio.face.config.annotator.tinyface:annotator",
         ],

@@ -5,6 +5,22 @@ from bob.bio.base.annotator.FailSafe import translate_kwargs
 class Base(bob.bio.base.annotator.Annotator):
     """Base class for all face annotators"""
 
+    def annotations(self, image):
+        """Returns annotations for all faces in the image.
+
+        Parameters
+        ----------
+        image : numpy.ndarray
+            An RGB image in Bob format.
+
+        Returns
+        -------
+        list
+            A list of annotations. Annotations are dictionaries that contain the
+            following possible keys: ``topleft``, ``bottomright``, ``reye``, ``leye``
+        """
+        raise NotImplementedError()
+
     def annotate(self, sample, **kwargs):
         """Annotates an image and returns annotations in a dictionary. All
         annotator should return at least the ``topleft`` and ``bottomright``

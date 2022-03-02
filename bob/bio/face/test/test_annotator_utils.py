@@ -80,24 +80,3 @@ def test_mirror():
         mb.topleft[0] : mb.bottomright[0], mb.topleft[1] : mb.bottomright[1]
     ]
     assert (x == y[:, ::-1]).all()
-
-
-def test_pruning():
-    # tests that the pruning functionality works
-
-    # read boxes and according detection values from files
-    predictions = bob.io.base.load(
-        bob.io.base.test_utils.datafile("detections.hdf5", "bob.bio.face")
-    )
-    boxes = bob.io.base.load(
-        bob.io.base.test_utils.datafile("boxes.hdf5", "bob.bio.face")
-    )
-    detections = [
-        fd.BoundingBox(boxes[i, 0:2], boxes[i, 2:4]) for i in range(boxes.shape[0])
-    ]
-
-    # prune detections
-    bb, val = fd.prune_detections(detections, predictions, 0.3)
-
-    assert len(bb) == 145
-    assert len(val) == 145

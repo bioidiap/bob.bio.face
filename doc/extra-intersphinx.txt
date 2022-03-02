@@ -8,5 +8,4 @@ bob.bio.gmm
 bob.bio.video
 bob.bio.spear
 bob.db.lfw
-bob.learn.linear
 gridtk

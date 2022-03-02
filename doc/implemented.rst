@@ -106,11 +106,20 @@ Face Image Annotators
 
 .. autosummary::
    bob.bio.face.annotator.Base
-   bob.bio.face.annotator.BobIpFacedetect
-   bob.bio.face.annotator.BobIpFlandmark
-   bob.bio.face.annotator.BobIpMTCNN
-   bob.bio.face.annotator.BobIpTinyface
+   bob.bio.face.annotator.MTCNN
+   bob.bio.face.annotator.TinyFace
+   bob.bio.face.annotator.FaceXDetector
+   bob.bio.face.annotator.FaceX106Landmarks
 
+Annotation Tools
+~~~~~~~~~~~~~~~~
+
+.. autosummary::
+   bob.bio.face.annotator.BoundingBox
+   bob.bio.face.annotator.bounding_box_from_annotation
+   bob.bio.face.annotator.bounding_box_to_annotations
+   bob.bio.face.annotator.expected_eye_positions
+   bob.bio.face.annotator.min_face_size_validator
 
 Image Preprocessors
 ~~~~~~~~~~~~~~~~~~~

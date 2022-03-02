@@ -8,7 +8,7 @@ from sklearn.utils import check_array
 from bob.extension.download import get_file
 import numpy as np
 import os
-from bob.bio.face.annotator import BobIpMTCNN
+from bob.bio.face.annotator import MTCNN
 
 
 class MxNetTransformer(TransformerMixin, BaseEstimator):
@@ -106,12 +106,12 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
 class ArcFaceInsightFace_LResNet100(MxNetTransformer):
     """
     Extracts features using deep face recognition models under MxNet Interfaces.
-  
-    Users can download the pretrained face recognition models with MxNet Interface. The path to downloaded models (and weights) should be specified while calling this class, usually in the configuration file of an experiment. 
- 
-    Examples: (Pretrained ResNet models): `LResNet100E-IR,ArcFace@ms1m-refine-v2 <https://github.com/deepinsight/insightface>`_  
-  
-    The extracted features can be combined with different the algorithms.  
+
+    Users can download the pretrained face recognition models with MxNet Interface. The path to downloaded models (and weights) should be specified while calling this class, usually in the configuration file of an experiment.
+
+    Examples: (Pretrained ResNet models): `LResNet100E-IR,ArcFace@ms1m-refine-v2 <https://github.com/deepinsight/insightface>`_
+
+    The extracted features can be combined with different the algorithms.
 
     """
 
@@ -188,7 +188,7 @@ def arcface_template(embedding, annotation_type, fixed_positions=None):
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
-    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
+    annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=embedding,

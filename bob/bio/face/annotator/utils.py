@@ -310,7 +310,7 @@ class BoundingBox:
 def bounding_box_from_annotation(source=None, padding=None, **kwargs):
     """bounding_box_from_annotation(source, padding, **kwargs) -> bounding_box
 
-    Creates a bounding box from the given parameters, which are, in general, annotations read using :py:func:`bob.ip.facedetect.read_annotation_file`.
+    Creates a bounding box from the given parameters, which are, in general, annotations read using :py:func:`bob.db.base.read_annotation_file`.
     Different kinds of annotations are supported, given by the ``source`` keyword:
 
     * ``direct`` : bounding boxes are directly specified by keyword arguments ``topleft`` and ``bottomright``
@@ -449,11 +449,11 @@ def expected_eye_positions(bounding_box, padding=None):
 
 
 def bounding_box_to_annotations(bbx):
-    """Converts :any:`bob.ip.facedetect.BoundingBox` to dictionary annotations.
+    """Converts :any:`BoundingBox` to dictionary annotations.
 
     Parameters
     ----------
-    bbx : :any:`bob.ip.facedetect.BoundingBox`
+    bbx : :any:`BoundingBox`
         The given bounding box.
 
     Returns

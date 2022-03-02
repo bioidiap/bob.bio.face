@@ -30,6 +30,7 @@ __appropriate__(
     TinyFace,
     FaceX106Landmarks,
     FaceXDetector,
+    BoundingBox,
 )
 
 __all__ = [_ for _ in dir() if not _.startswith("_")]

@@ -16,7 +16,7 @@ from bob.extension.download import get_file
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
 from sklearn.utils import check_array
-from bob.bio.face.annotator import BobIpMTCNN
+from bob.bio.face.annotator import MTCNN
 
 from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
 
@@ -554,7 +554,7 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
-    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
+    annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=embedding,

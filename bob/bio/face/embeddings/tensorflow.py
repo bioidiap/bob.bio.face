@@ -554,7 +554,9 @@ class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
 
     The complete code to reproduce this model is in the (private) repository:
     bob.project.hardening/-/commit/9ac25c0a17c9628b7a99e84217cd7c680f1a3e1e
-    but you can reproduce it using ``cnn_training/arcface_large_batch.py`` script and the following configuration::
+    but you can reproduce it using
+    https://gitlab.idiap.ch/bob/bob.bio.face/-/blob/eed9276c7c1306c2ccfe290a0149ade3a80d247a/cnn_training/arcface_large_batch.py
+    script and the following configuration::
 
         CONFIG = {
             "n-workers": 8,
@@ -637,7 +639,9 @@ class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
 
     The complete code to reproduce this model is in the (private) repository:
     bob.project.hardening/-/commit/b162ca60d26fcf8a93f6767f5b5a026a406c1076
-    but you can reproduce it using ``cnn_training/arcface_large_batch.py`` script and the following configuration::
+    but you can reproduce it using
+    https://gitlab.idiap.ch/bob/bob.bio.face/-/blob/eed9276c7c1306c2ccfe290a0149ade3a80d247a/cnn_training/arcface_large_batch.py
+    script and the following configuration::
 
         CONFIG = {
             "n-workers": 8,

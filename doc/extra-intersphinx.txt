@@ -8,7 +8,4 @@ bob.bio.gmm
 bob.bio.video
 bob.bio.spear
 bob.db.lfw
-bob.ip.facedetect
-bob.ip.flandmark
-bob.learn.linear
 gridtk

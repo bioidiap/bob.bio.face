@@ -7,7 +7,6 @@
 
 import os
 import pkg_resources
-from bob.learn.tensorflow.utils.image import to_channels_last
 from sklearn.base import TransformerMixin, BaseEstimator
 from bob.extension.download import get_file
 from sklearn.utils import check_array
@@ -24,7 +23,69 @@ from bob.bio.base.pipelines.vanilla_biometrics import (
     Distance,
     VanillaBiometricsPipeline,
 )
-from bob.bio.face.annotator import BobIpMTCNN
+from bob.bio.face.annotator import MTCNN
+
+
+def to_channels_last(image):
+    """Converts the image to channel_last format. This is the same format as in
+    matplotlib, skimage, and etc.
+
+    Parameters
+    ----------
+    image : `tf.Tensor`
+        At least a 3 dimensional image. If the dimension is more than 3, the
+        last 3 dimensions are assumed to be [C, H, W].
+
+    Returns
+    -------
+    image : `tf.Tensor`
+        The image in [..., H, W, C] format.
+
+    Raises
+    ------
+    ValueError
+        If dim of image is less than 3.
+    """
+    ndim = len(image.shape)
+    if ndim < 3:
+        raise ValueError(
+            "The image needs to be at least 3 dimensional but it " "was {}".format(ndim)
+        )
+    axis_order = [1, 2, 0]
+    shift = ndim - 3
+    axis_order = list(range(ndim - 3)) + [n + shift for n in axis_order]
+    return tf.transpose(a=image, perm=axis_order)
+
+
+def to_channels_first(image):
+    """Converts the image to channel_first format. This is the same format as
+    in Bob's image and video.
+
+    Parameters
+    ----------
+    image : `tf.Tensor`
+        At least a 3 dimensional image. If the dimension is more than 3, the
+        last 3 dimensions are assumed to be [H, W, C].
+
+    Returns
+    -------
+    image : `tf.Tensor`
+        The image in [..., C, H, W] format.
+
+    Raises
+    ------
+    ValueError
+        If dim of image is less than 3.
+    """
+    ndim = len(image.shape)
+    if ndim < 3:
+        raise ValueError(
+            "The image needs to be at least 3 dimensional but it " "was {}".format(ndim)
+        )
+    axis_order = [2, 0, 1]
+    shift = ndim - 3
+    axis_order = list(range(ndim - 3)) + [n + shift for n in axis_order]
+    return tf.transpose(a=image, perm=axis_order)
 
 
 def sanderberg_rescaling():
@@ -493,7 +554,9 @@ class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
 
     The complete code to reproduce this model is in the (private) repository:
     bob.project.hardening/-/commit/9ac25c0a17c9628b7a99e84217cd7c680f1a3e1e
-    but you can reproduce it using ``cnn_training/arcface_large_batch.py`` script and the following configuration::
+    but you can reproduce it using
+    https://gitlab.idiap.ch/bob/bob.bio.face/-/blob/eed9276c7c1306c2ccfe290a0149ade3a80d247a/cnn_training/arcface_large_batch.py
+    script and the following configuration::
 
         CONFIG = {
             "n-workers": 8,
@@ -576,7 +639,9 @@ class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
 
     The complete code to reproduce this model is in the (private) repository:
     bob.project.hardening/-/commit/b162ca60d26fcf8a93f6767f5b5a026a406c1076
-    but you can reproduce it using ``cnn_training/arcface_large_batch.py`` script and the following configuration::
+    but you can reproduce it using
+    https://gitlab.idiap.ch/bob/bob.bio.face/-/blob/eed9276c7c1306c2ccfe290a0149ade3a80d247a/cnn_training/arcface_large_batch.py
+    script and the following configuration::
 
         CONFIG = {
             "n-workers": 8,
@@ -822,7 +887,7 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
-    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
+    annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
 
     # ASSEMBLE TRANSFORMER
     transformer = embedding_transformer(
@@ -862,7 +927,7 @@ def resnet_template(embedding, annotation_type, fixed_positions=None):
     else:
         cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
 
-    annotator = BobIpMTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
+    annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
         embedding=embedding,

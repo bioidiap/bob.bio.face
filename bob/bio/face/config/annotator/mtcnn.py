@@ -1,3 +1,3 @@
-from bob.bio.face.annotator import BobIpMTCNN
+from bob.bio.face.annotator import MTCNN
 
-annotator = BobIpMTCNN()
+annotator = MTCNN()

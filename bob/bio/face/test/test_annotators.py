@@ -1,21 +1,24 @@
 import bob.io.base
 import bob.io.base.test_utils
 import bob.io.image
+import numpy
+from bob.bio.base.annotator import FailSafe
+from bob.bio.base.test.utils import is_library_available
 from bob.bio.face.annotator import (
-    BobIpFacedetect,
-    BobIpFlandmark,
+    MTCNN,
+    FaceX106Landmarks,
+    FaceXDetector,
+    TinyFace,
     min_face_size_validator,
 )
-from bob.bio.base.annotator import FailSafe
-from bob.bio.face.annotator import BobIpMTCNN
-from bob.bio.face.annotator import BobIpTinyface
-from bob.bio.face.annotator import FaceX106Landmarks, FaceXDetector
-import numpy
 
-from bob.bio.base.test.utils import is_library_available
-
+# An image with one face
 face_image = bob.io.base.load(
-    bob.io.base.test_utils.datafile("testimage.jpg", "bob.ip.facedetect")
+    bob.io.base.test_utils.datafile("testimage.jpg", "bob.bio.face")
+)
+# An image with 6 faces
+face_image_multiple = bob.io.base.load(
+    bob.io.base.test_utils.datafile("test_image_multi_face.png", "bob.bio.face")
 )
 
 
@@ -43,21 +46,18 @@ def _assert_tinyface(annot):
     assert [int(x) for x in annot["leye"]] == [162, 216], annot
 
 
-def _assert_bob_ip_facedetect(annot):
-    assert annot["topleft"] == (110, 82), annot
-    assert annot["bottomright"] == (334, 268), annot
-    assert numpy.allclose(annot["quality"], 39.209601948013685), annot
-
-
 @is_library_available("tensorflow")
 def test_mtcnn_annotator():
     """
     The MTCNN annotator should return the correct annotations.
     """
-    mtcnn_annotator = BobIpMTCNN()
+    mtcnn_annotator = MTCNN()
     batch = [face_image]
     annot_batch = mtcnn_annotator(batch)
     _assert_mtcnn(annot_batch[0])
+
+    annot = mtcnn_annotator.annotations(face_image_multiple)
+    assert len(annot) == 6
 
 
 @is_library_available("cv2")
@@ -87,49 +87,24 @@ def test_tinyface_annotator():
     """
     The Tiny face annotator should return the correct annotations.
     """
-    tinyface_annotator = BobIpTinyface()
+    tinyface_annotator = TinyFace()
     batch = [face_image]
     annot_batch = tinyface_annotator(batch)
     _assert_tinyface(annot_batch[0])
 
-
-def test_bob_ip_facedetect():
-    batch = [face_image]
-    annot = BobIpFacedetect()(batch)
-    _assert_bob_ip_facedetect(annot[0])
+    annot = tinyface_annotator.annotations(face_image_multiple)
+    assert len(annot) == 6
 
 
-def test_bob_ip_facedetect_eyes():
-    batch = [face_image]
-    annot = BobIpFacedetect(eye_estimate=True)(batch)
-    _assert_bob_ip_facedetect(annot[0])
-    assert [int(x) for x in annot[0]["reye"]] == [175, 128], annot
-    assert [int(x) for x in annot[0]["leye"]] == [175, 221], annot
-
-
+@is_library_available("tensorflow")
 def test_fail_safe():
     annotator = FailSafe(
-        [BobIpFacedetect(eye_estimate=True)],
+        [MTCNN()],
         required_keys=("reye", "leye"),
     )
     batch = [face_image]
     annot = annotator(batch)
-    _assert_bob_ip_facedetect(annot[0])
-    assert [int(x) for x in annot[0]["reye"]] == [175, 128], annot
-    assert [int(x) for x in annot[0]["leye"]] == [175, 221], annot
-
-
-def test_bob_ip_flandmark():
-    annotator = FailSafe(
-        [BobIpFacedetect(), BobIpFlandmark()],
-        required_keys=("reye", "leye"),
-    )
-    batch = [face_image]
-    annot = annotator(batch)
-    print(annot)
-    _assert_bob_ip_facedetect(annot[0])
-    assert [int(x) for x in annot[0]["reye"]] == [183, 127], annot
-    assert [int(x) for x in annot[0]["leye"]] == [174, 223], annot
+    _assert_mtcnn(annot[0])
 
 
 def test_min_face_size_validator():

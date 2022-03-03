@@ -1,16 +1,17 @@
-from fileinput import filename
-from . import Base
-import torch
-from torchvision import transforms
-import numpy as np
-from bob.io.image import bob_to_opencvbgr
-from math import ceil
-from itertools import product as product
-import os
 import logging
-from bob.extension.download import get_file
+import os
 import sys
-from .bobipmtcnn import BobIpMTCNN
+from itertools import product as product
+from math import ceil
+
+import numpy as np
+import torch
+from bob.extension.download import get_file
+from bob.io.image import bob_to_opencvbgr
+from torchvision import transforms
+
+from . import Base
+from .mtcnn import MTCNN
 
 logger = logging.getLogger(__name__)
 
@@ -317,7 +318,7 @@ class FaceX106Landmarks(Base):
         self.model = torch.load(model_filename, map_location=self.device)
 
         # Loading the face detector
-        self.face_detector = BobIpMTCNN() if use_mtcnn_detector else FaceXDetector()
+        self.face_detector = MTCNN() if use_mtcnn_detector else FaceXDetector()
 
         self.transforms = transforms.Compose([transforms.ToTensor()])
 

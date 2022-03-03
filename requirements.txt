@@ -9,13 +9,11 @@ bob.sp
 bob.ip.base
 bob.ip.color
 bob.ip.gabor
-bob.learn.linear
 bob.learn.em
 bob.measure
 bob.db.base
 bob.db.atnt  # required for testing
 bob.bio.base
-bob.ip.facedetect
 bob.pipelines
 matplotlib   # for plotting
 six

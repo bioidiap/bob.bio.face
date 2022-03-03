@@ -422,7 +422,7 @@ def expected_eye_positions(bounding_box, padding=None):
     **Parameters:**
 
     ``bounding_box`` : :py:class:`BoundingBox`
-      The face bounding box as detected by one of the functions in ``bob.ip.facedetect``.
+      The face bounding box.
 
     ``padding`` : {'top':float, 'bottom':float, 'left':float, 'right':float}
       The padding that was used for the ``eyes`` source in :py:func:`bounding_box_from_annotation`, has a proper default.

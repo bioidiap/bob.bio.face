@@ -59,7 +59,7 @@ def to_channels_last(image):
 
 def to_channels_first(image):
     """Converts the image to channel_first format. This is the same format as
-    in bob.io.image and bob.io.video.
+    in Bob's image and video.
 
     Parameters
     ----------

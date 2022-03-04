@@ -15,7 +15,7 @@ class BackboneHeadModel(pl.LightningModule):
         head,
         loss_fn,
         optimizer_fn,
-        backbone_checkpoint_path=None,
+        backbone_checkpoint_file=None,
         **kwargs
     ):
         """
@@ -66,7 +66,7 @@ class BackboneHeadModel(pl.LightningModule):
         self.head = head
         self.loss_fn = loss_fn
         self.optimizer_fn = optimizer_fn
-        self.backbone_checkpoint_path = backbone_checkpoint_path
+        self.backbone_checkpoint_file = backbone_checkpoint_file
 
     def forward(self, inputs):
         # in lightning, forward defines the prediction/inference actions
@@ -74,14 +74,12 @@ class BackboneHeadModel(pl.LightningModule):
 
     def training_epoch_end(self, training_step_outputs):
 
-        if self.backbone_checkpoint_path is not None:
+        if self.backbone_checkpoint_file is not None:
 
-            cleaned_state_dict = {
-                k.partition("backbone.")[2]: v
-                for k, v in self.backbone.state_dict().items()
-            }
-
-            torch.save(cleaned_state_dict, os.path.join(self.backbone_checkpoint_path, "backbone.pth"))
+            torch.save(
+                self.backbone.state_dict(),
+                os.path.join(self.backbone_checkpoint_file),
+            )
 
     # def training_step_end(self, losses):
     #    pass

@@ -69,7 +69,7 @@ class MorphDatabase(CSVDatasetZTNorm):
         # Downloading model if not exists
         urls = MorphDatabase.urls()
         filename = get_file(
-            "morph.tar.gz", urls, file_hash="0f1a9576faf75d51bcb549077c9dd58a"
+            "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
         )
 
         super().__init__(

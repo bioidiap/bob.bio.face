@@ -49,6 +49,7 @@ Users Guide
 
    baselines
    datasets
+   extend
    leaderboard/leaderboard
    references
    annotators

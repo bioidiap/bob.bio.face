@@ -23,20 +23,31 @@ from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
     """
-    Base Transformer using pytorch models
+    Base Transformer using pytorch models.
 
+    You can provide the model in two different ways.
+    When providing the `checkpoint_path` and the `config`, the model will be loaded from these files in a lazy way, i.e., the first time it is needed.
+    You can also provide the `model` directly, but this might be conflicting with parallelization.
 
     Parameters
     ----------
 
     checkpoint_path: str
-       Path containing the checkpoint
+        Path containing the checkpoint
 
-    config:
+    config: str
         Path containing some configuration file (e.g. .json, .prototxt)
+
+    model : torch.nn.Module
+        An instantiated pytorch model with pre-loaded weights.
 
     preprocessor:
         A function that will transform the data right before forward. The default transformation is `X/255`
+
+
+    device : str or torch.device
+        A string representing the device, such as "cpu" or "cuda:3".
+        If not provided, "cuda" will be assumed if a GPU is accessible, otherwise "cpu".
 
     """
 
@@ -44,6 +55,7 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         self,
         checkpoint_path=None,
         config=None,
+        model=None,
         preprocessor=lambda x: x / 255,
         memory_demanding=False,
         device=None,
@@ -53,7 +65,7 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
         self.config = config
-        self.model = None
+        self.model = model
         self.preprocessor = preprocessor
         self.memory_demanding = memory_demanding
         self.device = torch.device(
@@ -123,7 +135,7 @@ class AFFFE_2021(PyTorchModel):
 
     """
 
-    def __init__(self, memory_demanding=False, device=None, **kwargs):
+    def __init__(self, **kwargs):
 
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz",
@@ -144,8 +156,6 @@ class AFFFE_2021(PyTorchModel):
         super(AFFFE_2021, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
-            device=device,
             **kwargs,
         )
 
@@ -182,8 +192,6 @@ class IResnet34(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -196,9 +204,7 @@ class IResnet34(PyTorchModel):
         super(IResnet34, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -219,8 +225,6 @@ class IResnet50(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -233,9 +237,7 @@ class IResnet50(PyTorchModel):
         super(IResnet50, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -256,8 +258,6 @@ class IResnet100(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -270,9 +270,7 @@ class IResnet100(PyTorchModel):
         super(IResnet100, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -303,8 +301,6 @@ class OxfordVGG2Resnets(PyTorchModel):
     def __init__(
         self,
         model_name,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -340,9 +336,7 @@ class OxfordVGG2Resnets(PyTorchModel):
         super(OxfordVGG2Resnets, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=self.dag_preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -444,8 +438,6 @@ class IResnet100Elastic(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         **kwargs,
     ):
 
@@ -469,9 +461,7 @@ class IResnet100Elastic(PyTorchModel):
         super(IResnet100Elastic, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -491,8 +481,6 @@ class FaceXZooModel(PyTorchModel):
     def __init__(
         self,
         preprocessor=lambda x: (x - 127.5) / 128.0,
-        memory_demanding=False,
-        device=None,
         arch="AttentionNet",
         **kwargs,
     ):
@@ -508,9 +496,7 @@ class FaceXZooModel(PyTorchModel):
         super(FaceXZooModel, self).__init__(
             checkpoint_path,
             config,
-            memory_demanding=memory_demanding,
             preprocessor=preprocessor,
-            device=device,
             **kwargs,
         )
 
@@ -590,7 +576,7 @@ def AttentionNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -627,7 +613,7 @@ def ResNeSt(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -665,7 +651,7 @@ def MobileFaceNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -703,7 +689,7 @@ def ResNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -742,7 +728,7 @@ def EfficientNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -781,7 +767,7 @@ def TF_NAS(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -819,7 +805,7 @@ def HRNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -857,7 +843,7 @@ def ReXNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -893,7 +879,7 @@ def GhostNet(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -930,7 +916,7 @@ def iresnet34(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -965,7 +951,7 @@ def iresnet50(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1000,7 +986,7 @@ def iresnet100(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1035,7 +1021,7 @@ def iresnet100_elastic(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1065,7 +1051,7 @@ def afffe_baseline(
     ----------
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image
@@ -1109,7 +1095,7 @@ def oxford_vgg2_resnets(
          One of the 4 models available (`resnet50_scratch_dag`, `resnet50_ft_dag`, `senet50_ft_dag`, `senet50_scratch_dag`).
 
       annotation_type: str
-         Type of the annotations (e.g. `eyes-center')
+         Type of the annotations (e.g. `eyes-center`)
 
       fixed_positions: dict
          Set it if in your face images are registered to a fixed position in the image

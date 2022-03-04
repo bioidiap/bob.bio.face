@@ -9,7 +9,7 @@ Executing Baseline Algorithms
 =============================
 
 
-In this section we introduce the baselines available in this pakcage.
+In this section we introduce the baselines available in this package.
 To execute one of then in the databases available just run the following command::
 
 $ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
@@ -25,7 +25,7 @@ $ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
 Baselines available
 -------------------
 
-The algorithms below constains all the face recognition baselines available.
+The algorithms below contain all the face recognition baselines available.
 It is split in two groups, before and after deep learning era.
 
 

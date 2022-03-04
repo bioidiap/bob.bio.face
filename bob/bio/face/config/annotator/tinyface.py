@@ -1,3 +1,3 @@
-from bob.bio.face.annotator import BobIpTinyface
+from bob.bio.face.annotator import TinyFace
 
-annotator = BobIpTinyface()
+annotator = TinyFace()

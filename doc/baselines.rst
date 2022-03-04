@@ -18,7 +18,7 @@ $ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
   Both, `[DATABASE_NAME]` and `[BASELINE]` can be either python resources or
   python files.
 
-  Please, refer to :ref:`bob.bio.base <bob.bio.base>` for more information.  
+  Please, refer to :ref:`bob.bio.base <bob.bio.base>` for more information.
 
 
 
@@ -35,7 +35,7 @@ Before Deep learning era
 
 * ``eigenface``: The eigenface algorithm as proposed by [TP91]_. It uses the pixels as raw data, and applies a *Principal Component Analysis* (PCA) on it.
 
-* ``lda``: The LDA algorithm applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_
+* ``lda``: The LDA algorithm (was removed but can be easily implemented) applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_
 
 * ``gabor_graph``: This method extract grid graphs of Gabor jets from the images, and computes a Gabor phase based similarity [GHW12]_.
 
@@ -61,12 +61,12 @@ Deep learning baselines
 
 * ``resnet50-msceleb-arcface-20210521``: Arcface model trained with MSCeleb dataset (dataset prunned)
 
-* ``resnet50-vgg2-arcface-2021``: Arcface model trained with VGG2 dataset 
+* ``resnet50-vgg2-arcface-2021``: Arcface model trained with VGG2 dataset
 
 * ``iresnet34``: Arcface model (Resnet 34 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
-  
+
 * ``iresnet50``: Arcface model (Resnet 50 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
-  
+
 * ``iresnet100``: Arcface model (Resnet 100 backbone) from `Pytorch InsightFace <https://github.com/nizhib/pytorch-insightface>`_
 
 * ``vgg16-oxford``: VGG16 Face model from `Oxford <https://www.robots.ox.ac.uk/~vgg/publications/2015/Parkhi15/>`_

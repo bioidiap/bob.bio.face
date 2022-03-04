@@ -17,9 +17,9 @@ a guide on the general usage of this feature.
     them.
 
 See :doc:`implemented` for a list of available annotators. Here is an example
-on how to use :any:`bob.bio.face.annotator.BobIpFlandmark` to annotate the ATNT
+on how to use :any:`bob.bio.face.annotator.MTCNN` to annotate the ATNT
 database:
 
 .. code-block:: sh
 
-    $ bob bio annotate -vvv -d atnt -a flandmark -o /tmp/annotations
+    $ bob bio annotate -vvv -d atnt -a mtcnn -o /tmp/annotations

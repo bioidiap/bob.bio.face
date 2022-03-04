@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 
 import bob.ip.base
-import bob.ip.flandmark
 import bob.ip.gabor
 
 # Cropping
@@ -27,9 +26,6 @@ def assert_picklable_with_exceptions(obj):
     exception_list = [
         bob.ip.base.LBP,
         bob.bio.face.preprocessor.FaceCrop,
-        bob.ip.facedetect.detector.sampler.Sampler,
-        bob.ip.facedetect.detector.cascade.Cascade,
-        bob.ip.flandmark.Flandmark,
         bob.ip.gabor.Similarity,
         bob.ip.gabor.Transform,
         bob.ip.gabor.Graph,

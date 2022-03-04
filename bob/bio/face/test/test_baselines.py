@@ -186,10 +186,6 @@ def test_arcface_resnet50_msceleb_20210521():
 # run_baseline("gabor_graph", target_scores=0.4385451147418939)
 
 
-# def test_lda():
-#    run_baseline("lda", get_fake_samples_for_training())
-
-
 @pytest.mark.slow
 @is_library_available("torch")
 def test_afffe():

@@ -31,7 +31,7 @@ We provide a few reasonable defaults that are used in our implemented baselines.
 
 There are currently three available modes :
 
-* :code:`legacy` Tight crop, used in non neural-net baselines such as :code:`gabor-graph`, :code:`lgbphs` or :code:`lda`.
+* :code:`legacy` Tight crop, used in non neural-net baselines such as :code:`gabor-graph`, :code:`lgbphs`.
   It is typically use with a 5:4 aspect ratio for the :code:`cropped_image_size`
 * :code:`dnn` Loose crop, used for neural-net baselines such as the ArcFace or FaceNet models.
 * :code:`pad` Tight crop used in some PAD baselines

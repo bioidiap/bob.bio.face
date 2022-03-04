@@ -1,65 +1,7 @@
-import bob.ip.facedetect
-
-
-def bounding_box_to_annotations(bbx):
-    """Converts :any:`bob.ip.facedetect.BoundingBox` to dictionary annotations.
-
-    Parameters
-    ----------
-    bbx : :any:`bob.ip.facedetect.BoundingBox`
-        The given bounding box.
-
-    Returns
-    -------
-    dict
-        A dictionary with topleft and bottomright keys.
-    """
-    landmarks = {
-        "topleft": bbx.topleft,
-        "bottomright": bbx.bottomright,
-    }
-    return landmarks
-
-
-def min_face_size_validator(annotations, min_face_size=(32, 32)):
-    """Validates annotations based on face's minimal size.
-
-    Parameters
-    ----------
-    annotations : dict
-        The annotations in dictionary format.
-    min_face_size : (:obj:`int`, :obj:`int`), optional
-        The minimal size of a face.
-
-    Returns
-    -------
-    bool
-        True, if the face is large enough.
-    """
-    if not annotations:
-        return False
-    for source in ("direct", "eyes", None):
-        try:
-            bbx = bob.ip.facedetect.bounding_box_from_annotation(
-                source=source, **annotations
-            )
-            break
-        except Exception:
-            if source is None:
-                raise
-            else:
-                pass
-    if bbx.size[0] < min_face_size[0] or bbx.size[1] < min_face_size[1]:
-        return False
-    return True
-
-
-# These imports should be here to avoid circular dependencies
+from .utils import *
 from .Base import Base
-from .bobipfacedetect import BobIpFacedetect
-from .bobipflandmark import BobIpFlandmark
-from .bobipmtcnn import BobIpMTCNN
-from .bobiptinyface import BobIpTinyface
+from .mtcnn import MTCNN
+from .tinyface import TinyFace
 from .faceX_106landmarks import FaceX106Landmarks, FaceXDetector
 
 
@@ -84,10 +26,11 @@ def __appropriate__(*args):
 
 __appropriate__(
     Base,
-    BobIpFacedetect,
-    BobIpFlandmark,
-    BobIpMTCNN,
-    BobIpTinyface,
+    MTCNN,
+    TinyFace,
+    FaceX106Landmarks,
+    FaceXDetector,
+    BoundingBox,
 )
 
 __all__ = [_ for _ in dir() if not _.startswith("_")]

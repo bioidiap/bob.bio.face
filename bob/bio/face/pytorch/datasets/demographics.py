@@ -9,8 +9,6 @@ Datasets that handles demographic information
 
 
 import logging
-from tokenize import group
-from more_itertools import bucket
 from torch.utils.data import Dataset
 import cloudpickle
 from bob.bio.face.database import (

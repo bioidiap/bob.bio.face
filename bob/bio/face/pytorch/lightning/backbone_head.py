@@ -133,4 +133,6 @@ class BackboneHeadModel(pl.LightningModule):
         lr_scheduler = ReduceLROnPlateau(optimizer, factor=0.1, patience=5)
         config["lr_scheduler"] = lr_scheduler
 
+        config["monitor"] = "train/loss"
+
         return config

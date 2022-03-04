@@ -87,6 +87,7 @@ def test_morph():
     dataset = MorphTorchDataset(
         protocol="verification_fold1",
         database_path=database_path,
+        take_from_znorm=False,
     )
 
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
@@ -95,7 +96,7 @@ def test_morph():
 
     weights = dataset.get_demographic_class_weights()
 
-    assert np.allclose(sum(weights), 1)
+    assert np.allclose(sum(weights), 1, atol=0.0001)
 
 
 @pytest.mark.skipif(
@@ -189,8 +190,10 @@ def test_vgg2():
 
     dataset = VGG2TorchDataset(protocol="vgg2-short", database_path=database_path)
 
+    assert np.allclose(sum(dataset.get_demographic_weights(as_dict=False)), 1, atol=1)
+
     assert dataset.n_classes == 8631
-    assert len(dataset.demographic_keys) == 12
+    assert len(dataset.demographic_keys) == 8
 
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
 
@@ -208,7 +211,7 @@ def test_vgg2():
     )
 
     assert dataset.n_classes == 8631
-    assert len(dataset.demographic_keys) == 12
+    assert len(dataset.demographic_keys) == 8
 
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
     batch = next(iter(dataloader))

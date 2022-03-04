@@ -37,7 +37,7 @@ import itertools
 logger = logging.getLogger(__name__)
 
 
-class DemoraphicTorchDataset(Dataset):
+class DemographicTorchDataset(Dataset):
     """
     Pytorch base dataset that handles demographic information
 
@@ -90,6 +90,57 @@ class DemoraphicTorchDataset(Dataset):
 
         return {"data": image, "label": label, "demography": demography}
 
+    def count_subjects_per_demographics(self):
+        """
+        Count the number of subjects per demographics
+        """
+        n_identities = len(self.subject_demographic)
+
+        all_demographics = list(self.subject_demographic.values())
+
+        # Number of subjects per demographic
+        subjects_per_demographics = dict(
+            [(d, sum(np.array(all_demographics) == d)) for d in set(all_demographics)]
+        )
+
+        return subjects_per_demographics
+
+    def get_demographic_weights(self, as_dict=True):
+        """
+        Compute the inverse weighting for each demographic group.
+
+
+        .. warning::
+           This is not the same function as `get_demographic_class_weights`.
+
+        Parameters
+        ----------
+           If `True` will return the weights as a dict.
+
+        """
+        n_identities = len(self.subject_demographic)
+
+        # Number of subjects per demographic
+        subjects_per_demographics = self.count_subjects_per_demographics()
+
+        # INverse probability (1-p_i)/p_i
+        demographic_weights = dict()
+        for i in subjects_per_demographics:
+            p_i = subjects_per_demographics[i] / n_identities
+            demographic_weights[i] = (1 - p_i) / p_i
+
+        p_accumulator = sum(demographic_weights.values())
+        # Scaling the inverse probability
+        for i in demographic_weights:
+            demographic_weights[i] /= p_accumulator
+
+        # Return as a dictionary
+        if as_dict:
+            return demographic_weights
+
+        # Returning as a list (this is more aproppriated for NN training)
+        return [demographic_weights[k] for k in self.demographic_keys]
+
     def get_demographic_class_weights(self):
         """
         Compute the class weights based on the demographics
@@ -100,39 +151,18 @@ class DemoraphicTorchDataset(Dataset):
               A list containing the weights for each class
         """
 
-        n_identities = len(self.subject_demographic)
-
-        all_demographics = list(self.subject_demographic.values())
-
-        subjects_per_demographics = dict(
-            [(d, sum(np.array(all_demographics) == d)) for d in set(all_demographics)]
-        )
-
-        # sum(np.array(all_demographics) == d)
-
-        n_demographics = len(subjects_per_demographics)
-
-        # I'll do it in 2 lines to make it readable
-        weight_per_demographic = lambda x: (1 - (x / n_identities)) / (
-            n_demographics - 1
-        )
-
-        weights_per_demographic = dict(
-            [
-                (d, weight_per_demographic(subjects_per_demographics[d]))
-                for d in set(all_demographics)
-            ]
-        )
+        subjects_per_demographics = self.count_subjects_per_demographics()
+        demographic_weights = self.get_demographic_weights()
 
         weights = [
-            weights_per_demographic[v] / subjects_per_demographics[v]
+            demographic_weights[v] / subjects_per_demographics[v]
             for k, v in self.subject_demographic.items()
         ]
 
         return torch.Tensor(weights)
 
 
-class MedsTorchDataset(DemoraphicTorchDataset):
+class MedsTorchDataset(DemographicTorchDataset):
     """
     MEDS torch interface
 
@@ -218,7 +248,7 @@ class MedsTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class VGG2TorchDataset(DemoraphicTorchDataset):
+class VGG2TorchDataset(DemographicTorchDataset):
     """
     VGG2 for torch.
 
@@ -247,6 +277,16 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
             - n_demographics: 12 ['m-A': 0, 'm-B': 1, 'm-I': 2, 'm-U': 3, 'm-W': 4, 'm-N': 5, 'f-A': 6, 'f-B': 7, 'f-I': 8, 'f-U': 9, 'f-W': 10, 'f-N': 11]
 
 
+    .. note::
+
+       Follow the distribution the combination of race and gender demographics
+       {'m-B': 552, 'm-U': 64, 'm-W': 3903, 'f-W': 2657, 'f-A': 286, 'f-U': 34, 'f-I': 298, 'f-N': 2, 'f-B': 200, 'm-N': 1, 'm-I': 366, 'm-A': 268}
+
+       Note that `m-N` has 1 subject and 'f-N' has 2 subjects.
+       For this reason, we are removing this race from this interface.
+       We can't learn anything from one sample.
+
+
     Parameters
     ----------
         database_path: str
@@ -260,6 +300,9 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         train: bool
           If set it will prepare a bucket for training.
 
+        include_u_n: bool
+          If `True` it will include 'U' (Undefined) and 'N' (None) on the list of races.
+
 
     """
 
@@ -270,6 +313,7 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         database_extension=".jpg",
         transform=None,
         load_bucket_from_cache=True,
+        include_u_n=False,
         train=True,
     ):
 
@@ -284,10 +328,19 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         self._percentage_for_training = 0.8
         self.train = train
 
+        # All possible metadata
+        self._possible_genders = ["m", "f"]
+
+        # self._possible_races = ["A", "B", "I", "U", "W", "N"]
+        self._possible_races = ["A", "B", "I", "W"]
+        if include_u_n:
+            self._possible_races += ["U", "N"]
+
         super().__init__(bob_dataset, transform=transform)
 
     def decode_race(self, race):
-        return race if race in self._possible_races else "N"
+        # return race if race in self._possible_races else "N"
+        return race if race in self._possible_races else "W"
 
     def get_key(self, sample):
         return f"{sample.gender}-{self.decode_race(sample.race)}"
@@ -324,11 +377,6 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         return bucket
 
     def load_bucket(self):
-
-        # All possible metadata
-        self._possible_genders = ["m", "f"]
-
-        self._possible_races = ["A", "B", "I", "U", "W", "N"]
 
         # Defining the demographics keys
         self._demographic_keys = [
@@ -383,7 +431,7 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class MorphTorchDataset(DemoraphicTorchDataset):
+class MorphTorchDataset(DemographicTorchDataset):
     """
     MORPH torch interface
 
@@ -433,6 +481,7 @@ class MorphTorchDataset(DemoraphicTorchDataset):
         )
         self.take_from_znorm = take_from_znorm
         self.group = group
+
         super().__init__(bob_dataset, transform=transform)
 
     def load_bucket(self):
@@ -487,7 +536,7 @@ class MorphTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class RFWTorchDataset(DemoraphicTorchDataset):
+class RFWTorchDataset(DemographicTorchDataset):
     def __init__(
         self, protocol, database_path, database_extension=".h5", transform=None
     ):
@@ -517,7 +566,7 @@ class RFWTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class MobioTorchDataset(DemoraphicTorchDataset):
+class MobioTorchDataset(DemographicTorchDataset):
     def __init__(
         self, protocol, database_path, database_extension=".h5", transform=None
     ):
@@ -555,7 +604,7 @@ class MobioTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class MSCelebTorchDataset(DemoraphicTorchDataset):
+class MSCelebTorchDataset(DemographicTorchDataset):
     """
     This interface make usage of a CSV file containing gender and
     RACE annotations available at.

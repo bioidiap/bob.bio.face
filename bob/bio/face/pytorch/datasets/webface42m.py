@@ -31,6 +31,8 @@ class WebFace42M(Dataset):
                 year=  {2021}
         }
 
+    This dataset contains 2'059'906 identities and 42'474'558 images.
+
 
     .. warning::
 
@@ -40,6 +42,7 @@ class WebFace42M(Dataset):
         .. code-block:: sh
 
             bob config set bob.bio.face.webface42M.directory [WEBFACE42M PATH]
+
 
 
 

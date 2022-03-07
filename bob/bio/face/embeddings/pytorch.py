@@ -19,6 +19,7 @@ from sklearn.utils import check_array
 from bob.bio.face.annotator import MTCNN
 
 from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
+import types
 
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
@@ -115,6 +116,80 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
     def place_model_on_device(self):
         if self.model is not None:
             self.model.to(self.device)
+
+
+class RunnableModel(PyTorchModel):
+    """
+    Runnable pytorch model
+
+    With this class it is possible to pass a loaded pytorch model as an argument.
+
+    The parameter `model` can be set in two ways.
+    The first one via an pytorch module instance. Like in the example below:
+
+       >>> model = my_py_torch_model.load("PATH")
+       >>> transformer = RunnableModel(model) #doctest: +SKIP
+
+
+    The second one is via a `callable` function.
+    The mode is useful while running under Dask.
+    This avoids the serialization and data transfer of the model.
+    At the Idiap's network, this can be a problem.
+    See the example below on how to set the `model` as a callable:
+
+       >>> from functools import partial
+       >>> model = partial(my_py_torch_model.load,"PATH")
+       >>> transformer = RunnableModel(model) #doctest: +SKIP
+
+
+
+    Parameters:
+    ----------
+        model:
+          Loaded pytorch model OR a function that loads the model.
+          Providing a function that loads the model might be useful for the
+          idiap grid
+
+        preprocessor:
+          A function that will transform the data right before forward. The default transformation is `X/255`
+
+        memory_demanding:
+
+        device:
+
+    """
+
+    def __init__(
+        self,
+        model,
+        preprocessor=lambda x: x / 255,
+        memory_demanding=False,
+        device=None,
+        **kwargs,
+    ):
+        super(RunnableModel, self).__init__(
+            preprocessor=preprocessor,
+            memory_demanding=memory_demanding,
+            device=device,
+            **kwargs,
+        )
+
+        if callable(model):
+            self.model = None
+            self._model_fn = model
+            self.is_loaded_by_function = True
+        else:
+            self.model = model
+            self.model.eval()
+            self.is_loaded_by_function = False
+
+    def _load_model(self):
+        self.model = self._model_fn()
+        self.model.eval()
+
+    def __getstate__(self):
+        if self.is_loaded_by_function:
+            return super(RunnableModel, self).__getstate__()
 
 
 class AFFFE_2021(PyTorchModel):

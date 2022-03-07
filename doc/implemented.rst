@@ -53,21 +53,22 @@ Deep Learning Extractors
 PyTorch models
 ==============
 
-#.. autosummary::
+.. autosummary::
 
-   - bob.bio.face.embeddings.pytorch.afffe_baseline
-   - bob.bio.face.embeddings.pytorch.iresnet34
-   - bob.bio.face.embeddings.pytorch.iresnet50
-   - bob.bio.face.embeddings.pytorch.iresnet100
-   - bob.bio.face.embeddings.pytorch.GhostNet
-   - bob.bio.face.embeddings.pytorch.ReXNet
-   - bob.bio.face.embeddings.pytorch.HRNet
-   - bob.bio.face.embeddings.pytorch.TF_NAS
-   - bob.bio.face.embeddings.pytorch.ResNet
-   - bob.bio.face.embeddings.pytorch.EfficientNet
-   - bob.bio.face.embeddings.pytorch.MobileFaceNet
-   - bob.bio.face.embeddings.pytorch.ResNeSt
-   - bob.bio.face.embeddings.pytorch.AttentionNet
+   bob.bio.face.embeddings.pytorch.afffe_baseline
+   bob.bio.face.embeddings.pytorch.iresnet34
+   bob.bio.face.embeddings.pytorch.iresnet50
+   bob.bio.face.embeddings.pytorch.iresnet100
+   bob.bio.face.embeddings.pytorch.GhostNet
+   bob.bio.face.embeddings.pytorch.ReXNet
+   bob.bio.face.embeddings.pytorch.HRNet
+   bob.bio.face.embeddings.pytorch.TF_NAS
+   bob.bio.face.embeddings.pytorch.ResNet
+   bob.bio.face.embeddings.pytorch.EfficientNet
+   bob.bio.face.embeddings.pytorch.MobileFaceNet
+   bob.bio.face.embeddings.pytorch.ResNeSt
+   bob.bio.face.embeddings.pytorch.AttentionNet
+   bob.bio.face.embeddings.pytorch.RunnableModel
 
 
 Tensorflow models

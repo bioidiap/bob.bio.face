@@ -220,10 +220,12 @@ class MedsTorchDataset(DemographicTorchDataset):
             self.bucket += [s for sset in self.bob_dataset.treferences() for s in sset]
         else:
             self.bucket = [
-                s for sset in self.bob_dataset.probes(group=group) for s in sset
+                s for sset in self.bob_dataset.probes(group=self.group) for s in sset
             ]
             self.bucket += [
-                s for sset in self.bob_dataset.references(group=group) for s in sset
+                s
+                for sset in self.bob_dataset.references(group=self.group)
+                for s in sset
             ]
 
         offset = 0

@@ -43,9 +43,6 @@ class WebFace42M(Dataset):
 
             bob config set bob.bio.face.webface42M.directory [WEBFACE42M PATH]
 
-
-
-
     """
 
     def __init__(

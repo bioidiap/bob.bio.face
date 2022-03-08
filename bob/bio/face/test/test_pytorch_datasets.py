@@ -1,3 +1,4 @@
+from torchvision import transforms
 from bob.bio.face.pytorch.datasets import WebFace42M
 from bob.bio.face.pytorch.datasets import (
     MedsTorchDataset,
@@ -5,6 +6,7 @@ from bob.bio.face.pytorch.datasets import (
     MobioTorchDataset,
     MSCelebTorchDataset,
     VGG2TorchDataset,
+    SiameseDemographicWrapper,
 )
 
 from bob.extension import rc
@@ -13,6 +15,9 @@ from bob.extension import rc
 from torch.utils.data import DataLoader
 import os
 import numpy as np
+import pkg_resources
+import bob.io.base
+from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
 
 import pytest
 
@@ -82,6 +87,7 @@ def test_morph():
     dataset = MorphTorchDataset(
         protocol="verification_fold1",
         database_path=database_path,
+        take_from_znorm=False,
     )
 
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
@@ -90,7 +96,7 @@ def test_morph():
 
     weights = dataset.get_demographic_class_weights()
 
-    assert np.allclose(sum(weights), 1)
+    assert np.allclose(sum(weights), 1, atol=0.0001)
 
 
 @pytest.mark.skipif(
@@ -184,8 +190,10 @@ def test_vgg2():
 
     dataset = VGG2TorchDataset(protocol="vgg2-short", database_path=database_path)
 
+    assert np.allclose(sum(dataset.get_demographic_weights(as_dict=False)), 1, atol=1)
+
     assert dataset.n_classes == 8631
-    assert len(dataset.demographic_keys) == 12
+    assert len(dataset.demographic_keys) == 8
 
     dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
 
@@ -195,3 +203,84 @@ def test_vgg2():
     weights = dataset.get_demographic_class_weights()
 
     assert np.allclose(sum(weights), 1, atol=0.001)
+
+    ### Testing dev
+
+    dataset = VGG2TorchDataset(
+        protocol="vgg2-short", database_path=database_path, train=False
+    )
+
+    assert dataset.n_classes == 8631
+    assert len(dataset.demographic_keys) == 8
+
+    dataloader = DataLoader(dataset, batch_size=64, shuffle=True)
+    batch = next(iter(dataloader))
+    batch["data"].shape == (64, 3, 112, 112)
+
+    weights = dataset.get_demographic_class_weights()
+
+    assert np.allclose(sum(weights), 1, atol=0.001)
+
+
+def test_data_augmentation():
+
+    image = bob.io.base.load(
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg")
+    )
+
+    from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
+
+    transform = get_standard_data_augmentation()
+    transformed = transform(image)
+
+    assert transformed.shape == (3, 531, 354)
+
+
+@pytest.mark.skipif(
+    rc.get("bob.bio.demographics.directory") is None,
+    reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
+)
+def test_siamese():
+    transforms = get_standard_data_augmentation()
+
+    # database_path = os.path.join(
+    #    rc.get("bob.bio.demographics.directory"), "morph", "samplewrapper"
+    # )
+
+    database_path = rc.get("bob.bio.face.vgg2-crops.directory")
+
+    # dataset = MobioTorchDataset(
+    #    protocol="mobile0-male-female",
+    #    database_path=database_path,
+    #    transform=transforms,
+    # )
+    # dataset = MedsTorchDataset(
+    #    protocol="verification_fold1",
+    #    database_path=database_path,
+    #    transform=transforms,
+    #    take_from_znorm=False,
+    # )
+    dataset = VGG2TorchDataset(
+        protocol="vgg2-short",
+        database_path=database_path,
+        database_extension=".jpg",
+        transform=transforms,
+    )
+
+    # dataset = MorphTorchDataset(
+    #    protocol="verification_fold1",
+    #    database_path=database_path,
+    #    transform=transforms,
+    #    take_from_znorm=False,
+    # )
+
+    siamese_dataset = SiameseDemographicWrapper(
+        dataset, max_positive_pairs_per_subject=5, negative_pairs_per_subject=3
+    )
+
+    dataloader = DataLoader(siamese_dataset, batch_size=64, shuffle=True)
+
+    batch = next(iter(dataloader))
+
+    batch["data"][0].shape == (64, 3, 112, 112)
+    batch["data"][1].shape == (64, 3, 112, 112)

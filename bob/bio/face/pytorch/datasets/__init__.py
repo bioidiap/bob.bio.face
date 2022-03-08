@@ -10,6 +10,7 @@ from .demographics import (
     MobioTorchDataset,
     MSCelebTorchDataset,
     VGG2TorchDataset,
+    SiameseDemographicWrapper,
 )
 
 
@@ -35,5 +36,6 @@ __appropriate__(
     MobioTorchDataset,
     MSCelebTorchDataset,
     VGG2TorchDataset,
+    SiameseDemographicWrapper,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

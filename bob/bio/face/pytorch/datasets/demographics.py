@@ -18,7 +18,7 @@ from bob.bio.face.database import (
     MobioDatabase,
     VGG2Database,
 )
-
+import random
 
 import torchvision.transforms as transforms
 
@@ -30,11 +30,12 @@ import bob.io.image
 from bob.extension.download import get_file
 from bob.extension import rc
 import torch
+import itertools
 
 logger = logging.getLogger(__name__)
 
 
-class DemoraphicTorchDataset(Dataset):
+class DemographicTorchDataset(Dataset):
     """
     Pytorch base dataset that handles demographic information
 
@@ -62,6 +63,10 @@ class DemoraphicTorchDataset(Dataset):
         return len(self.labels)
 
     @property
+    def n_samples(self):
+        return len(self.bucket)
+
+    @property
     def demographic_keys(self):
         return self._demographic_keys
 
@@ -83,6 +88,57 @@ class DemoraphicTorchDataset(Dataset):
 
         return {"data": image, "label": label, "demography": demography}
 
+    def count_subjects_per_demographics(self):
+        """
+        Count the number of subjects per demographics
+        """
+        n_identities = len(self.subject_demographic)
+
+        all_demographics = list(self.subject_demographic.values())
+
+        # Number of subjects per demographic
+        subjects_per_demographics = dict(
+            [(d, sum(np.array(all_demographics) == d)) for d in set(all_demographics)]
+        )
+
+        return subjects_per_demographics
+
+    def get_demographic_weights(self, as_dict=True):
+        """
+        Compute the inverse weighting for each demographic group.
+
+
+        .. warning::
+           This is not the same function as `get_demographic_class_weights`.
+
+        Parameters
+        ----------
+           If `True` will return the weights as a dict.
+
+        """
+        n_identities = len(self.subject_demographic)
+
+        # Number of subjects per demographic
+        subjects_per_demographics = self.count_subjects_per_demographics()
+
+        # INverse probability (1-p_i)/p_i
+        demographic_weights = dict()
+        for i in subjects_per_demographics:
+            p_i = subjects_per_demographics[i] / n_identities
+            demographic_weights[i] = (1 - p_i) / p_i
+
+        p_accumulator = sum(demographic_weights.values())
+        # Scaling the inverse probability
+        for i in demographic_weights:
+            demographic_weights[i] /= p_accumulator
+
+        # Return as a dictionary
+        if as_dict:
+            return demographic_weights
+
+        # Returning as a list (this is more aproppriated for NN training)
+        return [demographic_weights[k] for k in self.demographic_keys]
+
     def get_demographic_class_weights(self):
         """
         Compute the class weights based on the demographics
@@ -93,41 +149,58 @@ class DemoraphicTorchDataset(Dataset):
               A list containing the weights for each class
         """
 
-        n_identities = len(self.subject_demographic)
-
-        all_demographics = list(self.subject_demographic.values())
-
-        subjects_per_demographics = dict(
-            [(d, sum(np.array(all_demographics) == d)) for d in set(all_demographics)]
-        )
-
-        # sum(np.array(all_demographics) == d)
-
-        n_demographics = len(subjects_per_demographics)
-
-        # I'll do it in 2 lines to make it readable
-        weight_per_demographic = lambda x: (1 - (x / n_identities)) / (
-            n_demographics - 1
-        )
-
-        weights_per_demographic = dict(
-            [
-                (d, weight_per_demographic(subjects_per_demographics[d]))
-                for d in set(all_demographics)
-            ]
-        )
+        subjects_per_demographics = self.count_subjects_per_demographics()
+        demographic_weights = self.get_demographic_weights()
 
         weights = [
-            weights_per_demographic[v] / subjects_per_demographics[v]
+            demographic_weights[v] / subjects_per_demographics[v]
             for k, v in self.subject_demographic.items()
         ]
 
         return torch.Tensor(weights)
 
 
-class MedsTorchDataset(DemoraphicTorchDataset):
+class MedsTorchDataset(DemographicTorchDataset):
+    """
+    MEDS torch interface
+
+    .. warning::
+       Unfortunatelly, in this dataset there are several identities that has only ONE sample.
+       Hence, it is impossible to properly use this dataset to do contrastive learning, for instance.
+       If this is thecase, please set `take_from_znorm=True`, so the `dev` or the `eval` sets are used.
+
+
+    Parameters
+    ----------
+
+    protocol: str
+        One of the MEDS available protocols, check :py:class:`bob.bio.face.database.MEDSDatabase`
+
+    database_path: str
+        Database path
+
+    database_extension: str
+        Database extension
+
+    transform: callable
+       Transformation function to the input sample
+
+    take_from_znorm: bool
+       If `True`, it will take the samples from `treferences` and `zprobes` methods that comes from the training set
+       If `False`, it will take the samples from `references` and `probes` methods. Then, the variable `group` is considered.
+
+    group: str
+
+    """
+
     def __init__(
-        self, protocol, database_path, database_extension=".h5", transform=None
+        self,
+        protocol,
+        database_path,
+        database_extension=".h5",
+        transform=None,
+        take_from_znorm=False,
+        group="dev",
     ):
 
         bob_dataset = MEDSDatabase(
@@ -135,13 +208,25 @@ class MedsTorchDataset(DemoraphicTorchDataset):
             dataset_original_directory=database_path,
             dataset_original_extension=database_extension,
         )
+        self.take_from_znorm = take_from_znorm
+        self.group = group
         super().__init__(bob_dataset, transform=transform)
 
     def load_bucket(self):
         self._target_metadata = "rac"
 
-        self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
-        self.bucket += [s for sset in self.bob_dataset.treferences() for s in sset]
+        if self.take_from_znorm:
+            self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
+            self.bucket += [s for sset in self.bob_dataset.treferences() for s in sset]
+        else:
+            self.bucket = [
+                s for sset in self.bob_dataset.probes(group=self.group) for s in sset
+            ]
+            self.bucket += [
+                s
+                for sset in self.bob_dataset.references(group=self.group)
+                for s in sset
+            ]
 
         offset = 0
         self.labels = dict()
@@ -163,7 +248,7 @@ class MedsTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class VGG2TorchDataset(DemoraphicTorchDataset):
+class VGG2TorchDataset(DemographicTorchDataset):
     """
     VGG2 for torch.
 
@@ -192,6 +277,16 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
             - n_demographics: 12 ['m-A': 0, 'm-B': 1, 'm-I': 2, 'm-U': 3, 'm-W': 4, 'm-N': 5, 'f-A': 6, 'f-B': 7, 'f-I': 8, 'f-U': 9, 'f-W': 10, 'f-N': 11]
 
 
+    .. note::
+
+       Follow the distribution the combination of race and gender demographics
+       {'m-B': 552, 'm-U': 64, 'm-W': 3903, 'f-W': 2657, 'f-A': 286, 'f-U': 34, 'f-I': 298, 'f-N': 2, 'f-B': 200, 'm-N': 1, 'm-I': 366, 'm-A': 268}
+
+       Note that `m-N` has 1 subject and 'f-N' has 2 subjects.
+       For this reason, we are removing this race from this interface.
+       We can't learn anything from one sample.
+
+
     Parameters
     ----------
         database_path: str
@@ -201,6 +296,12 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
 
         load_bucket_from_cache: bool
           If set, it will load the list of available samples from the cache
+
+        train: bool
+          If set it will prepare a bucket for training.
+
+        include_u_n: bool
+          If `True` it will include 'U' (Undefined) and 'N' (None) on the list of races.
 
 
     """
@@ -212,6 +313,8 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         database_extension=".jpg",
         transform=None,
         load_bucket_from_cache=True,
+        include_u_n=False,
+        train=True,
     ):
 
         bob_dataset = VGG2Database(
@@ -221,10 +324,23 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         )
         self.load_bucket_from_cache = load_bucket_from_cache
 
+        # Percentage of the samples used for training
+        self._percentage_for_training = 0.8
+        self.train = train
+
+        # All possible metadata
+        self._possible_genders = ["m", "f"]
+
+        # self._possible_races = ["A", "B", "I", "U", "W", "N"]
+        self._possible_races = ["A", "B", "I", "W"]
+        if include_u_n:
+            self._possible_races += ["U", "N"]
+
         super().__init__(bob_dataset, transform=transform)
 
     def decode_race(self, race):
-        return race if race in self._possible_races else "N"
+        # return race if race in self._possible_races else "N"
+        return race if race in self._possible_races else "W"
 
     def get_key(self, sample):
         return f"{sample.gender}-{self.decode_race(sample.race)}"
@@ -262,11 +378,6 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
 
     def load_bucket(self):
 
-        # All possible metadata
-        self._possible_genders = ["m", "f"]
-
-        self._possible_races = ["A", "B", "I", "U", "W", "N"]
-
         # Defining the demographics keys
         self._demographic_keys = [
             f"{gender}-{race}"
@@ -278,7 +389,6 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         )
 
         # Loading the buket from cache
-
         if self.load_bucket_from_cache and os.path.exists(self.get_cache_path()):
             self.bucket = self.load_cached_bucket()
         else:
@@ -289,6 +399,25 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         # Mapping subject_id with labels
         self.labels = sorted(list(set([s.subject_id for s in self.bucket])))
         self.labels = dict([(l, i) for i, l in enumerate(self.labels)])
+
+        # Spliting the bucket into training and developement set
+        all_indexes = np.array([self.labels[x.subject_id] for x in self.bucket])
+        indexes = []
+        if self.train:
+            for i in range(self.n_classes):
+                ind = np.where(all_indexes == i)[0]
+                indexes += list(
+                    ind[0 : int(np.floor(len(ind) * self._percentage_for_training))]
+                )
+        else:
+            for i in range(self.n_classes):
+                ind = np.where(all_indexes == i)[0]
+                indexes += list(
+                    ind[int(np.floor(len(ind) * self._percentage_for_training)) :]
+                )
+
+        # Redefining the bucket
+        self.bucket = list(np.array(self.bucket)[indexes])
 
         # Mapping subject and demographics for fast access
         self.subject_demographic = dict()
@@ -302,9 +431,47 @@ class VGG2TorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class MorphTorchDataset(DemoraphicTorchDataset):
+class MorphTorchDataset(DemographicTorchDataset):
+    """
+    MORPH torch interface
+
+    .. warning::
+       Unfortunatelly, in this dataset there are several identities that has only ONE sample.
+       Hence, it is impossible to properly use this dataset to do contrastive learning, for instance.
+       If this is thecase, please set `take_from_znorm=True`, so the `dev` or the `eval` sets are used.
+
+
+    Parameters
+    ----------
+
+    protocol: str
+        One of the Morph available protocols, check :py:class:`bob.bio.face.database.MEDSDatabase`
+
+    database_path: str
+        Database path
+
+    database_extension: str
+        Database extension
+
+    transform: callable
+       Transformation function to the input sample
+
+    take_from_znorm: bool
+       If `True`, it will take the samples from `treferences` and `zprobes` methods that comes from the training set
+       If `False`, it will take the samples from `references` and `probes` methods. Then, the variable `group` is considered.
+
+    group: str
+
+    """
+
     def __init__(
-        self, protocol, database_path, database_extension=".h5", transform=None
+        self,
+        protocol,
+        database_path,
+        database_extension=".h5",
+        transform=None,
+        take_from_znorm=True,
+        group="dev",
     ):
 
         bob_dataset = MorphDatabase(
@@ -312,11 +479,15 @@ class MorphTorchDataset(DemoraphicTorchDataset):
             dataset_original_directory=database_path,
             dataset_original_extension=database_extension,
         )
+        self.take_from_znorm = take_from_znorm
+        self.group = group
+
         super().__init__(bob_dataset, transform=transform)
 
     def load_bucket(self):
 
         # Morph dataset has an intersection in between zprobes and treferences
+        # Those are the
         self.excluding_list = [
             "190276",
             "332158",
@@ -331,13 +502,21 @@ class MorphTorchDataset(DemoraphicTorchDataset):
             "286810",
         ]
 
-        self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
-        self.bucket += [
-            s
-            for sset in self.bob_dataset.treferences()
-            for s in sset
-            if sset.subject_id not in self.excluding_list
-        ]
+        if self.take_from_znorm:
+            self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
+            self.bucket += [
+                s
+                for sset in self.bob_dataset.treferences()
+                for s in sset
+                if sset.subject_id not in self.excluding_list
+            ]
+        else:
+            self.bucket = [
+                s for sset in self.bob_dataset.probes(group=group) for s in sset
+            ]
+            self.bucket += [
+                s for sset in self.bob_dataset.references(group=group) for s in sset
+            ]
 
         offset = 0
         self.labels = dict()
@@ -357,7 +536,7 @@ class MorphTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class RFWTorchDataset(DemoraphicTorchDataset):
+class RFWTorchDataset(DemographicTorchDataset):
     def __init__(
         self, protocol, database_path, database_extension=".h5", transform=None
     ):
@@ -387,12 +566,15 @@ class RFWTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class MobioTorchDataset(DemoraphicTorchDataset):
+class MobioTorchDataset(DemographicTorchDataset):
     def __init__(
         self, protocol, database_path, database_extension=".h5", transform=None
     ):
-
-        bob_dataset = MobioDatabase(protocol=protocol)
+        bob_dataset = MobioDatabase(
+            protocol=protocol,
+            dataset_original_directory=database_path,
+            dataset_original_extension=database_extension,
+        )
 
         super().__init__(bob_dataset, transform=transform)
 
@@ -422,7 +604,7 @@ class MobioTorchDataset(DemoraphicTorchDataset):
         return self._demographic_keys[demographic_key]
 
 
-class MSCelebTorchDataset(DemoraphicTorchDataset):
+class MSCelebTorchDataset(DemographicTorchDataset):
     """
     This interface make usage of a CSV file containing gender and
     RACE annotations available at.
@@ -651,3 +833,198 @@ class MSCelebTorchDataset(DemoraphicTorchDataset):
         demography = self.get_demographics(subject_id)
 
         return {"data": image, "label": label, "demography": demography}
+
+
+class SiameseDemographicWrapper(Dataset):
+    """
+    This class wraps the current demographic interface and
+    dumps random positive and negative pairs of samples
+
+    """
+
+    def __init__(
+        self,
+        demographic_dataset,
+        max_positive_pairs_per_subject=20,
+        negative_pairs_per_subject=3,
+        dense_negatives=False,
+    ):
+
+        self.demographic_dataset = demographic_dataset
+        self.max_positive_pairs_per_subject = max_positive_pairs_per_subject
+        self.negative_pairs_per_subject = negative_pairs_per_subject
+
+        # Creating a bucket mapping the items of the bucket with their respective identities
+        self.siamese_bucket = dict()
+        for b in demographic_dataset.bucket:
+            if b.subject_id not in self.siamese_bucket:
+                self.siamese_bucket[b.subject_id] = []
+
+            self.siamese_bucket[b.subject_id].append(b)
+
+        positive_pairs = self.create_positive_pairs()
+        if dense_negatives:
+            negative_pairs = self.create_dense_negative_pairs()
+        else:
+            negative_pairs = self.create_light_negative_pairs()
+
+        # Redefining the bucket
+        self.siamese_bucket = negative_pairs + positive_pairs
+
+        self.labels = np.hstack(
+            (np.zeros(len(negative_pairs)), np.ones(len(positive_pairs)))
+        )
+
+        pass
+
+    def __len__(self):
+        return len(self.siamese_bucket)
+
+    def create_positive_pairs(self):
+
+        # Creating positive pairs for each identity
+        positives = []
+        random.seed(0)
+        for b in self.siamese_bucket:
+            samples = self.siamese_bucket[b]
+            random.shuffle(samples)
+
+            # All possible pair combinations
+            samples = itertools.combinations(samples, 2)
+
+            positives += [
+                s for s in list(samples)[0 : self.max_positive_pairs_per_subject]
+            ]
+            pass
+
+        return positives
+
+    def create_dense_negative_pairs(self):
+        """
+        Creating negative pairs.
+        Here we create only negative pairs from the same demographic group,
+        since we know that pairs from different demographics leads to
+        poor scores
+
+
+        .. warning:
+           The list of negative pairs is dense.
+           For each combination of subjects for a particular demographic,
+           we will take `negative_pairs_per_subject` samples.
+           Hence, the number of negative pairs can explode as a function
+           of number of subjects.
+           For example, a combination pairs with 1000 identities gives us
+           499500 pairs. Taking `3` pairs of images for these combinations
+           of identities will give us ~1.5M negative pairs.
+           Hence, be careful with that.
+
+        """
+
+        # Inverting subject
+        random.seed(0)
+        negatives = []
+
+        # Creating the dictionary containing the demographics--> subjects
+        demographic_subject = dict()
+        for k, v in self.demographic_dataset.subject_demographic.items():
+            demographic_subject[v] = demographic_subject.get(v, []) + [k]
+
+        # For each demographic, pic the negative pairs
+        for d in demographic_subject:
+
+            subject_combinations = itertools.combinations(demographic_subject[d], 2)
+
+            for s_c in subject_combinations:
+                subject_i = self.siamese_bucket[s_c[0]]
+                subject_j = self.siamese_bucket[s_c[1]]
+                random.shuffle(subject_i)
+                random.shuffle(subject_j)
+
+                # All possible combinations
+                for i, p in enumerate(itertools.product(subject_i, subject_j)):
+                    if i == self.negative_pairs_per_subject:
+                        break
+                    negatives += ((p[0], p[1]),)
+
+        return negatives
+
+    def create_light_negative_pairs(self):
+        """
+        Creating negative pairs.
+        Here we create only negative pairs from the same demographic group,
+        since we know that pairs from different demographics leads to
+        poor scores
+
+        .. warning:
+            This function generates a light set of negative pairs.
+            The number of pairs is composed by the number
+            of subjects in a particular demographic
+            multiplied by the number of `negative_pairs_per_subject`.
+            For example, a combination pairs with 1000 identities gives us
+            1000 pairs. Taking `3` pairs of images for these combinations
+            of identities will give us 3000 negative pairs.
+
+        """
+
+        # Inverting subject
+        random.seed(0)
+        negatives = []
+
+        # Creating the dictionary containing the demographics--> subjects
+        demographic_subject = dict()
+        for k, v in self.demographic_dataset.subject_demographic.items():
+            demographic_subject[v] = demographic_subject.get(v, []) + [k]
+
+        # For each demographic, pic the negative pairs
+
+        for d in demographic_subject:
+
+            n_subjects = len(demographic_subject[d])
+
+            subject_combinations = list(
+                itertools.combinations(demographic_subject[d], 2)
+            )
+            # Shuffling these combinations
+            random.shuffle(subject_combinations)
+
+            for s_c in subject_combinations[
+                0 : n_subjects * self.negative_pairs_per_subject
+            ]:
+                subject_i = self.siamese_bucket[s_c[0]]
+                subject_j = self.siamese_bucket[s_c[1]]
+                random.shuffle(subject_i)
+                random.shuffle(subject_j)
+
+                negatives += ((subject_i[0], subject_j[0]),)
+
+        return negatives
+
+    def __getitem__(self, idx):
+
+        sample = self.siamese_bucket[idx]
+        label = self.labels[idx]
+
+        # subject_id = sample.split("/")[-2]
+
+        # Transforming the image
+        image_i = sample[0].data
+        image_j = sample[1].data
+
+        image_i = (
+            image_i
+            if self.demographic_dataset.transform is None
+            else self.demographic_dataset.transform(image_i)
+        )
+        image_j = (
+            image_j
+            if self.demographic_dataset.transform is None
+            else self.demographic_dataset.transform(image_j)
+        )
+
+        demography = self.demographic_dataset.get_demographics(sample[0])
+
+        ## Getting the demographics
+
+        # demography = self.get_demographics(subject_id)
+
+        return {"data": (image_i, image_j), "label": label, "demography": demography}

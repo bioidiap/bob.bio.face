@@ -125,4 +125,4 @@ def test_boring_model():
 
     acc = trainer.validate(dataloaders=validation_dataloader)[0]["validation/accuracy"]
 
-    assert acc > 0.4
+    assert acc > 0.2

@@ -18,6 +18,13 @@ from sklearn.pipeline import make_pipeline
 class SCFaceDatabase(CSVDataset):
     """
     Surveillance Camera Face dataset
+
+    SCface is a database of static images of human faces.\
+    Images were taken in uncontrolled indoor environment using five video surveillance cameras of various qualities.
+    Database contains 4160 static images (in visible and infrared spectrum) of 130 subjects.
+    Images from different quality cameras mimic the real-world conditions and enable robust face recognition algorithms testing, emphasizing different
+    law enforcement and surveillance use case scenarios. 
+
     """
 
     def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):

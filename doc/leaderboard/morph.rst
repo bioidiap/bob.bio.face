@@ -8,6 +8,4 @@ Morph Dataset
 
 
 .. todo::
-   Present benchmarks
-
-   Probably for Manuel's students
+   To be done

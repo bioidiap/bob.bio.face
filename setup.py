@@ -270,6 +270,19 @@ setup(
         ],
         "bob.bio.cli": [
             "display-face-annotations          = bob.bio.face.script.display_face_annotations:display_face_annotations",
+            "face                              = bob.bio.face.script.face:face",
+        ],
+        "bob.bio.face.cli": [
+            "plots                     = bob.bio.face.script.plots:plots",
+        ],
+        "bob.bio.face.plots.cli": [
+            "multipie-pose                     = bob.bio.face.script.face_plots_commands:multipie_pose",
+            "multipie-expression               = bob.bio.face.script.face_plots_commands:multipie_expression",
+            "scface                            = bob.bio.face.script.face_plots_commands:scface_distance",
+            "arface                            = bob.bio.face.script.face_plots_commands:arface",
+            "mobio-gender                      = bob.bio.face.script.face_plots_commands:mobio_gender",
+            "gbu                               = bob.bio.face.script.face_plots_commands:gbu",
+            "ijbc                              = bob.bio.face.script.face_plots_commands:ijbc",
         ],
     },
     # Classifiers are important if you plan to distribute this package through

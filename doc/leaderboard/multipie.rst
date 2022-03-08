@@ -110,12 +110,25 @@ N.B : shot 19 is never used in those protocols as it is redundant with shot 0 (b
 * Probes : all shots from session 2, 3, 4.
 
 
+Setting up the database
+=======================
 
-Benchmarks
-==========
+    To use this dataset protocol, you need to have the original files of the MultiPIE dataset.
+    Once you have it downloaded, please run the following command to set the path for Bob
 
-Run the baselines
-*****************
+    .. code-block:: sh
+
+        bob config set bob.db.multipie.directory [MULTIPIE PATH]
+
+
+
+Benchmarking
+============
+
+
+Running experiments
+*******************
+
 
 You can run the Multipie baselines command with a simple command such as:
 
@@ -145,82 +158,42 @@ then point to it when calling the pipeline execution:
 
 
 
-Leaderboard
-***********
+Plots
+*****
 
-Protocol M
-----------
-
-.. csv-table:: Protocol M
-   :file: table/multipie/multipie_M.csv
-   :header-rows: 1
-
-.. image:: img/multipie/multipie_M_DET_dev.png
-    :align: center
-    :alt: Multipie M - DET dev
-
-.. image:: img/multipie/multipie_M_DET_eval.png
-    :align: center
-    :alt: Multipie M - DET eval
-
-Protocol U
-----------
-
-.. csv-table:: Protocol U
-   :file: table/multipie/multipie_U.csv
-   :header-rows: 1
-
-.. image:: img/multipie/multipie_U_DET_dev.png
-    :align: center
-    :alt: Multipie U - DET dev
-
-.. image:: img/multipie/multipie_U_DET_eval.png
-    :align: center
-    :alt: Multipie U - DET eval
-
-Protocol E
-----------
-
-.. csv-table:: Protocol E
-   :file: table/multipie/multipie_E.csv
-   :header-rows: 1
-
-.. image:: img/multipie/multipie_E_DET_dev.png
-    :align: center
-    :alt: Multipie E - DET dev
-
-.. image:: img/multipie/multipie_E_DET_eval.png
-    :align: center
-    :alt: Multipie E - DET eval
-
-Protocol P
-----------
-
-.. csv-table:: Protocol P
-   :file: table/multipie/multipie_P.csv
-   :header-rows: 1
-
-.. image:: img/multipie/multipie_P_DET_dev.png
-    :align: center
-    :alt: Multipie P - DET dev
-
-.. image:: img/multipie/multipie_P_DET_eval.png
-    :align: center
-    :alt: Multipie P - DET eval
-
-For the pose protocol specifically, we can perform a more detailed study
-to assess angle-wise performance of the various FR systems.
-Hereafter is an example code to run this type of analysis, as well 
-as the results. This code is also available as a Jupytext-compatible
-.py file under `./script/multipie/pose_analysis.py`, that can be loaded 
-as a Jupyter notebook.
-
-.. raw:: html
-    :file: script/multipie/pose_analysis.html
+:ref:`bob.bio.face` has some customized plots where the FMR and FNMR trade-off in the evaluation set can be plot using operational
+FMR thresholds from the development set.
+This is done be the command `bob bio face plots multipie-pose` command as in the example below:
 
 
+Pose protocol
+-------------
+
+.. code-block:: bash
+
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   tar -xzvf frice_scores.tar.gz
+   bob bio face plots multipie-pose -e \
+        ./frice_scores/multipie-pose/arcface_insightface/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-pose/iresnet50_msceleb_arcface_20210623/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-pose/attention_net/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-pose/facenet_sanderberg/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-pose/ISV/scores-{dev,eval}.csv \
+        --titles ArcFace-100,Idiap-Resnet50,Zoo-AttentionNet,Facenet-Sandberg,2014-ISV -o plot.pdf
 
 
+Expression protocol
+-------------------
 
+.. code-block:: bash
 
+    bob bio face plots multipie-expression -e \
+        ./frice_scores/multipie-expression/arcface_insightface/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-expression/iresnet50_msceleb_arcface_20210623/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-expression/attention_net/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-expression/facenet_sanderberg/scores-{dev,eval}.csv \
+        ./frice_scores/multipie-expression/ISV/scores-{dev,eval}.csv \
+        --titles ArcFace-100,Idiap-Resnet50,Zoo-AttentionNet,Facenet-Sandberg,2014-ISV -o plot.pdf
 
+.. note::
+  Always remember, `bob bio face plots --help` is your friend.

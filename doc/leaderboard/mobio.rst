@@ -7,7 +7,7 @@ Mobio Dataset
 =============
 
 
-The MOBIO dataset is a video database containing bimodal data (face/speaker).
+The MOBIO (:py:class`bob.bio.face.database.MobioDatabase`) dataset is a video database containing bimodal data (face/speaker).
 It is composed by 152 people (split in the two genders male and female), mostly Europeans, split in 5 sessions (few weeks time lapse between sessions).
 The database was recorded using two types of mobile devices: mobile phones (NOKIA N93i) and laptop 
 computers(standard 2008 MacBook).
@@ -33,15 +33,25 @@ For more information check:
         doi = {10.1049/iet-bmt.2012.0059},
     }
 
+Setting up the database
+=======================
 
-Benchmarks
-==========
+    To use this dataset protocol, you need to have the original files of the Mobio dataset.
+    Once you have it downloaded, please run the following command to set the path for Bob
+
+    .. code-block:: sh
+
+        bob config set bob.db.mobio.directory [MOBIO PATH]
+
+
+Benchmarking
+============
     
 You can run the mobio baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics mobio-male arcface-insightface
+   bob bio pipeline vanilla-biometrics mobio-all arcface-insightface
 
 
 Scores from some of our baselines can be found `here <https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/mobio-male.tar.gz>`_.
@@ -55,4 +65,26 @@ A det curve can be generated with these scores by running the following commands
 
 and get the following :download:`plot <./plots/det-mobio-male.pdf>`.
 
+
+
+:ref:`bob.bio.face` has some customized plots where the FMR and FNMR trade-off in the evaluation set can be plot using operational
+FMR thresholds from the development set.
+This is done be the command `bob bio face plots mobio-gender` command as in the example below:
+
+
+.. code-block:: bash
+
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   tar -xzvf frice_scores.tar.gz
+   bob bio face plots mobio-gender -e \
+        ./frice_scores/mobio-gender/arcface_insightface/scores-{dev,eval}.csv \
+        ./frice_scores/mobio-gender/iresnet50_msceleb_arcface_20210623/scores-{dev,eval}.csv \
+        ./frice_scores/mobio-gender/attention_net/scores-{dev,eval}.csv \
+        ./frice_scores/mobio-gender/facenet_sanderberg/scores-{dev,eval}.csv \
+        ./frice_scores/mobio-gender/ISV/scores-{dev,eval}.csv \
+        --titles ArcFace-100,Idiap-Resnet50,Zoo-AttentionNet,Facenet-Sandberg,2014-ISV -o mobio-gender.pdf
+
+
+.. note::
+  Always remember, `bob bio face plots --help` is your friend.
 

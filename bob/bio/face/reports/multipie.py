@@ -46,10 +46,10 @@ def multipie_pose_report(
 
     colors:
        Color palete
-    
+
     optimal_threshold: bool
       If set it to `True`, it will compute one decision threshold for each
-      subprotocol (for each pose). Default to false. 
+      subprotocol (for each pose). Default to false.
 
     threshold_eval: bool
       If set it to `True` it will compute the threshold using the evaluation set.
@@ -223,7 +223,11 @@ def multipie_expression_report(
 
     eval_fmr_fnmr_expressions = dict()
 
-    for d_scores, e_scores, title, in zip(scores_dev, scores_eval, titles):
+    for (
+        d_scores,
+        e_scores,
+        title,
+    ) in zip(scores_dev, scores_eval, titles):
 
         eval_fmr_fnmr_expressions[title] = []
 
@@ -258,7 +262,6 @@ def multipie_expression_report(
         # eval_fmr_fnmr_expressions[title].append(compute_fmr_fnmr(i_eval, g_eval))
 
         ### EVALUATING DIFFERENT TYPES OF EXPRESSION
-
         for expression in expressions:
             i_eval = impostors_eval.loc[impostors_eval.probe_expression == expression]
             g_eval = genuines_eval.loc[genuines_eval.probe_expression == expression]
@@ -284,19 +287,36 @@ def multipie_expression_report(
 
         x_axis = X + (i + 1) * width - width / 2
         ax.bar(
-            x_axis, fmrs, width, label=title, color=color, alpha=1, hatch="\\",
+            x_axis,
+            fmrs,
+            width,
+            label=title,
+            color=color,
+            alpha=1,
+            hatch="\\",
         )
         ax.bar(
-            x_axis, fnmrs, width, color=color, alpha=0.5, hatch="/",
+            x_axis,
+            fnmrs,
+            width,
+            color=color,
+            alpha=0.5,
+            hatch="/",
         )
         # str(int(fnmr)) if fnmr == 0 else str(round(fnmr, 1))
         # Writting the texts on top of the bar plots
         for i, fnmr, fmr in zip(x_axis, fnmrs, fmrs):
             plt.text(
-                i - width / 2, fnmr + 0.8, str(int(fnmr)), fontsize=10,
+                i - width / 2,
+                fnmr + 0.8,
+                str(int(fnmr)),
+                fontsize=10,
             )
             plt.text(
-                i - width / 2, fmr - 2.8, str(int(abs(fmr))), fontsize=10,
+                i - width / 2,
+                fmr - 2.8,
+                str(int(abs(fmr))),
+                fontsize=10,
             )
 
     # Plot finalization
@@ -307,7 +327,15 @@ def multipie_expression_report(
     ax.set_xticks(X + 0.5)
     ax.set_xticklabels(expressions)
 
-    yticks = np.array([-y_abs_max / 8, 0, y_abs_max / 4, y_abs_max / 2, y_abs_max,])
+    yticks = np.array(
+        [
+            -y_abs_max / 8,
+            0,
+            y_abs_max / 4,
+            y_abs_max / 2,
+            y_abs_max,
+        ]
+    )
 
     ax.set_yticks(yticks)
     ax.set_yticklabels([int(abs(y)) for y in yticks], fontsize=16)

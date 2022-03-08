@@ -18,8 +18,24 @@ This includes:
 * Scripts that trains CNNs for face recognition.
 
 
+
+
 Get Started
 ===========
+
+
+First, complete Bob's `installation <https://www.idiap.ch/software/bob/docs/bob/docs/stable/install.html>`_ instructions. Then, to install this package, do
+this:
+
+.. code-block:: sh
+
+   $ conda activate <myenv>
+   (<myenv>) $ conda install bob.bio.face
+
+
+The simplest experiment
+.......................
+
 
 The easiest way to get started is by simply comparing two faces::
 

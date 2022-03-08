@@ -14,15 +14,15 @@ Datasets
 .. toctree::
    :maxdepth: 2
 
-   mobio
+   arface
+   gbu
+   ijbc
    lfw
    meds
-   morph
-   ijbc
+   mobio
+   morph   
+   multipie   
+   scface   
    uccs
-   multipie
-   arface
-   xm2vts
-   gbu
-   banca
+
    

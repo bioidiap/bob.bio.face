@@ -173,7 +173,7 @@ class VGG2Database(CSVDatasetZTNorm):
         # Downloading model if not exists
         urls = VGG2Database.urls()
         filename = get_file(
-            "vgg2.tar.gz", urls, file_hash="65d5b49a2ee8ae6bcd60379edaa4a78f"
+            "vgg2.tar.gz", urls, file_hash="4a05d797a326374a6b52bcd8d5a89d48"
         )
 
         super().__init__(

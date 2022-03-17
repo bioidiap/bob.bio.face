@@ -16,3 +16,4 @@ def load(annotation_type, fixed_positions=None):
 
 
 pipeline = load(annotation_type, fixed_positions)
+transformer = pipeline.transformer

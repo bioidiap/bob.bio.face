@@ -13,3 +13,4 @@ def load(annotation_type, fixed_positions=None, memory_demanding=False):
 
 
 pipeline = load(annotation_type, fixed_positions, memory_demanding)
+transformer = pipeline.transformer

@@ -12,7 +12,7 @@ Executing Baseline Algorithms
 In this section we introduce the baselines available in this pakcage.
 To execute one of then in the databases available just run the following command::
 
-$ bob bio pipelines vanilla-biometrics [DATABASE_NAME] [BASELINE]
+$ bob bio pipelines vanilla [DATABASE_NAME] [BASELINE]
 
 .. note::
   Both, `[DATABASE_NAME]` and `[BASELINE]` can be either python resources or

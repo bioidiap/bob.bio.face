@@ -28,12 +28,12 @@ Once you have it downloaded, please run the following command to set the path fo
 
 Benchmarking
 ============
-    
+
 You can run the IJBC baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics ijbc-test4-g1 iresnet100
+   bob bio pipeline vanilla ijbc-test4-g1 iresnet100
 
 
 The above command will run an example of open set face recognition.
@@ -46,7 +46,7 @@ This is done be the command `bob bio face plots ijbc` command as in the example 
 
 .. code-block:: bash
 
-   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz
    tar -xzvf frice_scores.tar.gz
    bob bio face plots ijbc \
         ./frice_scores/ijbc/arcface_insightface/scores-dev.csv \

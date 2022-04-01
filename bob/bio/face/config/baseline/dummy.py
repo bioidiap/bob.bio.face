@@ -1,8 +1,8 @@
 from bob.pipelines import wrap
 from sklearn.pipeline import make_pipeline
-from bob.bio.base.pipelines.vanilla_biometrics import (
+from bob.bio.base.pipelines import (
     Distance,
-    VanillaBiometricsPipeline,
+    PipelineSimple,
 )
 from bob.pipelines.transformers import SampleLinearize
 from bob.bio.face.utils import lookup_config_from_database
@@ -30,14 +30,16 @@ def load(annotation_type, fixed_positions=None):
 
     transformer = make_pipeline(
         wrap(
-            ["sample"], ToGray(), transform_extra_arguments=transform_extra_arguments,
+            ["sample"],
+            ToGray(),
+            transform_extra_arguments=transform_extra_arguments,
         ),
         SampleLinearize(),
     )
 
     algorithm = Distance()
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 pipeline = load(annotation_type, fixed_positions)

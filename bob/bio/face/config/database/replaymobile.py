@@ -13,9 +13,9 @@ videos to be accepted by most face recognition systems.
 Feed this file (defined as resource: ``replaymobile-img``) to ``bob bio pipelines`` as
 configuration:
 
-    $ bob bio pipelines vanilla-biometrics -v --write-metadata-scores replaymobile-img inception-resnetv2-msceleb
+    $ bob bio pipeline simple -v --write-metadata-scores replaymobile-img inception-resnetv2-msceleb
 
-    $ bob bio pipelines vanilla-biometrics -v --write-metadata-scores my_config/protocol.py replaymobile-img inception-resnetv2-msceleb
+    $ bob bio pipeline simple -v --write-metadata-scores my_config/protocol.py replaymobile-img inception-resnetv2-msceleb
 """
 
 from bob.bio.face.database.replaymobile import ReplayMobileBioDatabase

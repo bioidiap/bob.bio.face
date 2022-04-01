@@ -54,7 +54,7 @@ Get Started, serious
 
 For detailed information on how this package is structured and how
 to run experiments with it, please refer to the documentation of :ref:`bob.bio.base <bob.bio.base>`
-and get to know the vanilla biometrics and how to integrate both, algorithm and database protocols with it.
+and get to know the PipelineSimple and how to integrate both, algorithm and database protocols with it.
 
 
 Users Guide

@@ -7,8 +7,8 @@ import imp
 import os
 import torch
 import numpy as np
-from bob.bio.base.pipelines.vanilla_biometrics import Distance
-from bob.bio.base.pipelines.vanilla_biometrics import VanillaBiometricsPipeline
+from bob.bio.base.pipelines import Distance
+from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.face.utils import dnn_default_cropping
 from bob.bio.face.utils import embedding_transformer
 from bob.bio.face.utils import cropped_positions_arcface
@@ -641,7 +641,7 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
 
     algorithm = Distance()
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def AttentionNet(
@@ -657,7 +657,7 @@ def AttentionNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
 
@@ -694,7 +694,7 @@ def ResNeSt(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
 
@@ -732,7 +732,7 @@ def MobileFaceNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
 
@@ -771,7 +771,7 @@ def ResNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
     Parameters
@@ -809,7 +809,7 @@ def EfficientNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
 
@@ -848,7 +848,7 @@ def TF_NAS(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
 
@@ -887,7 +887,7 @@ def HRNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
     Parameters
@@ -924,7 +924,7 @@ def ReXNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
 
@@ -961,7 +961,7 @@ def GhostNet(
 
     .. warning::
 
-       If you are at Idiap, please use the option `-l sge-gpu` while running the `vanilla-biometrics` pipeline.
+       If you are at Idiap, please use the option `-l sge-gpu` while running the `pipeline simple` pipeline.
 
 
     Parameters

@@ -1,4 +1,4 @@
-from bob.bio.base.pipelines.vanilla_biometrics.abstract_classes import Database
+from bob.bio.base.pipelines.abstract_classes import Database
 import pandas as pd
 from bob.pipelines.sample import DelayedSample, SampleSet
 from bob.extension import rc
@@ -370,7 +370,8 @@ class RFWDatabase(Database):
             if (target_set == "train" and race == "Caucasian")
             else self._fetch_landmarks(
                 os.path.join(
-                    self.original_directory, f"{target_set}/txts/{race}/{race}_lmk.txt",
+                    self.original_directory,
+                    f"{target_set}/txts/{race}/{race}_lmk.txt",
                 ),
                 reference_id,
             )
@@ -378,7 +379,10 @@ class RFWDatabase(Database):
 
         samples = [
             DelayedSample(
-                partial(bob.io.image.load, path,),
+                partial(
+                    bob.io.image.load,
+                    path,
+                ),
                 key=key,
                 annotations=annotations,
                 reference_id=reference_id,

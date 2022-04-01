@@ -1,6 +1,6 @@
-from bob.bio.base.pipelines.vanilla_biometrics import (
+from bob.bio.base.pipelines import (
     Distance,
-    VanillaBiometricsPipeline,
+    PipelineSimple,
     BioAlgorithmLegacy,
 )
 from bob.bio.face.utils import (
@@ -54,12 +54,10 @@ def get_pipeline(face_cropper, transform_extra_arguments):
         distance_function=bob.math.histogram_intersection, is_distance_function=False
     )
 
-    tempdir = bob.bio.base.pipelines.vanilla_biometrics.legacy.get_temp_directory(
-        "LGBPHS"
-    )
+    tempdir = bob.bio.base.pipelines.legacy.get_temp_directory("LGBPHS")
     algorithm = BioAlgorithmLegacy(histogram, base_dir=tempdir)
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def load(annotation_type, fixed_positions=None):

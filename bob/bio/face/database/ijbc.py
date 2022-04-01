@@ -1,4 +1,4 @@
-from bob.bio.base.pipelines.vanilla_biometrics.abstract_classes import Database
+from bob.bio.base.pipelines.abstract_classes import Database
 import pandas as pd
 from bob.pipelines.sample import DelayedSample, SampleSet
 from bob.extension import rc

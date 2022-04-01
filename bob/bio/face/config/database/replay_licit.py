@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from bob.bio.face.database import ReplayBioDatabase
-from bob.bio.base.pipelines.vanilla_biometrics import DatabaseConnector
+from bob.bio.base.pipelines import DatabaseConnector
 from bob.extension import rc
 
 
@@ -17,4 +17,3 @@ database = DatabaseConnector(
     annotation_type="bounding-box",
     fixed_positions=None,
 )
-

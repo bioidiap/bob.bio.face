@@ -1,6 +1,6 @@
-from bob.bio.base.pipelines.vanilla_biometrics import (
+from bob.bio.base.pipelines import (
     Distance,
-    VanillaBiometricsPipeline,
+    PipelineSimple,
     BioAlgorithmLegacy,
 )
 from bob.bio.face.utils import (
@@ -63,12 +63,10 @@ def get_pipeline(face_cropper, transform_extra_arguments):
     )
 
     # Set default temporary directory
-    tempdir = bob.bio.base.pipelines.vanilla_biometrics.legacy.get_temp_directory(
-        "gabor_graph"
-    )
+    tempdir = bob.bio.base.pipelines.legacy.get_temp_directory("gabor_graph")
 
     algorithm = BioAlgorithmLegacy(gabor_jet, base_dir=tempdir)
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def load(annotation_type, fixed_positions=None):

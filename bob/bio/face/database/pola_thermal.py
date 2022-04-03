@@ -84,7 +84,9 @@ class PolaThermalDatabase(CSVDataset):
         # Downloading model if not exists
         urls = PolaThermalDatabase.urls()
         filename = get_file(
-            "pola_thermal.tar.gz", urls, file_hash="cfbd7362773c6d49292fe1998e3c3825",
+            "polathermal.tar.gz",
+            urls,
+            file_hash="4693149bc883debe5a9e1441a4f5f4ae",
         )
 
         directory = rc.get("bob.db.pola-thermal.directory", "")
@@ -177,6 +179,6 @@ class PolaThermalDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/pola_thermal.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/pola_thermal.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
         ]

@@ -18,8 +18,8 @@ import os
 
 class CBSRNirVis2Database(CSVDataset):
     """
-    This package contains the access API and descriptions for the `CASIA NIR-VIS 2.0 Database <http://www.cbsr.ia.ac.cn/english/NIR-VIS-2.0-Database.html>`. 
-    The actual raw data for the database should be downloaded from the original URL. 
+    This package contains the access API and descriptions for the `CASIA NIR-VIS 2.0 Database <http://www.cbsr.ia.ac.cn/english/NIR-VIS-2.0-Database.html>`.
+    The actual raw data for the database should be downloaded from the original URL.
     This package only contains the Bob accessor methods to use the DB directly from python, with the original protocol of the database.
 
     CASIA NIR-VIS 2.0 database offers pairs of mugshot images and their correspondent NIR photos.
@@ -36,7 +36,7 @@ class CBSRNirVis2Database(CSVDataset):
         booktitle={Computer Vision and Pattern Recognition Workshops (CVPRW), 2013 IEEE Conference on},
         pages={348--353},
         year={2013},
-        organization={IEEE}     
+        organization={IEEE}
         }
 
 
@@ -59,7 +59,9 @@ class CBSRNirVis2Database(CSVDataset):
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()
         filename = get_file(
-            "cbsr_nir_vis_2.tar.gz", urls, file_hash="116da4537c1099915cdc0f08feb651bd",
+            "cbsr-nir-vis2.tar.gz",
+            urls,
+            file_hash="e4bda52ab6754556783d6730eccc2ae2",
         )
 
         directory = (
@@ -113,6 +115,6 @@ class CBSRNirVis2Database(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/cbsr_nir_vis_2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/cbsr_nir_vis_2.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/cbsr-nir-vis2.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/cbsr-nir-vis2.tar.gz",
         ]

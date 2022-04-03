@@ -55,9 +55,9 @@ class CaspealDatabase(CSVDataset):
         # Downloading model if not exists
         urls = CaspealDatabase.urls()
         filename = get_file(
-            "caspeal-f2479a0b.tar.gz",
+            "caspeal.tar.gz",
             urls,
-            file_hash="c747f2810f5373e556c43f979b00dd06",
+            file_hash="1c77f660ef85fa263a2312fd8263d0d9",
         )
 
         super().__init__(
@@ -93,6 +93,6 @@ class CaspealDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/caspeal-f2479a0b.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/caspeal-f2479a0b.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/caspeal.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/caspeal.tar.gz",
         ]

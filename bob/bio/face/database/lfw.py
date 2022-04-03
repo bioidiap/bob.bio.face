@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 # Sat 20 Aug 15:43:10 CEST 2016
 
-from bob.bio.base.pipelines.vanilla_biometrics.abstract_classes import Database
+from bob.bio.base.pipelines.abstract_classes import Database
 from bob.pipelines import DelayedSample, SampleSet
 import os
 from functools import partial

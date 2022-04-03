@@ -45,7 +45,7 @@ You can run the arface baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics arface-all iresnet100
+   bob bio pipeline simple arface-all iresnet100
 
 
 :ref:`bob.bio.face` has some customized plots where the FMR and FNMR trade-off in the evaluation set can be plot using operational

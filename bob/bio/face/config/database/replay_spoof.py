@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 from bob.bio.face.database import ReplayBioDatabase
-from bob.bio.base.pipelines.vanilla_biometrics import DatabaseConnector
+from bob.bio.base.pipelines import DatabaseConnector
 from bob.extension import rc
 
 
@@ -18,4 +18,3 @@ database = DatabaseConnector(
     # Only compare with spoofs from the same target identity
     allow_scoring_with_all_biometric_references=False,
 )
-

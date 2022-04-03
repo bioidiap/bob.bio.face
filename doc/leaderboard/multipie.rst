@@ -134,14 +134,14 @@ You can run the Multipie baselines command with a simple command such as:
 
 .. code-block:: bash
 
-    bob bio pipeline vanilla-biometrics multipie gabor_graph -m -l sge
+    bob bio pipeline simple multipie gabor_graph -m -l sge
 
 Note that the default protocol implemented in the resource is the U protocol.
 The pose protocol is also available using
 
 .. code-block:: bash
 
-    bob bio pipeline vanilla-biometrics multipie_pose gabor_graph -m -l sge
+    bob bio pipeline simple multipie_pose gabor_graph -m -l sge
 
 For the other protocols, one has to define its own configuration file (e.g.: *multipie_M.py*) as follows:
 
@@ -154,7 +154,7 @@ then point to it when calling the pipeline execution:
 
 .. code-block:: bash
 
-    bob bio pipeline vanilla-biometrics multipie_M.py gabor_graph -m -l sge
+    bob bio pipeline simple multipie_M.py gabor_graph -m -l sge
 
 
 

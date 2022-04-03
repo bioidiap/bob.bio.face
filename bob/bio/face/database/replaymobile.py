@@ -241,13 +241,11 @@ class ReplayMobileBioDatabase(CSVDataset):
 
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            proto_def_hash = "6cd66a5e"
-            proto_def_name = (
-                f"database-protocols-replaymobile-img-{proto_def_hash}.tar.gz"
-            )
+            proto_def_hash = "fee57d46"
+            proto_def_name = f"replaymobile-{proto_def_hash}.tar.gz"
             proto_def_urls = [
-                f"https://www.idiap.ch/software/bob/data/bob/bob.bio.face/{proto_def_name}",
-                f"http://www.idiap.ch/software/bob/data/bob/bob.bio.face/{proto_def_name}",
+                f"https://www.idiap.ch/software/bob/databases/latest/{proto_def_name}",
+                f"http://www.idiap.ch/software/bob/databases/latest//{proto_def_name}",
             ]
             protocol_definition_path = get_file(
                 filename=proto_def_name,
@@ -289,7 +287,7 @@ class ReplayMobileBioDatabase(CSVDataset):
         logger.info(f"Database: Will read raw data files in '{data_path}'.")
         logger.info(f"Database: Will read annotation files in '{annotations_path}'.")
         super().__init__(
-            name="replaymobile-img",
+            name="replaymobile",
             protocol=protocol,
             dataset_protocol_path=protocol_definition_path,
             csv_to_sample_loader=make_pipeline(

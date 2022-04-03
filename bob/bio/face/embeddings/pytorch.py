@@ -1165,8 +1165,9 @@ def afffe_baseline(
     )
 
     algorithm = Distance()
+    from bob.bio.base.pipelines import PipelineSimple
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def oxford_vgg2_resnets(
@@ -1211,5 +1212,6 @@ def oxford_vgg2_resnets(
     )
 
     algorithm = Distance()
+    from bob.bio.base.pipelines import PipelineSimple
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)

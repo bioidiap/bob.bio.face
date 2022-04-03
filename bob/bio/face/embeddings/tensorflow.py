@@ -19,9 +19,9 @@ from bob.bio.face.utils import (
     cropped_positions_arcface,
 )
 
-from bob.bio.base.pipelines.vanilla_biometrics import (
+from bob.bio.base.pipelines import (
     Distance,
-    VanillaBiometricsPipeline,
+    PipelineSimple,
 )
 from bob.bio.face.annotator import MTCNN
 
@@ -901,7 +901,7 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
 
     algorithm = Distance()
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def resnet_template(embedding, annotation_type, fixed_positions=None):
@@ -939,7 +939,7 @@ def resnet_template(embedding, annotation_type, fixed_positions=None):
 
     algorithm = Distance()
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def resnet50_msceleb_arcface_2021(

@@ -48,7 +48,7 @@ You can run the scface baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics scface iresnet100
+   bob bio pipeline simple scface iresnet100
 
 
 :ref:`bob.bio.face` has some customized plots where the FMR and FNMR trade-off in the evaluation set can be plot using operational

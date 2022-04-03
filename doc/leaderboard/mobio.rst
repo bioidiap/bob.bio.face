@@ -51,7 +51,7 @@ You can run the mobio baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics mobio-all arcface-insightface
+   bob bio pipeline simple mobio-all arcface-insightface
 
 
 Scores from some of our baselines can be found `here <https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/mobio-male.tar.gz>`_.

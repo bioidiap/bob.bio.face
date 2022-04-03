@@ -66,9 +66,9 @@ class ARFaceDatabase(CSVDataset):
         # Downloading model if not exists
         urls = ARFaceDatabase.urls()
         filename = get_file(
-            "arface-d24d4413.tar.gz",
+            "arface.tar.gz",
             urls,
-            file_hash="71944cca12819003e3629da9c1cb8b66",
+            file_hash="66cf05fe03adb8d73a76fd75641dd468",
         )
 
         super().__init__(
@@ -105,6 +105,6 @@ class ARFaceDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/arface-d24d4413.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/arface-d24d4413.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
         ]

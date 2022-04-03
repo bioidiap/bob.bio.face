@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-from bob.bio.base.pipelines.vanilla_biometrics import DatabaseConnector
+from bob.bio.base.pipelines import DatabaseConnector
 from bob.extension import rc
 from bob.bio.face.database import FargoBioDatabase
 

@@ -163,9 +163,9 @@ from bob.bio.face.utils import (
     embedding_transformer,
     cropped_positions_arcface,
 )
-from bob.bio.base.pipelines.vanilla_biometrics import (
+from bob.bio.base.pipelines import (
     Distance,
-    VanillaBiometricsPipeline,
+    PipelineSimple,
 )
 
 
@@ -200,7 +200,7 @@ def arcface_template(embedding, annotation_type, fixed_positions=None):
 
     algorithm = Distance()
 
-    return VanillaBiometricsPipeline(transformer, algorithm)
+    return PipelineSimple(transformer, algorithm)
 
 
 def arcface_insightFace_lresnet100(

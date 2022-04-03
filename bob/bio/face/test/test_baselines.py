@@ -2,9 +2,9 @@ import pkg_resources
 import numpy as np
 from bob.pipelines import Sample, SampleSet, DelayedSample
 from bob.bio.base import load_resource
-from bob.bio.base.pipelines.vanilla_biometrics import (
-    checkpoint_vanilla_biometrics,
-    dask_vanilla_biometrics,
+from bob.bio.base.pipelines import (
+    checkpoint_pipeline_simple,
+    dask_pipeline_simple,
 )
 import tempfile
 import os
@@ -74,7 +74,7 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
     with tempfile.TemporaryDirectory() as d:
 
         cpy = copy.deepcopy(pipeline)
-        checkpoint_pipeline = checkpoint_vanilla_biometrics(cpy, base_dir=d)
+        checkpoint_pipeline = checkpoint_pipeline_simple(cpy, base_dir=d)
 
         checkpoint_scores = checkpoint_pipeline([], biometric_references, probes)
         assert len(checkpoint_scores) == 1
@@ -94,8 +94,8 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
 
     with tempfile.TemporaryDirectory() as d:
         cpy = copy.deepcopy(pipeline)
-        dask_pipeline = dask_vanilla_biometrics(
-            checkpoint_vanilla_biometrics(cpy, base_dir=d)
+        dask_pipeline = dask_pipeline_simple(
+            checkpoint_pipeline_simple(cpy, base_dir=d)
         )
         dask_scores = dask_pipeline([], biometric_references, probes)
         dask_scores = dask_scores.compute(scheduler="single-threaded")

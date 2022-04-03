@@ -33,7 +33,7 @@ You can run the IJBC baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics ijbc-test4-g1 iresnet100
+   bob bio pipeline simple ijbc-test4-g1 iresnet100
 
 
 The above command will run an example of open set face recognition.

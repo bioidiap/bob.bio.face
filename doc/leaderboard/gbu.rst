@@ -30,7 +30,7 @@ You can run the mobio baselines command with a simple command such as:
 
 .. code-block:: bash
 
-   bob bio pipeline vanilla-biometrics gbu-good iresnet100
+   bob bio pipeline simple gbu-good iresnet100
 
 
 :ref:`bob.bio.face` has some customized plots where the FMR and FNMR trade-off in the evaluation set can be plot using operational

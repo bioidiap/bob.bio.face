@@ -179,6 +179,6 @@ class PolaThermalDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/pola_thermal.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/pola_thermal.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
         ]

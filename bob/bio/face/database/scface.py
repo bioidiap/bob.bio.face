@@ -34,7 +34,7 @@ class SCFaceDatabase(CSVDataset):
         filename = get_file(
             "scface.tar.gz",
             urls,
-            file_hash="7f7b4f79fac4a734d79183c8ad568b957ff302f123ccf3d6ddc62384b7ba6ac4",
+            file_hash="813cd9339e3314826821978a11bdc34a",
         )
 
         super().__init__(
@@ -64,6 +64,6 @@ class SCFaceDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/scface-7f7b4f79.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/scface-7f7b4f79.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/scface.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/scface.tar.gz",
         ]

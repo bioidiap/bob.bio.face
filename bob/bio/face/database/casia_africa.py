@@ -19,7 +19,7 @@ class CasiaAfricaDatabase(CSVDataset):
     """
     The Casia-Face-Africa dataset is composed of 1133 identities from different ethical groups in Nigeria.
 
-    The capturing locations are: 
+    The capturing locations are:
       - Dabai  city  in  Katsina  state
       - Hotoro  in  Kano  state
       - Birget  in Kano  state
@@ -29,7 +29,7 @@ class CasiaAfricaDatabase(CSVDataset):
 
     These locations were strategically selected as they are known to have diverse population of local ethnicities.
 
-    .. warning:: 
+    .. warning::
        Only 17 subjects had their images capture in two sessions.
 
     Images were captured during  daytime  and  night using three different cameras:
@@ -71,8 +71,8 @@ class CasiaAfricaDatabase(CSVDataset):
            year = {},
            type = {Journal Article}
         }
-  
-  
+
+
     Example
     -------
 
@@ -102,9 +102,9 @@ class CasiaAfricaDatabase(CSVDataset):
         # Downloading model if not exists
         urls = CasiaAfricaDatabase.urls()
         filename = get_file(
-            "casia_face_africa.tar.gz",
+            "casia-africa.tar.gz",
             urls,
-            file_hash="324bd69b581477d30606417be8e30d2a",
+            file_hash="080d4bfffec95a6445507065054757eb",
         )
 
         directory = (
@@ -142,6 +142,6 @@ class CasiaAfricaDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/casia_face_africa.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/casia_face_africa.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/casia-africa.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/casia-africa.tar.gz",
         ]

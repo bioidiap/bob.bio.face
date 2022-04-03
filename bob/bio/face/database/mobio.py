@@ -70,7 +70,7 @@ class MobioDatabase(CSVDatasetZTNorm):
         # Downloading model if not exists
         urls = MobioDatabase.urls()
         filename = get_file(
-            "mobio.tar.gz", urls, file_hash="eb55f3fda07c6108888a6bd711be66d5"
+            "mobio.tar.gz", urls, file_hash="4a7f99b33a54b2dd337ddcaecb09edb8"
         )
 
         super().__init__(
@@ -107,6 +107,6 @@ class MobioDatabase(CSVDatasetZTNorm):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/mobio.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/mobio-7fdf4f20.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/mobio-7fdf4f20.tar.gz",
         ]

@@ -4,7 +4,6 @@ import numpy as np
 import pickle
 
 import bob.ip.base
-import bob.ip.gabor
 
 # Cropping
 CROPPED_IMAGE_HEIGHT = 80
@@ -24,11 +23,7 @@ def assert_picklable_with_exceptions(obj):
     # those objects
 
     exception_list = [
-        bob.ip.base.LBP,
         bob.bio.face.preprocessor.FaceCrop,
-        bob.ip.gabor.Similarity,
-        bob.ip.gabor.Transform,
-        bob.ip.gabor.Graph,
     ]
 
     string = pickle.dumps(obj)
@@ -65,13 +60,12 @@ def test_face_crop():
 
 def test_INormLBP():
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
 
     preprocessor = bob.bio.face.preprocessor.INormLBP(
-      face_cropper = face_cropper,
-      dtype = np.float64
+        face_cropper=face_cropper, dtype=np.float64
     )
 
     assert assert_picklable_with_exceptions(preprocessor)
@@ -79,8 +73,8 @@ def test_INormLBP():
 
 def test_TanTriggs():
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
 
     preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=face_cropper)
@@ -91,14 +85,14 @@ def test_TanTriggs():
 def test_HistogramEqualization():
 
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
     preprocessor = bob.bio.face.preprocessor.HistogramEqualization(
-      face_cropper = face_cropper
+        face_cropper=face_cropper
     )
 
-    #assert assert_picklable_with_exceptions(preprocessor)
+    # assert assert_picklable_with_exceptions(preprocessor)
 
 
 ### Extractors
@@ -107,38 +101,6 @@ def test_HistogramEqualization():
 def test_DCT():
     extractor = bob.bio.face.extractor.DCTBlocks()
     assert_picklable_with_exceptions(extractor)
-
-
-def test_GridGraph():
-    extractor = bob.bio.face.extractor.GridGraph(node_distance=24)
-    fake_image = np.arange(64 * 80).reshape(64, 80).astype("float")
-    extractor(fake_image)
-
-
-def test_LGBPHS():
-    import math
-
-    extractor = bob.bio.face.extractor.LGBPHS(
-        block_size=8,
-        block_overlap=0,
-        gabor_directions=4,
-        gabor_scales=2,
-        gabor_sigma=math.sqrt(2.0) * math.pi,
-        sparse_histogram=True,
-    )
-
-    assert assert_picklable_with_exceptions(extractor)
-
-
-## Algorithms
-
-
-def test_GaborJet():
-
-    algorithm = bob.bio.face.algorithm.GaborJet(
-        "PhaseDiffPlusCanberra", multiple_feature_scoring="average_model"
-    )
-    assert assert_picklable_with_exceptions(algorithm)
 
 
 def test_Histogram():

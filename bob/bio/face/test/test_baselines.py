@@ -182,10 +182,6 @@ def test_arcface_resnet50_msceleb_20210521():
     run_baseline("resnet50-msceleb-arcface-20210521", target_scores=-0.9628566738931277)
 
 
-# def test_gabor_graph():
-# run_baseline("gabor_graph", target_scores=0.4385451147418939)
-
-
 @pytest.mark.slow
 @is_library_available("torch")
 def test_afffe():

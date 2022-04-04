@@ -141,8 +141,6 @@ Image Feature Extractors
 
 .. autosummary::
    bob.bio.face.extractor.DCTBlocks
-   bob.bio.face.extractor.GridGraph
-   bob.bio.face.extractor.LGBPHS
 
 
 
@@ -152,7 +150,6 @@ Face Recognition Algorithms
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. autosummary::
-   bob.bio.face.algorithm.GaborJet
    bob.bio.face.algorithm.Histogram
 
 

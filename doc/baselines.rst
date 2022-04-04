@@ -33,13 +33,13 @@ Before Deep learning era
 ========================
 
 
-* ``eigenface``: The eigenface algorithm as proposed by [TP91]_. It uses the pixels as raw data, and applies a *Principal Component Analysis* (PCA) on it.
+* ``eigenface``: The eigenface algorithm as proposed by [TP91]_. It uses the pixels as raw data, and applies a *Principal Component Analysis* (PCA) on it. **Deprecated**, please rely on older versions of bob.bio.face
 
-* ``lda``: The LDA algorithm (was removed but can be easily implemented) applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_
+* ``lda``: The LDA algorithm (was removed but can be easily implemented) applies a *Linear Discriminant Analysis* (LDA), here we use the combined PCA+LDA approach [ZKC98]_ **Deprecated**, please rely on older versions of bob.bio.face
 
-* ``gabor_graph``: This method extract grid graphs of Gabor jets from the images, and computes a Gabor phase based similarity [GHW12]_.
+* ``gabor_graph``: This method extract grid graphs of Gabor jets from the images, and computes a Gabor phase based similarity [GHW12]_., **Deprecated**, please rely on older versions of bob.bio.face
 
-* ``lgbphs``: Local Gabor binary pattern histogram sequence (LGBPHS) implemented in [ZSG05]_
+* ``lgbphs``: Local Gabor binary pattern histogram sequence (LGBPHS) implemented in [ZSG05]_ **Deprecated**, please rely on older versions of bob.bio.face
 
 
 Deep learning baselines

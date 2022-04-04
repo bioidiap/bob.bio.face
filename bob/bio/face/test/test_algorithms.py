@@ -18,7 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import bob.io.base
-import bob.ip.gabor
 
 import numpy
 import math
@@ -27,67 +26,6 @@ import pkg_resources
 
 regenerate_refs = False
 seed_value = 5489
-
-
-def test_gabor_jet():
-    jets = bob.bio.face.algorithm.GaborJet(
-        # Gabor jet comparison
-        gabor_jet_similarity_type="PhaseDiffPlusCanberra",
-        multiple_feature_scoring="max_jet",
-        # Gabor wavelet setup
-        gabor_sigma=math.sqrt(2.0) * math.pi,
-    )
-
-    assert isinstance(jets, bob.bio.face.algorithm.GaborJet)
-    assert isinstance(jets, bob.bio.base.algorithm.Algorithm)
-    assert not jets.performs_projection
-    assert not jets.requires_projector_training
-    assert not jets.use_projected_features_for_enrollment
-    assert not jets.split_training_features_by_client
-    assert not jets.requires_enroller_training
-
-    # read input
-    feature = bob.ip.gabor.load_jets(
-        bob.io.base.HDF5File(
-            pkg_resources.resource_filename(
-                "bob.bio.face.test", "data/graph_regular.hdf5"
-            )
-        )
-    )
-
-    # enroll
-    model = jets.enroll([feature, feature])
-    assert len(model) == len(feature)
-    assert all(len(m) == 2 for m in model)
-    assert all(model[n][i] == feature[n] for n in range(len(feature)) for i in range(2))
-
-    # score
-    assert abs(jets.score(model, feature) - 1.0) < 1e-8
-    assert abs(jets.score_for_multiple_probes(model, [feature, feature]) - 1.0) < 1e-8
-
-    # test averaging
-    jets = bob.bio.face.algorithm.GaborJet(
-        "PhaseDiffPlusCanberra", multiple_feature_scoring="average_model"
-    )
-    model = jets.enroll([feature, feature])
-    assert len(model) == len(feature)
-    assert all(len(m) == 1 for m in model)
-
-    # absoulte values must be identical
-    assert all(
-        numpy.allclose(model[n][0].abs, feature[n].abs) for n in range(len(model))
-    )
-    # phases might differ with 2 Pi
-    for n in range(len(model)):
-        for j in range(len(model[n][0].phase)):
-            assert any(
-                abs(model[n][0].phase[j] - feature[n].phase[j] - k * 2.0 * math.pi)
-                < 1e-5
-                for k in (0, -2, 2)
-            )
-
-    assert abs(jets.score(model, feature) - 1.0) < 1e-8
-    assert abs(jets.score_for_multiple_probes(model, [feature, feature]) - 1.0) < 1e-8
 
 
 def test_histogram():

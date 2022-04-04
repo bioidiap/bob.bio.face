@@ -8,7 +8,6 @@ bob.math
 bob.sp
 bob.ip.base
 bob.ip.color
-bob.ip.gabor
 bob.learn.em
 bob.measure
 bob.db.base

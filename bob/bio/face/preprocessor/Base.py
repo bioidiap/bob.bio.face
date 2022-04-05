@@ -3,6 +3,10 @@ import bob.ip.color
 import numpy
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin
+import numpy as np
+
+
+from bob.io.image import to_matplotlib, to_bob
 
 
 def change_color_channel(image, color_channel):
@@ -16,11 +20,11 @@ def change_color_channel(image, color_channel):
                 + " image from a gray level image!"
             )
         return image
-    
+
     if color_channel == "rgb":
         return image
     if color_channel == "bgr":
-        return image[[2,1,0],...]
+        return image[[2, 1, 0], ...]
     if color_channel == "gray":
         return bob.ip.color.rgb_to_gray(image)
     if color_channel == "red":

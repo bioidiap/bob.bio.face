@@ -28,6 +28,9 @@ import bob.bio.base
 import bob.bio.face
 import bob.db.base
 
+from bob.bio.face.preprocessor import FaceCrop, BoundingBoxAnnotatorCrop
+from bob.bio.face.preprocessor.croppers import FaceCropBoundingBox, FaceEyesNorm
+from bob.bio.base.test.utils import is_library_available
 
 # Cropping
 CROPPED_IMAGE_HEIGHT = 80
@@ -70,10 +73,7 @@ def _annotation():
 
 
 def test_base():
-    base = bob.bio.face.preprocessor.Base(
-      color_channel = 'gray',
-      dtype = numpy.float64
-    )
+    base = bob.bio.face.preprocessor.Base(color_channel="gray", dtype=numpy.float64)
     assert isinstance(base, bob.bio.face.preprocessor.Base)
 
     # read input
@@ -107,8 +107,8 @@ def test_face_crop():
 
     # define the preprocessor
     cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
 
     assert isinstance(cropper, bob.bio.face.preprocessor.FaceCrop)
@@ -118,8 +118,8 @@ def test_face_crop():
     reference = pkg_resources.resource_filename(
         "bob.bio.face.test", "data/cropped.hdf5"
     )
-    ref_image = _compare(cropper.transform([image], [annotation]), reference)
 
+    ref_image = _compare(cropper.transform([image], [annotation])[0], reference)
 
     # test the preprocessor with fixed eye positions (which correspond to th ones
     fixed_cropper = bob.bio.face.preprocessor.FaceCrop(
@@ -127,8 +127,9 @@ def test_face_crop():
         cropper.cropped_positions,
         fixed_positions={"reye": annotation["reye"], "leye": annotation["leye"]},
     )
+
     # result must be identical to the original face cropper (same eyes are used)
-    _compare(fixed_cropper.transform([image]), reference)
+    _compare(fixed_cropper.transform([image])[0], reference)
 
     # check color cropping
     cropper.color_channel = "rgb"
@@ -151,24 +152,79 @@ def test_face_crop():
     # reset the configuration, so that later tests don't get screwed.
     cropper.color_channel = "gray"
 
+
+class FakeAnnotator(bob.bio.face.annotator.Base):
+    def annotate(self, X):
+        return None
+
+
+@is_library_available("tensorflow")
+def test_bounding_box_annotator_crop():
+    # read input
+    image = _image()
+    _, bbox_annotation = [
+        bob.db.base.read_annotation_file(
+            pkg_resources.resource_filename(
+                "bob.bio.face.test", "data/" + filename + ".pos"
+            ),
+            "named",
+        )
+        for filename in ["testimage", "testimage_bbox"]
+    ]
+
+    final_image_size = (112, 112)
+    reference_eyes_location = {
+        "leye": (55, 72),
+        "reye": (55, 40),
+    }
+
+    eyes_cropper = FaceEyesNorm(reference_eyes_location, final_image_size)
+    face_cropper = BoundingBoxAnnotatorCrop(
+        eyes_cropper=eyes_cropper, annotator="mtcnn"
+    )
+
+    # Cropping and checking
+    crops = face_cropper.transform([image], [bbox_annotation])[0]
+    assert crops.shape == (3, 112, 112)
+
+    ### Testing with face anotattor
+    face_cropper = BoundingBoxAnnotatorCrop(
+        eyes_cropper=eyes_cropper, annotator=FakeAnnotator()
+    )
+
+    # Cropping and checking
+    crops = face_cropper.transform([image], [bbox_annotation])[0]
+    assert crops.shape == (3, 112, 112)
+
+
 def test_multi_face_crop():
     # read input
     image = _image()
     eye_annotation, bbox_annotation = [
-            bob.db.base.read_annotation_file(
-                pkg_resources.resource_filename("bob.bio.face.test", "data/" + filename + ".pos"),
-                "named"
-            )
-            for filename in ["testimage", "testimage_bbox"]
-        ]
+        bob.db.base.read_annotation_file(
+            pkg_resources.resource_filename(
+                "bob.bio.face.test", "data/" + filename + ".pos"
+            ),
+            "named",
+        )
+        for filename in ["testimage", "testimage_bbox"]
+    ]
 
     # define the preprocessor
-    cropper = bob.bio.face.preprocessor.MultiFaceCrop(
+    eyes_cropper = bob.bio.face.preprocessor.FaceCrop(
         cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-        cropped_positions_list=[
-            {'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS},
-            {'topleft': (0, 0), 'bottomright': (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)}
-        ]
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+    )
+
+    face_cropper = bob.bio.face.preprocessor.FaceCrop(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropper=FaceCropBoundingBox(
+            final_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+        ),
+    )
+
+    cropper = bob.bio.face.preprocessor.MultiFaceCrop(
+        croppers_list=[eyes_cropper, face_cropper]
     )
 
     # execute face cropper
@@ -179,17 +235,21 @@ def test_multi_face_crop():
         for filename in ["cropped", "cropped_bbox"]
     ]
 
-    eye_cropped, bbox_cropped = cropper.transform([image, image], [eye_annotation, bbox_annotation])
+    eye_cropped, bbox_cropped = cropper.transform(
+        [image, image], [eye_annotation, bbox_annotation]
+    )
 
     # Compare the cropped results to the reference
     _compare(eye_cropped, eye_reference)
     _compare(bbox_cropped, bbox_reference)
 
-     # test a ValueError is raised if the annotations don't match any cropper
+    # test a ValueError is raised if the annotations don't match any cropper
     try:
         annot = dict(landmark_A=(60, 60), landmark_B=(120, 120))
         cropper.transform([image], [annot])
-        assert 0, "MultiFaceCrop did not raise a ValueError for annotations matching no cropper"
+        assert (
+            0
+        ), "MultiFaceCrop did not raise a ValueError for annotations matching no cropper"
     except ValueError:
         pass
 
@@ -204,8 +264,8 @@ def test_tan_triggs():
     image, annotation = _image(), _annotation()
 
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
 
     preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=face_cropper)
@@ -219,7 +279,7 @@ def test_tan_triggs():
         preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_cropped.hdf5"
-        )
+        ),
     )
 
     # test the preprocessor without cropping
@@ -230,7 +290,7 @@ def test_tan_triggs():
         preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_none.hdf5"
-        )
+        ),
     )
 
 
@@ -238,13 +298,12 @@ def test_inorm_lbp():
     # read input
     image, annotation = _image(), _annotation()
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
 
     preprocessor = bob.bio.face.preprocessor.INormLBP(
-      face_cropper = face_cropper,
-      dtype = numpy.float64
+        face_cropper=face_cropper, dtype=numpy.float64
     )
 
     assert isinstance(preprocessor, bob.bio.face.preprocessor.INormLBP)
@@ -255,12 +314,12 @@ def test_inorm_lbp():
         preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/inorm_lbp_cropped.hdf5"
-        )
+        ),
     )
 
     # load the preprocessor without cropping
     preprocessor = bob.bio.face.preprocessor.INormLBP(
-      face_cropper = None,
+        face_cropper=None,
     )
     assert preprocessor.cropper is None
 
@@ -270,11 +329,11 @@ def test_heq():
     image, annotation = _image(), _annotation()
 
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
-      cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
-      cropped_positions={'leye': LEFT_EYE_POS, 'reye': RIGHT_EYE_POS}
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
     )
     preprocessor = bob.bio.face.preprocessor.HistogramEqualization(
-      face_cropper = face_cropper
+        face_cropper=face_cropper
     )
 
     assert isinstance(preprocessor, bob.bio.face.preprocessor.HistogramEqualization)
@@ -282,15 +341,13 @@ def test_heq():
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
     # execute preprocessor
     _compare(
-        preprocessor.transform([image],[annotation]),
+        preprocessor.transform([image], [annotation]),
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/histogram_cropped.hdf5"
         ),
     )
 
     # load the preprocessor without cropping
-    preprocessor = bob.bio.face.preprocessor.HistogramEqualization(
-      face_cropper = None
-    )
+    preprocessor = bob.bio.face.preprocessor.HistogramEqualization(face_cropper=None)
     assert preprocessor.cropper is None
     # load the preprocessor landmark detection

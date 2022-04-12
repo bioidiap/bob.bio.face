@@ -285,6 +285,7 @@ def test_tan_triggs():
     # test the preprocessor without cropping
     preprocessor = bob.bio.face.preprocessor.TanTriggs(face_cropper=None)
     assert preprocessor.cropper is None
+
     # result must be identical to the original face cropper (same eyes are used)
     _compare(
         preprocessor.transform([image], [annotation]),
@@ -339,6 +340,7 @@ def test_heq():
     assert isinstance(preprocessor, bob.bio.face.preprocessor.HistogramEqualization)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
+
     # execute preprocessor
     _compare(
         preprocessor.transform([image], [annotation]),

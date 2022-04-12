@@ -1,46 +1,31 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # @author: Manuel Guenther <Manuel.Guenther@idiap.ch>
-# @date: Thu May 24 10:41:42 CEST 2012
-#
-# Copyright (C) 2011-2012 Idiap Research Institute, Martigny, Switzerland
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, version 3 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-
-import bob.ip.base
+# @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 import numpy
 from .Base import Base
 from .utils import load_cropper
-from bob.pipelines.sample import SampleBatch
+import numpy as np
+import cv2
 
 
 class HistogramEqualization(Base):
     """Crops the face (if desired) and performs histogram equalization to photometrically enhance the image.
 
-      Parameters
-      ----------
+    Parameters
+    ----------
 
-      face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
-        The face image cropper that should be applied to the image.
-        If ``None`` is selected, no face cropping is performed.
-        Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
+    face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
+      The face image cropper that should be applied to the image.
+      If ``None`` is selected, no face cropping is performed.
+      Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
 
-        .. note:: The given class needs to contain a ``crop_face`` method.
+      .. note:: The given class needs to contain a ``crop_face`` method.
 
-      kwargs
-        Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
-      """
+    kwargs
+      Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+    """
 
     def __init__(self, face_cropper, **kwargs):
 
@@ -52,22 +37,20 @@ class HistogramEqualization(Base):
     def equalize_histogram(self, image):
         """equalize_histogram(image) -> equalized
 
-            Performs the histogram equalization on the given image.
+        Performs the histogram equalization on the given image.
 
-            **Parameters:**
+        **Parameters:**
 
-            image : 2D :py:class:`numpy.ndarray`
-              The image to berform histogram equalization with.
-              The image will be transformed to type ``uint8`` before computing the histogram.
+        image : 2D :py:class:`numpy.ndarray`
+          The image to berform histogram equalization with.
+          The image will be transformed to type ``uint8`` before computing the histogram.
 
-            **Returns:**
+        **Returns:**
 
-            equalized : 2D :py:class:`numpy.ndarray` (float)
-              The photometrically enhanced image.
-            """
-        heq = numpy.ndarray(image.shape)
-        bob.ip.base.histogram_equalization(numpy.round(image).astype(numpy.uint8), heq)
-        return heq
+        equalized : 2D :py:class:`numpy.ndarray` (float)
+          The photometrically enhanced image.
+        """
+        return cv2.equalizeHist(np.round(image).astype(numpy.uint8))
 
     def transform(self, X, annotations=None):
         """
@@ -113,4 +96,3 @@ class HistogramEqualization(Base):
             return [_crop(data) for data in X]
         else:
             return [_crop(data, annot) for data, annot in zip(X, annotations)]
-

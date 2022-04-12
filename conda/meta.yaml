@@ -48,6 +48,7 @@ requirements:
     - {{ pin_compatible('matplotlib', max_pin="x.x") }}
     - {{ pin_compatible('six') }}
     - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('opencv') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('torchvision', max_pin="x.x") }}
     - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}

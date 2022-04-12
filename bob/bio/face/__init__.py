@@ -1,5 +1,4 @@
 from . import preprocessor
-from . import extractor
 from . import algorithm
 from . import script
 from . import database

@@ -336,7 +336,7 @@ class LFWDatabase(Database):
 
         """
         if self.protocol[0] != "o":
-            return [0]
+            return []
 
         # return a list of samplesets for each enrollment image and each known unknown training sample
         enrollmentset = self.references()

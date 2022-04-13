@@ -136,14 +136,6 @@ Image Preprocessors
    bob.bio.face.preprocessor.INormLBP
 
 
-Image Feature Extractors
-~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autosummary::
-   bob.bio.face.extractor.DCTBlocks
-
-
-
 
 
 Face Recognition Algorithms
@@ -167,10 +159,7 @@ Preprocessors
 
 .. automodule:: bob.bio.face.preprocessor
 
-Extractors
-----------
 
-.. automodule:: bob.bio.face.extractor
 
 Algorithms
 ----------

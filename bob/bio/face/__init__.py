@@ -1,11 +1,11 @@
 from . import preprocessor
-from . import extractor
 from . import algorithm
 from . import script
 from . import database
 from . import annotator
 from . import utils
 from . import pytorch
+from . import embeddings
 
 from . import test
 

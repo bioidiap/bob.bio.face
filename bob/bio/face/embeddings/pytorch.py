@@ -66,12 +66,14 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
 
         Extracts the features from the given image.
 
-        **Parameters:**
+        Parameters
+        ----------
 
         image : 2D :py:class:`numpy.ndarray` (floats)
         The image to extract the features from.
 
-        **Returns:**
+        Returns
+        -------
 
         feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
         The list of features extracted from the image.
@@ -616,10 +618,15 @@ class FaceXZooModel(PyTorchModel):
 def iresnet_template(embedding, annotation_type, fixed_positions=None):
     # DEFINE CROPPING
     cropped_image_size = (112, 112)
-    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
+
+    if (
+        annotation_type == "eyes-center"
+        or annotation_type == "bounding-box"
+        or isinstance(annotation_type, list)
+    ):
         # Hard coding eye positions for backward consistency
         # cropped_positions = {
-        cropped_positions = cropped_positions_arcface()
+        cropped_positions = cropped_positions_arcface(annotation_type)
         if annotation_type == "bounding-box":
             # This will allow us to use `BoundingBoxAnnotatorCrop`
             cropped_positions.update(

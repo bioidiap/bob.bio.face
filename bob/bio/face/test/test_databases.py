@@ -692,6 +692,7 @@ def test_lfw():
     probes = database.probes()
     assert len(references) == 4564
     assert len(probes) == 4576
+    assert len(database.background_model_samples()) == 0
     # We need to have 6000 comparisons
     assert sum([len(p.references) for p in probes]) == 6000
 

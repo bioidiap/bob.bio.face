@@ -1,48 +1,94 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 # @author: Manuel Guenther <Manuel.Guenther@idiap.ch>
-# @date: Thu May 24 10:41:42 CEST 2012
-#
-# Copyright (C) 2011-2012 Idiap Research Institute, Martigny, Switzerland
-#
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, version 3 of the License.
-#
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+# @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-import bob.ip.base
 
-import numpy
 from .Base import Base
 from .utils import load_cropper
-from bob.pipelines.sample import SampleBatch
+import cv2
+import numpy as np
+
+
+def compute_tan_triggs(
+    image, gamma=0.2, sigma_0=1, sigma_1=2, size=11, threshold=10, alpha=0.1
+):
+    """
+    Applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image
+
+
+    Parameters
+    ----------
+
+    image : 2D numpy.ndarray
+      The image to be processed.
+
+    gamma : float
+      [default: 0.2] The value of gamma for the gamma correction
+
+    sigma_0 : float
+      [default: 1] The standard deviation of the first Gaussian kernel used in the DoG filter to smooth the image.
+
+    sigma_1 : float
+      [default: 2] The standard deviation of the second Gaussian kernel used in the DoG filter to smooth the image.
+
+    size : int
+      [default: 11] The size of the Gaussian kernel used in the DoG filter to smooth the image.
+
+    threshold : float
+      [default: 10] The threshold used for the contrast equalization
+
+    alpha : float
+      [default: 0.1] The alpha value used for the contrast equalization
+
+
+    """
+    assert image.ndim == 2, "The image must be a 2D numpy.ndarray"
+
+    # 1. Gamma correction
+    gamma_image = np.power(image, gamma)
+
+    # 2. DoG filter
+    dog_1 = cv2.GaussianBlur(gamma_image, (size, size), sigma_0)
+    dog_2 = cv2.GaussianBlur(gamma_image, (size, size), sigma_1)
+    dog_image = dog_1 - dog_2
+
+    # 3. Contrast equalization
+    # first step - I:=I/mean(abs(I)^a)^(1/a)
+    norm_fact = np.mean(np.abs(dog_image) ** alpha) ** (1 / alpha)
+    dog_image /= norm_fact
+
+    # second step - I:=I/mean(min(threshold,abs(I))^a)^(1/a)
+    norm_fact = np.mean(np.minimum(threshold, np.abs(dog_image)) ** alpha) ** (
+        1 / alpha
+    )
+    dog_image /= norm_fact
+
+    # 4. I:= threshold * tanh( I / threshold )
+    dog_image = np.tanh(dog_image / threshold) * threshold
+
+    return dog_image
 
 
 class TanTriggs(Base):
     """Crops the face (if desired) and applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image.
 
-  **Parameters:**
+    Parameters
+    ----------
 
-  face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
-    The face image cropper that should be applied to the image.
-    If ``None`` is selected, no face cropping is performed.
-    Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
+    face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
+      The face image cropper that should be applied to the image.
+      If ``None`` is selected, no face cropping is performed.
+      Otherwise, the face cropper might be specified as a registered resource, a configuration file, or an instance of a preprocessor.
 
-    .. note:: The given class needs to contain a ``crop_face`` method.
+      .. note:: The given class needs to contain a ``crop_face`` method.
 
-  gamma, sigma0, sigma1, size, threshold, alpha
-    Please refer to the [TT10]_ original paper (see :py:class:`bob.ip.base.TanTriggs` documentation).
+    gamma, sigma0, sigma1, size, threshold, alpha
+      Please refer to the [TT10]_ original paper (see :py:class:`bob.ip.base.TanTriggs` documentation).
 
-  kwargs
-    Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
-  """
+    kwargs
+      Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.
+    """
 
     def __init__(
         self,
@@ -76,37 +122,31 @@ class TanTriggs(Base):
         self.alpha = alpha
 
         self.cropper = load_cropper(face_cropper)
-        self._init_non_pickables()
-
-    def _init_non_pickables(self):
-        self.tan_triggs = bob.ip.base.TanTriggs(
-            self.gamma, self.sigma0, self.sigma1, self.size, self.threshold, self.alpha
-        )
 
     def transform(self, X, annotations=None):
         """__call__(image, annotations = None) -> face
 
-    Aligns the given image according to the given annotations.
+        Aligns the given image according to the given annotations.
 
-    First, the desired color channel is extracted from the given image.
-    Afterward, the face is eventually cropped using the ``face_cropper`` specified in the constructor.
-    Then, the image is photometrically enhanced using the Tan&Triggs algorithm [TT10]_.
-    Finally, the resulting face is converted to the desired data type.
+        First, the desired color channel is extracted from the given image.
+        Afterward, the face is eventually cropped using the ``face_cropper`` specified in the constructor.
+        Then, the image is photometrically enhanced using the Tan&Triggs algorithm [TT10]_.
+        Finally, the resulting face is converted to the desired data type.
 
-    **Parameters:**
+        **Parameters:**
 
-    image : 2D or 3D :py:class:`numpy.ndarray`
-      The face image to be processed.
+        image : 2D or 3D :py:class:`numpy.ndarray`
+          The face image to be processed.
 
-    annotations : dict or ``None``
-      The annotations that fit to the given image.
-      Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
+        annotations : dict or ``None``
+          The annotations that fit to the given image.
+          Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
 
-    **Returns:**
+        **Returns:**
 
-    face : 2D :py:class:`numpy.ndarray`
-      The cropped and photometrically enhanced face.
-    """
+        face : 2D :py:class:`numpy.ndarray`
+          The cropped and photometrically enhanced face.
+        """
 
         def _crop_one_sample(image, annotations=None):
 
@@ -119,11 +159,29 @@ class TanTriggs(Base):
                 )
                 # We change the color channel *after* cropping : some croppers use MTCNN internally, that works on multichannel images
                 image = self.change_color_channel(image[0])
-                image = self.tan_triggs(image)
+
+                image = compute_tan_triggs(
+                    image,
+                    self.gamma,
+                    self.sigma0,
+                    self.sigma1,
+                    self.size,
+                    self.threshold,
+                    self.alpha,
+                )
+
             else:
                 # Handle with the cropper is None
                 image = self.change_color_channel(image)
-                image = self.tan_triggs(image)
+                image = compute_tan_triggs(
+                    image,
+                    self.gamma,
+                    self.sigma0,
+                    self.sigma1,
+                    self.size,
+                    self.threshold,
+                    self.alpha,
+                )
 
             return self.data_type(image)
 
@@ -133,12 +191,3 @@ class TanTriggs(Base):
             return [
                 _crop_one_sample(data, annot) for data, annot in zip(X, annotations)
             ]
-
-    def __getstate__(self):
-        d = dict(self.__dict__)
-        d.pop("tan_triggs")
-        return d
-
-    def __setstate__(self, d):
-        self.__dict__ = d
-        self._init_non_pickables()

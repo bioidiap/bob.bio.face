@@ -73,7 +73,8 @@ def compute_tan_triggs(
 class TanTriggs(Base):
     """Crops the face (if desired) and applies Tan&Triggs algorithm [TT10]_ to photometrically enhance the image.
 
-    **Parameters:**
+    Parameters
+    ----------
 
     face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
       The face image cropper that should be applied to the image.

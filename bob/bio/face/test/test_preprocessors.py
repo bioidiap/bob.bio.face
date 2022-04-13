@@ -280,6 +280,8 @@ def test_tan_triggs():
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_cropped.hdf5"
         ),
+        atol=1e-3,
+        rtol=1e-3,
     )
 
     # test the preprocessor without cropping
@@ -292,6 +294,8 @@ def test_tan_triggs():
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_none.hdf5"
         ),
+        atol=1e-3,
+        rtol=1e-3,
     )
 
 

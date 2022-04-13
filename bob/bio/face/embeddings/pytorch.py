@@ -66,12 +66,14 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
 
         Extracts the features from the given image.
 
-        **Parameters:**
+        Parameters
+        ----------
 
         image : 2D :py:class:`numpy.ndarray` (floats)
         The image to extract the features from.
 
-        **Returns:**
+        Returns
+        -------
 
         feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
         The list of features extracted from the image.

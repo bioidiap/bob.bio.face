@@ -18,8 +18,8 @@ class INormLBP(Base):
 
 
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
 
     face_cropper : str or :py:class:`bob.bio.face.preprocessor.FaceCrop` or :py:class:`bob.bio.face.preprocessor.FaceDetect` or ``None``
       The face image cropper that should be applied to the image.

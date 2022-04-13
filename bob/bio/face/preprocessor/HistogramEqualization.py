@@ -39,13 +39,15 @@ class HistogramEqualization(Base):
 
         Performs the histogram equalization on the given image.
 
-        **Parameters:**
+        Parameters
+        ----------
 
         image : 2D :py:class:`numpy.ndarray`
           The image to berform histogram equalization with.
           The image will be transformed to type ``uint8`` before computing the histogram.
 
-        **Returns:**
+        Returns
+        -------
 
         equalized : 2D :py:class:`numpy.ndarray` (float)
           The photometrically enhanced image.
@@ -61,7 +63,8 @@ class HistogramEqualization(Base):
         Then, the image is photometrically enhanced using histogram equalization.
         Finally, the resulting face is converted to the desired data type.
 
-        **Parameters:**
+        Parameters
+        ----------
 
         X : 2D or 3D :py:class:`numpy.ndarray`
           The face image to be processed.
@@ -70,7 +73,8 @@ class HistogramEqualization(Base):
           The annotations that fit to the given image.
           Might be ``None``, when the ``face_cropper`` is ``None`` or of type :py:class:`FaceDetect`.
 
-        **Returns:**
+        Returns
+        -------
 
         face : 2D :py:class:`numpy.ndarray`
           The cropped and photometrically enhanced face.

@@ -5,6 +5,7 @@ from . import database
 from . import annotator
 from . import utils
 from . import pytorch
+from . import embeddings
 
 from . import test
 

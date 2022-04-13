@@ -9,10 +9,12 @@ from .Scale import scale
 
 
 class FaceCrop(Base):
-    """Crops the face according to the given annotations.
+    """
+
+    Crops the face according to the given annotations.
 
     This class is designed to perform a geometric normalization of the face based
-    on the eye locations, using :py:class:`bob.ip.base.FaceEyesNorm`. Usually,
+    on the eye locations, using :py:class:`bob.bio.face.preprocessor.croppers.FaceEyesNorm`. Usually,
     when executing the :py:meth:`crop_face` function, the image and the eye
     locations have to be specified. There, the given image will be transformed
     such that the eye locations will be placed at specific locations in the
@@ -40,12 +42,7 @@ class FaceCrop(Base):
     instead of the ``annotations`` inside the :py:meth:`crop_face` function (in
     which case the ``annotations`` are ignored).
 
-    Sometimes, the crop of the face is outside of the original image boundaries.
-    Usually, these pixels will simply be left black, resulting in sharp edges in
-    the image. However, some feature extractors do not like these sharp edges. In
-    this case, you can set the ``mask_sigma`` to copy pixels from the valid
-    border of the image and add random noise (see
-    :py:func:`bob.ip.base.extrapolate_mask`).
+
 
 
     Parameters
@@ -245,7 +242,7 @@ class BoundingBoxAnnotatorCrop(Base):
     """
     This face cropper uses a 2 stage strategy to crop and align faces in case `annotation_type` has a bounding-box.
     In the first stage, it crops the face using the {`topleft`, `bottomright`} parameters and expands them using a `margin` factor.
-    In the second stage, it uses the `annotator` to estimate {`leye` and `reye`} to make the crop using :py:class:`bob.bio.face.preprocessors.cropeprs.FaceEyesNorm`.
+    In the second stage, it uses the `annotator` to estimate {`leye` and `reye`} to make the crop using :py:class:`bob.bio.face.preprocessor.croppers.FaceEyesNorm`.
     In case the annotator doesn't work, it returns the cropped face using the `bounding-box` coordinates.
 
     .. warning::
@@ -255,7 +252,7 @@ class BoundingBoxAnnotatorCrop(Base):
     Parameters
     ----------
 
-    eyes_cropper: :any:`bob.bio.face.preprocessors.croppers.FaceEyesNorm`
+    eyes_cropper: :py:class:`bob.bio.face.preprocessor.croppers.FaceEyesNorm`
         This is the cropper that will be used to crop the face using eyes positions
 
 

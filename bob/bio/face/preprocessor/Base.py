@@ -86,18 +86,19 @@ class Base(TransformerMixin, BaseEstimator):
         return change_color_channel(image, self.color_channel)
 
     def data_type(self, image):
-        """data_type(image) -> image
-
+        """
         Converts the given image into the data type specified in the constructor of
         this class. If no data type was specified, or the ``image`` is ``None``, no
         conversion is performed.
 
-        **Parameters:**
+        Parameters
+        ----------
 
         image : 2D or 3D :py:class:`numpy.ndarray`
           The image to convert.
 
-        **Returns:**
+        Returns
+        -------
 
         image : 2D or 3D :py:class:`numpy.ndarray`
           The image converted to the desired data type, if any.
@@ -107,9 +108,11 @@ class Base(TransformerMixin, BaseEstimator):
         return image
 
     def transform(self, images, annotations=None):
-        """Extracts the desired color channel and converts to the desired data type.
+        """
+        Extracts the desired color channel and converts to the desired data type.
 
-        **Parameters:**
+        Parameters
+        ----------
 
         image : 2D or 3D :py:class:`numpy.ndarray`
           The image to preprocess.
@@ -117,7 +120,8 @@ class Base(TransformerMixin, BaseEstimator):
         annotations : any
           Ignored.
 
-        **Returns:**
+        Returns
+        -------
 
         image : 2D :py:class:`numpy.ndarray`
           The image converted converted to the desired color channel and type.

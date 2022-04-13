@@ -5,12 +5,15 @@ from .TanTriggs import TanTriggs
 from .INormLBP import INormLBP
 from .HistogramEqualization import HistogramEqualization
 from .Scale import Scale
+from .croppers import FaceEyesNorm, FaceCropBoundingBox
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
     """Says object was actually declared here, and not in the import module.
     Fixing sphinx warnings of not being able to find classes, when path is shortened.
-    Parameters:
+
+    Parameters
+    ----------
 
       *args: An iterable of objects to modify
 
@@ -23,6 +26,13 @@ def __appropriate__(*args):
 
 
 __appropriate__(
-    Base, FaceCrop, TanTriggs, INormLBP, HistogramEqualization, Scale
+    Base,
+    FaceCrop,
+    TanTriggs,
+    INormLBP,
+    HistogramEqualization,
+    Scale,
+    FaceEyesNorm,
+    FaceCropBoundingBox,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

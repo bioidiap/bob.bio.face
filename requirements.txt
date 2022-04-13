@@ -5,8 +5,6 @@ bob.core
 bob.io.base
 bob.io.image
 bob.math
-bob.sp
-bob.ip.base
 bob.ip.color
 bob.learn.em
 bob.measure
@@ -22,3 +20,4 @@ torch
 torchvision
 imageio-ffmpeg
 pytorch-lightning
+opencv-python

@@ -10,7 +10,6 @@ References
 .. [ZKC98]  *W. Zhao, A. Krishnaswamy, R. Chellappa, D. Swets and J. Weng*. **Discriminant analysis of principal components for face recognition**, pages 73-85. Springer Verlag Berlin, 1998.
 .. [GHW12]   *M. Günther, D. Haufe and R.P. Würtz*. **Face recognition with disparity corrected Gabor phase differences**. In Artificial neural networks and machine learning, volume 7552 of Lecture Notes in Computer Science, pages 411-418. 9/2012.
 .. [ZSG05]  *W. Zhang, S. Shan, W. Gao, X. Chen and H. Zhang*. **Local Gabor binary pattern histogram sequence (LGBPHS): a novel non-statistical model for face representation and recognition**. Computer Vision, IEEE International Conference on, 1:786-791, 2005.
-.. [WMM11]  *R. Wallace, M. McLaren, C. McCool and S. Marcel*. **Inter-session variability modelling and joint factor analysis for face authentication**. International Joint Conference on Biometrics. 2011.
 .. [TT10]    *X. Tan and B. Triggs*. **Enhanced local texture feature sets for face recognition under difficult lighting conditions**. IEEE Transactions on Image Processing, 19(6):1635-1650, 2010.
 .. [TFP18]  *T. de Freitas Pereira, André Anjos, and Sébastien Marcel. **Heterogeneous face recognition using domain specific units.** IEEE Transactions on Information Forensics and Security 14.7 (2018): 1803-1816.
 .. [HRM06]   *G. Heusch, Y. Rodriguez, and S. Marcel*. **Local Binary Patterns as an Image Preprocessing for Face Authentication**. In IEEE International Conference on Automatic Face and Gesture Recognition (AFGR), 2006.

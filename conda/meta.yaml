@@ -28,9 +28,7 @@ requirements:
     - bob.core
     - bob.io.base
     - bob.io.image
-    - bob.math
-    - bob.sp
-    - bob.ip.base
+    - bob.math    
     - bob.ip.color
     - bob.learn.em
     - bob.measure
@@ -43,12 +41,14 @@ requirements:
     - six {{ six }}
     - tensorflow {{ tensorflow }}  # [linux]
     - imageio-ffmpeg {{ imageio_ffmpeg }}
+    - opencv {{opencv}}
   run:
     - python
     - setuptools
     - {{ pin_compatible('matplotlib', max_pin="x.x") }}
     - {{ pin_compatible('six') }}
     - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('opencv') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('torchvision', max_pin="x.x") }}
     - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}

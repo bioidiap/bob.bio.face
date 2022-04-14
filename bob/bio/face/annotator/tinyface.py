@@ -8,7 +8,7 @@ import numpy as np
 import pkg_resources
 from bob.extension.download import get_file
 from bob.io.image import to_matplotlib
-from bob.ip.color import gray_to_rgb
+from bob.bio.face.color import gray_to_rgb
 
 from .Base import Base
 

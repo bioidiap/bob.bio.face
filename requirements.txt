@@ -6,7 +6,6 @@ bob.io.base
 bob.io.image
 bob.math
 bob.measure
-bob.db.base
 bob.db.atnt  # required for testing
 bob.bio.base
 bob.pipelines

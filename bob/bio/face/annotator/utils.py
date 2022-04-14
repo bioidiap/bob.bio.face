@@ -310,7 +310,7 @@ class BoundingBox:
 def bounding_box_from_annotation(source=None, padding=None, **kwargs):
     """bounding_box_from_annotation(source, padding, **kwargs) -> bounding_box
 
-    Creates a bounding box from the given parameters, which are, in general, annotations read using :py:func:`bob.db.base.read_annotation_file`.
+    Creates a bounding box from the given parameters, which are, in general, annotations read using :py:func:`bob.bio.base.utils.annotations.read_annotation_file`.
     Different kinds of annotations are supported, given by the ``source`` keyword:
 
     * ``direct`` : bounding boxes are directly specified by keyword arguments ``topleft`` and ``bottomright``

@@ -24,6 +24,7 @@ from bob.extension.scripts.click_helper import (
 )
 
 from bob.bio.face.color import rgb_to_gray, gray_to_rgb
+from bob.bio.base.utils.annotations import read_annotation_file
 
 logger = logging.getLogger(__name__)
 
@@ -189,9 +190,7 @@ def display_face_annotations(
             )
             if os.path.exists(annotations_file):
                 logger.info("Loading annotations from file %s", annotations_file)
-                annotations = bob.db.base.read_annotation_file(
-                    annotations_file, annotations_type
-                )
+                annotations = read_annotation_file(annotations_file, annotations_type)
             else:
                 logger.warn("Could not find annotation file %s", annotations_file)
         else:

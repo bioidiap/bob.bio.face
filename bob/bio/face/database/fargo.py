@@ -8,10 +8,10 @@
 """
 
 import os
-import bob.db.base
 
 from .database import FaceBioFile
 from bob.bio.base.database import BioDatabase
+from bob.bio.base.utils.annotations import read_annotation_file
 
 
 class FargoBioDatabase(BioDatabase):
@@ -22,36 +22,51 @@ class FargoBioDatabase(BioDatabase):
     """
 
     def __init__(
-            self,
-            original_directory=None,
-            original_extension='.png',
-            protocol='mc-rgb',
-            **kwargs
+        self,
+        original_directory=None,
+        original_extension=".png",
+        protocol="mc-rgb",
+        **kwargs
     ):
         # call base class constructors to open a session to the database
         super(FargoBioDatabase, self).__init__(
-            name='fargo',
+            name="fargo",
             original_directory=original_directory,
             original_extension=original_extension,
             protocol=protocol,
-            **kwargs)
+            **kwargs
+        )
 
         from bob.db.fargo.query import Database as LowLevelDatabase
-        self._db = LowLevelDatabase(original_directory, original_extension, protocol=protocol)
 
-    def objects(self, groups=None, purposes=None, protocol=None, model_ids=None, **kwargs):
-        retval = self._db.objects(protocol=protocol, groups=groups, purposes=purposes, model_ids=model_ids, **kwargs)
-        return [FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id) for f in retval]
-    
+        self._db = LowLevelDatabase(
+            original_directory, original_extension, protocol=protocol
+        )
+
+    def objects(
+        self, groups=None, purposes=None, protocol=None, model_ids=None, **kwargs
+    ):
+        retval = self._db.objects(
+            protocol=protocol,
+            groups=groups,
+            purposes=purposes,
+            model_ids=model_ids,
+            **kwargs
+        )
+        return [
+            FaceBioFile(client_id=f.client_id, path=f.path, file_id=f.id)
+            for f in retval
+        ]
+
     def model_ids_with_protocol(self, groups=None, protocol=None, **kwargs):
         return self._db.model_ids(groups=groups, protocol=protocol)
 
     def annotations(self, file):
-      
-      if self.annotation_directory is None:
-          return None
 
-      annotation_file = os.path.join(self.annotation_directory, file.path + self.annotation_extension)
-      return bob.db.base.read_annotation_file(annotation_file, 'eyecenter')
-  
-    
+        if self.annotation_directory is None:
+            return None
+
+        annotation_file = os.path.join(
+            self.annotation_directory, file.path + self.annotation_extension
+        )
+        return read_annotation_file(annotation_file, "eyecenter")

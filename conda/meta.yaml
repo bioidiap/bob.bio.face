@@ -30,7 +30,6 @@ requirements:
     - bob.io.image
     - bob.math    
     - bob.measure
-    - bob.db.base
     - bob.db.atnt
     - bob.bio.base
     - bob.pipelines

@@ -26,7 +26,7 @@ regenerate_refs = False
 
 import bob.bio.base
 import bob.bio.face
-import bob.db.base
+from bob.bio.base.utils.annotations import read_annotation_file
 
 from bob.bio.face.preprocessor import FaceCrop, BoundingBoxAnnotatorCrop
 from bob.bio.face.preprocessor.croppers import FaceCropBoundingBox, FaceEyesNorm
@@ -67,7 +67,7 @@ def _image():
 
 
 def _annotation():
-    return bob.db.base.read_annotation_file(
+    return read_annotation_file(
         pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.pos"),
         "named",
     )
@@ -160,7 +160,7 @@ def test_bounding_box_annotator_crop():
     # read input
     image = _image()
     _, bbox_annotation = [
-        bob.db.base.read_annotation_file(
+        read_annotation_file(
             pkg_resources.resource_filename(
                 "bob.bio.face.test", "data/" + filename + ".pos"
             ),
@@ -198,7 +198,7 @@ def test_multi_face_crop():
     # read input
     image = _image()
     eye_annotation, bbox_annotation = [
-        bob.db.base.read_annotation_file(
+        read_annotation_file(
             pkg_resources.resource_filename(
                 "bob.bio.face.test", "data/" + filename + ".pos"
             ),

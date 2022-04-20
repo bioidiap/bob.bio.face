@@ -6,9 +6,6 @@ from sklearn.base import TransformerMixin
 from bob.bio.face.color import gray_to_rgb, rgb_to_gray
 
 
-from bob.io.image import to_matplotlib, to_bob
-
-
 def change_color_channel(image, color_channel):
     if image.ndim == 2:
         if color_channel == "rgb":

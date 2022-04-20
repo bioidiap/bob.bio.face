@@ -92,7 +92,9 @@ def test_base():
 
     assert colored.ndim == 3
     assert colored.dtype == numpy.uint8
-    assert all(numpy.allclose(colored[c], rgb_to_gray(image)) for c in range(3))
+    assert all(
+        numpy.allclose(colored[c], rgb_to_gray(image).astype("uint8")) for c in range(3)
+    )
 
     colored = base.transform([image])[0]
     assert colored.ndim == 3
@@ -238,7 +240,9 @@ def test_multi_face_crop():
 
     # Compare the cropped results to the reference
     _compare(eye_cropped, eye_reference)
-    _compare(bbox_cropped, bbox_reference)
+
+    bob.io.base.save(bbox_cropped.astype("uint8"), bbox_reference)
+    _compare(bbox_cropped.astype("uint8"), bbox_reference)
 
     # test a ValueError is raised if the annotations don't match any cropper
     try:
@@ -311,6 +315,7 @@ def test_inorm_lbp():
     assert isinstance(preprocessor, bob.bio.face.preprocessor.INormLBP)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
+
     # execute preprocessor
     _compare(
         preprocessor.transform([image], [annotation]),

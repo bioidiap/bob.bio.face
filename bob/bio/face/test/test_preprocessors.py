@@ -26,11 +26,12 @@ regenerate_refs = False
 
 import bob.bio.base
 import bob.bio.face
-import bob.db.base
+from bob.bio.base.utils.annotations import read_annotation_file
 
 from bob.bio.face.preprocessor import FaceCrop, BoundingBoxAnnotatorCrop
 from bob.bio.face.preprocessor.croppers import FaceCropBoundingBox, FaceEyesNorm
 from bob.bio.base.test.utils import is_library_available
+from bob.bio.face.color import rgb_to_gray
 
 # Cropping
 CROPPED_IMAGE_HEIGHT = 80
@@ -66,7 +67,7 @@ def _image():
 
 
 def _annotation():
-    return bob.db.base.read_annotation_file(
+    return read_annotation_file(
         pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.pos"),
         "named",
     )
@@ -83,16 +84,16 @@ def test_base():
 
     assert preprocessed.ndim == 2
     assert preprocessed.dtype == numpy.float64
-    assert numpy.allclose(preprocessed, bob.ip.color.rgb_to_gray(image))
+    assert numpy.allclose(preprocessed, rgb_to_gray(image))
 
     # color output
     base = bob.bio.face.preprocessor.Base(color_channel="rgb", dtype=numpy.uint8)
-    colored = base.transform([bob.ip.color.rgb_to_gray(image)])[0]
+    colored = base.transform([rgb_to_gray(image)])[0]
 
     assert colored.ndim == 3
     assert colored.dtype == numpy.uint8
     assert all(
-        numpy.allclose(colored[c], bob.ip.color.rgb_to_gray(image)) for c in range(3)
+        numpy.allclose(colored[c], rgb_to_gray(image).astype("uint8")) for c in range(3)
     )
 
     colored = base.transform([image])[0]
@@ -137,9 +138,7 @@ def test_face_crop():
     assert cropped.ndim == 3
     assert cropped.shape[0] == 3
     assert cropped.shape[1:] == ref_image.shape
-    assert numpy.allclose(
-        bob.ip.color.rgb_to_gray(cropped), ref_image, atol=1.0, rtol=1.0
-    )
+    assert numpy.allclose(rgb_to_gray(cropped), ref_image, atol=1.0, rtol=1.0)
 
     # test a ValueError is raised if eye annotations are swapped
     try:
@@ -163,7 +162,7 @@ def test_bounding_box_annotator_crop():
     # read input
     image = _image()
     _, bbox_annotation = [
-        bob.db.base.read_annotation_file(
+        read_annotation_file(
             pkg_resources.resource_filename(
                 "bob.bio.face.test", "data/" + filename + ".pos"
             ),
@@ -201,7 +200,7 @@ def test_multi_face_crop():
     # read input
     image = _image()
     eye_annotation, bbox_annotation = [
-        bob.db.base.read_annotation_file(
+        read_annotation_file(
             pkg_resources.resource_filename(
                 "bob.bio.face.test", "data/" + filename + ".pos"
             ),
@@ -241,7 +240,9 @@ def test_multi_face_crop():
 
     # Compare the cropped results to the reference
     _compare(eye_cropped, eye_reference)
-    _compare(bbox_cropped, bbox_reference)
+
+    bob.io.base.save(bbox_cropped.astype("uint8"), bbox_reference)
+    _compare(bbox_cropped.astype("uint8"), bbox_reference)
 
     # test a ValueError is raised if the annotations don't match any cropper
     try:
@@ -314,6 +315,7 @@ def test_inorm_lbp():
     assert isinstance(preprocessor, bob.bio.face.preprocessor.INormLBP)
     assert isinstance(preprocessor, bob.bio.face.preprocessor.Base)
     assert isinstance(preprocessor.cropper, bob.bio.face.preprocessor.FaceCrop)
+
     # execute preprocessor
     _compare(
         preprocessor.transform([image], [annotation]),

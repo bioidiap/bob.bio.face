@@ -424,6 +424,7 @@ class LFWDatabase(Database):
                             DelayedSample(
                                 key=key,
                                 reference_id=key,
+                                subject_id=self.subject_id_from_filename(key),
                                 load=partial(bob.io.image.load, image_path),
                                 annotations=annotations,
                             )
@@ -511,6 +512,7 @@ class LFWDatabase(Database):
                                 key=key,
                                 reference_id=key,
                                 load=partial(bob.io.image.load, image_path),
+                                subject_id=self.subject_id_from_filename(key),
                                 annotations=annotations,
                             )
                         ],

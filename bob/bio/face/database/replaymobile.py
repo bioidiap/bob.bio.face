@@ -4,7 +4,7 @@
 from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.pipelines.sample_loaders import AnnotationsLoader
 from bob.pipelines.sample import DelayedSample
-from bob.db.base.annotations import read_annotation_file
+from bob.bio.base.utils.annotations import read_annotation_file
 from bob.extension.download import get_file
 from bob.pipelines.utils import hash_string
 import imageio

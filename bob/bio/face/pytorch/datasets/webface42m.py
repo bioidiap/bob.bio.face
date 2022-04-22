@@ -11,7 +11,6 @@ import os
 import torchvision.transforms as transforms
 import numpy as np
 import csv
-import bob.io.image
 import bob.io.base
 from bob.extension.download import get_file, search_file
 

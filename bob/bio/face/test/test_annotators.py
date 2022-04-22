@@ -1,6 +1,5 @@
 import bob.io.base
 import bob.io.base.test_utils
-import bob.io.image
 import numpy
 from bob.bio.base.annotator import FailSafe
 from bob.bio.base.test.utils import is_library_available

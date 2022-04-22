@@ -9,7 +9,7 @@ from bob.extension.download import get_file
 from bob.pipelines.utils import hash_string
 import imageio
 from bob.extension import rc
-import bob.io.image
+import bob.io.base
 
 from sklearn.pipeline import make_pipeline
 import functools
@@ -52,7 +52,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     video_reader = imageio.get_reader(file_name)
     image = video_reader.get_data(frame)
     # Convert to bob format (channel, height, width)
-    image = bob.io.image.to_bob(image)
+    image = bob.io.base.to_bob(image)
 
     # Image captured by the 'mobile' device are flipped vertically.
     # (Images were captured horizontally and bob.io.video does not read the

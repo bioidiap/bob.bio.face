@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 import torchvision.transforms as transforms
-import bob.io.image
+import bob.io.base
 
 
 def get_standard_data_augmentation():
@@ -12,7 +12,7 @@ def get_standard_data_augmentation():
     """
     transform = transforms.Compose(
         [
-            lambda x: bob.io.image.to_matplotlib(x),
+            lambda x: bob.io.base.to_matplotlib(x),
             lambda x: x.astype("uint8"),
             transforms.ToPILImage(),
             transforms.RandomHorizontalFlip(p=0.5),

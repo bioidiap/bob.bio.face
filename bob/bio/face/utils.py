@@ -56,7 +56,7 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
     if isinstance(annotation_type, list):
         return [cropped_positions_arcface(item) for item in annotation_type]
 
-    if annotation_type == "eyes-center":
+    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
         cropped_positions = {
             "leye": (55, 72),
             "reye": (55, 40),

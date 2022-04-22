@@ -3,11 +3,11 @@ import pandas as pd
 from bob.pipelines.sample import DelayedSample, SampleSet
 from bob.extension import rc
 import os
-import bob.io.image
 from functools import partial
 from bob.pipelines.utils import hash_string
 import copy
 import logging
+import bob.io.base
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +19,7 @@ def _make_sample_from_template_row(row, image_directory):
     key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["SUBJECT_ID"])
 
     return DelayedSample(
-        load=partial(bob.io.image.load, os.path.join(image_directory, row["FILENAME"])),
+        load=partial(bob.io.base.load, os.path.join(image_directory, row["FILENAME"])),
         reference_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
         key=key,

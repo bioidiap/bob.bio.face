@@ -1,7 +1,7 @@
 from sklearn.preprocessing import FunctionTransformer
 from skimage.transform import resize
 from sklearn.utils import check_array
-from bob.io.image import to_matplotlib, to_bob
+from bob.io.base import to_matplotlib, to_bob
 import numpy as np
 
 

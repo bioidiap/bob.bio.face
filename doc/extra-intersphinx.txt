@@ -2,7 +2,6 @@ python
 numpy
 bob.bio.base
 bob.io.base
-bob.ip.base
 bob.bio.gmm
 bob.bio.video
 gridtk

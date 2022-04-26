@@ -131,7 +131,7 @@ class LFWDatabase(Database):
         # I don't think we need this exposed
         # Please, open an issue if otherwise
         self.annotation_extension = (
-            ".jpg.pts" if annotation_issuer == "funneled" else ".json"
+            ".jpg.pts" if annotation_issuer == "funneled" else ".pos"
         )
 
         self._check_protocol(protocol)

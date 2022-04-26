@@ -3,7 +3,7 @@ import pandas as pd
 from bob.pipelines.sample import DelayedSample, SampleSet
 from bob.extension import rc
 import os
-import bob.io.image
+import bob.io.base
 from functools import partial
 import logging
 import numpy as np
@@ -380,7 +380,7 @@ class RFWDatabase(Database):
         samples = [
             DelayedSample(
                 partial(
-                    bob.io.image.load,
+                    bob.io.base.load,
                     path,
                 ),
                 key=key,

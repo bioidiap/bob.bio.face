@@ -20,7 +20,7 @@ import bob.bio.face
 import bob.io.image
 
 # Loading Ada's images
-image = bob.io.image.load("./img/838_ada.jpg")
+image = bob.io.base.load("./img/838_ada.jpg")
 
 # Setting Ada's eyes
 annotations = dict()

@@ -8,7 +8,7 @@ from bob.pipelines import DelayedSample, SampleSet
 import os
 from functools import partial
 from bob.extension import rc
-import bob.io.image
+import bob.io.base
 import copy
 
 import logging
@@ -367,7 +367,7 @@ class LFWDatabase(Database):
             samples=[
                 DelayedSample(
                     key=image,
-                    load=partial(bob.io.image.load, data[image][0]),
+                    load=partial(bob.io.base.load, data[image][0]),
                     annotations=data[image][1],
                 )
                 for image in data
@@ -425,7 +425,7 @@ class LFWDatabase(Database):
                                 key=key,
                                 reference_id=key,
                                 subject_id=self.subject_id_from_filename(key),
-                                load=partial(bob.io.image.load, image_path),
+                                load=partial(bob.io.base.load, image_path),
                                 annotations=annotations,
                             )
                         ],
@@ -472,7 +472,7 @@ class LFWDatabase(Database):
                             DelayedSample(
                                 key=image,
                                 reference_id=image,
-                                load=partial(bob.io.image.load, image_path),
+                                load=partial(bob.io.base.load, image_path),
                                 annotations=annotations,
                             )
                         ],
@@ -511,7 +511,7 @@ class LFWDatabase(Database):
                             DelayedSample(
                                 key=key,
                                 reference_id=key,
-                                load=partial(bob.io.image.load, image_path),
+                                load=partial(bob.io.base.load, image_path),
                                 subject_id=self.subject_id_from_filename(key),
                                 annotations=annotations,
                             )
@@ -549,7 +549,7 @@ class LFWDatabase(Database):
                             DelayedSample(
                                 key=image,
                                 reference_id=key,
-                                load=partial(bob.io.image.load, data[image][0]),
+                                load=partial(bob.io.base.load, data[image][0]),
                                 annotations=data[image][1],
                             )
                             for image in data

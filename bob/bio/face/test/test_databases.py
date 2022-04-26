@@ -63,20 +63,6 @@ def _check_annotations(
         logger.warn("Some annotations were None for {}".format(database_legacy.name))
 
 
-@db_available("atnt")
-def test_atnt():
-    database = bob.bio.base.load_resource(
-        "atnt", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database)
-    except IOError as e:
-        pytest.skip(
-            "The database could not queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-
-
 def test_mobio():
     from bob.bio.face.database import MobioDatabase
 

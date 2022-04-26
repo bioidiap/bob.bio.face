@@ -68,7 +68,7 @@ def _image():
 
 def _annotation():
     return read_annotation_file(
-        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.pos"),
+        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.json"),
         "named",
     )
 
@@ -164,7 +164,7 @@ def test_bounding_box_annotator_crop():
     _, bbox_annotation = [
         read_annotation_file(
             pkg_resources.resource_filename(
-                "bob.bio.face.test", "data/" + filename + ".pos"
+                "bob.bio.face.test", "data/" + filename + ".json"
             ),
             "named",
         )
@@ -202,7 +202,7 @@ def test_multi_face_crop():
     eye_annotation, bbox_annotation = [
         read_annotation_file(
             pkg_resources.resource_filename(
-                "bob.bio.face.test", "data/" + filename + ".pos"
+                "bob.bio.face.test", "data/" + filename + ".json"
             ),
             "named",
         )

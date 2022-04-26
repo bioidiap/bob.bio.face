@@ -1,10 +1,6 @@
 setuptools
 bob.extension
-bob.blitz
-bob.core
 bob.io.base
-bob.io.image
-bob.math
 bob.measure
 bob.db.atnt  # required for testing
 bob.bio.base

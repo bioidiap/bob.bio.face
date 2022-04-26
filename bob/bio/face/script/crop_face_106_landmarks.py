@@ -6,7 +6,6 @@ from posixpath import dirname
 from bob.bio.face.annotator import FaceX106Landmarks
 import numpy as np
 import bob.bio.face
-import bob.io.image
 import bob.io.base
 from bob.extension.scripts.click_helper import ResourceOption
 from bob.pipelines.distributed import VALID_DASK_CLIENT_STRINGS

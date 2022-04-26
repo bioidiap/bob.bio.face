@@ -57,9 +57,12 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         self.model = None
         self.preprocessor = preprocessor
         self.memory_demanding = memory_demanding
-        self.device = torch.device(
-            device or "cuda" if torch.cuda.is_available() else "cpu"
-        )
+        if device is None:
+            self.device = torch.device(
+                device or "cuda" if torch.cuda.is_available() else "cpu"
+            )
+        else:
+            self.device = device
 
     def transform(self, X):
         """__call__(image) -> feature

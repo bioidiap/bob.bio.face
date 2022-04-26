@@ -24,11 +24,7 @@ requirements:
     - setuptools {{ setuptools }}
     - pip {{ pip }}
     - bob.extension
-    - bob.blitz
-    - bob.core
-    - bob.io.base
-    - bob.io.image
-    - bob.math    
+    - bob.io.base    
     - bob.measure
     - bob.db.atnt
     - bob.bio.base

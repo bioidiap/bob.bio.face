@@ -1,5 +1,3 @@
-import bob.io.image
-
 import numpy
 from sklearn.base import BaseEstimator
 from sklearn.base import TransformerMixin

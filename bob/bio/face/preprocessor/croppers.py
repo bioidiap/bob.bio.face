@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger("bob.bio.face")
 
 import numpy as np
-from bob.bio.face.image import bob_to_opencvbgr, opencvbgr_to_bob
+from bob.io.image import bob_to_opencvbgr, opencvbgr_to_bob
 import cv2
 
 

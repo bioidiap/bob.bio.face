@@ -40,7 +40,7 @@ In the following, find a list of all current databases, their configuration para
   - notes: The original files are stored in a raw format and need to be converted into some image format.
 
 
-* AT&T dataset of faces, previously known as the ORL dataset (:any:`bob.bio.face.database.AtntBioDatabase`)
+* AT&T dataset of faces, previously known as the ORL dataset (:any:`bob.bio.base.database.AtntBioDatabase`)
 
   - annotations: none, faces are already aligned
   - notes: The dataset will be downloaded completely, including all images. No special setup required.

@@ -26,7 +26,6 @@ import numpy as np
 import pandas as pd
 import os
 import bob.io.base
-import bob.io.image
 from bob.extension.download import get_file
 from bob.extension import rc
 import torch

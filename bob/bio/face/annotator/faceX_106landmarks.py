@@ -7,7 +7,7 @@ from math import ceil
 import numpy as np
 import torch
 from bob.extension.download import get_file
-from bob.bio.face.image import bob_to_opencvbgr
+from bob.io.image import bob_to_opencvbgr
 from torchvision import transforms
 
 from . import Base

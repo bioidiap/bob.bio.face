@@ -16,7 +16,6 @@ Bob databases (used for biometric testing)
 
 .. autosummary::
    bob.bio.face.database.ARFaceDatabase
-   bob.bio.face.database.AtntBioDatabase
    bob.bio.face.database.CasiaAfricaDatabase
    bob.bio.face.database.MobioDatabase
    bob.bio.face.database.IJBCDatabase

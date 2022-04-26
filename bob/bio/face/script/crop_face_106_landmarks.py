@@ -6,14 +6,13 @@ from posixpath import dirname
 from bob.bio.face.annotator import FaceX106Landmarks
 import numpy as np
 import bob.bio.face
-import bob.io.image
 import bob.io.base
 from bob.extension.scripts.click_helper import ResourceOption
 from bob.pipelines.distributed import VALID_DASK_CLIENT_STRINGS
 import dask.bag
 from skimage import transform as trans
 import cv2
-from bob.bio.face.image import bob_to_opencvbgr, opencvbgr_to_bob
+from bob.io.image import bob_to_opencvbgr, opencvbgr_to_bob
 
 # Taken from here: https://github.com/JDAI-CV/FaceX-Zoo/blob/db0b087e4f4d28152e172d6c8d3767a8870733b4/face_sdk/utils/lms_trans.py
 

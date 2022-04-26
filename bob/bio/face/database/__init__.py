@@ -4,7 +4,6 @@
 from .database import FaceBioFile
 from .mobio import MobioDatabase
 from .replay import ReplayBioDatabase
-from .atnt import AtntBioDatabase
 from .gbu import GBUDatabase
 from .arface import ARFaceDatabase
 from .lfw import LFWDatabase
@@ -46,7 +45,6 @@ __appropriate__(
     FaceBioFile,
     MobioDatabase,
     ReplayBioDatabase,
-    AtntBioDatabase,
     GBUDatabase,
     ARFaceDatabase,
     LFWDatabase,

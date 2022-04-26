@@ -267,7 +267,7 @@ class GBUDatabase(Database):
                             key=f.path,
                             annotations=self.annotations[annotations_key],
                             load=partial(
-                                bob.io.image.load,
+                                bob.io.base.load,
                                 os.path.join(
                                     self.original_directory, f.path + self.extension
                                 ),

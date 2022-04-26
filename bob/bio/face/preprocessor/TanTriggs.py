@@ -84,7 +84,7 @@ class TanTriggs(Base):
       .. note:: The given class needs to contain a ``crop_face`` method.
 
     gamma, sigma0, sigma1, size, threshold, alpha
-      Please refer to the [TT10]_ original paper (see :py:class:`bob.ip.base.TanTriggs` documentation).
+      Please refer to the [TT10]_ original paper.
 
     kwargs
       Remaining keyword parameters passed to the :py:class:`Base` constructor, such as ``color_channel`` or ``dtype``.

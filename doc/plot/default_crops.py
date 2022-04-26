@@ -3,7 +3,7 @@ from bob.bio.face.utils import get_default_cropped_positions
 from bob.bio.face.preprocessor import FaceCrop
 import matplotlib.pyplot as plt
 
-src = bob.io.image.load("../img/cropping_example_source.png")
+src = bob.io.base.load("../img/cropping_example_source.png")
 modes = ["legacy", "dnn", "pad"]
 cropped_images = []
 

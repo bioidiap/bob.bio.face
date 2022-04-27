@@ -6,6 +6,8 @@
 Color functionalitites from old bob.ip.color
 """
 import numpy as np
+from bob.io.image import bob_to_pillow, pillow_to_bob
+from PIL import Image
 
 
 def rgb_to_gray(image):
@@ -60,36 +62,25 @@ def rgb_to_hsv(image):
     ----------
 
     image : numpy.ndarray
-        An image in RGB format (channels first): For an ND array (N >= 3),
+        An image in RGB format (channels first)
 
-
+    Returns
+    -------
+    numpy.ndarray
+        An image in HSV format (channels first)
     """
-
+    image = np.asarray(image)
     assert image.ndim == 3, "The image should have 3 dimensions"
 
-    image_hsv = np.zeros(image.shape)
+    was_float = isinstance(image, np.floating)
 
-    R = image[0, :, :]
-    G = image[1, :, :]
-    B = image[2, :, :]
+    image = bob_to_pillow(image).convert("HSV")
+    image = pillow_to_bob(image)
 
-    max_value = np.max(image, axis=0)
-    min_value = np.min(image, axis=0)
-    delta = max_value - min_value
+    if was_float:
+        image = image / 255.0
 
-    # Hue
-    image_hsv[0, :, :] = np.arctan2(B - G, R - G)
-    image_hsv[0, :, :] = (image_hsv[0, :, :] + np.pi) % (2 * np.pi)
-
-    # Saturation
-    image_hsv[1, :, :] = np.maximum(max_value, 0.00001)
-    image_hsv[1, :, :] /= np.maximum(delta, 0.00001)
-    image_hsv[1, :, :] = np.minimum(image_hsv[1, :, :], 1.0)
-
-    # Value
-    image_hsv[2, :, :] = max_value
-
-    return image_hsv
+    return image
 
 
 def rgb_to_yuv(image):
@@ -100,26 +91,22 @@ def rgb_to_yuv(image):
     ----------
 
     image : numpy.ndarray
-        An image in RGB format (channels first): For an ND array (N >= 3),
+        An image in RGB format (channels first)
 
-
+    Returns
+    -------
+    numpy.ndarray
+        An image in HSV format (channels first)
     """
-
+    image = np.asarray(image)
     assert image.ndim == 3, "The image should have 3 dimensions"
 
-    image_yuv = np.zeros(image.shape)
+    was_float = isinstance(image, np.floating)
 
-    R = image[0, :, :]
-    G = image[1, :, :]
-    B = image[2, :, :]
+    image = bob_to_pillow(image).convert("YCbCr")
+    image = pillow_to_bob(image)
 
-    # Y
-    image_yuv[0, :, :] = 0.299 * R + 0.587 * G + 0.114 * B
+    if was_float:
+        image = image / 255.0
 
-    # U
-    image_yuv[1, :, :] = 0.492 * (B - image_yuv[0, :, :])
-
-    # V
-    image_yuv[2, :, :] = 0.877 * (R - image_yuv[0, :, :])
-
-    return image_yuv
+    return image

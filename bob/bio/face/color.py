@@ -6,7 +6,7 @@
 Color functionalitites from old bob.ip.color
 """
 import numpy as np
-from bob.io.image import to_matplotlib, to_bob
+from bob.io.image import bob_to_pillow, pillow_to_bob
 from PIL import Image
 
 
@@ -62,27 +62,25 @@ def rgb_to_hsv(image):
     ----------
 
     image : numpy.ndarray
-        An image in RGB format (channels first): For an ND array (N >= 3),
+        An image in RGB format (channels first)
 
-
+    Returns
+    -------
+    numpy.ndarray
+        An image in HSV format (channels first)
     """
-
+    image = np.asarray(image)
     assert image.ndim == 3, "The image should have 3 dimensions"
 
-    if isinstance(image, np.floating):
+    was_float = isinstance(image, np.floating)
 
-        return (
-            to_bob(
-                np.array(
-                    Image.fromarray(
-                        (to_matplotlib(image) * 255).astype("uint8")
-                    ).convert("HSV")
-                )
-            )
-            / 255.0
-        )
-    else:
-        return to_bob(np.array(Image.fromarray((to_matplotlib(image))).convert("HSV")))
+    image = bob_to_pillow(image).convert("HSV")
+    image = pillow_to_bob(image)
+
+    if was_float:
+        image = image / 255.0
+
+    return image
 
 
 def rgb_to_yuv(image):
@@ -93,26 +91,22 @@ def rgb_to_yuv(image):
     ----------
 
     image : numpy.ndarray
-        An image in RGB format (channels first): For an ND array (N >= 3),
+        An image in RGB format (channels first)
 
-
+    Returns
+    -------
+    numpy.ndarray
+        An image in HSV format (channels first)
     """
-
+    image = np.asarray(image)
     assert image.ndim == 3, "The image should have 3 dimensions"
 
-    image_yuv = np.zeros(image.shape)
+    was_float = isinstance(image, np.floating)
 
-    R = image[0, :, :]
-    G = image[1, :, :]
-    B = image[2, :, :]
+    image = bob_to_pillow(image).convert("YCbCr")
+    image = pillow_to_bob(image)
 
-    # Y
-    image_yuv[0, :, :] = 0.299 * R + 0.587 * G + 0.114 * B
+    if was_float:
+        image = image / 255.0
 
-    # U
-    image_yuv[1, :, :] = 0.492 * (B - image_yuv[0, :, :])
-
-    # V
-    image_yuv[2, :, :] = 0.877 * (R - image_yuv[0, :, :])
-
-    return image_yuv
+    return image

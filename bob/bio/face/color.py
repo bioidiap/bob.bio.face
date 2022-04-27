@@ -6,6 +6,8 @@
 Color functionalitites from old bob.ip.color
 """
 import numpy as np
+from bob.io.image import to_matplotlib, to_bob
+from PIL import Image
 
 
 def rgb_to_gray(image):
@@ -67,29 +69,20 @@ def rgb_to_hsv(image):
 
     assert image.ndim == 3, "The image should have 3 dimensions"
 
-    image_hsv = np.zeros(image.shape)
+    if isinstance(image, np.floating):
 
-    R = image[0, :, :]
-    G = image[1, :, :]
-    B = image[2, :, :]
-
-    max_value = np.max(image, axis=0)
-    min_value = np.min(image, axis=0)
-    delta = max_value - min_value
-
-    # Hue
-    image_hsv[0, :, :] = np.arctan2(B - G, R - G)
-    image_hsv[0, :, :] = (image_hsv[0, :, :] + np.pi) % (2 * np.pi)
-
-    # Saturation
-    image_hsv[1, :, :] = np.maximum(max_value, 0.00001)
-    image_hsv[1, :, :] /= np.maximum(delta, 0.00001)
-    image_hsv[1, :, :] = np.minimum(image_hsv[1, :, :], 1.0)
-
-    # Value
-    image_hsv[2, :, :] = max_value
-
-    return image_hsv
+        return (
+            to_bob(
+                np.array(
+                    Image.fromarray(
+                        (to_matplotlib(image) * 255).astype("uint8")
+                    ).convert("HSV")
+                )
+            )
+            / 255.0
+        )
+    else:
+        return to_bob(np.array(Image.fromarray((to_matplotlib(image))).convert("HSV")))
 
 
 def rgb_to_yuv(image):

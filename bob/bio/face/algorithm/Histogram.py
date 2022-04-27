@@ -2,11 +2,33 @@
 # vim: set fileencoding=utf-8 :
 # Manuel Guenther <Manuel.Guenther@idiap.ch>
 
-import bob.math
-
 import numpy
 
 from bob.bio.base.algorithm import Algorithm
+
+def chi_square(hist1, hist2):
+  """
+  Calculates the chi-square distance between two histograms.
+
+  @param hist1  The first histogram
+  @param hist2  The second histogram
+
+  @returns The chi-square distance between the two histograms
+  """
+  return numpy.sum(numpy.square(hist1 - hist2)) / numpy.sum(hist1 + hist2)
+
+
+def histogram_intersection(hist1, hist2):
+  """
+  Calculates the histogram intersection between two histograms.
+
+  @param hist1  The first histogram
+  @param hist2  The second histogram
+
+  @returns The histogram intersection between the two histograms
+  """
+  return numpy.sum(numpy.minimum(hist1, hist2))
+
 
 class Histogram (Algorithm):
   """Computes the distance between histogram sequences.
@@ -30,7 +52,7 @@ class Histogram (Algorithm):
 
   def __init__(
       self,
-      distance_function = bob.math.chi_square,
+      distance_function = chi_square,
       is_distance_function = True,
       multiple_probe_scoring = 'average'
   ):

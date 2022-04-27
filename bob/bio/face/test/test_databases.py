@@ -24,11 +24,11 @@ import os
 import bob.bio.base
 from bob.bio.base.test.utils import db_available
 from bob.bio.base.test.test_database_implementations import check_database
-import bob.core
+import bob.extension.log
 from bob.extension.download import get_file
 from bob.extension import rc
 
-logger = bob.core.log.setup("bob.bio.face")
+logger = bob.extension.log.setup("bob.bio.face")
 
 
 def _check_annotations(

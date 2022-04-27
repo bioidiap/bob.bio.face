@@ -20,7 +20,7 @@
 import bob.io.base
 
 import numpy
-import math
+from bob.bio.face.algorithm.Histogram import histogram_intersection
 
 import pkg_resources
 
@@ -30,7 +30,7 @@ seed_value = 5489
 
 def test_histogram():
     histogram = bob.bio.face.algorithm.Histogram(
-        distance_function=bob.math.histogram_intersection, is_distance_function=False
+        distance_function=histogram_intersection, is_distance_function=False
     )
 
     assert isinstance(histogram, bob.bio.face.algorithm.Histogram)

@@ -6,7 +6,7 @@ import numpy
 
 from bob.bio.base.algorithm import Algorithm
 
-def chi_square(hist1, hist2):
+def chi_square(*args):
   """
   Calculates the chi-square distance between two histograms.
 
@@ -15,10 +15,19 @@ def chi_square(hist1, hist2):
 
   @returns The chi-square distance between the two histograms
   """
-  return numpy.sum(numpy.square(hist1 - hist2)) / numpy.sum(hist1 + hist2)
+  if len(args) == 2:
+    h1, h2 = args
+    d = 0
+    for i in range(h1.shape[0]):
+      if h1[i] != h2[i]: d += int(((h1[i] - h2[i])**2) / (h1[i] + h2[i]))
+    return d
+  else:
+    # histogram intersection with sparse histograms
+    index_1, value_1, index_2, value_2 = args
+    raise NotImplementedError("chi_square distance with sparse histograms is not implemented yet")
 
 
-def histogram_intersection(hist1, hist2):
+def histogram_intersection(*args):
   """
   Calculates the histogram intersection between two histograms.
 
@@ -27,7 +36,27 @@ def histogram_intersection(hist1, hist2):
 
   @returns The histogram intersection between the two histograms
   """
-  return numpy.sum(numpy.minimum(hist1, hist2))
+  if len(args) == 2:
+    hist1, hist2 = args
+    return numpy.sum(numpy.minimum(hist1, hist2))
+  else:
+    # histogram intersection with sparse histograms
+    index_1, value_1, index_2, value_2 = args
+    i1, i2, i1_end, i2_end = 0, 0, index_1.shape[0], index_2.shape[0]
+    p1, p2 = index_1[i1], index_2[i2]
+    sum = 0
+    while i1 < i1_end and i2 < i2_end:
+      p1 = index_1[i1]
+      p2 = index_2[i2]
+      if p1 == p2:
+        sum += numpy.minimum(value_1[i1], value_2[i2])
+        i1 += 1
+        i2 += 1
+      elif p1 < p2:
+        i1 += 1
+      else:
+        i2 += 1
+    return sum
 
 
 class Histogram (Algorithm):

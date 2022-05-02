@@ -1,6 +1,17 @@
 [build-system]
-requires = ["setuptools", "wheel", "bob.extension"]
-build-backend = "setuptools.build_meta"
+    requires = ["setuptools", "wheel", "bob.extension"]
+    build-backend = "setuptools.build_meta"
+
+[tool.isort]
+    profile = "black"
+    line_length = 80
+    order_by_type = true
+    lines_between_types = 1
+
+[tool.black]
+    line-length = 80
 
 [tool.pytest.ini_options]
-markers = ["slow: marks tests as slow (deselect with '-m \"not slow\"')"]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+]

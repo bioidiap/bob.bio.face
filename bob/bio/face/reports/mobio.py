@@ -49,7 +49,7 @@ def mobio_report(
         impostors_eval = impostors_eval.compute()
         genuines_eval = genuines_eval.compute()
         # Computing the threshold combining all distances
-        ## Getting only the close distance to compute the threshold
+        # Getting only the close distance to compute the threshold
 
         threshold = bob.measure.far_threshold(
             impostors_dev["score"].to_numpy(),
@@ -79,7 +79,7 @@ def mobio_report(
 
     pass
 
-    ### Plotting
+    # Plotting
     pdf = PdfPages(output_filename)
 
     # Figure for eval plot

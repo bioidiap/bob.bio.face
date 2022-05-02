@@ -199,7 +199,7 @@ def test_bounding_box_annotator_crop():
     crops = face_cropper.transform([image], [bbox_annotation])[0]
     assert crops.shape == (3, 112, 112)
 
-    ### Testing with face anotattor
+    # Testing with face anotattor
     face_cropper = BoundingBoxAnnotatorCrop(
         eyes_cropper=eyes_cropper, annotator=FakeAnnotator()
     )

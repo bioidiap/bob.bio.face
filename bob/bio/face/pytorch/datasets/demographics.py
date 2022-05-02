@@ -807,8 +807,8 @@ class MSCelebTorchDataset(DemographicTorchDataset):
 
         # Defining the number of classes
         subject_relative_paths = [
-            os.path.join(l.split(",")[1], l.split(",")[2])
-            for l in filtered_dataframe_list.split("\n")[1:-1]
+            os.path.join(ll.split(",")[1], ll.split(",")[2])
+            for ll in filtered_dataframe_list.split("\n")[1:-1]
         ]
 
         if self.load_bucket_from_cache and os.path.exists(
@@ -837,7 +837,7 @@ class MSCelebTorchDataset(DemographicTorchDataset):
             ]
         )
 
-        ## Setting the possible demographics and the demographic keys
+        # Setting the possible demographics and the demographic keys
         filtered_dataframe = filtered_dataframe.set_index("ID")
         self.metadata = filtered_dataframe[["GENDER", "RACE"]].to_dict(
             orient="index"
@@ -878,7 +878,7 @@ class MSCelebTorchDataset(DemographicTorchDataset):
 
         label = self.labels[subject_id]
 
-        ## Getting the demographics
+        # Getting the demographics
 
         demography = self.get_demographics(subject_id)
 
@@ -1076,7 +1076,7 @@ class SiameseDemographicWrapper(Dataset):
 
         demography = self.demographic_dataset.get_demographics(sample[0])
 
-        ## Getting the demographics
+        # Getting the demographics
 
         # demography = self.get_demographics(subject_id)
 

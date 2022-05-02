@@ -49,7 +49,7 @@ def scface_report(
         genuines_eval = genuines_eval.compute()
         # Computing the threshold combining all distances
 
-        ## Computing the decision threshold
+        # Computing the decision threshold
         i_dev = impostors_dev["score"].to_numpy()
         g_dev = genuines_dev["score"].to_numpy()
 
@@ -81,7 +81,7 @@ def scface_report(
 
     pass
 
-    ### Plotting
+    # Plotting
     pdf = PdfPages(output_filename)
 
     # Figure for eval plot

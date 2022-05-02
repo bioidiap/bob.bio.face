@@ -92,7 +92,7 @@ class RFWDatabase(Database):
         self._pairs = dict()
         self._first_reference_of_subject = (
             dict()
-        )  ## Used with the Idiap protocol
+        )  # Used with the Idiap protocol
         self._inverted_pairs = dict()
         self._id_race = dict()  # ID -- > RACE
         self._race_ids = dict()  # RACE --> ID
@@ -175,11 +175,11 @@ class RFWDatabase(Database):
                 f"{race}_pairs.txt",
             )
 
-            for l in open(pair_file).readlines():
-                l = l.split("\t")
-                l[-1] = l[-1].rstrip("\n")
+            for line in open(pair_file).readlines():
+                line = line.split("\t")
+                line[-1] = line[-1].rstrip("\n")
 
-                key = f"{l[0]}_000{l[1]}"
+                key = f"{line[0]}_000{line[1]}"
                 subject_id = self._get_subject_from_key(key)
                 dict_key = f"{race}/{subject_id}/{key}"
 
@@ -198,18 +198,18 @@ class RFWDatabase(Database):
                         continue
 
                 # Positive or negative pairs
-                if len(l) == 3:
-                    k_value = f"{l[0]}_000{l[2]}"
+                if len(line) == 3:
+                    k_value = f"{line[0]}_000{line[2]}"
                     dict_value = f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
                 else:
-                    k_value = f"{l[2]}_000{l[3]}"
+                    k_value = f"{line[2]}_000{line[3]}"
                     dict_value = f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
 
                 if dict_key not in self._pairs:
                     self._pairs[dict_key] = []
                 self._pairs[dict_key].append(dict_value)
 
-        ## Picking the first reference
+        # Picking the first reference
         if self.protocol == "idiap":
             for p in self._pairs:
                 _, subject_id, reference_id = p.split("/")

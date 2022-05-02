@@ -247,7 +247,7 @@ def test_replaymobile():
 def test_ijbc():
     from bob.bio.face.database import IJBCDatabase
 
-    ##### test1 #####
+    # test1 #####
 
     database = IJBCDatabase(protocol="test1")
 
@@ -257,7 +257,7 @@ def test_ijbc():
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 19557 + 15638932  # Genuine + Impostor
 
-    ##### test2 #####
+    # test2 #####
     database = IJBCDatabase(protocol="test2")
 
     assert len(database.references()) == 140739
@@ -266,7 +266,7 @@ def test_ijbc():
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 39208203
 
-    ##### test4 G1 #####
+    # test4 G1 #####
     database = IJBCDatabase(protocol="test4-G1")
 
     assert len(database.references()) == 1772
@@ -274,7 +274,7 @@ def test_ijbc():
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 34718796
 
-    ##### test4 G2 #####
+    # test4 G2 #####
     database = IJBCDatabase(protocol="test4-G2")
 
     assert len(database.references()) == 1759
@@ -561,7 +561,7 @@ def test_caspeal():
     assert len(database.probes()) == 2243
     assert len(database.background_model_samples()) == 1200
 
-    ### There's no pose protocol
+    # There's no pose protocol
 
 
 def test_arface():
@@ -767,11 +767,11 @@ def test_lfw():
 def test_vgg2():
     from bob.bio.face.database import VGG2Database
 
-    ## Getting the absolute path
+    # Getting the absolute path
     urls = VGG2Database.urls()
     filename = get_file("vgg2.tar.gz", urls)
 
-    ## Removing the file before the test
+    # Removing the file before the test
     try:
         os.remove(filename)
     except Exception:
@@ -781,7 +781,7 @@ def test_vgg2():
 
     database = VGG2Database(protocol=p)
 
-    ## Sanity check on vgg2-short
+    # Sanity check on vgg2-short
     assert len(database.treferences()) == 194
     assert len(database.zprobes()) == 200
 
@@ -794,7 +794,7 @@ def test_vgg2():
 
     database = VGG2Database(protocol=p)
 
-    ## Sanity check on vgg2-short
+    # Sanity check on vgg2-short
     assert len(database.treferences()) == 194
     assert len(database.zprobes()) == 200
 

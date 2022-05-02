@@ -342,7 +342,7 @@ def bounding_box_from_annotation(source=None, padding=None, **kwargs):
       The type of annotations present in the list of keyword arguments, see above.
 
     padding : {'top':float, 'bottom':float, 'left':float, 'right':float}
-      This padding is added to the center between the given points, to define the top left and bottom right positions in the bounding box; values are relative to the distance between the two given points; ignored for some of the ``source``\s
+      This padding is added to the center between the given points, to define the top left and bottom right positions in the bounding box; values are relative to the distance between the two given points; ignored for some of the ``source``\\s
 
     kwargs : key=value
       Further keyword arguments specifying the annotations.

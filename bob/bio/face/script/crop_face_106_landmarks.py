@@ -1,4 +1,4 @@
-## CLI Command that crops faces using the eyes annotations (FaceCrop)
+# CLI Command that crops faces using the eyes annotations (FaceCrop)
 ###########################
 
 import os

@@ -375,7 +375,7 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
     n-classes: 85742
 
 
-    ## Backbone
+    # Backbone
     backbone: 'resnet50'
     head: 'arcface'
     s: 10
@@ -441,7 +441,7 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
     n-classes: 83009
 
 
-    ## Backbone
+    # Backbone
     backbone: 'resnet50'
     head: 'arcface'
     s: 30
@@ -508,7 +508,7 @@ class Resnet101_MsCeleb_ArcFace_20210521(TensorflowTransformer):
     n-classes: 83009
 
 
-    ## Backbone
+    # Backbone
     backbone: 'resnet50'
     head: 'arcface'
     s: 30
@@ -741,7 +741,7 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
     n-classes: 8631
 
 
-    ## Backbone
+    # Backbone
     backbone: 'resnet50'
     head: 'arcface'
     s: 64
@@ -812,7 +812,7 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
     n-classes: 85742
 
 
-    ## Backbone
+    # Backbone
     backbone: 'mobilenet-v2'
     head: 'arcface'
     s: 10

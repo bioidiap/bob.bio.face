@@ -14,7 +14,6 @@ from bob.bio.face.reports.multipie import (
 from bob.bio.face.reports.scface import scface_report
 from bob.extension.scripts.click_helper import ResourceOption
 from bob.measure.script import common_options
-from bob.pipelines.distributed import VALID_DASK_CLIENT_STRINGS
 
 
 @click.command()

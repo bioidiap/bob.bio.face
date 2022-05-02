@@ -264,8 +264,8 @@ class FaceXDetector(Base):
             N is the number of detection box.
         """
 
-        ### First thing, we need to convert the bob CxHxW
-        ### to the openCV HxWxC and BGR
+        # First thing, we need to convert the bob CxHxW
+        # to the openCV HxWxC and BGR
         image = bob_to_opencvbgr(image)
 
         input_height, input_width, _ = image.shape
@@ -389,8 +389,8 @@ class FaceX106Landmarks(Base):
         if dets is None:
             return None
 
-        ### First thing, we need to convert the bob CxHxW
-        ### to the openCV HxWxC and BGR
+        # First thing, we need to convert the bob CxHxW
+        # to the openCV HxWxC and BGR
         image = bob_to_opencvbgr(image)
         try:
             image_pre = self._preprocess(image, dets)

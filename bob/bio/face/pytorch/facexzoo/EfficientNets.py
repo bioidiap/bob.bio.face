@@ -28,7 +28,7 @@ from torch.nn import functional as F
 from torch.utils import model_zoo
 
 ################################################################################
-### Help functions for model architecture
+# Help functions for model architecture
 ################################################################################
 
 # GlobalParams and BlockArgs: Two namedtuples
@@ -522,7 +522,7 @@ class MaxPool2dStaticSamePadding(nn.MaxPool2d):
 
 
 ################################################################################
-### Helper functions for loading model params
+# Helper functions for loading model params
 ################################################################################
 
 # BlockDecoder: A Class for encoding and decoding BlockArgs
@@ -837,7 +837,7 @@ class Flatten(Module):
         return input.view(input.size(0), -1)
 
 
-######################################### backbone ##################################################################
+# backbone ##################################################################
 
 VALID_MODELS = (
     "efficientnet-b0",

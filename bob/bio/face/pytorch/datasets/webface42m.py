@@ -159,7 +159,7 @@ class WebFace42M(Dataset):
                 csv_writer.writerows(rows)
 
         # print(counter)
-        ## Checking if all labels were taken
+        # Checking if all labels were taken
         zero_labels = np.where(label_checker == 0)[0]
         if zero_labels.shape[0] > 0:
             print(zero_labels)

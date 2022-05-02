@@ -226,9 +226,9 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         # source_target_ratio = source_eyes_distance / self.target_eyes_distance
         target_source_ratio = self.target_eyes_distance / source_eyes_distance
 
-        #####
+        #
 
-        ### ROTATION WITH OPEN CV
+        # ROTATION WITH OPEN CV
 
         cropped_image = bob_to_opencvbgr(X) if X.ndim > 2 else X
         original_height = cropped_image.shape[0]
@@ -238,7 +238,7 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
             cropped_image, rotational_angle, source_eyes_center
         )
 
-        ### Cropping
+        # Cropping
 
         target_eyes_center_rescaled = np.floor(
             self.target_eyes_center / target_source_ratio

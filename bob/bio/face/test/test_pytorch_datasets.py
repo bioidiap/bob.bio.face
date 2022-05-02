@@ -155,7 +155,7 @@ def test_msceleb():
 
     database_path = rc.get("bob.bio.face.msceleb.directory")
 
-    ### WITH UNKNOW DEMOGRAPHICS
+    # WITH UNKNOW DEMOGRAPHICS
     dataset = MSCelebTorchDataset(
         database_path, include_unknow_demographics=True
     )
@@ -213,7 +213,7 @@ def test_vgg2():
 
     assert np.allclose(sum(weights), 1, atol=0.001)
 
-    ### Testing dev
+    # Testing dev
 
     dataset = VGG2TorchDataset(
         protocol="vgg2-short", database_path=database_path, train=False

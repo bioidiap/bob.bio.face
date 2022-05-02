@@ -17,7 +17,7 @@ def ijbc_report(scores_dev, output_filename, titles, figsize=(8, 6)):
 
     colors = plt.cm.tab10.colors
 
-    ### Plotting
+    # Plotting
     pdf = PdfPages(output_filename)
 
     # Figure for eval plot

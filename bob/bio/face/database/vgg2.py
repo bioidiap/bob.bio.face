@@ -154,7 +154,7 @@ class VGG2Database(CSVDatasetZTNorm):
         @inproceedings{cao2018vggface2,
             title={Vggface2: A dataset for recognising faces across pose and age},
             author={Cao, Qiong and Shen, Li and Xie, Weidi and Parkhi, Omkar M and Zisserman, Andrew},
-            booktitle={2018 13th IEEE international conference on automatic face \& gesture recognition (FG 2018)},
+            booktitle={2018 13th IEEE international conference on automatic face \\& gesture recognition (FG 2018)},
             pages={67--74},
             year={2018},
             organization={IEEE}

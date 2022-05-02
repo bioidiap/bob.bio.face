@@ -13,7 +13,7 @@
 #     name: python3
 # ---
 
-# ## How to crop a face
+# # How to crop a face
 
 # +
 import bob.bio.face

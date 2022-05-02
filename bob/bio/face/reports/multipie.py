@@ -274,7 +274,7 @@ def multipie_expression_report(
         # g_eval = genuines_eval
         # eval_fmr_fnmr_expressions[title].append(compute_fmr_fnmr(i_eval, g_eval))
 
-        ### EVALUATING DIFFERENT TYPES OF EXPRESSION
+        # EVALUATING DIFFERENT TYPES OF EXPRESSION
         for expression in expressions:
             i_eval = impostors_eval.loc[
                 impostors_eval.probe_expression == expression
@@ -289,7 +289,7 @@ def multipie_expression_report(
 
     pass
 
-    ### Plotting
+    # Plotting
     pdf = PdfPages(output_filename)
 
     # Figure for eval plot

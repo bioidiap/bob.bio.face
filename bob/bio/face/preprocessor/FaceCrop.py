@@ -229,7 +229,7 @@ class MultiFaceCrop(Base):
                         [X_elem], [annotations_elem]
                     )[0]
                     break
-                except:
+                except Exception:
                     continue
 
             if cropped_sample is None:

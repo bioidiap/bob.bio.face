@@ -152,7 +152,7 @@ class IJBCDatabase(Database):
 
         self._load_metadata(protocol)
 
-        ### For the test4 protocols
+        # For the test4 protocols
         if "test4" in protocol:
             self.allow_scoring_with_all_biometric_references = True
 

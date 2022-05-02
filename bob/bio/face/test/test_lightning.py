@@ -2,6 +2,7 @@
 # encoding: utf-8
 
 import os
+
 from functools import partial
 
 import pytest

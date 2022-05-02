@@ -262,7 +262,8 @@ class LFWDatabase(Database):
             )
             self.pairs = {}
 
-            make_filename = lambda name, index: f"{name}_{index.zfill(4)}"
+            def make_filename(name, index):
+                return f"{name}_{index.zfill(4)}"
 
             with open(pairs_path) as f:
                 for i, line in enumerate(f.readlines()):

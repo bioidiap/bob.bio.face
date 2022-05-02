@@ -105,7 +105,7 @@ def arface_report(
         overall_fmr_fnmr = compute_fmr_fnmr(impostors_eval, genuines_eval)
         eval_fmr_fnmr_occlusion_illumination[title].append(overall_fmr_fnmr)
 
-        ### EVALUATING DIFFERENT TYPES OF OCCLUSION
+        # EVALUATING DIFFERENT TYPES OF OCCLUSION
         for occlusion in occlusions:
             i_eval = impostors_eval.loc[
                 impostors_eval.probe_occlusion == occlusion
@@ -120,10 +120,10 @@ def arface_report(
 
     pass
 
-    ### Plotting
-    pdf = PdfPages(output_filename)
+    # Plotting
 
-    ### EFFECT OF OCCLUSION TYPES
+    #
+    # EFFECT OF OCCLUSION TYPES
 
     # Figure for eval plot
     fig = plt.figure(figsize=figsize)
@@ -194,7 +194,7 @@ def arface_report(
 
     pdf.savefig(fig)
 
-    ### EFFECT OF ILLUMINATION AND OCCLUSION
+    # EFFECT OF ILLUMINATION AND OCCLUSION
 
     # Figure for eval plot
     fig = plt.figure(figsize=figsize)

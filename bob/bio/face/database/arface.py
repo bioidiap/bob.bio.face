@@ -6,13 +6,14 @@
   Multipie database implementation
 """
 
-from bob.bio.base.database import CSVDataset
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
+
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
 
 
 class ARFaceDatabase(CSVDataset):
@@ -61,7 +62,9 @@ class ARFaceDatabase(CSVDataset):
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self, protocol, annotation_type="eyes-center", fixed_positions=None
+    ):
 
         # Downloading model if not exists
         urls = ARFaceDatabase.urls()
@@ -78,7 +81,9 @@ class ARFaceDatabase(CSVDataset):
             csv_to_sample_loader=make_pipeline(
                 CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc["bob.bio.face.arface.directory"]
+                    dataset_original_directory=rc[
+                        "bob.bio.face.arface.directory"
+                    ]
                     if rc["bob.bio.face.arface.directory"]
                     else "",
                     extension=rc["bob.bio.face.arface.extension"]
@@ -94,7 +99,7 @@ class ARFaceDatabase(CSVDataset):
     @staticmethod
     def protocols():
         # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        protocols = [
+        return [
             "all",
             "expression",
             "illumination",

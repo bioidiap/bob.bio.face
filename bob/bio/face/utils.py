@@ -1,10 +1,15 @@
 import logging
 
-from .preprocessor import FaceCrop
-from .preprocessor import MultiFaceCrop, BoundingBoxAnnotatorCrop
-from .preprocessor import Scale
-from bob.pipelines import wrap
 from sklearn.pipeline import make_pipeline
+
+from bob.pipelines import wrap
+
+from .preprocessor import (
+    BoundingBoxAnnotatorCrop,
+    FaceCrop,
+    MultiFaceCrop,
+    Scale,
+)
 from .preprocessor.croppers import FaceEyesNorm
 
 logger = logging.getLogger(__name__)
@@ -67,7 +72,9 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
     elif annotation_type == "right-profile":
         return {"reye": (52, 56), "mouth": (91, 56)}
     else:
-        raise ValueError(f"Annotations of the type `{annotation_type}` not supported")
+        raise ValueError(
+            f"Annotations of the type `{annotation_type}` not supported"
+        )
 
     return cropped_positions
 
@@ -96,7 +103,8 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
     """
     if isinstance(annotation_type, list):
         return [
-            dnn_default_cropping(cropped_image_size, item) for item in annotation_type
+            dnn_default_cropping(cropped_image_size, item)
+            for item in annotation_type
         ]
 
     CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
@@ -200,20 +208,29 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
     if annotation_type in ["bounding-box", "eyes-center"]:
         # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
 
-        RIGHT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 - 1)
+        RIGHT_EYE_POS = (
+            CROPPED_IMAGE_HEIGHT // 5,
+            CROPPED_IMAGE_WIDTH // 4 - 1,
+        )
         LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
         cropped_positions.update({"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS})
 
     elif annotation_type == "left-profile":
         # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
         EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
-        MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
+        MOUTH_POS = (
+            CROPPED_IMAGE_HEIGHT // 3 * 2,
+            CROPPED_IMAGE_WIDTH // 7 * 3 - 2,
+        )
         cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
 
     elif annotation_type == "right-profile":
         # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
         EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
-        MOUTH_POS = (CROPPED_IMAGE_HEIGHT // 3 * 2, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
+        MOUTH_POS = (
+            CROPPED_IMAGE_HEIGHT // 3 * 2,
+            CROPPED_IMAGE_WIDTH // 7 * 4 + 2,
+        )
         cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
 
     else:
@@ -389,7 +406,9 @@ def face_crop_solver(
                         annotator=annotator,
                         dtype=dtype,
                         cropper=FaceEyesNorm(
-                            positions, cropped_image_size, annotation_type="eyes-center"
+                            positions,
+                            cropped_image_size,
+                            annotation_type="eyes-center",
                         ),
                     )
 
@@ -432,8 +451,13 @@ def face_crop_solver(
             return MultiFaceCrop(croppers)
         else:
             # If the eyes annotations are provided
-            if "topleft" in cropped_positions or "bottomright" in cropped_positions:
-                eyes_cropper = FaceEyesNorm(cropped_positions, cropped_image_size)
+            if (
+                "topleft" in cropped_positions
+                or "bottomright" in cropped_positions
+            ):
+                eyes_cropper = FaceEyesNorm(
+                    cropped_positions, cropped_image_size
+                )
                 return BoundingBoxAnnotatorCrop(
                     eyes_cropper=eyes_cropper,
                     annotator=annotator,

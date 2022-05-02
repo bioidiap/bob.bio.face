@@ -13,16 +13,16 @@ Multipie Dataset
 
 Database
 ========
-The `CMU Multi-PIE face database <http://www.cs.cmu.edu/afs/cs/project/PIE/MultiPie/Multi-Pie/Home.html>`_ contains more than 750,000 images 
-of 337 people recorded in up to four sessions over the span of five months. Subjects were imaged under 15 view points and 19 illumination 
-conditions while displaying a range of facial expressions. In addition, high resolution frontal images were acquired as well. 
-In total, the database contains more than 305 GB of face data. 
+The `CMU Multi-PIE face database <http://www.cs.cmu.edu/afs/cs/project/PIE/MultiPie/Multi-Pie/Home.html>`_ contains more than 750,000 images
+of 337 people recorded in up to four sessions over the span of five months. Subjects were imaged under 15 view points and 19 illumination
+conditions while displaying a range of facial expressions. In addition, high resolution frontal images were acquired as well.
+In total, the database contains more than 305 GB of face data.
 
 Content
 *******
 The data has been recorded over 4 sessions. For each session, the subjects were asked to display a few
 different expressions. For each of those expressions, a complete set of 30 pictures is captured that includes
-15 different view points times 20 different illumination conditions (18 with various flashes, plus 2 pictures with no flash at all). 
+15 different view points times 20 different illumination conditions (18 with various flashes, plus 2 pictures with no flash at all).
 
 Available expressions
 ---------------------
@@ -50,15 +50,15 @@ File paths
 ----------
 
 The data directory structure and filenames adopt the following structure:
- 
+
 .. code-block:: shell
-   
+
    session<XX>/multiview/<subject_id>/<recording_id>/<camera_id>/<subject_id>_<session_id>_<recording_id>_<camera_id>_<shot_id>.png
 
 For example, the file
 
 .. code-block:: shell
-   
+
    session02/multiview/001/02/05_1/001_02_02_051_07.png
 
 corresponds to
@@ -171,7 +171,7 @@ Pose protocol
 
 .. code-block:: bash
 
-   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz
    tar -xzvf frice_scores.tar.gz
    bob bio face plots multipie-pose -e \
         ./frice_scores/multipie-pose/arcface_insightface/scores-{dev,eval}.csv \

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
+# isort: skip_file
 
 from .database import FaceBioFile
 from .mobio import MobioDatabase
@@ -20,12 +21,10 @@ from .cbsr_nir_vis_2 import CBSRNirVis2Database
 from .rfw import RFWDatabase
 from .scface import SCFaceDatabase
 from .caspeal import CaspealDatabase
-from .arface import ARFaceDatabase
 from .vgg2 import VGG2Database
 
+
 # gets sphinx autodoc done right - don't remove it
-
-
 def __appropriate__(*args):
     """Says object was actually declared here, and not in the import module.
     Fixing sphinx warnings of not being able to find classes, when path is shortened.
@@ -49,6 +48,7 @@ __appropriate__(
     ARFaceDatabase,
     LFWDatabase,
     MultipieDatabase,
+    IJBCDatabase,
     ReplayMobileBioDatabase,
     FargoBioDatabase,
     MEDSDatabase,
@@ -60,7 +60,6 @@ __appropriate__(
     RFWDatabase,
     SCFaceDatabase,
     CaspealDatabase,
-    ARFaceDatabase,
     VGG2Database,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

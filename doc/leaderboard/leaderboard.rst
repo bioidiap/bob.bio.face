@@ -20,9 +20,7 @@ Datasets
    lfw
    meds
    mobio
-   morph   
-   multipie   
-   scface   
+   morph
+   multipie
+   scface
    uccs
-
-   

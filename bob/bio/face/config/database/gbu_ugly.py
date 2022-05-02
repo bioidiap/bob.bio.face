@@ -4,4 +4,3 @@
 from bob.bio.face.database import GBUDatabase
 
 database = GBUDatabase(protocol="Ugly")
-

@@ -1,11 +1,10 @@
 import logging
 
 from .Base import Base
-from .croppers import FaceEyesNorm, FaceCropBoundingBox
+from .croppers import FaceCropBoundingBox, FaceEyesNorm
 
 logger = logging.getLogger("bob.bio.face")
 from bob.bio.base import load_resource
-from .Scale import scale
 
 
 class FaceCrop(Base):
@@ -100,7 +99,9 @@ class FaceCrop(Base):
             cropped_image_size = (cropped_image_size, cropped_image_size)
 
         # SEssion the cropper
-        self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
+        self.allow_upside_down_normalized_faces = (
+            allow_upside_down_normalized_faces
+        )
         if cropper is None:
             cropper = FaceEyesNorm(
                 cropped_positions,
@@ -222,14 +223,18 @@ class MultiFaceCrop(Base):
             for cropper in self.croppers_list:
                 # Matching the first possible cropper that works
                 try:
-                    cropped_sample = cropper.transform([X_elem], [annotations_elem])[0]
+                    cropped_sample = cropper.transform(
+                        [X_elem], [annotations_elem]
+                    )[0]
                     break
-                except:
+                except Exception:
                     continue
 
             if cropped_sample is None:
                 raise ValueError(
-                    "No cropper found for annotations {}".format(annotations_elem)
+                    "No cropper found for annotations {}".format(
+                        annotations_elem
+                    )
                 )
 
             transformed_samples.append(cropped_sample)
@@ -306,7 +311,8 @@ class BoundingBoxAnnotatorCrop(Base):
             # If nothing was detected OR if the annotations are swaped, return the cropped face
             if (
                 annotator_annotations is None
-                or annotator_annotations["reye"][1] > annotator_annotations["leye"][1]
+                or annotator_annotations["reye"][1]
+                > annotator_annotations["leye"][1]
             ):
                 logger.warning(
                     f"Unable to detect face in bounding box. Got : {annotator_annotations}. Cropping will be only based on bounding-box."
@@ -317,7 +323,9 @@ class BoundingBoxAnnotatorCrop(Base):
             else:
 
                 faces.append(
-                    self.eyes_cropper.transform(face_crop, annotator_annotations)
+                    self.eyes_cropper.transform(
+                        face_crop, annotator_annotations
+                    )
                 )
 
         return faces

@@ -8,28 +8,29 @@ Datasets that handles demographic information
 """
 
 
+import itertools
 import logging
-from torch.utils.data import Dataset
-import cloudpickle
-from bob.bio.face.database import (
-    MEDSDatabase,
-    MorphDatabase,
-    RFWDatabase,
-    MobioDatabase,
-    VGG2Database,
-)
+import os
 import random
 
-import torchvision.transforms as transforms
-
+import cloudpickle
 import numpy as np
 import pandas as pd
-import os
-import bob.io.base
-from bob.extension.download import get_file
-from bob.extension import rc
 import torch
-import itertools
+
+from torch.utils.data import Dataset
+
+import bob.io.base
+
+from bob.bio.face.database import (
+    MEDSDatabase,
+    MobioDatabase,
+    MorphDatabase,
+    RFWDatabase,
+    VGG2Database,
+)
+from bob.extension import rc
+from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
 
@@ -77,7 +78,11 @@ class DemographicTorchDataset(Dataset):
 
         sample = self.bucket[idx]
 
-        image = sample.data if self.transform is None else self.transform(sample.data)
+        image = (
+            sample.data
+            if self.transform is None
+            else self.transform(sample.data)
+        )
 
         # image = image.astype("float32")
 
@@ -91,13 +96,14 @@ class DemographicTorchDataset(Dataset):
         """
         Count the number of subjects per demographics
         """
-        n_identities = len(self.subject_demographic)
-
         all_demographics = list(self.subject_demographic.values())
 
         # Number of subjects per demographic
         subjects_per_demographics = dict(
-            [(d, sum(np.array(all_demographics) == d)) for d in set(all_demographics)]
+            [
+                (d, sum(np.array(all_demographics) == d))
+                for d in set(all_demographics)
+            ]
         )
 
         return subjects_per_demographics
@@ -215,11 +221,17 @@ class MedsTorchDataset(DemographicTorchDataset):
         self._target_metadata = "rac"
 
         if self.take_from_znorm:
-            self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
-            self.bucket += [s for sset in self.bob_dataset.treferences() for s in sset]
+            self.bucket = [
+                s for sset in self.bob_dataset.zprobes() for s in sset
+            ]
+            self.bucket += [
+                s for sset in self.bob_dataset.treferences() for s in sset
+            ]
         else:
             self.bucket = [
-                s for sset in self.bob_dataset.probes(group=self.group) for s in sset
+                s
+                for sset in self.bob_dataset.probes(group=self.group)
+                for s in sset
             ]
             self.bucket += [
                 s
@@ -240,7 +252,9 @@ class MedsTorchDataset(DemographicTorchDataset):
                 offset += 1
 
         metadata_keys = set(self.subject_demographic.values())
-        self._demographic_keys = dict(zip(metadata_keys, range(len(metadata_keys))))
+        self._demographic_keys = dict(
+            zip(metadata_keys, range(len(metadata_keys)))
+        )
 
     def get_demographics(self, sample):
         demographic_key = getattr(sample, "rac")
@@ -354,7 +368,8 @@ class VGG2TorchDataset(DemographicTorchDataset):
 
         return os.path.join(
             rc.get(
-                "bob_data_folder", os.path.join(os.path.expanduser("~"), "bob_data")
+                "bob_data_folder",
+                os.path.join(os.path.expanduser("~"), "bob_data"),
             ),
             "datasets",
             f"{filename}",
@@ -388,10 +403,14 @@ class VGG2TorchDataset(DemographicTorchDataset):
         )
 
         # Loading the buket from cache
-        if self.load_bucket_from_cache and os.path.exists(self.get_cache_path()):
+        if self.load_bucket_from_cache and os.path.exists(
+            self.get_cache_path()
+        ):
             self.bucket = self.load_cached_bucket()
         else:
-            self.bucket = [s for s in self.bob_dataset.background_model_samples()]
+            self.bucket = [
+                s for s in self.bob_dataset.background_model_samples()
+            ]
             # Caching the bucket
             self.cache_bucket(self.bucket)
 
@@ -406,13 +425,21 @@ class VGG2TorchDataset(DemographicTorchDataset):
             for i in range(self.n_classes):
                 ind = np.where(all_indexes == i)[0]
                 indexes += list(
-                    ind[0 : int(np.floor(len(ind) * self._percentage_for_training))]
+                    ind[
+                        0 : int(
+                            np.floor(len(ind) * self._percentage_for_training)
+                        )
+                    ]
                 )
         else:
             for i in range(self.n_classes):
                 ind = np.where(all_indexes == i)[0]
                 indexes += list(
-                    ind[int(np.floor(len(ind) * self._percentage_for_training)) :]
+                    ind[
+                        int(
+                            np.floor(len(ind) * self._percentage_for_training)
+                        ) :
+                    ]
                 )
 
         # Redefining the bucket
@@ -502,7 +529,9 @@ class MorphTorchDataset(DemographicTorchDataset):
         ]
 
         if self.take_from_znorm:
-            self.bucket = [s for sset in self.bob_dataset.zprobes() for s in sset]
+            self.bucket = [
+                s for sset in self.bob_dataset.zprobes() for s in sset
+            ]
             self.bucket += [
                 s
                 for sset in self.bob_dataset.treferences()
@@ -511,10 +540,14 @@ class MorphTorchDataset(DemographicTorchDataset):
             ]
         else:
             self.bucket = [
-                s for sset in self.bob_dataset.probes(group=group) for s in sset
+                s
+                for sset in self.bob_dataset.probes(group=self.group)
+                for s in sset
             ]
             self.bucket += [
-                s for sset in self.bob_dataset.references(group=group) for s in sset
+                s
+                for sset in self.bob_dataset.references(group=self.group)
+                for s in sset
             ]
 
         offset = 0
@@ -528,7 +561,9 @@ class MorphTorchDataset(DemographicTorchDataset):
                 offset += 1
 
         metadata_keys = set(self.subject_demographic.values())
-        self._demographic_keys = dict(zip(metadata_keys, range(len(metadata_keys))))
+        self._demographic_keys = dict(
+            zip(metadata_keys, range(len(metadata_keys)))
+        )
 
     def get_demographics(self, sample):
         demographic_key = f"{sample.rac}-{sample.sex}"
@@ -551,7 +586,10 @@ class RFWTorchDataset(DemographicTorchDataset):
 
         target_metadata = "race"
         metadata_keys = set(
-            [getattr(sset, target_metadata) for sset in self.bob_dataset.zprobes()]
+            [
+                getattr(sset, target_metadata)
+                for sset in self.bob_dataset.zprobes()
+            ]
             + [
                 getattr(sset, target_metadata)
                 for sset in self.bob_dataset.treferences()
@@ -593,7 +631,9 @@ class MobioTorchDataset(DemographicTorchDataset):
                 offset += 1
 
         metadata_keys = set(self.subject_demographic.values())
-        self._demographic_keys = dict(zip(metadata_keys, range(len(metadata_keys))))
+        self._demographic_keys = dict(
+            zip(metadata_keys, range(len(metadata_keys)))
+        )
 
     def __len__(self):
         return len(self.bucket)
@@ -707,7 +747,8 @@ class MSCelebTorchDataset(DemographicTorchDataset):
 
         return os.path.join(
             rc.get(
-                "bob_data_folder", os.path.join(os.path.expanduser("~"), "bob_data")
+                "bob_data_folder",
+                os.path.join(os.path.expanduser("~"), "bob_data"),
             ),
             "datasets",
             f"{filename}",
@@ -759,15 +800,19 @@ class MSCelebTorchDataset(DemographicTorchDataset):
             ]
         )
 
-        filtered_dataframe_list = filtered_dataframe[["idiap_chunk", "ID"]].to_csv()
+        filtered_dataframe_list = filtered_dataframe[
+            ["idiap_chunk", "ID"]
+        ].to_csv()
 
         # Defining the number of classes
         subject_relative_paths = [
-            os.path.join(l.split(",")[1], l.split(",")[2])
-            for l in filtered_dataframe_list.split("\n")[1:-1]
+            os.path.join(ll.split(",")[1], ll.split(",")[2])
+            for ll in filtered_dataframe_list.split("\n")[1:-1]
         ]
 
-        if self.load_bucket_from_cache and os.path.exists(self.get_cache_path()):
+        if self.load_bucket_from_cache and os.path.exists(
+            self.get_cache_path()
+        ):
             self.bucket = self.load_cached_bucket()
         else:
             # Defining all images
@@ -785,12 +830,17 @@ class MSCelebTorchDataset(DemographicTorchDataset):
             self.cache_bucket(self.bucket)
 
         self.labels = dict(
-            [(k.split("/")[-1], i) for i, k in enumerate(subject_relative_paths)]
+            [
+                (k.split("/")[-1], i)
+                for i, k in enumerate(subject_relative_paths)
+            ]
         )
 
-        ## Setting the possible demographics and the demographic keys
+        # Setting the possible demographics and the demographic keys
         filtered_dataframe = filtered_dataframe.set_index("ID")
-        self.metadata = filtered_dataframe[["GENDER", "RACE"]].to_dict(orient="index")
+        self.metadata = filtered_dataframe[["GENDER", "RACE"]].to_dict(
+            orient="index"
+        )
 
         self._demographic_keys = [
             f"{gender}-{race}"
@@ -827,7 +877,7 @@ class MSCelebTorchDataset(DemographicTorchDataset):
 
         label = self.labels[subject_id]
 
-        ## Getting the demographics
+        # Getting the demographics
 
         demography = self.get_demographics(subject_id)
 
@@ -892,7 +942,8 @@ class SiameseDemographicWrapper(Dataset):
             samples = itertools.combinations(samples, 2)
 
             positives += [
-                s for s in list(samples)[0 : self.max_positive_pairs_per_subject]
+                s
+                for s in list(samples)[0 : self.max_positive_pairs_per_subject]
             ]
             pass
 
@@ -931,7 +982,9 @@ class SiameseDemographicWrapper(Dataset):
         # For each demographic, pic the negative pairs
         for d in demographic_subject:
 
-            subject_combinations = itertools.combinations(demographic_subject[d], 2)
+            subject_combinations = itertools.combinations(
+                demographic_subject[d], 2
+            )
 
             for s_c in subject_combinations:
                 subject_i = self.siamese_bucket[s_c[0]]
@@ -1022,8 +1075,12 @@ class SiameseDemographicWrapper(Dataset):
 
         demography = self.demographic_dataset.get_demographics(sample[0])
 
-        ## Getting the demographics
+        # Getting the demographics
 
         # demography = self.get_demographics(subject_id)
 
-        return {"data": (image_i, image_j), "label": label, "demography": demography}
+        return {
+            "data": (image_i, image_j),
+            "label": label,
+            "demography": demography,
+        }

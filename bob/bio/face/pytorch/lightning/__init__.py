@@ -1,1 +1,1 @@
-from .backbone_head import BackboneHeadModel
+from .backbone_head import BackboneHeadModel  # noqa: F401

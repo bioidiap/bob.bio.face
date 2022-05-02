@@ -3,6 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 import torchvision.transforms as transforms
+
 import bob.io.image
 
 

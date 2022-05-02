@@ -8,18 +8,18 @@ logger = logging.getLogger(__name__)
 
 
 """
-  VGG2 database implementation 
+  VGG2 database implementation
 """
 
-from bob.bio.base.database import CSVDatasetZTNorm
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
-from bob.pipelines import DelayedSample
-from sklearn.base import TransformerMixin, BaseEstimator
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.pipeline import make_pipeline
 
+import bob.io.base
+
+from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
+from bob.pipelines import DelayedSample
 
 
 class VGG2Annotations(TransformerMixin, BaseEstimator):
@@ -154,7 +154,7 @@ class VGG2Database(CSVDatasetZTNorm):
         @inproceedings{cao2018vggface2,
             title={Vggface2: A dataset for recognising faces across pose and age},
             author={Cao, Qiong and Shen, Li and Xie, Weidi and Parkhi, Omkar M and Zisserman, Andrew},
-            booktitle={2018 13th IEEE international conference on automatic face \& gesture recognition (FG 2018)},
+            booktitle={2018 13th IEEE international conference on automatic face \\& gesture recognition (FG 2018)},
             pages={67--74},
             year={2018},
             organization={IEEE}
@@ -165,7 +165,9 @@ class VGG2Database(CSVDatasetZTNorm):
         self,
         protocol,
         dataset_original_directory=rc.get("bob.bio.face.vgg2.directory", ""),
-        dataset_original_extension=rc.get("bob.bio.face.vgg2.extension", ".jpg"),
+        dataset_original_extension=rc.get(
+            "bob.bio.face.vgg2.extension", ".jpg"
+        ),
         annotation_type="eyes-center",
         fixed_positions=None,
     ):

@@ -1,16 +1,19 @@
-from bob.pipelines import wrap
 from sklearn.pipeline import make_pipeline
-from bob.bio.base.pipelines import (
-    Distance,
-    PipelineSimple,
-)
-from bob.pipelines.transformers import SampleLinearize
-from bob.bio.face.utils import lookup_config_from_database
 
-annotation_type, fixed_positions, memory_demanding = lookup_config_from_database()
+from bob.bio.base.pipelines import Distance, PipelineSimple
+from bob.bio.face.utils import lookup_config_from_database
+from bob.pipelines import wrap
+from bob.pipelines.transformers import SampleLinearize
+
+(
+    annotation_type,
+    fixed_positions,
+    memory_demanding,
+) = lookup_config_from_database()
+
+from sklearn.base import BaseEstimator, TransformerMixin
 
 from bob.bio.face.color import rgb_to_gray
-from sklearn.base import TransformerMixin, BaseEstimator
 
 
 class ToGray(TransformerMixin, BaseEstimator):

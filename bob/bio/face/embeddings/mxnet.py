@@ -3,12 +3,15 @@
 # Yu Linghu & Xinyi Zhang <yu.linghu@uzh.ch, xinyi.zhang@uzh.ch>
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-from sklearn.base import TransformerMixin, BaseEstimator
-from sklearn.utils import check_array
-from bob.extension.download import get_file
-import numpy as np
 import os
+
+import numpy as np
+
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils import check_array
+
 from bob.bio.face.annotator import MTCNN
+from bob.extension.download import get_file
 
 
 class MxNetTransformer(TransformerMixin, BaseEstimator):
@@ -49,9 +52,11 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         self.preprocessor = preprocessor
 
     def _load_model(self):
-        import mxnet as mx
-        from mxnet import gluon
         import warnings
+
+        import mxnet as mx
+
+        from mxnet import gluon
 
         ctx = mx.gpu() if self.use_gpu else mx.cpu()
 
@@ -158,14 +163,11 @@ class ArcFaceInsightFace_LResNet100(MxNetTransformer):
         self.model = model
 
 
+from bob.bio.base.pipelines import Distance, PipelineSimple
 from bob.bio.face.utils import (
+    cropped_positions_arcface,
     dnn_default_cropping,
     embedding_transformer,
-    cropped_positions_arcface,
-)
-from bob.bio.base.pipelines import (
-    Distance,
-    PipelineSimple,
 )
 
 
@@ -186,7 +188,9 @@ def arcface_template(embedding, annotation_type, fixed_positions=None):
     elif isinstance(annotation_type, list):
         cropped_positions = cropped_positions_arcface(annotation_type)
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(

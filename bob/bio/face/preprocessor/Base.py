@@ -1,6 +1,7 @@
 import numpy
-from sklearn.base import BaseEstimator
-from sklearn.base import TransformerMixin
+
+from sklearn.base import BaseEstimator, TransformerMixin
+
 from bob.bio.face.color import gray_to_rgb, rgb_to_gray
 
 
@@ -30,7 +31,8 @@ def change_color_channel(image, color_channel):
         return image[2, :, :]
 
     raise ValueError(
-        "The image channel '%s' is not known or not yet implemented", color_channel
+        "The image channel '%s' is not known or not yet implemented",
+        color_channel,
     )
 
 

@@ -1,4 +1,5 @@
 import torch
+
 from torch import nn
 
 __all__ = ["iresnet18", "iresnet34", "iresnet50", "iresnet100", "iresnet200"]
@@ -20,7 +21,9 @@ def conv3x3(in_planes, out_planes, stride=1, groups=1, dilation=1):
 
 def conv1x1(in_planes, out_planes, stride=1):
     """1x1 convolution"""
-    return nn.Conv2d(in_planes, out_planes, kernel_size=1, stride=stride, bias=False)
+    return nn.Conv2d(
+        in_planes, out_planes, kernel_size=1, stride=stride, bias=False
+    )
 
 
 class IBasicBlock(nn.Module):
@@ -38,9 +41,13 @@ class IBasicBlock(nn.Module):
     ):
         super(IBasicBlock, self).__init__()
         if groups != 1 or base_width != 64:
-            raise ValueError("BasicBlock only supports groups=1 and base_width=64")
+            raise ValueError(
+                "BasicBlock only supports groups=1 and base_width=64"
+            )
         if dilation > 1:
-            raise NotImplementedError("Dilation > 1 not supported in BasicBlock")
+            raise NotImplementedError(
+                "Dilation > 1 not supported in BasicBlock"
+            )
         self.bn1 = nn.BatchNorm2d(
             inplanes,
             eps=1e-05,
@@ -97,7 +104,9 @@ class IResNet(nn.Module):
         if len(replace_stride_with_dilation) != 3:
             raise ValueError(
                 "replace_stride_with_dilation should be None "
-                "or a 3-element tuple, got {}".format(replace_stride_with_dilation)
+                "or a 3-element tuple, got {}".format(
+                    replace_stride_with_dilation
+                )
             )
         self.groups = groups
         self.base_width = width_per_group
@@ -108,13 +117,25 @@ class IResNet(nn.Module):
         self.prelu = nn.PReLU(self.inplanes)
         self.layer1 = self._make_layer(block, 64, layers[0], stride=2)
         self.layer2 = self._make_layer(
-            block, 128, layers[1], stride=2, dilate=replace_stride_with_dilation[0]
+            block,
+            128,
+            layers[1],
+            stride=2,
+            dilate=replace_stride_with_dilation[0],
         )
         self.layer3 = self._make_layer(
-            block, 256, layers[2], stride=2, dilate=replace_stride_with_dilation[1]
+            block,
+            256,
+            layers[2],
+            stride=2,
+            dilate=replace_stride_with_dilation[1],
         )
         self.layer4 = self._make_layer(
-            block, 512, layers[3], stride=2, dilate=replace_stride_with_dilation[2]
+            block,
+            512,
+            layers[3],
+            stride=2,
+            dilate=replace_stride_with_dilation[2],
         )
         self.bn2 = nn.BatchNorm2d(
             512 * block.expansion,
@@ -200,7 +221,9 @@ def _iresnet(arch, block, layers, pretrained, progress, **kwargs):
     if pretrained:
 
         map_location = (
-            torch.device("cuda") if torch.cuda.is_available() else torch.device("cpu")
+            torch.device("cuda")
+            if torch.cuda.is_available()
+            else torch.device("cpu")
         )
         state_dict = torch.load(pretrained, map_location=map_location)
         model.load_state_dict(state_dict)
@@ -228,11 +251,21 @@ def iresnet50(pretrained=False, progress=True, **kwargs):
 
 def iresnet100(pretrained=False, progress=True, **kwargs):
     return _iresnet(
-        "iresnet100", IBasicBlock, [3, 13, 30, 3], pretrained, progress, **kwargs
+        "iresnet100",
+        IBasicBlock,
+        [3, 13, 30, 3],
+        pretrained,
+        progress,
+        **kwargs
     )
 
 
 def iresnet200(pretrained=False, progress=True, **kwargs):
     return _iresnet(
-        "iresnet200", IBasicBlock, [6, 26, 60, 6], pretrained, progress, **kwargs
+        "iresnet200",
+        IBasicBlock,
+        [6, 26, 60, 6],
+        pretrained,
+        progress,
+        **kwargs
     )

@@ -3,17 +3,19 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  CBSRNirVis2Database database: database implementation 
+  CBSRNirVis2Database database: database implementation
 """
 
-from bob.bio.base.database import CSVDataset
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+import os
+
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
+
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
-import os
 
 
 class CBSRNirVis2Database(CSVDataset):
@@ -54,7 +56,9 @@ class CBSRNirVis2Database(CSVDataset):
         One of the database protocols.
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self, protocol, annotation_type="eyes-center", fixed_positions=None
+    ):
 
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()
@@ -78,7 +82,9 @@ class CBSRNirVis2Database(CSVDataset):
                 if os.path.exists(new_filename):
                     return bob.io.base.load(new_filename)
             else:
-                raise ValueError("File `{0}` not found".format(str(new_filename)))
+                raise ValueError(
+                    "File `{0}` not found".format(str(new_filename))
+                )
 
         super().__init__(
             name="cbsr-nir-vis2",

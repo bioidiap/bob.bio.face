@@ -1,21 +1,23 @@
 #!/usr/bin/env python
 # encoding: utf-8
 
-import torchvision
-from bob.extension import rc
 import os
-from torch.nn import Module
+
+from functools import partial
+
+import pytest
+import torch
+import torchvision
+
 from torch import nn
+from torch.nn import Module
 
 # https://pytorch.org/docs/stable/data.html
-from torch.utils.data import DataLoader
+from torch.utils.data import DataLoader, Dataset
+
+from bob.bio.face.pytorch.head import ArcFace
 from bob.bio.face.pytorch.lightning import BackboneHeadModel
-
-
-from bob.bio.face.pytorch.head import ArcFace, Regular
-from functools import partial
-import torch
-from torch.utils.data import Dataset
+from bob.extension import rc
 
 # import torchvision.transforms as transforms
 
@@ -42,6 +44,7 @@ def convert_dataset(dataset):
     return MnistDictionaryDataset(dataset)
 
 
+@pytest.mark.slow
 def test_boring_model():
     import pytorch_lightning as pl
 
@@ -75,7 +78,9 @@ def test_boring_model():
 
     train_dataloader = DataLoader(
         convert_dataset(
-            torchvision.datasets.FashionMNIST(root_path, download=True, train=True)
+            torchvision.datasets.FashionMNIST(
+                root_path, download=True, train=True
+            )
         ),
         batch_size=512,
         shuffle=True,
@@ -84,7 +89,9 @@ def test_boring_model():
     )
     validation_dataloader = DataLoader(
         convert_dataset(
-            torchvision.datasets.FashionMNIST(root_path, download=True, train=False)
+            torchvision.datasets.FashionMNIST(
+                root_path, download=True, train=False
+            )
         ),
         batch_size=128,
     )
@@ -123,6 +130,8 @@ def test_boring_model():
         val_dataloaders=validation_dataloader,
     )
 
-    acc = trainer.validate(dataloaders=validation_dataloader)[0]["validation/accuracy"]
+    acc = trainer.validate(dataloaders=validation_dataloader)[0][
+        "validation/accuracy"
+    ]
 
     assert acc > 0.2

@@ -1,7 +1,6 @@
-import bob.bio.face.annotator as fd
-import bob.io.base
-import bob.io.base.test_utils
 import numpy
+
+import bob.bio.face.annotator as fd
 
 
 def test_bbx():
@@ -41,16 +40,20 @@ def test_bbx():
     lbb = fd.bounding_box_from_annotation(
         source="left-profile", mouth=(40, 10), eye=(20, 10)
     )
-    assert bb.topleft == (-4, 0)
-    assert bb.bottomright == (44, 40)
+    assert lbb.topleft == (10, 6)
+    assert lbb.bottomright == (50, 26)
 
     # test the direct way
-    bb1 = fd.bounding_box_from_annotation(topleft=(10, 20), bottomright=(30, 40))
+    bb1 = fd.bounding_box_from_annotation(
+        topleft=(10, 20), bottomright=(30, 40)
+    )
     assert bb1.topleft == (10, 20)
     assert bb1.bottomright == (30, 40)
     assert bb1.area == 400
 
-    bb2 = fd.bounding_box_from_annotation(topleft=(15, 25), bottomright=(35, 45))
+    bb2 = fd.bounding_box_from_annotation(
+        topleft=(15, 25), bottomright=(35, 45)
+    )
     bb3 = bb1.overlap(bb2)
     assert bb3.topleft == (15, 25)
     assert bb3.bottomright == (30, 40)
@@ -75,7 +78,9 @@ def test_mirror():
     mirrored_image = image[:, ::-1]
     bb = fd.BoundingBox((1, 1), (2, 2))
     mb = bb.mirror_x(image.shape[1])
-    x = image[bb.topleft[0] : bb.bottomright[0], bb.topleft[1] : bb.bottomright[1]]
+    x = image[
+        bb.topleft[0] : bb.bottomright[0], bb.topleft[1] : bb.bottomright[1]
+    ]
     y = mirrored_image[
         mb.topleft[0] : mb.bottomright[0], mb.topleft[1] : mb.bottomright[1]
     ]

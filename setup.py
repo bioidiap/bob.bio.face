@@ -33,11 +33,11 @@
 # allows you to test your package with new python dependencies w/o requiring
 # administrative interventions.
 
-from setuptools import setup, dist
+from setuptools import dist, setup
 
 dist.Distribution(dict(setup_requires=["bob.extension"]))
 
-from bob.extension.utils import load_requirements, find_packages
+from bob.extension.utils import find_packages, load_requirements
 
 install_requires = load_requirements()
 

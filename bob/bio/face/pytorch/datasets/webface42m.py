@@ -2,16 +2,17 @@
 # vim: set fileencoding=utf-8 :
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
+import csv
+import os
+
+import numpy as np
+
 from torch.utils.data import Dataset
+
+import bob.io.base
 
 # from bob.bio.face.database import MEDSDatabase, MorphDatabase
 from bob.extension import rc
-import os
-
-import torchvision.transforms as transforms
-import numpy as np
-import csv
-import bob.io.base
 from bob.extension.download import get_file, search_file
 
 
@@ -58,7 +59,9 @@ class WebFace42M(Dataset):
 
         urls = WebFace42M.urls()
         filename = get_file(
-            "webface42M.tar.gz", urls, file_hash="50c32cbe61de261466e1ea3af2721cea"
+            "webface42M.tar.gz",
+            urls,
+            file_hash="50c32cbe61de261466e1ea3af2721cea",
         )
         self.file = search_file(filename, "webface42M.csv")
 
@@ -121,7 +124,9 @@ class WebFace42M(Dataset):
 
         # Navigating into the Idiap file structure
         for directory in os.listdir(self.database_path):
-            output_csv_file = os.path.join(output_csv_directory, directory + ".csv")
+            output_csv_file = os.path.join(
+                output_csv_directory, directory + ".csv"
+            )
 
             with open(output_csv_file, "w") as csv_file:
                 csv_writer = csv.writer(csv_file, delimiter=",")
@@ -139,7 +144,9 @@ class WebFace42M(Dataset):
                         continue
 
                     for file in os.listdir(sub_path):
-                        relative_path = os.path.join(directory, sub_directory, file)
+                        relative_path = os.path.join(
+                            directory, sub_directory, file
+                        )
                         rows.append(
                             [
                                 str(counter).zfill(7),
@@ -151,7 +158,7 @@ class WebFace42M(Dataset):
                 csv_writer.writerows(rows)
 
         # print(counter)
-        ## Checking if all labels were taken
+        # Checking if all labels were taken
         zero_labels = np.where(label_checker == 0)[0]
         if zero_labels.shape[0] > 0:
             print(zero_labels)

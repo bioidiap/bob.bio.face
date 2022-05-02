@@ -1,18 +1,17 @@
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+import bob.measure
 
 from bob.bio.base.score.load import get_split_dataframe
-import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
-import bob.measure
-import itertools
 
 
 def gbu_report(scores_dev, output_filename, titles, figsize=(8, 6)):
 
     colors = plt.cm.tab20.colors
 
-    ### Plotting
+    # Plotting
     pdf = PdfPages(output_filename)
 
     # Figure for eval plot
@@ -58,4 +57,3 @@ def gbu_report(scores_dev, output_filename, titles, figsize=(8, 6)):
 
     pdf.savefig(fig)
     pdf.close()
-

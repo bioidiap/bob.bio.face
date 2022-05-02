@@ -3,16 +3,17 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  CASIA-Face-Africa: database implementation 
+  CASIA-Face-Africa: database implementation
 """
 
-from bob.bio.base.database import CSVDataset
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
+
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
 
 
 class CasiaAfricaDatabase(CSVDataset):
@@ -97,7 +98,9 @@ class CasiaAfricaDatabase(CSVDataset):
         One of the database protocols. Options are "ID-V-All-Ep1", "ID-V-All-Ep2" and "ID-V-All-Ep3"
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self, protocol, annotation_type="eyes-center", fixed_positions=None
+    ):
 
         # Downloading model if not exists
         urls = CasiaAfricaDatabase.urls()

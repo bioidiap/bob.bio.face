@@ -14,10 +14,12 @@
 # ---
 
 import os
-import pandas as pd
-import bob.measure
-import numpy as np
+
 import matplotlib as mpl
+import numpy as np
+import pandas as pd
+
+import bob.measure
 
 mpl.rcParams.update({"font.size": 14})
 import matplotlib.pyplot as plt

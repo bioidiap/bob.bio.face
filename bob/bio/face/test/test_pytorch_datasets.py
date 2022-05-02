@@ -1,25 +1,25 @@
-from torchvision import transforms
-from bob.bio.face.pytorch.datasets import WebFace42M
-from bob.bio.face.pytorch.datasets import (
-    MedsTorchDataset,
-    MorphTorchDataset,
-    MobioTorchDataset,
-    MSCelebTorchDataset,
-    VGG2TorchDataset,
-    SiameseDemographicWrapper,
-)
+import os
 
-from bob.extension import rc
+import numpy as np
+import pkg_resources
+import pytest
 
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader
-import os
-import numpy as np
-import pkg_resources
-import bob.io.base
-from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
 
-import pytest
+import bob.io.base
+
+from bob.bio.face.pytorch.datasets import (
+    MedsTorchDataset,
+    MobioTorchDataset,
+    MorphTorchDataset,
+    MSCelebTorchDataset,
+    SiameseDemographicWrapper,
+    VGG2TorchDataset,
+    WebFace42M,
+)
+from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
+from bob.extension import rc
 
 
 @pytest.mark.skipif(
@@ -154,8 +154,10 @@ def test_msceleb():
 
     database_path = rc.get("bob.bio.face.msceleb.directory")
 
-    ### WITH UNKNOW DEMOGRAPHICS
-    dataset = MSCelebTorchDataset(database_path, include_unknow_demographics=True)
+    # WITH UNKNOW DEMOGRAPHICS
+    dataset = MSCelebTorchDataset(
+        database_path, include_unknow_demographics=True
+    )
     assert dataset.n_classes == 89735
     assert len(dataset.demographic_keys) == 18
 
@@ -166,7 +168,9 @@ def test_msceleb():
 
     # WITHOUT UNKNOW DEMOGRAPHICS
 
-    dataset = MSCelebTorchDataset(database_path, include_unknow_demographics=False)
+    dataset = MSCelebTorchDataset(
+        database_path, include_unknow_demographics=False
+    )
     assert dataset.n_classes == 81279
     assert len(dataset.demographic_keys) == 15
 
@@ -188,9 +192,13 @@ def test_vgg2():
 
     database_path = rc.get("bob.bio.face.vgg2-crops.directory")
 
-    dataset = VGG2TorchDataset(protocol="vgg2-short", database_path=database_path)
+    dataset = VGG2TorchDataset(
+        protocol="vgg2-short", database_path=database_path
+    )
 
-    assert np.allclose(sum(dataset.get_demographic_weights(as_dict=False)), 1, atol=1)
+    assert np.allclose(
+        sum(dataset.get_demographic_weights(as_dict=False)), 1, atol=1
+    )
 
     assert dataset.n_classes == 8631
     assert len(dataset.demographic_keys) == 8
@@ -204,7 +212,7 @@ def test_vgg2():
 
     assert np.allclose(sum(weights), 1, atol=0.001)
 
-    ### Testing dev
+    # Testing dev
 
     dataset = VGG2TorchDataset(
         protocol="vgg2-short", database_path=database_path, train=False
@@ -225,10 +233,14 @@ def test_vgg2():
 def test_data_augmentation():
 
     image = bob.io.base.load(
-        pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg")
+        pkg_resources.resource_filename(
+            "bob.bio.face.test", "data/testimage.jpg"
+        )
     )
 
-    from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
+    from bob.bio.face.pytorch.preprocessing import (
+        get_standard_data_augmentation,
+    )
 
     transform = get_standard_data_augmentation()
     transformed = transform(image)
@@ -241,7 +253,7 @@ def test_data_augmentation():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
 )
 def test_siamese():
-    transforms = get_standard_data_augmentation()
+    siamese_transforms = get_standard_data_augmentation()
 
     # database_path = os.path.join(
     #    rc.get("bob.bio.demographics.directory"), "morph", "samplewrapper"
@@ -252,25 +264,25 @@ def test_siamese():
     # dataset = MobioTorchDataset(
     #    protocol="mobile0-male-female",
     #    database_path=database_path,
-    #    transform=transforms,
+    #    transform=siamese_transforms,
     # )
     # dataset = MedsTorchDataset(
     #    protocol="verification_fold1",
     #    database_path=database_path,
-    #    transform=transforms,
+    #    transform=siamese_transforms,
     #    take_from_znorm=False,
     # )
     dataset = VGG2TorchDataset(
         protocol="vgg2-short",
         database_path=database_path,
         database_extension=".jpg",
-        transform=transforms,
+        transform=siamese_transforms,
     )
 
     # dataset = MorphTorchDataset(
     #    protocol="verification_fold1",
     #    database_path=database_path,
-    #    transform=transforms,
+    #    transform=siamese_transforms,
     #    take_from_znorm=False,
     # )
 

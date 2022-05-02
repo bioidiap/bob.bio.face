@@ -9,9 +9,10 @@
 
 import os
 
-from .database import FaceBioFile
 from bob.bio.base.database import BioDatabase
 from bob.bio.base.utils.annotations import read_annotation_file
+
+from .database import FaceBioFile
 
 
 class FargoBioDatabase(BioDatabase):
@@ -44,7 +45,12 @@ class FargoBioDatabase(BioDatabase):
         )
 
     def objects(
-        self, groups=None, purposes=None, protocol=None, model_ids=None, **kwargs
+        self,
+        groups=None,
+        purposes=None,
+        protocol=None,
+        model_ids=None,
+        **kwargs
     ):
         retval = self._db.objects(
             protocol=protocol,

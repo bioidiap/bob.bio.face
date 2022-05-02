@@ -40,8 +40,8 @@ def test_bbx():
     lbb = fd.bounding_box_from_annotation(
         source="left-profile", mouth=(40, 10), eye=(20, 10)
     )
-    assert lbb.topleft == (-4, 0)
-    assert lbb.bottomright == (44, 40)
+    assert lbb.topleft == (10, 6)
+    assert lbb.bottomright == (50, 26)
 
     # test the direct way
     bb1 = fd.bounding_box_from_annotation(

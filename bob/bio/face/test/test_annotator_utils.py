@@ -1,8 +1,6 @@
 import numpy
 
 import bob.bio.face.annotator as fd
-import bob.io.base
-import bob.io.base.test_utils
 
 
 def test_bbx():
@@ -42,8 +40,8 @@ def test_bbx():
     lbb = fd.bounding_box_from_annotation(
         source="left-profile", mouth=(40, 10), eye=(20, 10)
     )
-    assert bb.topleft == (-4, 0)
-    assert bb.bottomright == (44, 40)
+    assert lbb.topleft == (-4, 0)
+    assert lbb.bottomright == (44, 40)
 
     # test the direct way
     bb1 = fd.bounding_box_from_annotation(

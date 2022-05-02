@@ -8,8 +8,6 @@ Implements some face croppers
 
 import logging
 
-from configparser import Interpolation
-
 from sklearn.base import BaseEstimator, TransformerMixin
 
 logger = logging.getLogger("bob.bio.face")

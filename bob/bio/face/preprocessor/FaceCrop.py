@@ -6,8 +6,6 @@ from .croppers import FaceCropBoundingBox, FaceEyesNorm
 logger = logging.getLogger("bob.bio.face")
 from bob.bio.base import load_resource
 
-from .Scale import scale
-
 
 class FaceCrop(Base):
     """

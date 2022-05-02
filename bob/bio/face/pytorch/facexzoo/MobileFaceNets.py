@@ -7,8 +7,6 @@
 # based on:
 # https://github.com/TreB1eN/InsightFace_Pytorch/blob/master/model.py
 
-import torch
-
 from torch.nn import (
     BatchNorm1d,
     BatchNorm2d,

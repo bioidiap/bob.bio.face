@@ -30,8 +30,6 @@ from torch.nn import (
     Sequential,
 )
 
-__all__ = ["ghost_net"]
-
 
 class Flatten(Module):
     def forward(self, input):

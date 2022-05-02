@@ -15,7 +15,7 @@ from torch.nn import Module
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader, Dataset
 
-from bob.bio.face.pytorch.head import ArcFace, Regular
+from bob.bio.face.pytorch.head import ArcFace
 from bob.bio.face.pytorch.lightning import BackboneHeadModel
 from bob.extension import rc
 

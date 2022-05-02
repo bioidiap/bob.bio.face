@@ -6,10 +6,8 @@ Tensor pre-processing for somr face recognition CNNs
 """
 
 import logging
-import os
 
 from functools import partial
-from multiprocessing import cpu_count
 
 import tensorflow as tf
 

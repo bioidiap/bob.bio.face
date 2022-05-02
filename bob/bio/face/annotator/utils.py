@@ -1,7 +1,5 @@
 import math
 
-import numpy as np
-
 available_sources = {
     "direct": ("topleft", "bottomright"),
     "eyes": ("leye", "reye"),

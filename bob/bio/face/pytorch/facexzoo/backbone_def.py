@@ -3,9 +3,6 @@
 @date: 20201019
 @contact: jun21wangustc@gmail.com
 """
-
-import sys
-
 import yaml
 
 from .AttentionNets import ResidualAttentionNet
@@ -163,7 +160,8 @@ class BackboneFactory:
             out_w = self.backbone_param[
                 "out_w"
             ]  # width of the feature map before the final features.
-            backbone = AttentionNet(
+            # where was AttentionNet imported from?
+            backbone = "AttentionNet"(
                 stage1_modules,
                 stage2_modules,
                 stage3_modules,

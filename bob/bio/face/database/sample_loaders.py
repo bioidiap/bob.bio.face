@@ -6,7 +6,7 @@
 
 from sklearn.base import BaseEstimator, TransformerMixin
 
-from bob.pipelines import DelayedSample, Sample, SampleSet
+from bob.pipelines import DelayedSample
 
 
 def find_attribute(x, attribute):

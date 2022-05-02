@@ -1,5 +1,3 @@
-import numpy as np
-
 from skimage.transform import resize
 from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils import check_array

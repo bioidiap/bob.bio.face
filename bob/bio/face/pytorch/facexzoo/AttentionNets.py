@@ -7,14 +7,7 @@
 # based on:
 # https://github.com/tengshaofeng/ResidualAttentionNetwork-pytorch/tree/master/Residual-Attention-Network/model
 
-import functools
-
-import numpy as np
-import torch
 import torch.nn as nn
-
-from torch.autograd import Variable
-from torch.nn import init
 
 
 class Flatten(nn.Module):

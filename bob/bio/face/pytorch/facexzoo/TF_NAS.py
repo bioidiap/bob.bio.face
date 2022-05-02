@@ -4,8 +4,6 @@
 @contact: jun21wangustc@gmail.com
 """
 
-import sys
-
 from collections import OrderedDict
 
 import torch

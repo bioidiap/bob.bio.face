@@ -86,7 +86,7 @@ class CaspealDatabase(CSVDataset):
     @staticmethod
     def protocols():
         # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        protocols = [
+        return [
             "accessory",
             "aging",
             "background",

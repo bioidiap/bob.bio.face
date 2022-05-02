@@ -11,15 +11,13 @@ Note that this script can only be used with face image databases, not with video
 
 from __future__ import print_function
 
-import json
 import logging
 import os
-import sys
 
 import click
 
 from bob.bio.base.utils.annotations import read_annotation_file
-from bob.bio.face.color import gray_to_rgb, rgb_to_gray
+from bob.bio.face.color import gray_to_rgb
 from bob.extension.scripts.click_helper import (
     ConfigCommand,
     ResourceOption,
@@ -260,7 +258,4 @@ def display_face_annotations(
             input_text = (
                 "Press Enter to continue to the next image (or Ctrl-C to exit)"
             )
-            if sys.version_info >= (3, 0):
-                input(input_text)
-            else:
-                raw_input(input_text)
+            input(input_text)

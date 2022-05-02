@@ -6,7 +6,6 @@ import pytest
 
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader
-from torchvision import transforms
 
 import bob.io.base
 
@@ -254,7 +253,7 @@ def test_data_augmentation():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
 )
 def test_siamese():
-    transforms = get_standard_data_augmentation()
+    siamese_transforms = get_standard_data_augmentation()
 
     # database_path = os.path.join(
     #    rc.get("bob.bio.demographics.directory"), "morph", "samplewrapper"
@@ -265,25 +264,25 @@ def test_siamese():
     # dataset = MobioTorchDataset(
     #    protocol="mobile0-male-female",
     #    database_path=database_path,
-    #    transform=transforms,
+    #    transform=siamese_transforms,
     # )
     # dataset = MedsTorchDataset(
     #    protocol="verification_fold1",
     #    database_path=database_path,
-    #    transform=transforms,
+    #    transform=siamese_transforms,
     #    take_from_znorm=False,
     # )
     dataset = VGG2TorchDataset(
         protocol="vgg2-short",
         database_path=database_path,
         database_extension=".jpg",
-        transform=transforms,
+        transform=siamese_transforms,
     )
 
     # dataset = MorphTorchDataset(
     #    protocol="verification_fold1",
     #    database_path=database_path,
-    #    transform=transforms,
+    #    transform=siamese_transforms,
     #    take_from_znorm=False,
     # )
 

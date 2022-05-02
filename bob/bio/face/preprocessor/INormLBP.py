@@ -3,7 +3,6 @@
 # @author: Manuel Guenther <Manuel.Guenther@idiap.ch>
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-import numpy as np
 import skimage
 
 from .Base import Base

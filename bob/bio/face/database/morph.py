@@ -10,11 +10,7 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import (
-    CSVDataset,
-    CSVDatasetZTNorm,
-    CSVToSampleLoaderBiometrics,
-)
+from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file

@@ -3,8 +3,6 @@
 
 import os
 
-from posixpath import dirname
-
 import cv2
 import dask.bag
 import numpy as np

@@ -17,7 +17,6 @@ import cloudpickle
 import numpy as np
 import pandas as pd
 import torch
-import torchvision.transforms as transforms
 
 from torch.utils.data import Dataset
 
@@ -97,8 +96,6 @@ class DemographicTorchDataset(Dataset):
         """
         Count the number of subjects per demographics
         """
-        n_identities = len(self.subject_demographic)
-
         all_demographics = list(self.subject_demographic.values())
 
         # Number of subjects per demographic
@@ -543,11 +540,13 @@ class MorphTorchDataset(DemographicTorchDataset):
             ]
         else:
             self.bucket = [
-                s for sset in self.bob_dataset.probes(group=group) for s in sset
+                s
+                for sset in self.bob_dataset.probes(group=self.group)
+                for s in sset
             ]
             self.bucket += [
                 s
-                for sset in self.bob_dataset.references(group=group)
+                for sset in self.bob_dataset.references(group=self.group)
                 for s in sset
             ]
 

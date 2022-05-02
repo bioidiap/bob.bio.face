@@ -7,15 +7,12 @@
 # based on:
 # https://github.com/HRNet/HRNet-Image-Classification/blob/master/lib/models/cls_hrnet.py
 
-import functools
 import logging
 import os
 
-import numpy as np
 import torch
 import torch._utils
 import torch.nn as nn
-import torch.nn.functional as F
 
 from torch.nn import BatchNorm1d, Linear, Module, Sequential
 

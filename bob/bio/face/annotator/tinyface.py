@@ -1,7 +1,6 @@
 import logging
 import os
 import pickle
-import time
 
 from collections import namedtuple
 
@@ -161,7 +160,6 @@ class TinyFace(Base):
         scales_pow = np.hstack((scales_down, scales_up))
         scales = np.power(2.0, scales_pow)
 
-        start = time.time()
         bboxes = np.empty(shape=(0, 5))
         for s in scales[::-1]:
             img = cv.resize(raw_img_f, (0, 0), fx=s, fy=s)

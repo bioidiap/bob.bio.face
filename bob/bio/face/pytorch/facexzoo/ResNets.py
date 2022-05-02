@@ -9,21 +9,15 @@
 
 from collections import namedtuple
 
-import torch
-import torch.nn.functional as F
-
 from torch.nn import (
     AdaptiveAvgPool2d,
-    AvgPool2d,
     BatchNorm1d,
     BatchNorm2d,
     Conv2d,
     Dropout,
-    Dropout2d,
     Linear,
     MaxPool2d,
     Module,
-    Parameter,
     PReLU,
     ReLU,
     Sequential,

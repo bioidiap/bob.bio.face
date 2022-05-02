@@ -7,8 +7,6 @@ Color functionalitites from old bob.ip.color
 """
 import numpy as np
 
-from PIL import Image
-
 from bob.io.image import bob_to_pillow, pillow_to_bob
 
 

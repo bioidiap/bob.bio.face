@@ -5,7 +5,6 @@
 
 import imp
 import os
-import types
 
 import numpy as np
 import torch
@@ -231,7 +230,7 @@ class AFFFE_2021(PyTorchModel):
     def _load_model(self):
         import torch
 
-        MainModel = imp.load_source("MainModel", self.config)
+        _ = imp.load_source("MainModel", self.config)
         self.model = torch.load(self.checkpoint_path, map_location=self.device)
 
         self.model.eval()
@@ -596,7 +595,6 @@ class FaceXZooModel(PyTorchModel):
         self.arch = arch
         _model = FaceXZooModelFactory(self.arch)
         filename = _model.get_facexzoo_file()
-        checkpoint_name = _model.get_checkpoint_name()
         config = None
         path = os.path.dirname(filename)
         checkpoint_path = os.path.join(path, self.arch + ".pt")
@@ -620,9 +618,6 @@ class FaceXZooModel(PyTorchModel):
         pretrained_dict = torch.load(
             self.checkpoint_path, map_location=torch.device("cpu")
         )["state_dict"]
-
-        pretrained_dict_keys = pretrained_dict.keys()
-        model_dict_keys = model_dict.keys()
 
         new_pretrained_dict = {}
         for k in model_dict:

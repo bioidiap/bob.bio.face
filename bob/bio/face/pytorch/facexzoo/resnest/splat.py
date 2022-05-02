@@ -4,7 +4,7 @@ import torch
 import torch.nn.functional as F
 
 from torch import nn
-from torch.nn import BatchNorm2d, Conv2d, Linear, Module, ReLU
+from torch.nn import Conv2d, Module, ReLU
 from torch.nn.modules.utils import _pair
 
 __all__ = ["SplAtConv2d"]
@@ -78,7 +78,8 @@ class SplAtConv2d(Module):
             inter_channels, channels * radix, 1, groups=self.cardinality
         )
         if dropblock_prob > 0.0:
-            self.dropblock = DropBlock2D(dropblock_prob, 3)
+            raise NotImplementedError("DropBlock2D was not imported!")
+            # self.dropblock = DropBlock2D(dropblock_prob, 3)
         self.rsoftmax = rSoftMax(radix, groups)
 
     def forward(self, x):

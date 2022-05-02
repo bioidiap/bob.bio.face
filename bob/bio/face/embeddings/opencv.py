@@ -5,12 +5,8 @@
 
 import os
 
-import numpy as np
-
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
-
-import bob.bio.base
 
 from bob.bio.base.pipelines import Distance, PipelineSimple
 from bob.bio.face.annotator import MTCNN
@@ -75,8 +71,6 @@ class OpenCVTransformer(TransformerMixin, BaseEstimator):
         feature : 2D or 3D :py:class:`numpy.ndarray` (floats)
           The list of features extracted from the image.
         """
-
-        import cv2
 
         if self.model is None:
             self._load_model()
@@ -159,7 +153,6 @@ class VGG16_Oxford(OpenCVTransformer):
         self.model = net
 
     def transform(self, X):
-        import cv2
 
         if self.model is None:
             self._load_model()

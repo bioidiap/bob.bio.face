@@ -573,10 +573,10 @@ def test_arface():
     from bob.bio.face.database import ARFaceDatabase
 
     # protocols = 'all','expression', 'illumination', 'occlusion', 'occlusion_and_illumination'
-    expression_choices = ("neutral", "smile", "anger", "scream")
-    illumination_choices = ("front", "left", "right", "all")
-    occlusion_choices = ("none", "sunglasses", "scarf")
-    session_choices = ("first", "second")
+    # expression_choices = ("neutral", "smile", "anger", "scream")
+    # illumination_choices = ("front", "left", "right", "all")
+    # occlusion_choices = ("none", "sunglasses", "scarf")
+    # session_choices = ("first", "second")
 
     database = ARFaceDatabase("all")
     assert len(database.references(group="dev")) == 43

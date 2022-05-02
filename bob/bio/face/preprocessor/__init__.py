@@ -35,5 +35,7 @@ __appropriate__(
     Scale,
     FaceEyesNorm,
     FaceCropBoundingBox,
+    MultiFaceCrop,
+    BoundingBoxAnnotatorCrop,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

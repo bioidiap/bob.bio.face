@@ -1,10 +1,10 @@
 # isort: skip_file
-from .utils import *
+from .utils import *  # noqa: F401,F403
 from .Base import Base
 from .mtcnn import MTCNN
 from .tinyface import TinyFace
 from .faceX_106landmarks import FaceX106Landmarks, FaceXDetector
-
+from .utils import BoundingBox
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):

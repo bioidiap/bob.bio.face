@@ -1,5 +1,3 @@
-from email.policy import default
-
 import click
 import numpy as np
 
@@ -12,7 +10,6 @@ from bob.bio.face.reports.multipie import (
     multipie_pose_report,
 )
 from bob.bio.face.reports.scface import scface_report
-from bob.extension.scripts.click_helper import ResourceOption
 from bob.measure.script import common_options
 
 
@@ -52,7 +49,7 @@ def multipie_pose(
 
     if len(scores) // 2 != len(titles):
         raise ValueError(
-            f"Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
+            "Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
         )
 
     scores = np.array(scores, dtype="object")
@@ -98,7 +95,7 @@ def multipie_expression(
 
     if len(scores) // 2 != len(titles):
         raise ValueError(
-            f"Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
+            "Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
         )
 
     scores = np.array(scores, dtype="object")
@@ -142,7 +139,7 @@ def scface_distance(
 
     if len(scores) // 2 != len(titles):
         raise ValueError(
-            f"Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
+            "Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
         )
 
     scores = np.array(scores, dtype="object")
@@ -186,7 +183,7 @@ def arface(
 
     if len(scores) // 2 != len(titles):
         raise ValueError(
-            f"Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
+            "Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
         )
 
     scores = np.array(scores, dtype="object")
@@ -230,7 +227,7 @@ def mobio_gender(
 
     if len(scores) // 2 != len(titles):
         raise ValueError(
-            f"Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
+            "Number of scores doesn't match the number of titles. It should be one pair of score files (`dev` and `eval` scores) for one title."
         )
 
     scores = np.array(scores, dtype="object")
@@ -265,7 +262,7 @@ def gbu(ctx, scores, output, titles, **kargs):
     """plots with the GBU experiments"""
 
     if len(scores) != len(titles):
-        raise ValueError(f"Number of scores doesn't match the number of titles")
+        raise ValueError("Number of scores doesn't match the number of titles")
 
     scores = np.array(scores, dtype="object")
 
@@ -283,7 +280,7 @@ def ijbc(ctx, scores, output, titles, **kargs):
     """plots with the IJB-C experiments"""
 
     if len(scores) != len(titles):
-        raise ValueError(f"Number of scores doesn't match the number of titles")
+        raise ValueError("Number of scores doesn't match the number of titles")
 
     scores = np.array(scores, dtype="object")
 

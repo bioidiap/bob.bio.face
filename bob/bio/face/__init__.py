@@ -1,14 +1,13 @@
 # isort: skip_file
-from . import preprocessor
-from . import algorithm
-from . import script
-from . import database
-from . import annotator
-from . import utils
-from . import pytorch
-from . import embeddings
-
-from . import test
+from . import preprocessor  # noqa: F401
+from . import algorithm  # noqa: F401
+from . import script  # noqa: F401
+from . import database  # noqa: F401
+from . import annotator  # noqa: F401
+from . import utils  # noqa: F401
+from . import pytorch  # noqa: F401
+from . import embeddings  # noqa: F401
+from . import test  # noqa: F401
 
 
 def get_config():

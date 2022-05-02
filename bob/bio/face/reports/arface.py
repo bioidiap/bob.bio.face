@@ -1,10 +1,5 @@
-import itertools
-
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
-
-from matplotlib.backends.backend_pdf import PdfPages
 
 import bob.measure
 
@@ -192,7 +187,7 @@ def arface_report(
     plt.legend()
     plt.grid()
 
-    pdf.savefig(fig)
+    plt.savefig(fig)
 
     # EFFECT OF ILLUMINATION AND OCCLUSION
 
@@ -261,6 +256,4 @@ def arface_report(
 
     plt.legend()
     plt.grid()
-    pdf.savefig(fig)
-
-    pdf.close()
+    plt.savefig(fig)

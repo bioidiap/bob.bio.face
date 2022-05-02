@@ -25,8 +25,6 @@ import pytest
 import bob.bio.base
 import bob.extension.log
 
-from bob.bio.base.test.test_database_implementations import check_database
-from bob.bio.base.test.utils import db_available
 from bob.extension import rc
 from bob.extension.download import get_file
 
@@ -141,48 +139,6 @@ def test_multipie():
     assert len(database.probes(group="eval")) == 3380
 
 
-@db_available("replay")
-def test_replay_licit():
-    database = bob.bio.base.load_resource(
-        "replay-img-licit", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database, groups=("dev", "eval"))
-    except IOError as e:
-        pytest.skip(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database, topleft=True)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
-
-
-@db_available("replay")
-def test_replay_spoof():
-    database = bob.bio.base.load_resource(
-        "replay-img-spoof", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database, groups=("dev", "eval"))
-    except IOError as e:
-        pytest.skip(
-            "The database could not be queried; probably the db.sql3 file is missing. Here is the error: '%s'"
-            % e
-        )
-    try:
-        _check_annotations(database, topleft=True)
-    except IOError as e:
-        pytest.skip(
-            "The annotations could not be queried; probably the annotation files are missing. Here is the error: '%s'"
-            % e
-        )
-
-
 def test_replaymobile():
     database = bob.bio.base.load_resource(
         "replaymobile-img", "database", preferred_package="bob.bio.face"
@@ -281,19 +237,6 @@ def test_ijbc():
     assert len(database.probes()) == 19593
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 34464087
-
-
-@db_available("fargo")
-def test_fargo():
-    database = bob.bio.base.load_resource(
-        "fargo", "database", preferred_package="bob.bio.face"
-    )
-    try:
-        check_database(database)
-    except IOError as e:
-        pytest.skip(
-            "The database could not queried; Here is the error: '%s'" % e
-        )
 
 
 def test_meds():

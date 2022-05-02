@@ -161,7 +161,7 @@ class BackboneFactory:
                 "out_w"
             ]  # width of the feature map before the final features.
             # where was AttentionNet imported from?
-            backbone = "AttentionNet"(
+            backbone = """AttentionNet(
                 stage1_modules,
                 stage2_modules,
                 stage3_modules,
@@ -169,7 +169,7 @@ class BackboneFactory:
                 feat_dim,
                 out_h,
                 out_w,
-            )
+            )"""
         elif self.backbone_type == "TF-NAS":
             drop_ratio = self.backbone_param["drop_ratio"]  # drop out ratio.
             out_h = self.backbone_param[

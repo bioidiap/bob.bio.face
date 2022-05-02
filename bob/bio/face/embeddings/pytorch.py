@@ -5,21 +5,23 @@
 
 import imp
 import os
-import torch
-import numpy as np
-from bob.bio.base.pipelines import Distance
-from bob.bio.base.pipelines import PipelineSimple
-from bob.bio.face.utils import dnn_default_cropping
-from bob.bio.face.utils import embedding_transformer
-from bob.bio.face.utils import cropped_positions_arcface
-from bob.extension.download import get_file
-from sklearn.base import BaseEstimator
-from sklearn.base import TransformerMixin
-from sklearn.utils import check_array
-from bob.bio.face.annotator import MTCNN
-
-from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
 import types
+
+import numpy as np
+import torch
+
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils import check_array
+
+from bob.bio.base.pipelines import Distance, PipelineSimple
+from bob.bio.face.annotator import MTCNN
+from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
+from bob.bio.face.utils import (
+    cropped_positions_arcface,
+    dnn_default_cropping,
+    embedding_transformer,
+)
+from bob.extension.download import get_file
 
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
@@ -281,7 +283,9 @@ class IResnet34(PyTorchModel):
 
     def _load_model(self):
 
-        model = imp.load_source("module", self.config).iresnet34(self.checkpoint_path)
+        model = imp.load_source("module", self.config).iresnet34(
+            self.checkpoint_path
+        )
         self.model = model
 
         self.model.eval()
@@ -318,7 +322,9 @@ class IResnet50(PyTorchModel):
 
     def _load_model(self):
 
-        model = imp.load_source("module", self.config).iresnet50(self.checkpoint_path)
+        model = imp.load_source("module", self.config).iresnet50(
+            self.checkpoint_path
+        )
         self.model = model
 
         self.model.eval()
@@ -354,7 +360,9 @@ class IResnet100(PyTorchModel):
         )
 
     def _load_model(self):
-        model = imp.load_source("module", self.config).iresnet100(self.checkpoint_path)
+        model = imp.load_source("module", self.config).iresnet100(
+            self.checkpoint_path
+        )
         self.model = model
 
         self.model.eval()
@@ -435,9 +443,15 @@ class OxfordVGG2Resnets(PyTorchModel):
         # X = torch.moveaxis(X, 1, 3)
 
         # Subtracting
-        X[:, 0, :, :] = (X[:, 0, :, :] - self.meta["mean"][0]) / self.meta["std"][0]
-        X[:, 1, :, :] = (X[:, 1, :, :] - self.meta["mean"][1]) / self.meta["std"][1]
-        X[:, 2, :, :] = (X[:, 2, :, :] - self.meta["mean"][2]) / self.meta["std"][2]
+        X[:, 0, :, :] = (X[:, 0, :, :] - self.meta["mean"][0]) / self.meta[
+            "std"
+        ][0]
+        X[:, 1, :, :] = (X[:, 1, :, :] - self.meta["mean"][1]) / self.meta[
+            "std"
+        ][1]
+        X[:, 2, :, :] = (X[:, 2, :, :] - self.meta["mean"][2]) / self.meta[
+            "std"
+        ][2]
 
         return X
 
@@ -493,7 +507,10 @@ class OxfordVGG2Resnets(PyTorchModel):
             with torch.no_grad():
                 # Fetching the pool5_7x7_s1 layer which
                 return (
-                    self.model(X.to(self.device))[1].cpu().detach().numpy()[:, :, 0, 0]
+                    self.model(X.to(self.device))[1]
+                    .cpu()
+                    .detach()
+                    .numpy()[:, :, 0, 0]
                 )
 
         if self.memory_demanding:
@@ -553,7 +570,9 @@ class IResnet100Elastic(PyTorchModel):
         )
 
     def _load_model(self):
-        model = imp.load_source("module", self.config).iresnet100(self.checkpoint_path)
+        model = imp.load_source("module", self.config).iresnet100(
+            self.checkpoint_path
+        )
         self.model = model
 
         self.model.eval()
@@ -634,7 +653,9 @@ def iresnet_template(embedding, annotation_type, fixed_positions=None):
             )
 
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
@@ -682,7 +703,9 @@ def AttentionNet(
     """
     return iresnet_template(
         embedding=FaceXZooModel(
-            arch="AttentionNet", memory_demanding=memory_demanding, device=device
+            arch="AttentionNet",
+            memory_demanding=memory_demanding,
+            device=device,
         ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
@@ -758,7 +781,9 @@ def MobileFaceNet(
 
     return iresnet_template(
         embedding=FaceXZooModel(
-            arch="MobileFaceNet", memory_demanding=memory_demanding, device=device
+            arch="MobileFaceNet",
+            memory_demanding=memory_demanding,
+            device=device,
         ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
@@ -835,7 +860,9 @@ def EfficientNet(
 
     return iresnet_template(
         embedding=FaceXZooModel(
-            arch="EfficientNet", memory_demanding=memory_demanding, device=device
+            arch="EfficientNet",
+            memory_demanding=memory_demanding,
+            device=device,
         ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
@@ -949,7 +976,9 @@ def ReXNet(
     """
 
     return iresnet_template(
-        embedding=FaceXZooModel(arch="ReXNet", memory_demanding=memory_demanding),
+        embedding=FaceXZooModel(
+            arch="ReXNet", memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -1127,7 +1156,9 @@ def iresnet100_elastic(
     """
 
     return iresnet_template(
-        embedding=IResnet100Elastic(memory_demanding=memory_demanding, device=device),
+        embedding=IResnet100Elastic(
+            memory_demanding=memory_demanding, device=device
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -1160,7 +1191,9 @@ def afffe_baseline(
         # Hard coding eye positions for backward consistency
         cropped_positions = {"leye": (110, 144), "reye": (110, 96)}
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,
@@ -1205,7 +1238,9 @@ def oxford_vgg2_resnets(
         # Coordinates taken from : https://www.merlin.uzh.ch/contributionDocument/download/14240
         cropped_positions = {"leye": (100, 159), "reye": (100, 65)}
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     transformer = embedding_transformer(
         cropped_image_size=cropped_image_size,

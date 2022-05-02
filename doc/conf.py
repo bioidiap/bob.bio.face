@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
+import glob
 import os
 import sys
-import glob
-import pkg_resources
 
+import pkg_resources
 
 # -- General configuration -----------------------------------------------------
 
@@ -75,10 +75,10 @@ source_suffix = ".rst"
 master_doc = "index"
 
 # General information about the project.
-project = u"bob.bio.face"
+project = "bob.bio.face"
 import time
 
-copyright = u"%s, Idiap Research Institute" % time.strftime("%Y")
+copyright = "%s, Idiap Research Institute" % time.strftime("%Y")
 
 # Grab the setup entry
 distribution = pkg_resources.require(project)[0]
@@ -128,8 +128,8 @@ pygments_style = "sphinx"
 
 # Some variables which are useful for generated material
 project_variable = project.replace(".", "_")
-short_description = u"Tools for running face recognition experiments"
-owner = [u"Idiap Research Institute"]
+short_description = "Tools for running face recognition experiments"
+owner = ["Idiap Research Institute"]
 
 
 # -- Options for HTML output ---------------------------------------------------
@@ -211,7 +211,7 @@ html_favicon = "img/favicon.ico"
 # html_file_suffix = None
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = project_variable + u"_doc"
+htmlhelp_basename = project_variable + "_doc"
 
 
 # -- Post configuration --------------------------------------------------------
@@ -240,7 +240,8 @@ from bob.extension.utils import link_documentation, load_requirements
 sphinx_requirements = "extra-intersphinx.txt"
 if os.path.exists(sphinx_requirements):
     intersphinx_mapping = link_documentation(
-        additional_packages=["python", "numpy"] + load_requirements(sphinx_requirements)
+        additional_packages=["python", "numpy"]
+        + load_requirements(sphinx_requirements)
     )
 else:
     intersphinx_mapping = link_documentation()

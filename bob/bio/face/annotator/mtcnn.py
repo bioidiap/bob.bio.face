@@ -4,8 +4,9 @@
 import logging
 
 import pkg_resources
-from bob.io.image import to_matplotlib
+
 from bob.bio.face.color import gray_to_rgb
+from bob.io.image import to_matplotlib
 
 from . import Base
 
@@ -28,7 +29,9 @@ class MTCNN(Base):
         Thresholds are a trade-off between false positives and missed detections.
     """
 
-    def __init__(self, min_size=40, factor=0.709, thresholds=(0.6, 0.7, 0.7), **kwargs):
+    def __init__(
+        self, min_size=40, factor=0.709, thresholds=(0.6, 0.7, 0.7), **kwargs
+    ):
         super().__init__(**kwargs)
         self.min_size = min_size
         self.factor = factor
@@ -65,7 +68,9 @@ class MTCNN(Base):
             input_map={
                 "input:0": img,
                 "min_size:0": tf.convert_to_tensor(self.min_size, dtype=float),
-                "thresholds:0": tf.convert_to_tensor(self.thresholds, dtype=float),
+                "thresholds:0": tf.convert_to_tensor(
+                    self.thresholds, dtype=float
+                ),
                 "factor:0": tf.convert_to_tensor(self.factor, dtype=float),
             },
             return_elements=["prob:0", "landmarks:0", "box:0"],

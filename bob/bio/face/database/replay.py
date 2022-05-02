@@ -10,12 +10,13 @@
   It also implements a kind of hack so that you can run vulnerability analysis with it.
 """
 
-from .database import FaceBioFile
 from bob.bio.base.database import BioDatabase
 from bob.bio.base.database.legacy import (
     convert_names_to_highlevel,
     convert_names_to_lowlevel,
 )
+
+from .database import FaceBioFile
 
 
 class ReplayBioFile(FaceBioFile):
@@ -73,7 +74,9 @@ class ReplayBioDatabase(BioDatabase):
 
     def groups(self):
         return convert_names_to_highlevel(
-            self._db.groups(), self.low_level_group_names, self.high_level_group_names
+            self._db.groups(),
+            self.low_level_group_names,
+            self.high_level_group_names,
         )
 
     def annotations(self, file):
@@ -82,7 +85,10 @@ class ReplayBioDatabase(BioDatabase):
         annots = file._f.bbx(directory=self.original_directory)
         # bob uses the (y, x) format
         topleft = (annots[fn][2], annots[fn][1])
-        bottomright = (annots[fn][2] + annots[fn][4], annots[fn][1] + annots[fn][3])
+        bottomright = (
+            annots[fn][2] + annots[fn][4],
+            annots[fn][1] + annots[fn][3],
+        )
         annotations = {"topleft": topleft, "bottomright": bottomright}
         return annotations
 
@@ -94,7 +100,12 @@ class ReplayBioDatabase(BioDatabase):
         return sorted(set(f.client_id for f in files))
 
     def objects(
-        self, groups=None, protocol=None, purposes=None, model_ids=None, **kwargs
+        self,
+        groups=None,
+        protocol=None,
+        purposes=None,
+        model_ids=None,
+        **kwargs
     ):
         if protocol == ".":
             protocol = None
@@ -144,7 +155,11 @@ class ReplayBioDatabase(BioDatabase):
 
         # now, query the actual Replay database
         objects = self._db.objects(
-            groups=groups, protocol=protocol, cls=purposes, clients=model_ids, **kwargs
+            groups=groups,
+            protocol=protocol,
+            cls=purposes,
+            clients=model_ids,
+            **kwargs
         )
 
         # make sure to return BioFile representation of a file, not the database one
@@ -155,7 +170,9 @@ class ReplayBioDatabase(BioDatabase):
                 retval.append(ReplayBioFile(f))
             else:
                 temp = ReplayBioFile(f)
-                temp.client_id = "attack/{}".format(f.get_attack().attack_device)
+                temp.client_id = "attack/{}".format(
+                    f.get_attack().attack_device
+                )
                 retval.append(temp)
         return retval
 

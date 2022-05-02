@@ -17,12 +17,12 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
+import numpy
+import pkg_resources
+
 import bob.io.base
 
-import numpy
 from bob.bio.face.algorithm.Histogram import histogram_intersection
-
-import pkg_resources
 
 regenerate_refs = False
 seed_value = 5489
@@ -43,7 +43,9 @@ def test_histogram():
 
     # read input
     feature1 = bob.bio.base.load(
-        pkg_resources.resource_filename("bob.bio.face.test", "data/lgbphs_sparse.hdf5")
+        pkg_resources.resource_filename(
+            "bob.bio.face.test", "data/lgbphs_sparse.hdf5"
+        )
     )
     feature2 = bob.bio.base.load(
         pkg_resources.resource_filename(

@@ -1,22 +1,22 @@
 """
-@author: Jun Wang 
-@date: 20201019 
-@contact: jun21wangustc@gmail.com    
+@author: Jun Wang
+@date: 20201019
+@contact: jun21wangustc@gmail.com
 """
 
 import sys
+
 import yaml
 
-from .ResNets import Resnet
-from .MobileFaceNets import MobileFaceNet
-from .EfficientNets import EfficientNet
-from .EfficientNets import efficientnet
-from .HRNet import HighResolutionNet
-from .GhostNet import GhostNet
 from .AttentionNets import ResidualAttentionNet
-from .TF_NAS import TF_NAS_A
+from .EfficientNets import EfficientNet, efficientnet
+from .GhostNet import GhostNet
+from .HRNet import HighResolutionNet
+from .MobileFaceNets import MobileFaceNet
 from .resnest.resnest import ResNeSt
+from .ResNets import Resnet
 from .ReXNets import ReXNetV1
+from .TF_NAS import TF_NAS_A
 
 
 class BackboneFactory:
@@ -65,7 +65,9 @@ class BackboneFactory:
             out_w = self.backbone_param[
                 "out_w"
             ]  # width of the feature map before the final features.
-            backbone = Resnet(depth, drop_ratio, net_mode, feat_dim, out_h, out_w)
+            backbone = Resnet(
+                depth, drop_ratio, net_mode, feat_dim, out_h, out_w
+            )
         elif self.backbone_type == "EfficientNet":
             width = self.backbone_param[
                 "width"
@@ -92,7 +94,9 @@ class BackboneFactory:
                 dropout_rate=drop_ratio,
                 image_size=image_size,
             )
-            backbone = EfficientNet(out_h, out_w, feat_dim, blocks_args, global_params)
+            backbone = EfficientNet(
+                out_h, out_w, feat_dim, blocks_args, global_params
+            )
         elif self.backbone_type == "HRNet":
             config = {}
             config["MODEL"] = self.backbone_param
@@ -130,7 +134,12 @@ class BackboneFactory:
                 "out_w"
             ]  # width of the feature map before the final features.
             backbone = ResidualAttentionNet(
-                stage1_modules, stage2_modules, stage3_modules, feat_dim, out_h, out_w
+                stage1_modules,
+                stage2_modules,
+                stage3_modules,
+                feat_dim,
+                out_h,
+                out_w,
             )
         elif self.backbone_type == "AttentionNet_wj":
             stage1_modules = self.backbone_param[

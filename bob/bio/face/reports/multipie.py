@@ -1,11 +1,14 @@
-import matplotlib.pyplot as plt
+import itertools
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+import bob.measure
 
 from bob.bio.base.score.load import get_split_dataframe
-import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
-import bob.measure
-import itertools
 
 
 def _get_colors_markers():
@@ -98,10 +101,18 @@ def multipie_pose_report(
         genuines_eval = genuines_eval.compute()
 
         # Appending the angle
-        impostors_dev["angle"] = impostors_dev["probe_camera"].map(camera_to_angle)
-        genuines_dev["angle"] = genuines_dev["probe_camera"].map(camera_to_angle)
-        impostors_eval["angle"] = impostors_eval["probe_camera"].map(camera_to_angle)
-        genuines_eval["angle"] = genuines_eval["probe_camera"].map(camera_to_angle)
+        impostors_dev["angle"] = impostors_dev["probe_camera"].map(
+            camera_to_angle
+        )
+        genuines_dev["angle"] = genuines_dev["probe_camera"].map(
+            camera_to_angle
+        )
+        impostors_eval["angle"] = impostors_eval["probe_camera"].map(
+            camera_to_angle
+        )
+        genuines_eval["angle"] = genuines_eval["probe_camera"].map(
+            camera_to_angle
+        )
 
         angles = []
         eval_fmr_fnmr = []
@@ -146,7 +157,9 @@ def multipie_pose_report(
                     )
 
             eval_fmr, eval_fnmr = bob.measure.farfrr(
-                i_eval["score"].to_numpy(), g_eval["score"].to_numpy(), threshold
+                i_eval["score"].to_numpy(),
+                g_eval["score"].to_numpy(),
+                threshold,
             )
             # eval_fnmr = (eval_fnmr + eval_fmr) / 2
 
@@ -263,10 +276,16 @@ def multipie_expression_report(
 
         ### EVALUATING DIFFERENT TYPES OF EXPRESSION
         for expression in expressions:
-            i_eval = impostors_eval.loc[impostors_eval.probe_expression == expression]
-            g_eval = genuines_eval.loc[genuines_eval.probe_expression == expression]
+            i_eval = impostors_eval.loc[
+                impostors_eval.probe_expression == expression
+            ]
+            g_eval = genuines_eval.loc[
+                genuines_eval.probe_expression == expression
+            ]
 
-            eval_fmr_fnmr_expressions[title].append(compute_fmr_fnmr(i_eval, g_eval))
+            eval_fmr_fnmr_expressions[title].append(
+                compute_fmr_fnmr(i_eval, g_eval)
+            )
 
     pass
 

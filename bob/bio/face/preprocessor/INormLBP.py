@@ -3,10 +3,11 @@
 # @author: Manuel Guenther <Manuel.Guenther@idiap.ch>
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-from .Base import Base
-from .utils import load_cropper
 import numpy as np
 import skimage
+
+from .Base import Base
+from .utils import load_cropper
 
 
 class INormLBP(Base):
@@ -111,5 +112,6 @@ class INormLBP(Base):
             return [_crop_one_sample(data) for data in X]
         else:
             return [
-                _crop_one_sample(data, annot) for data, annot in zip(X, annotations)
+                _crop_one_sample(data, annot)
+                for data, annot in zip(X, annotations)
             ]

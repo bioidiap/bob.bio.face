@@ -4,10 +4,11 @@
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 
-from .Base import Base
-from .utils import load_cropper
 import cv2
 import numpy as np
+
+from .Base import Base
+from .utils import load_cropper
 
 
 def compute_tan_triggs(
@@ -189,5 +190,6 @@ class TanTriggs(Base):
             return [_crop_one_sample(data) for data in X]
         else:
             return [
-                _crop_one_sample(data, annot) for data, annot in zip(X, annotations)
+                _crop_one_sample(data, annot)
+                for data, annot in zip(X, annotations)
             ]

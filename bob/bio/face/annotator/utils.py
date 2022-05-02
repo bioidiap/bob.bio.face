@@ -1,4 +1,5 @@
 import math
+
 import numpy as np
 
 available_sources = {
@@ -151,7 +152,9 @@ class BoundingBox:
     @property
     def center(self):
         """The center of the bounding box, read access only"""
-        return (self.top_f + self.bottom_f) // 2, (self.left_f + self.right_f) // 2
+        return (self.top_f + self.bottom_f) // 2, (
+            self.left_f + self.right_f
+        ) // 2
 
     @property
     def area(self):
@@ -368,7 +371,8 @@ def bounding_box_from_annotation(source=None, padding=None, **kwargs):
         # check if a source could be estimated from the keywords
         if source is None:
             raise ValueError(
-                "The given list of keywords (%s) could not be interpreted" % kwargs
+                "The given list of keywords (%s) could not be interpreted"
+                % kwargs
             )
 
     assert source in available_sources
@@ -401,7 +405,9 @@ def bounding_box_from_annotation(source=None, padding=None, **kwargs):
         pos_1 = kwargs[keys[1]]
         tb_center = float(pos_0[0] + pos_1[0]) / 2.0
         lr_center = float(pos_0[1] + pos_1[1]) / 2.0
-        distance = math.sqrt((pos_0[0] - pos_1[0]) ** 2 + (pos_0[1] - pos_1[1]) ** 2)
+        distance = math.sqrt(
+            (pos_0[0] - pos_1[0]) ** 2 + (pos_0[1] - pos_1[1]) ** 2
+        )
 
         top = tb_center + padding["top"] * distance
         bottom = tb_center + padding["bottom"] * distance

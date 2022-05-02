@@ -1,4 +1,4 @@
-from torch.nn import Module, Linear
+from torch.nn import Linear, Module
 
 
 class Regular(Module):
@@ -13,4 +13,3 @@ class Regular(Module):
 
     def forward(self, feats, labels):
         return self.fc(feats)
-

@@ -1,3 +1,4 @@
+# isort: skip_file
 from . import preprocessor
 from . import algorithm
 from . import script

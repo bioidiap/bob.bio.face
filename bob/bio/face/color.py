@@ -6,8 +6,10 @@
 Color functionalitites from old bob.ip.color
 """
 import numpy as np
-from bob.io.image import bob_to_pillow, pillow_to_bob
+
 from PIL import Image
+
+from bob.io.image import bob_to_pillow, pillow_to_bob
 
 
 def rgb_to_gray(image):

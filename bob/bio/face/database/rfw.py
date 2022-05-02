@@ -1,14 +1,18 @@
-from bob.bio.base.pipelines.abstract_classes import Database
-import pandas as pd
-from bob.pipelines.sample import DelayedSample, SampleSet
-from bob.extension import rc
-import os
-import bob.io.base
-from functools import partial
-import logging
-import numpy as np
 import copy
+import logging
+import os
+
+from functools import partial
+
+import numpy as np
+import pandas as pd
+
+import bob.io.base
+
+from bob.bio.base.pipelines.abstract_classes import Database
+from bob.extension import rc
 from bob.extension.download import get_file
+from bob.pipelines.sample import DelayedSample, SampleSet
 
 logger = logging.getLogger("bob.bio.face")
 
@@ -86,7 +90,9 @@ class RFWDatabase(Database):
         )
 
         self._pairs = dict()
-        self._first_reference_of_subject = dict()  ## Used with the Idiap protocol
+        self._first_reference_of_subject = (
+            dict()
+        )  ## Used with the Idiap protocol
         self._inverted_pairs = dict()
         self._id_race = dict()  # ID -- > RACE
         self._race_ids = dict()  # RACE --> ID
@@ -96,7 +102,9 @@ class RFWDatabase(Database):
         self._cached_zprobes = None
         self._cached_treferences = None
         self._cached_treferences = None
-        self._discarded_subjects = []  # Some subjects were labeled with both races
+        self._discarded_subjects = (
+            []
+        )  # Some subjects were labeled with both races
         self._load_metadata(target_set="test")
         self._demographics = None
         self._demographics = self._get_demographics_dict()
@@ -146,7 +154,10 @@ class RFWDatabase(Database):
             with open(filename) as f:
                 for line in f.readlines():
                     line = line.split(",")
-                    self._demographics[line[0]] = [line[2], line[3].rstrip("\n")]
+                    self._demographics[line[0]] = [
+                        line[2],
+                        line[3].rstrip("\n"),
+                    ]
 
         return self._demographics
 
@@ -157,7 +168,11 @@ class RFWDatabase(Database):
         for race in self._races:
 
             pair_file = os.path.join(
-                self.original_directory, target_set, "txts", race, f"{race}_pairs.txt"
+                self.original_directory,
+                target_set,
+                "txts",
+                race,
+                f"{race}_pairs.txt",
             )
 
             for l in open(pair_file).readlines():
@@ -185,14 +200,10 @@ class RFWDatabase(Database):
                 # Positive or negative pairs
                 if len(l) == 3:
                     k_value = f"{l[0]}_000{l[2]}"
-                    dict_value = (
-                        f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
-                    )
+                    dict_value = f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
                 else:
                     k_value = f"{l[2]}_000{l[3]}"
-                    dict_value = (
-                        f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
-                    )
+                    dict_value = f"{race}/{self._get_subject_from_key(k_value)}/{k_value}"
 
                 if dict_key not in self._pairs:
                     self._pairs[dict_key] = []
@@ -238,7 +249,9 @@ class RFWDatabase(Database):
         np.random.seed(seed)
 
         for race in self._races:
-            data_dir = os.path.join(self.original_directory, "train", "data", race)
+            data_dir = os.path.join(
+                self.original_directory, "train", "data", race
+            )
             files = os.listdir(data_dir)
             # SHUFFLING
             np.random.shuffle(files)
@@ -268,7 +281,9 @@ class RFWDatabase(Database):
 
     def zprobes(self, group="dev", proportion=1.0):
         if self._cached_zprobes is None:
-            self._cached_zprobes = self._get_zt_samples(self._idiap_protocol_seed + 1)
+            self._cached_zprobes = self._get_zt_samples(
+                self._idiap_protocol_seed + 1
+            )
             references = list(
                 set([s.reference_id for s in self.references(group=group)])
             )
@@ -334,8 +349,14 @@ class RFWDatabase(Database):
                     # pattern 'm.0c7mh2_0003.jpg'[:-4]
                     k = line[0].split("/")[-1][:-4]
                     self._landmarks[k] = dict()
-                    self._landmarks[k]["reye"] = (float(line[3]), float(line[2]))
-                    self._landmarks[k]["leye"] = (float(line[5]), float(line[4]))
+                    self._landmarks[k]["reye"] = (
+                        float(line[3]),
+                        float(line[2]),
+                    )
+                    self._landmarks[k]["leye"] = (
+                        float(line[5]),
+                        float(line[4]),
+                    )
 
         return self._landmarks[key]
 
@@ -364,7 +385,9 @@ class RFWDatabase(Database):
 
         annotations = (
             self._fetch_landmarks(
-                os.path.join(self.original_directory, "erratum1", "Caucasian_lmk.txt"),
+                os.path.join(
+                    self.original_directory, "erratum1", "Caucasian_lmk.txt"
+                ),
                 reference_id,
             )
             if (target_set == "train" and race == "Caucasian")
@@ -418,7 +441,9 @@ class RFWDatabase(Database):
         if self._cached_biometric_references is None:
             self._cached_biometric_references = []
             for key in self._pairs:
-                self._cached_biometric_references.append(self._make_sampleset(key))
+                self._cached_biometric_references.append(
+                    self._make_sampleset(key)
+                )
 
         return self._cached_biometric_references
 
@@ -434,9 +459,9 @@ class RFWDatabase(Database):
         return ["original", "idiap"]
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(
-            protocol, self.protocols()
-        )
+        assert (
+            protocol in self.protocols()
+        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
         assert group in self.groups(), "Unvalid group `{}` not in {}".format(

@@ -4,8 +4,9 @@
 """  Sample and Metatada loaders"""
 
 
+from sklearn.base import BaseEstimator, TransformerMixin
+
 from bob.pipelines import DelayedSample, Sample, SampleSet
-from sklearn.base import TransformerMixin, BaseEstimator
 
 
 def find_attribute(x, attribute):
@@ -44,7 +45,10 @@ class EyesAnnotations(TransformerMixin, BaseEstimator):
             }
 
             sample = DelayedSample.from_sample(x, annotations=eyes)
-            [delattr(sample, a) for a in ["leye_x", "leye_y", "reye_x", "reye_y"]]
+            [
+                delattr(sample, a)
+                for a in ["leye_x", "leye_y", "reye_x", "reye_y"]
+            ]
             annotated_samples.append(sample)
 
         return annotated_samples
@@ -65,7 +69,10 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
         annotated_samples = []
         for x in X:
             annotations = dict()
-            if find_attribute(x, "leye_x") != "" and find_attribute(x, "reye_x") != "":
+            if (
+                find_attribute(x, "leye_x") != ""
+                and find_attribute(x, "reye_x") != ""
+            ):
                 # Normal profile
                 annotations = {
                     "leye": (
@@ -78,7 +85,8 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
                     ),
                 }
             elif (
-                find_attribute(x, "leye_x") != "" and find_attribute(x, "reye_x") == ""
+                find_attribute(x, "leye_x") != ""
+                and find_attribute(x, "reye_x") == ""
             ):
                 # Left profile
                 annotations = {
@@ -92,7 +100,8 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
                     ),
                 }
             elif (
-                find_attribute(x, "leye_x") == "" and find_attribute(x, "reye_x") != ""
+                find_attribute(x, "leye_x") == ""
+                and find_attribute(x, "reye_x") != ""
             ):
                 # Right profile
                 annotations = {

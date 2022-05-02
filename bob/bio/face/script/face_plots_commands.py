@@ -1,19 +1,20 @@
 from email.policy import default
-from bob.measure.script import common_options
+
+import click
 import numpy as np
-from bob.bio.face.reports.multipie import (
-    multipie_pose_report,
-    multipie_expression_report,
-)
-from bob.bio.face.reports.scface import scface_report
+
 from bob.bio.face.reports.arface import arface_report
-from bob.bio.face.reports.mobio import mobio_report
 from bob.bio.face.reports.gbu import gbu_report
 from bob.bio.face.reports.ijbc import ijbc_report
-import click
-
-from bob.pipelines.distributed import VALID_DASK_CLIENT_STRINGS
+from bob.bio.face.reports.mobio import mobio_report
+from bob.bio.face.reports.multipie import (
+    multipie_expression_report,
+    multipie_pose_report,
+)
+from bob.bio.face.reports.scface import scface_report
 from bob.extension.scripts.click_helper import ResourceOption
+from bob.measure.script import common_options
+from bob.pipelines.distributed import VALID_DASK_CLIENT_STRINGS
 
 
 @click.command()
@@ -59,7 +60,9 @@ def multipie_pose(
 
     if evaluation:
         scores_dev = scores[[i for i in list(range(len(scores))) if i % 2 == 0]]
-        scores_eval = scores[[i for i in list(range(len(scores))) if i % 2 != 0]]
+        scores_eval = scores[
+            [i for i in list(range(len(scores))) if i % 2 != 0]
+        ]
     else:
         scores_dev = scores
         scores_eval = None
@@ -103,7 +106,9 @@ def multipie_expression(
 
     if evaluation:
         scores_dev = scores[[i for i in list(range(len(scores))) if i % 2 == 0]]
-        scores_eval = scores[[i for i in list(range(len(scores))) if i % 2 != 0]]
+        scores_eval = scores[
+            [i for i in list(range(len(scores))) if i % 2 != 0]
+        ]
     else:
         scores_dev = scores
         scores_eval = None
@@ -145,7 +150,9 @@ def scface_distance(
 
     if evaluation:
         scores_dev = scores[[i for i in list(range(len(scores))) if i % 2 == 0]]
-        scores_eval = scores[[i for i in list(range(len(scores))) if i % 2 != 0]]
+        scores_eval = scores[
+            [i for i in list(range(len(scores))) if i % 2 != 0]
+        ]
     else:
         scores_dev = scores
         scores_eval = None
@@ -173,7 +180,9 @@ def scface_distance(
     help="FMR operational point used to compute FNMR and FMR on the evaluation set",
 )
 @click.pass_context
-def arface(ctx, scores, evaluation, output, titles, fmr_operational_threshold, **kargs):
+def arface(
+    ctx, scores, evaluation, output, titles, fmr_operational_threshold, **kargs
+):
     """plots with the arface experiments"""
 
     if len(scores) // 2 != len(titles):
@@ -185,7 +194,9 @@ def arface(ctx, scores, evaluation, output, titles, fmr_operational_threshold, *
 
     if evaluation:
         scores_dev = scores[[i for i in list(range(len(scores))) if i % 2 == 0]]
-        scores_eval = scores[[i for i in list(range(len(scores))) if i % 2 != 0]]
+        scores_eval = scores[
+            [i for i in list(range(len(scores))) if i % 2 != 0]
+        ]
     else:
         scores_dev = scores
         scores_eval = None
@@ -227,7 +238,9 @@ def mobio_gender(
 
     if evaluation:
         scores_dev = scores[[i for i in list(range(len(scores))) if i % 2 == 0]]
-        scores_eval = scores[[i for i in list(range(len(scores))) if i % 2 != 0]]
+        scores_eval = scores[
+            [i for i in list(range(len(scores))) if i % 2 != 0]
+        ]
     else:
         scores_dev = scores
         scores_eval = None

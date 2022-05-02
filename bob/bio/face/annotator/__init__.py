@@ -1,3 +1,4 @@
+# isort: skip_file
 from .utils import *
 from .Base import Base
 from .mtcnn import MTCNN

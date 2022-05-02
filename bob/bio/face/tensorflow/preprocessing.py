@@ -5,12 +5,15 @@
 Tensor pre-processing for somr face recognition CNNs
 """
 
+import logging
 import os
+
 from functools import partial
 from multiprocessing import cpu_count
+
 import tensorflow as tf
+
 from tensorflow.keras import layers
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -46,7 +49,9 @@ def get_preprocessor(output_shape):
             # layers.experimental.preprocessing.Rescaling(
             #    scale=1 / 128, offset=-127.5 / 128
             # ),
-            layers.experimental.preprocessing.Rescaling(scale=1 / 255, offset=0),
+            layers.experimental.preprocessing.Rescaling(
+                scale=1 / 255, offset=0
+            ),
         ]
     )
     return preprocessor

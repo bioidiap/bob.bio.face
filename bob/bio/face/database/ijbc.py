@@ -1,13 +1,17 @@
-from bob.bio.base.pipelines.abstract_classes import Database
-import pandas as pd
-from bob.pipelines.sample import DelayedSample, SampleSet
-from bob.extension import rc
-import os
-import bob.io.base
-from functools import partial
-from bob.pipelines.utils import hash_string
 import copy
 import logging
+import os
+
+from functools import partial
+
+import pandas as pd
+
+import bob.io.base
+
+from bob.bio.base.pipelines.abstract_classes import Database
+from bob.extension import rc
+from bob.pipelines.sample import DelayedSample, SampleSet
+from bob.pipelines.utils import hash_string
 
 logger = logging.getLogger(__name__)
 
@@ -19,7 +23,9 @@ def _make_sample_from_template_row(row, image_directory):
     key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["SUBJECT_ID"])
 
     return DelayedSample(
-        load=partial(bob.io.base.load, os.path.join(image_directory, row["FILENAME"])),
+        load=partial(
+            bob.io.base.load, os.path.join(image_directory, row["FILENAME"])
+        ),
         reference_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
         key=key,
@@ -61,7 +67,9 @@ def _make_sample_set_from_template_group(template_group, image_directory):
 
     samples = list(
         template_group.apply(
-            _make_sample_from_template_row, axis=1, image_directory=image_directory
+            _make_sample_from_template_row,
+            axis=1,
+            image_directory=image_directory,
         )
     )
     return SampleSet(
@@ -152,11 +160,15 @@ class IJBCDatabase(Database):
         # Load CSV files
         if protocol == "test1" or protocol == "test2":
             self.reference_templates = pd.read_csv(
-                os.path.join(self.protocol_directory, protocol, "enroll_templates.csv")
+                os.path.join(
+                    self.protocol_directory, protocol, "enroll_templates.csv"
+                )
             )
 
             self.probe_templates = pd.read_csv(
-                os.path.join(self.protocol_directory, protocol, "verif_templates.csv")
+                os.path.join(
+                    self.protocol_directory, protocol, "verif_templates.csv"
+                )
             )
 
             self.matches = pd.read_csv(
@@ -219,7 +231,9 @@ class IJBCDatabase(Database):
             """
 
         elif "test4" in protocol:
-            gallery_file = "gallery_G1.csv" if "G1" in protocol else "gallery_G2.csv"
+            gallery_file = (
+                "gallery_G1.csv" if "G1" in protocol else "gallery_G2.csv"
+            )
 
             self.reference_templates = pd.read_csv(
                 os.path.join(self.protocol_directory, "test4", gallery_file)
@@ -243,7 +257,9 @@ class IJBCDatabase(Database):
         self._check_group(group)
         if self._cached_probes is None:
 
-            logger.info("Loading probes. This operation might take some minutes")
+            logger.info(
+                "Loading probes. This operation might take some minutes"
+            )
 
             self._cached_probes = list(
                 self.probe_templates.groupby("TEMPLATE_ID").apply(
@@ -279,7 +295,9 @@ class IJBCDatabase(Database):
         self._check_group(group)
         if self._cached_references is None:
 
-            logger.info("Loading templates. This operation might take some minutes")
+            logger.info(
+                "Loading templates. This operation might take some minutes"
+            )
 
             self._cached_references = list(
                 self.reference_templates.groupby("TEMPLATE_ID").apply(
@@ -302,9 +320,9 @@ class IJBCDatabase(Database):
         return ["test1", "test2", "test4-G1", "test4-G2"]
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Invalid protocol `{}` not in {}".format(
-            protocol, self.protocols()
-        )
+        assert (
+            protocol in self.protocols()
+        ), "Invalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
         assert group in self.groups(), "Invalid group `{}` not in {}".format(

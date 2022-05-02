@@ -1,9 +1,11 @@
+import os
+
 from pickletools import optimize
+
 import numpy as np
 import pytorch_lightning as pl
-import torch
 import scipy.spatial
-import os
+import torch
 
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 

@@ -3,11 +3,12 @@
 # @author: Manuel Guenther <Manuel.Guenther@idiap.ch>
 # @author: Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
+import cv2
 import numpy
+import numpy as np
+
 from .Base import Base
 from .utils import load_cropper
-import numpy as np
-import cv2
 
 
 class HistogramEqualization(Base):

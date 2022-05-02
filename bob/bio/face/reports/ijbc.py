@@ -1,12 +1,15 @@
-import matplotlib.pyplot as plt
+import itertools
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+import bob.measure
 
 # from bob.bio.base.score.load import get_split_dataframe
 from bob.bio.base.score.load import cmc
-import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
-import bob.measure
-import itertools
 from bob.measure import plot
 
 
@@ -39,7 +42,8 @@ def ijbc_report(scores_dev, output_filename, titles, figsize=(8, 6)):
     x_ticks = [0.0001, 0.001, 0.01, 0.1, 1]
     ax.set_xticks(x_ticks)
     ax.set_xticklabels(
-        ["$10^{-4}$", "$10^{-3}$", "$10^{-2}$", "$10^{-1}$", "$10^{0}$"], fontsize=14
+        ["$10^{-4}$", "$10^{-3}$", "$10^{-2}$", "$10^{-1}$", "$10^{0}$"],
+        fontsize=14,
     )
 
     y_ticks = [0, 0.2, 0.4, 0.6, 0.8, 1]
@@ -51,4 +55,3 @@ def ijbc_report(scores_dev, output_filename, titles, figsize=(8, 6)):
 
     pdf.savefig(fig)
     pdf.close()
-

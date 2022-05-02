@@ -5,9 +5,9 @@
 #
 
 
-from bob.bio.face.color import rgb_to_gray, gray_to_rgb
-
 import numpy as np
+
+from bob.bio.face.color import gray_to_rgb, rgb_to_gray
 
 
 def test_gray():

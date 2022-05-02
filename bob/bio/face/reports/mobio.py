@@ -1,11 +1,14 @@
-import matplotlib.pyplot as plt
+import itertools
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+import bob.measure
 
 from bob.bio.base.score.load import get_split_dataframe
-import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
-import bob.measure
-import itertools
 
 
 def mobio_report(
@@ -28,7 +31,11 @@ def mobio_report(
 
     eval_fmr_fnmr = dict()
 
-    for d_scores, e_scores, title, in zip(scores_dev, scores_eval, titles):
+    for (
+        d_scores,
+        e_scores,
+        title,
+    ) in zip(scores_dev, scores_eval, titles):
 
         eval_fmr_fnmr[title] = []
 
@@ -59,7 +66,9 @@ def mobio_report(
             return eval_fmr, eval_fnmr
 
         # Combined
-        eval_fmr_fnmr[title].append(compute_fmr_fnmr(impostors_eval, genuines_eval))
+        eval_fmr_fnmr[title].append(
+            compute_fmr_fnmr(impostors_eval, genuines_eval)
+        )
 
         for gender in genders[1:]:
 
@@ -86,21 +95,31 @@ def mobio_report(
 
         x_axis = X + (i + 1) * width - width / 2
         ax.bar(
-            x_axis, fmrs, width, label=title, color=color, alpha=0.75, hatch="\\",
+            x_axis,
+            fmrs,
+            width,
+            label=title,
+            color=color,
+            alpha=0.75,
+            hatch="\\",
         )
         ax.bar(x_axis, fnmrs, width, color=color, alpha=0.5, hatch="/")
 
         # Writting the texts on top of the bar plots
         for i, fnmr, fmr in zip(x_axis, fnmrs, fmrs):
-            plt.text(i - width / 2, fnmr + 0.8, str(round(fnmr, 2)), fontsize=12)
+            plt.text(
+                i - width / 2, fnmr + 0.8, str(round(fnmr, 2)), fontsize=12
+            )
             # print(i - width / 2)
-            plt.text(i - width / 2, fmr - 2.2, str(round(abs(fmr), 2)), fontsize=12)
+            plt.text(
+                i - width / 2, fmr - 2.2, str(round(abs(fmr), 2)), fontsize=12
+            )
 
     ax.set_axisbelow(True)
 
     # Plot finalization
     plt.title(f"FMR vs FNMR .  at Dev. FMR@{fmr_threshold*100}%")
-    #ax.set_xlabel("Genders", fontsize=18)
+    # ax.set_xlabel("Genders", fontsize=18)
     ax.set_ylabel("FMR(%) vs FNMR(%)                        ", fontsize=15)
     # plt.ylim([-5, 40])
 
@@ -118,4 +137,3 @@ def mobio_report(
 
     pdf.savefig(fig)
     pdf.close()
-

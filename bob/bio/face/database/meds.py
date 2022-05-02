@@ -3,22 +3,24 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  MEDS database implementation 
+  MEDS database implementation
 """
+
+# from bob.bio.face.database.sample_loaders import eyes_annotations_loader
+import os
+
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
 
 from bob.bio.base.database import (
     CSVDataset,
     CSVDatasetZTNorm,
+    CSVToSampleLoaderBiometrics,
 )
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
-
-# from bob.bio.face.database.sample_loaders import eyes_annotations_loader
-import os
 
 
 class MEDSDatabase(CSVDatasetZTNorm):
@@ -26,7 +28,7 @@ class MEDSDatabase(CSVDatasetZTNorm):
     The MEDS II database was developed by NIST to support and assists their biometrics evaluation program.
     It is composed by 518 identities from both men/women (labeled as M and F) and five different race annotations (Asian, Black, American Indian, Unknown and White)
     (labeled as A, B, I, U and W.
-    
+
     Unfortunately, the distribution of gender and race is extremely unbalanced as it can be
     observed in their statistics. Furthermore, only 256 subjects has
     more than one image sample (obviously it is not possible to do a biometric evaluation with one sample per subject).
@@ -48,7 +50,7 @@ class MEDSDatabase(CSVDatasetZTNorm):
     +--------------------+---------------+-----------+-----------+-----------+
     | verification_fold3 |      80       |     80    |   111     |   112     |
     +--------------------+---------------+-----------+-----------+-----------+
-    
+
     Example
     -------
 

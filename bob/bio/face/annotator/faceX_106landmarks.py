@@ -1,14 +1,17 @@
 import logging
 import os
 import sys
+
 from itertools import product as product
 from math import ceil
 
 import numpy as np
 import torch
+
+from torchvision import transforms
+
 from bob.extension.download import get_file
 from bob.io.image import bob_to_opencvbgr
-from torchvision import transforms
 
 from . import Base
 from .mtcnn import MTCNN
@@ -48,10 +51,12 @@ class PriorBox(object):
                     s_kx = min_size / self.image_size[1]
                     s_ky = min_size / self.image_size[0]
                     dense_cx = [
-                        x * self.steps[k] / self.image_size[1] for x in [j + 0.5]
+                        x * self.steps[k] / self.image_size[1]
+                        for x in [j + 0.5]
                     ]
                     dense_cy = [
-                        y * self.steps[k] / self.image_size[0] for y in [i + 0.5]
+                        y * self.steps[k] / self.image_size[0]
+                        for y in [i + 0.5]
                     ]
                     for cy, cx in product(dense_cy, dense_cx):
                         anchors += [cx, cy, s_kx, s_ky]
@@ -175,7 +180,9 @@ class FaceXDetector(Base):
             logger.error("The input should be the ndarray read by cv2!")
 
         img = np.float32(image)
-        scale = torch.Tensor([img.shape[1], img.shape[0], img.shape[1], img.shape[0]])
+        scale = torch.Tensor(
+            [img.shape[1], img.shape[0], img.shape[1], img.shape[0]]
+        )
         img -= (104, 117, 123)
         img = img.transpose(2, 0, 1)
         return img, scale
@@ -193,7 +200,9 @@ class FaceXDetector(Base):
         priors = priorbox.forward()
         priors = priors.to(self.device)
         prior_data = priors.data
-        boxes = self.decode(loc.data.squeeze(0), prior_data, self.cfg["variance"])
+        boxes = self.decode(
+            loc.data.squeeze(0), prior_data, self.cfg["variance"]
+        )
         boxes = boxes * scale
         boxes = boxes.cpu().numpy()
         scores = conf.squeeze(0).data.cpu().numpy()[:, 1]
@@ -210,7 +219,9 @@ class FaceXDetector(Base):
 
         # do NMS
         nms_threshold = 0.2
-        dets = np.hstack((boxes, scores[:, np.newaxis])).astype(np.float32, copy=False)
+        dets = np.hstack((boxes, scores[:, np.newaxis])).astype(
+            np.float32, copy=False
+        )
         keep = self.py_cpu_nms(dets, nms_threshold)
         dets = dets[keep, :]
         return dets
@@ -450,6 +461,8 @@ class FaceX106Landmarks(Base):
             A numpy array, the landmarks based on the shape of original image, shape: (106, 2),
         """
         landmarks_normal = landmarks_normal.cpu().numpy()
-        landmarks_normal = landmarks_normal.reshape(landmarks_normal.shape[0], -1, 2)
+        landmarks_normal = landmarks_normal.reshape(
+            landmarks_normal.shape[0], -1, 2
+        )
         landmarks = landmarks_normal[0] * [self.boxsize, self.boxsize] + self.xy
         return landmarks

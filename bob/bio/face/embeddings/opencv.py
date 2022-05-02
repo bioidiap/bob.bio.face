@@ -3,22 +3,19 @@
 # Yu Linghu & Xinyi Zhang <yu.linghu@uzh.ch, xinyi.zhang@uzh.ch>
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
-import bob.bio.base
-import numpy as np
-from sklearn.base import TransformerMixin, BaseEstimator
-from sklearn.utils import check_array
 import os
-from bob.extension.download import get_file
-from bob.bio.face.utils import (
-    dnn_default_cropping,
-    embedding_transformer,
-)
 
-from bob.bio.base.pipelines import (
-    Distance,
-    PipelineSimple,
-)
+import numpy as np
+
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils import check_array
+
+import bob.bio.base
+
+from bob.bio.base.pipelines import Distance, PipelineSimple
 from bob.bio.face.annotator import MTCNN
+from bob.bio.face.utils import dnn_default_cropping, embedding_transformer
+from bob.extension.download import get_file
 
 
 class OpenCVTransformer(TransformerMixin, BaseEstimator):
@@ -123,8 +120,12 @@ class VGG16_Oxford(OpenCVTransformer):
             extract=True,
         )
         path = os.path.dirname(filename)
-        config = os.path.join(path, "vgg_face_caffe", "VGG_FACE_deploy.prototxt")
-        checkpoint_path = os.path.join(path, "vgg_face_caffe", "VGG_FACE.caffemodel")
+        config = os.path.join(
+            path, "vgg_face_caffe", "VGG_FACE_deploy.prototxt"
+        )
+        checkpoint_path = os.path.join(
+            path, "vgg_face_caffe", "VGG_FACE.caffemodel"
+        )
 
         caffe_average_img = [129.1863, 104.7624, 93.5940]
         self.embedding_layer = embedding_layer
@@ -147,7 +148,9 @@ class VGG16_Oxford(OpenCVTransformer):
 
             return X
 
-        super(VGG16_Oxford, self).__init__(checkpoint_path, config, preprocessor)
+        super(VGG16_Oxford, self).__init__(
+            checkpoint_path, config, preprocessor
+        )
 
     def _load_model(self):
         import cv2
@@ -198,7 +201,9 @@ def vgg16_oxford_baseline(annotation_type, fixed_positions=None):
                 {"topleft": (0, 0), "bottomright": cropped_image_size}
             )
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(

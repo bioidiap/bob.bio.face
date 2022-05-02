@@ -1,11 +1,14 @@
-import matplotlib.pyplot as plt
+import itertools
+
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+import numpy as np
+
+from matplotlib.backends.backend_pdf import PdfPages
+
+import bob.measure
 
 from bob.bio.base.score.load import get_split_dataframe
-import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
-import bob.measure
-import itertools
 
 
 def scface_report(
@@ -27,7 +30,11 @@ def scface_report(
 
     eval_fmr_fnmr = dict()
 
-    for d_scores, e_scores, title, in zip(scores_dev, scores_eval, titles):
+    for (
+        d_scores,
+        e_scores,
+        title,
+    ) in zip(scores_dev, scores_eval, titles):
 
         eval_fmr_fnmr[title] = []
 
@@ -46,7 +53,11 @@ def scface_report(
         i_dev = impostors_dev["score"].to_numpy()
         g_dev = genuines_dev["score"].to_numpy()
 
-        threshold = bob.measure.far_threshold(i_dev, g_dev, far_value=fmr_threshold,)
+        threshold = bob.measure.far_threshold(
+            i_dev,
+            g_dev,
+            far_value=fmr_threshold,
+        )
 
         def compute_fmr_fnmr(impostor_scores, genuine_scores):
             eval_fmr, eval_fnmr = bob.measure.farfrr(
@@ -58,7 +69,9 @@ def scface_report(
 
         for distance in distances:
 
-            i_eval = impostors_eval.loc[impostors_eval.probe_distance == distance]
+            i_eval = impostors_eval.loc[
+                impostors_eval.probe_distance == distance
+            ]
             g_eval = genuines_eval.loc[genuines_eval.probe_distance == distance]
 
             eval_fmr_fnmr[title].append(compute_fmr_fnmr(i_eval, g_eval))
@@ -83,7 +96,13 @@ def scface_report(
         fnmrs = [fnmr * 100 for _, fnmr in eval_fmr_fnmr[title]]
         x_axis = X + (i + 1) * width - width / 2
         ax.bar(
-            x_axis, fmrs, width, label=title, color=color, alpha=0.75, hatch="\\",
+            x_axis,
+            fmrs,
+            width,
+            label=title,
+            color=color,
+            alpha=0.75,
+            hatch="\\",
         )
         ax.bar(x_axis, fnmrs, width, color=color, alpha=0.5, hatch="/")
 
@@ -100,9 +119,13 @@ def scface_report(
     ax.set_axisbelow(True)
 
     # Plot finalization
-    plt.title(f"FMR vs FNMR.  at Dev. FMR@{fmr_threshold*100}% under differente distances")
-    #ax.set_xlabel("Distances", fontsize=14)
-    ax.set_ylabel("FMR(%) vs FNMR(%)                               ", fontsize=14)
+    plt.title(
+        f"FMR vs FNMR.  at Dev. FMR@{fmr_threshold*100}% under differente distances"
+    )
+    # ax.set_xlabel("Distances", fontsize=14)
+    ax.set_ylabel(
+        "FMR(%) vs FNMR(%)                               ", fontsize=14
+    )
     plt.ylim([-25, 104])
 
     ax.set_xticks(X + 0.5)
@@ -118,4 +141,3 @@ def scface_report(
 
     pdf.savefig(fig)
     pdf.close()
-

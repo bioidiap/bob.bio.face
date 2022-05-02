@@ -1,3 +1,4 @@
+# isort: skip_file
 from .Base import Base
 from .FaceCrop import FaceCrop, MultiFaceCrop, BoundingBoxAnnotatorCrop
 

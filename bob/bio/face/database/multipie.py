@@ -6,13 +6,14 @@
   Multipie database implementation
 """
 
-from bob.bio.base.database import CSVDataset
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
+
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import MultiposeAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
 
 
 class MultipieDatabase(CSVDataset):
@@ -97,12 +98,16 @@ class MultipieDatabase(CSVDataset):
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self, protocol, annotation_type="eyes-center", fixed_positions=None
+    ):
 
         # Downloading model if not exists
         urls = MultipieDatabase.urls()
         filename = get_file(
-            "multipie.tar.gz", urls, file_hash="6c27c9616c2d0373c5f052b061d80178"
+            "multipie.tar.gz",
+            urls,
+            file_hash="6c27c9616c2d0373c5f052b061d80178",
         )
 
         super().__init__(

@@ -3,16 +3,17 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 # Sat 20 Aug 15:43:10 CEST 2016
 
-from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension.download import search_file
-from bob.pipelines import DelayedSample, SampleSet
-import xml.sax
 import os
+import xml.sax
+
 from functools import partial
-from bob.extension import rc
+
 import bob.io.base
 
-from bob.extension.download import get_file
+from bob.bio.base.pipelines.abstract_classes import Database
+from bob.extension import rc
+from bob.extension.download import get_file, search_file
+from bob.pipelines import DelayedSample, SampleSet
 
 """
 GBU Database
@@ -142,7 +143,9 @@ class GBUDatabase(Database):
         # Downloading model if not exists
         urls = GBUDatabase.urls()
         self.filename = get_file(
-            "gbu-xmls.tar.gz", urls, file_hash="827de43434ee84020c6a949ece5e4a4d"
+            "gbu-xmls.tar.gz",
+            urls,
+            file_hash="827de43434ee84020c6a949ece5e4a4d",
         )
 
         self.references_dict = {}
@@ -208,9 +211,9 @@ class GBUDatabase(Database):
             f = search_file(self.filename, f"GBU_{self.protocol}_Query.xml")
             reference_ids = [x.reference_id for x in self.references()]
 
-            self.probes_dict[self.protocol] = self._make_sampleset_from_filedict(
-                read_list(f), reference_ids
-            )
+            self.probes_dict[
+                self.protocol
+            ] = self._make_sampleset_from_filedict(read_list(f), reference_ids)
         return self.probes_dict[self.protocol]
 
     def references(self, group="dev"):
@@ -223,7 +226,9 @@ class GBUDatabase(Database):
                 )
 
             f = search_file(self.filename, f"GBU_{self.protocol}_Target.xml")
-            self.references_dict[self.protocol] = self._make_sampleset_from_filedict(
+            self.references_dict[
+                self.protocol
+            ] = self._make_sampleset_from_filedict(
                 read_list(f),
             )
 
@@ -238,9 +243,9 @@ class GBUDatabase(Database):
         return self.references() + self.probes()
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Unvalid protocol `{}` not in {}".format(
-            protocol, self.protocols()
-        )
+        assert (
+            protocol in self.protocols()
+        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
         assert group in self.groups(), "Unvalid group `{}` not in {}".format(
@@ -254,7 +259,11 @@ class GBUDatabase(Database):
 
             annotations_key = os.path.basename(f.path)
 
-            kwargs = {"references": reference_ids} if reference_ids is not None else {}
+            kwargs = (
+                {"references": reference_ids}
+                if reference_ids is not None
+                else {}
+            )
 
             samplesets.append(
                 SampleSet(
@@ -269,7 +278,8 @@ class GBUDatabase(Database):
                             load=partial(
                                 bob.io.base.load,
                                 os.path.join(
-                                    self.original_directory, f.path + self.extension
+                                    self.original_directory,
+                                    f.path + self.extension,
                                 ),
                             ),
                         )

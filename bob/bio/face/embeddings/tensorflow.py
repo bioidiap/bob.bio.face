@@ -6,24 +6,22 @@
 
 
 import os
-import pkg_resources
-from sklearn.base import TransformerMixin, BaseEstimator
-from bob.extension.download import get_file
-from sklearn.utils import check_array
+
 import numpy as np
+import pkg_resources
 import tensorflow as tf
 
+from sklearn.base import BaseEstimator, TransformerMixin
+from sklearn.utils import check_array
+
+from bob.bio.base.pipelines import Distance, PipelineSimple
+from bob.bio.face.annotator import MTCNN
 from bob.bio.face.utils import (
+    cropped_positions_arcface,
     dnn_default_cropping,
     embedding_transformer,
-    cropped_positions_arcface,
 )
-
-from bob.bio.base.pipelines import (
-    Distance,
-    PipelineSimple,
-)
-from bob.bio.face.annotator import MTCNN
+from bob.extension.download import get_file
 
 
 def to_channels_last(image):
@@ -49,7 +47,8 @@ def to_channels_last(image):
     ndim = len(image.shape)
     if ndim < 3:
         raise ValueError(
-            "The image needs to be at least 3 dimensional but it " "was {}".format(ndim)
+            "The image needs to be at least 3 dimensional but it "
+            "was {}".format(ndim)
         )
     axis_order = [1, 2, 0]
     shift = ndim - 3
@@ -80,7 +79,8 @@ def to_channels_first(image):
     ndim = len(image.shape)
     if ndim < 3:
         raise ValueError(
-            "The image needs to be at least 3 dimensional but it " "was {}".format(ndim)
+            "The image needs to be at least 3 dimensional but it "
+            "was {}".format(ndim)
         )
     axis_order = [2, 0, 1]
     shift = ndim - 3
@@ -116,7 +116,11 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
     """
 
     def __init__(
-        self, checkpoint_path, preprocessor=None, memory_demanding=False, **kwargs
+        self,
+        checkpoint_path,
+        preprocessor=None,
+        memory_demanding=False,
+        **kwargs,
     ):
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
@@ -125,7 +129,9 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
         self.memory_demanding = memory_demanding
 
     def load_model(self):
-        self.model = tf.keras.models.load_model(self.checkpoint_path, compile=False)
+        self.model = tf.keras.models.load_model(
+            self.checkpoint_path, compile=False
+        )
 
     def transform(self, X):
         def _transform(X):
@@ -885,7 +891,9 @@ def facenet_template(embedding, annotation_type, fixed_positions=None):
             )
 
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
 
@@ -925,7 +933,9 @@ def resnet_template(embedding, annotation_type, fixed_positions=None):
             )
 
     else:
-        cropped_positions = dnn_default_cropping(cropped_image_size, annotation_type)
+        cropped_positions = dnn_default_cropping(
+            cropped_image_size, annotation_type
+        )
 
     annotator = MTCNN(min_size=40, factor=0.709, thresholds=(0.1, 0.2, 0.2))
     transformer = embedding_transformer(
@@ -963,7 +973,9 @@ def resnet50_msceleb_arcface_2021(
     """
 
     return resnet_template(
-        embedding=Resnet50_MsCeleb_ArcFace_2021(memory_demanding=memory_demanding),
+        embedding=Resnet50_MsCeleb_ArcFace_2021(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -990,7 +1002,9 @@ def resnet50_msceleb_arcface_20210521(
     """
 
     return resnet_template(
-        embedding=Resnet50_MsCeleb_ArcFace_20210521(memory_demanding=memory_demanding),
+        embedding=Resnet50_MsCeleb_ArcFace_20210521(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -1017,7 +1031,9 @@ def resnet101_msceleb_arcface_20210521(
     """
 
     return resnet_template(
-        embedding=Resnet101_MsCeleb_ArcFace_20210521(memory_demanding=memory_demanding),
+        embedding=Resnet101_MsCeleb_ArcFace_20210521(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -1043,7 +1059,9 @@ def iresnet50_msceleb_arcface_20210623(
 
     """
     return resnet_template(
-        embedding=IResnet50_MsCeleb_ArcFace_20210623(memory_demanding=memory_demanding),
+        embedding=IResnet50_MsCeleb_ArcFace_20210623(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -1125,7 +1143,9 @@ def mobilenetv2_msceleb_arcface_2021(
     """
 
     return resnet_template(
-        embedding=MobileNetv2_MsCeleb_ArcFace_2021(memory_demanding=memory_demanding),
+        embedding=MobileNetv2_MsCeleb_ArcFace_2021(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )
@@ -1152,7 +1172,9 @@ def facenet_sanderberg_20170512_110547(
     """
 
     return facenet_template(
-        embedding=FaceNetSanderberg_20170512_110547(memory_demanding=memory_demanding),
+        embedding=FaceNetSanderberg_20170512_110547(
+            memory_demanding=memory_demanding
+        ),
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,
     )

@@ -1,4 +1,5 @@
 import bob.bio.base.annotator
+
 from bob.bio.base.annotator.FailSafe import translate_kwargs
 
 
@@ -55,4 +56,6 @@ class Base(bob.bio.base.annotator.Annotator):
             Extra arguments that may be passed.
         """
         kwargs = translate_kwargs(kwargs, len(samples))
-        return [self.annotate(sample, **kw) for sample, kw in zip(samples, kwargs)]
+        return [
+            self.annotate(sample, **kw) for sample, kw in zip(samples, kwargs)
+        ]

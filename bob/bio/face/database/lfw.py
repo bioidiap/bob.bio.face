@@ -3,17 +3,20 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 # Sat 20 Aug 15:43:10 CEST 2016
 
-from bob.bio.base.pipelines.abstract_classes import Database
-from bob.pipelines import DelayedSample, SampleSet
-import os
-from functools import partial
-from bob.extension import rc
-import bob.io.base
 import copy
-
 import logging
+import os
+
+from functools import partial
+
 import numpy as np
+
+import bob.io.base
+
+from bob.bio.base.pipelines.abstract_classes import Database
+from bob.extension import rc
 from bob.extension.download import get_file
+from bob.pipelines import DelayedSample, SampleSet
 
 logger = logging.getLogger(__name__)
 
@@ -104,7 +107,9 @@ class LFWDatabase(Database):
                 f"Invalid annotation issuer: {annotation_issuer}. Possible values are `idiap`, `funneled` or `named`"
             )
 
-        if annotation_directory is None or not os.path.exists(annotation_directory):
+        if annotation_directory is None or not os.path.exists(
+            annotation_directory
+        ):
             # Downloading annotations if not exists
             annotation_urls = LFWDatabase.urls()
 
@@ -124,7 +129,9 @@ class LFWDatabase(Database):
             annotation_directory = annotation_directory[:-7]
 
             # Attaching the issuer sub-directory
-            annotation_directory = os.path.join(annotation_directory, annotation_issuer)
+            annotation_directory = os.path.join(
+                annotation_directory, annotation_issuer
+            )
 
         self.annotation_issuer = annotation_issuer
         # Hard-coding the extension of the annotations
@@ -250,10 +257,13 @@ class LFWDatabase(Database):
         if self.protocol == "view2":
             # view 2
 
-            pairs_path = os.path.join(self.original_directory, "view2", "pairs.txt")
+            pairs_path = os.path.join(
+                self.original_directory, "view2", "pairs.txt"
+            )
             self.pairs = {}
 
-            make_filename = lambda name, index: f"{name}_{index.zfill(4)}"
+            def make_filename(name, index):
+                return f"{name}_{index.zfill(4)}"
 
             with open(pairs_path) as f:
                 for i, line in enumerate(f.readlines()):
@@ -266,12 +276,20 @@ class LFWDatabase(Database):
                     # Three lines, genuine pairs otherwise impostor
                     if len(line) == 3:
                         # self.subject_id_from_filename()
-                        key_filename = make_filename(line[0], line[1].rstrip("\n"))
-                        value_filename = make_filename(line[0], line[2].rstrip("\n"))
+                        key_filename = make_filename(
+                            line[0], line[1].rstrip("\n")
+                        )
+                        value_filename = make_filename(
+                            line[0], line[2].rstrip("\n")
+                        )
 
                     else:
-                        key_filename = make_filename(line[0], line[1].rstrip("\n"))
-                        value_filename = make_filename(line[2], line[3].rstrip("\n"))
+                        key_filename = make_filename(
+                            line[0], line[1].rstrip("\n")
+                        )
+                        value_filename = make_filename(
+                            line[2], line[3].rstrip("\n")
+                        )
 
                     key = self.make_path_from_filename(key_filename)
                     value = self.make_path_from_filename(value_filename)
@@ -294,7 +312,9 @@ class LFWDatabase(Database):
             for d in os.listdir(
                 os.path.join(self.original_directory, self.image_relative_path)
             ):
-                dd = os.path.join(self.original_directory, self.image_relative_path, d)
+                dd = os.path.join(
+                    self.original_directory, self.image_relative_path, d
+                )
                 if os.path.isdir(dd):
                     # count the number of images
                     images = sorted(
@@ -352,7 +372,8 @@ class LFWDatabase(Database):
             if self.annotation_directory is not None:
                 annotation_path = os.path.join(
                     self.annotation_directory,
-                    self.make_path_from_filename(image) + self.annotation_extension,
+                    self.make_path_from_filename(image)
+                    + self.annotation_extension,
                 )
                 annotations = self._extract(annotation_path)
             else:
@@ -526,7 +547,8 @@ class LFWDatabase(Database):
                         image_path = os.path.join(
                             self.original_directory,
                             self.image_relative_path,
-                            self.make_path_from_filename(image) + self.extension,
+                            self.make_path_from_filename(image)
+                            + self.extension,
                         )
                         # load annotations
                         if self.annotation_directory is not None:
@@ -571,9 +593,9 @@ class LFWDatabase(Database):
             return self.background_model_samples() + self.probes()
 
     def _check_protocol(self, protocol):
-        assert protocol in self.protocols(), "Invalid protocol `{}` not in {}".format(
-            protocol, self.protocols()
-        )
+        assert (
+            protocol in self.protocols()
+        ), "Invalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
         assert group in self.groups(), "Invalid group `{}` not in {}".format(

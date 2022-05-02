@@ -1,21 +1,24 @@
 #!/usr/bin/env python
 # Yannick Dayer <yannick.dayer@idiap.ch>
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
-from bob.pipelines.sample_loaders import AnnotationsLoader
-from bob.pipelines.sample import DelayedSample
-from bob.bio.base.utils.annotations import read_annotation_file
-from bob.extension.download import get_file
-from bob.pipelines.utils import hash_string
+import functools
+import logging
+import os.path
+
 import imageio
-from bob.extension import rc
-import bob.io.image
+import numpy
 
 from sklearn.pipeline import make_pipeline
-import functools
-import os.path
-import logging
-import numpy
+
+import bob.io.image
+
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.utils.annotations import read_annotation_file
+from bob.extension import rc
+from bob.extension.download import get_file
+from bob.pipelines.sample import DelayedSample
+from bob.pipelines.sample_loaders import AnnotationsLoader
+from bob.pipelines.utils import hash_string
 
 logger = logging.getLogger(__name__)
 
@@ -105,7 +108,8 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
             functools.partial(
                 load_frame_from_file_replaymobile,
                 file_name=os.path.join(
-                    self.dataset_original_directory, fields["path"] + self.extension
+                    self.dataset_original_directory,
+                    fields["path"] + self.extension,
                 ),
                 frame=int(fields["frame"]),
                 should_flip=should_flip,
@@ -116,7 +120,9 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         )
 
 
-def read_frame_annotation_file_replaymobile(file_name, frame, annotations_type="json"):
+def read_frame_annotation_file_replaymobile(
+    file_name, frame, annotations_type="json"
+):
     """Returns the bounding-box for one frame of a video file of replay-mobile.
 
     Given an annnotation file location and a frame number, returns the bounding
@@ -278,14 +284,17 @@ class ReplayMobileBioDatabase(CSVDataset):
                 extract=True,
             )
             annotations_path = os.path.join(
-                os.path.dirname(annotations_path), "replaymobile-mtcnn-annotations"
+                os.path.dirname(annotations_path),
+                "replaymobile-mtcnn-annotations",
             )
 
         logger.info(
             f"Database: Will read CSV protocol definitions in '{protocol_definition_path}'."
         )
         logger.info(f"Database: Will read raw data files in '{data_path}'.")
-        logger.info(f"Database: Will read annotation files in '{annotations_path}'.")
+        logger.info(
+            f"Database: Will read annotation files in '{annotations_path}'."
+        )
         super().__init__(
             name="replaymobile",
             protocol=protocol,

@@ -1,8 +1,8 @@
-from sklearn.preprocessing import FunctionTransformer
 from skimage.transform import resize
+from sklearn.preprocessing import FunctionTransformer
 from sklearn.utils import check_array
-from bob.io.image import to_matplotlib, to_bob
-import numpy as np
+
+from bob.io.image import to_bob, to_matplotlib
 
 
 def scale(images, target_img_size):
@@ -54,5 +54,7 @@ def Scale(target_img_size):
 
     """
     return FunctionTransformer(
-        func=scale, validate=False, kw_args=dict(target_img_size=target_img_size)
+        func=scale,
+        validate=False,
+        kw_args=dict(target_img_size=target_img_size),
     )

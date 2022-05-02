@@ -1,3 +1,4 @@
+# isort: skip_file
 from .Base import Base
 from .FaceCrop import FaceCrop, MultiFaceCrop, BoundingBoxAnnotatorCrop
 
@@ -34,5 +35,7 @@ __appropriate__(
     Scale,
     FaceEyesNorm,
     FaceCropBoundingBox,
+    MultiFaceCrop,
+    BoundingBoxAnnotatorCrop,
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

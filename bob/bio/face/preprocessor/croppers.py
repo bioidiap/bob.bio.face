@@ -6,17 +6,16 @@ Implements some face croppers
 """
 
 
-from configparser import Interpolation
-from sklearn.base import BaseEstimator
-from sklearn.base import TransformerMixin
-
 import logging
+
+from sklearn.base import BaseEstimator, TransformerMixin
 
 logger = logging.getLogger("bob.bio.face")
 
-import numpy as np
-from bob.io.image import bob_to_opencvbgr, opencvbgr_to_bob
 import cv2
+import numpy as np
+
+from bob.io.image import bob_to_opencvbgr, opencvbgr_to_bob
 
 
 class FaceEyesNorm(TransformerMixin, BaseEstimator):
@@ -71,7 +70,9 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         self._check_annotations(self.reference_eyes_location)
         self.opencv_interpolation = opencv_interpolation
 
-        self.allow_upside_down_normalized_faces = allow_upside_down_normalized_faces
+        self.allow_upside_down_normalized_faces = (
+            allow_upside_down_normalized_faces
+        )
         (
             self.target_eyes_distance,
             self.target_eyes_center,
@@ -151,8 +152,12 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         right_eye = coordinate_a
         left_eye = coordinate_b
 
-        if (reye_desired_width > leye_desired_width and right_eye[1] < left_eye[1]) or (
-            reye_desired_width < leye_desired_width and right_eye[1] > left_eye[1]
+        if (
+            reye_desired_width > leye_desired_width
+            and right_eye[1] < left_eye[1]
+        ) or (
+            reye_desired_width < leye_desired_width
+            and right_eye[1] > left_eye[1]
         ):
             raise ValueError(
                 "Looks like 'leye' and 'reye' in annotations: {annot} are swapped. "
@@ -219,9 +224,9 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         # source_target_ratio = source_eyes_distance / self.target_eyes_distance
         target_source_ratio = self.target_eyes_distance / source_eyes_distance
 
-        #####
+        #
 
-        ### ROTATION WITH OPEN CV
+        # ROTATION WITH OPEN CV
 
         cropped_image = bob_to_opencvbgr(X) if X.ndim > 2 else X
         original_height = cropped_image.shape[0]
@@ -231,7 +236,7 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
             cropped_image, rotational_angle, source_eyes_center
         )
 
-        ### Cropping
+        # Cropping
 
         target_eyes_center_rescaled = np.floor(
             self.target_eyes_center / target_source_ratio
@@ -240,10 +245,16 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         top = int(source_eyes_center[0] - target_eyes_center_rescaled[0])
         left = int(source_eyes_center[1] - target_eyes_center_rescaled[1])
 
-        bottom = max(0, top) + (int(self.final_image_size[0] / target_source_ratio))
-        right = max(0, left) + (int(self.final_image_size[1] / target_source_ratio))
+        bottom = max(0, top) + (
+            int(self.final_image_size[0] / target_source_ratio)
+        )
+        right = max(0, left) + (
+            int(self.final_image_size[1] / target_source_ratio)
+        )
 
-        cropped_image = cropped_image[max(0, top) : bottom, max(0, left) : right, ...]
+        cropped_image = cropped_image[
+            max(0, top) : bottom, max(0, left) : right, ...
+        ]
 
         # Checking if we need to pad the cropped image
         # This happens when the cropped image extrapolate the original image dimensions
@@ -269,7 +280,9 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
                     dtype=cropped_image.dtype,
                 )
                 if cropped_image.ndim > 2
-                else np.zeros((pad_height, pad_width), dtype=cropped_image.dtype)
+                else np.zeros(
+                    (pad_height, pad_width), dtype=cropped_image.dtype
+                )
             )
 
             expanded_image[
@@ -315,7 +328,10 @@ class FaceCropBoundingBox(TransformerMixin, BaseEstimator):
     """
 
     def __init__(
-        self, final_image_size, margin=0.5, opencv_interpolation=cv2.INTER_LINEAR
+        self,
+        final_image_size,
+        margin=0.5,
+        opencv_interpolation=cv2.INTER_LINEAR,
     ):
         self.margin = margin
         self.final_image_size = final_image_size
@@ -345,7 +361,9 @@ class FaceCropBoundingBox(TransformerMixin, BaseEstimator):
 
         # If it's grayscaled, expand dims
         if X.ndim == 2:
-            logger.warning("Gray-scaled image. Expanding the channels before detection")
+            logger.warning(
+                "Gray-scaled image. Expanding the channels before detection"
+            )
             X = np.repeat(np.expand_dims(X, 0), 3, axis=0)
 
         top = int(annotations["topleft"][0])
@@ -365,7 +383,9 @@ class FaceCropBoundingBox(TransformerMixin, BaseEstimator):
                 left:right,
             ]
 
-            face_crop = bob_to_opencvbgr(face_crop) if face_crop.ndim > 2 else face_crop
+            face_crop = (
+                bob_to_opencvbgr(face_crop) if face_crop.ndim > 2 else face_crop
+            )
 
             face_crop = cv2.resize(
                 face_crop,
@@ -381,8 +401,12 @@ class FaceCropBoundingBox(TransformerMixin, BaseEstimator):
             top_expanded = int(np.maximum(top - self.margin * height, 0))
             left_expanded = int(np.maximum(left - self.margin * width, 0))
 
-            bottom_expanded = int(np.minimum(bottom + self.margin * height, X.shape[1]))
-            right_expanded = int(np.minimum(right + self.margin * width, X.shape[2]))
+            bottom_expanded = int(
+                np.minimum(bottom + self.margin * height, X.shape[1])
+            )
+            right_expanded = int(
+                np.minimum(right + self.margin * width, X.shape[2])
+            )
 
             face_crop = X[
                 :,

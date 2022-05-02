@@ -1,13 +1,17 @@
-from click.testing import CliRunner
-import pkg_resources
-import tempfile
-import shutil
 import os
+import shutil
+import tempfile
+
+import pkg_resources
+
+from click.testing import CliRunner
 
 
 def test_display_annotations():
 
-    from bob.bio.face.script.display_face_annotations import display_face_annotations
+    from bob.bio.face.script.display_face_annotations import (
+        display_face_annotations,
+    )
 
     try:
         tmp_dir = tempfile.mkdtemp(prefix="bobtest_")

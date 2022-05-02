@@ -40,7 +40,7 @@ Once you have it downloaded, please run the following command to set the path fo
 
 Benchmarking
 ============
-    
+
 You can run the arface baselines command with a simple command such as:
 
 .. code-block:: bash
@@ -55,7 +55,7 @@ This is done be the command `bob bio face plots arface` command as in the exampl
 
 .. code-block:: bash
 
-   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz
    tar -xzvf frice_scores.tar.gz
    bob bio face plots arface -e \
         ./frice_scores/arface/arcface_insightface/scores-{dev,eval}.csv \
@@ -68,5 +68,3 @@ This is done be the command `bob bio face plots arface` command as in the exampl
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
-
-

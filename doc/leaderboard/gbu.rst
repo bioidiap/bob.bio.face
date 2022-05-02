@@ -25,7 +25,7 @@ Once you have it downloaded, please run the following command to set the path fo
 
 Benchmarking
 ============
-    
+
 You can run the mobio baselines command with a simple command such as:
 
 .. code-block:: bash
@@ -40,7 +40,7 @@ This is done be the command `bob bio face plots gbu` command as in the example b
 
 .. code-block:: bash
 
-   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz
    tar -xzvf frice_scores.tar.gz
    bob bio face plots gbu \
         ./frice_scores/gbu/good/arcface_insightface/scores-dev.csv \
@@ -66,5 +66,3 @@ This is done be the command `bob bio face plots gbu` command as in the example b
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
-
-

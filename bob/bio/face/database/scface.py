@@ -3,16 +3,17 @@
 # Laurent Colbois <laurent.colbois@idiap.ch>
 
 """
-  SCFace database implementation 
+  SCFace database implementation
 """
 
-from bob.bio.base.database import CSVDataset
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
+
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
 
 
 class SCFaceDatabase(CSVDataset):
@@ -23,11 +24,13 @@ class SCFaceDatabase(CSVDataset):
     Images were taken in uncontrolled indoor environment using five video surveillance cameras of various qualities.
     Database contains 4160 static images (in visible and infrared spectrum) of 130 subjects.
     Images from different quality cameras mimic the real-world conditions and enable robust face recognition algorithms testing, emphasizing different
-    law enforcement and surveillance use case scenarios. 
+    law enforcement and surveillance use case scenarios.
 
     """
 
-    def __init__(self, protocol, annotation_type="eyes-center", fixed_positions=None):
+    def __init__(
+        self, protocol, annotation_type="eyes-center", fixed_positions=None
+    ):
 
         # Downloading model if not exists
         urls = SCFaceDatabase.urls()

@@ -9130,15 +9130,15 @@ label {
 }
 /* Flexible box model classes */
 /* Taken from Alex Russell http://infrequently.org/2009/08/css-3-progress/ */
-/* This file is a compatability layer.  It allows the usage of flexible box 
+/* This file is a compatability layer.  It allows the usage of flexible box
 model layouts accross multiple browsers, including older browsers.  The newest,
 universal implementation of the flexible box model is used when available (see
-`Modern browsers` comments below).  Browsers that are known to implement this 
+`Modern browsers` comments below).  Browsers that are known to implement this
 new spec completely include:
 
     Firefox 28.0+
     Chrome 29.0+
-    Internet Explorer 11+ 
+    Internet Explorer 11+
     Opera 17.0+
 
 Browsers not listed, including Safari, are supported via the styling under the
@@ -12598,7 +12598,7 @@ div#pager .ui-resizable-handle {
   background: #f7f7f7;
   border-top: 1px solid #cfcfcf;
   border-bottom: 1px solid #cfcfcf;
-  /* This injects handle bars (a short, wide = symbol) for 
+  /* This injects handle bars (a short, wide = symbol) for
         the resize handle. */
 }
 div#pager .ui-resizable-handle::after {
@@ -13103,7 +13103,7 @@ ul.typeahead-list  > li > a.pull-right {
 .highlight .il { color: #666666 } /* Literal.Number.Integer.Long */
     </style>
 <style type="text/css">
-    
+
 /* Temporary definitions which will become obsolete with Notebook release 5.0 */
 .ansi-black-fg { color: #3E424D; }
 .ansi-black-bg { background-color: #3E424D; }
@@ -13157,14 +13157,14 @@ div#notebook {
   div.cell {
     display: block;
     page-break-inside: avoid;
-  } 
-  div.output_wrapper { 
-    display: block;
-    page-break-inside: avoid; 
   }
-  div.output { 
+  div.output_wrapper {
     display: block;
-    page-break-inside: avoid; 
+    page-break-inside: avoid;
+  }
+  div.output {
+    display: block;
+    page-break-inside: avoid;
   }
 }
 </style>
@@ -13262,9 +13262,9 @@ div#notebook {
 
 <span class="c1"># Function to load the scores in CSV format</span>
 <span class="k">def</span> <span class="nf">load_scores</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="n">protocol</span><span class="p">,</span> <span class="n">group</span><span class="p">):</span>
-    <span class="n">scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results_dir</span><span class="p">,</span> 
-                                      <span class="s1">&#39;multipie_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">protocol</span><span class="p">),</span> 
-                                      <span class="n">baseline</span><span class="p">,</span> 
+    <span class="n">scores</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">results_dir</span><span class="p">,</span>
+                                      <span class="s1">&#39;multipie_</span><span class="si">{}</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">protocol</span><span class="p">),</span>
+                                      <span class="n">baseline</span><span class="p">,</span>
                                       <span class="s1">&#39;scores-</span><span class="si">{}</span><span class="s1">.csv&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">group</span><span class="p">)))</span>
     <span class="k">return</span> <span class="n">scores</span>
 
@@ -13319,13 +13319,13 @@ div#notebook {
 <span class="c1"># Figure for Eval plot</span>
 <span class="n">fig2</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
 <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">baseline</span> <span class="ow">in</span> <span class="n">baselines</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-    
+
     <span class="c1"># Load the score files and fill in the angle associated to each camera</span>
     <span class="n">dev_scores</span> <span class="o">=</span> <span class="n">load_scores</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;dev&#39;</span><span class="p">)</span>
     <span class="n">eval_scores</span> <span class="o">=</span> <span class="n">load_scores</span><span class="p">(</span><span class="n">baseline</span><span class="p">,</span> <span class="s1">&#39;P&#39;</span><span class="p">,</span> <span class="s1">&#39;eval&#39;</span><span class="p">)</span>
     <span class="n">dev_scores</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">dev_scores</span><span class="p">[</span><span class="s1">&#39;probe_camera&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">camera_to_angle</span><span class="p">)</span>
     <span class="n">eval_scores</span><span class="p">[</span><span class="s1">&#39;angle&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">eval_scores</span><span class="p">[</span><span class="s1">&#39;probe_camera&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">camera_to_angle</span><span class="p">)</span>
-    
+
     <span class="n">angles</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">dev_hters</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">eval_hters</span> <span class="o">=</span> <span class="p">[]</span>
@@ -13334,21 +13334,21 @@ div#notebook {
         <span class="c1"># Separate impostors from genuines</span>
         <span class="n">dev_impostors</span><span class="p">,</span> <span class="n">dev_genuines</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">dev_df</span><span class="p">)</span>
         <span class="n">eval_impostors</span><span class="p">,</span> <span class="n">eval_genuines</span> <span class="o">=</span> <span class="n">split</span><span class="p">(</span><span class="n">eval_df</span><span class="p">)</span>
-        
+
         <span class="c1"># Compute the min. HTER threshold on the Dev set</span>
         <span class="n">threshold</span> <span class="o">=</span> <span class="n">bob</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">min_hter_threshold</span><span class="p">(</span><span class="n">dev_impostors</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">dev_genuines</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">])</span>
-        
+
         <span class="c1"># Compute the HTER for the Dev and Eval set at this particular threshold</span>
         <span class="n">dev_far</span><span class="p">,</span> <span class="n">dev_frr</span> <span class="o">=</span> <span class="n">bob</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">farfrr</span><span class="p">(</span><span class="n">dev_impostors</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">dev_genuines</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">threshold</span><span class="p">)</span>
         <span class="n">eval_far</span><span class="p">,</span> <span class="n">eval_frr</span> <span class="o">=</span> <span class="n">bob</span><span class="o">.</span><span class="n">measure</span><span class="o">.</span><span class="n">farfrr</span><span class="p">(</span><span class="n">eval_impostors</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">eval_genuines</span><span class="p">[</span><span class="s1">&#39;score&#39;</span><span class="p">],</span> <span class="n">threshold</span><span class="p">)</span>
         <span class="n">angles</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">angle</span><span class="p">)</span>
         <span class="n">dev_hters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">dev_far</span> <span class="o">+</span> <span class="n">dev_frr</span><span class="p">))</span>
         <span class="n">eval_hters</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">eval_far</span> <span class="o">+</span> <span class="n">eval_frr</span><span class="p">))</span>
-    
+
     <span class="c1"># Update plots</span>
-    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>   
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">dev_hters</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
-    
+
     <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
     <span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">angles</span><span class="p">,</span> <span class="n">eval_hters</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">name</span><span class="p">,</span> <span class="n">marker</span><span class="o">=</span><span class="s1">&#39;x&#39;</span><span class="p">)</span>
 
@@ -13414,7 +13414,7 @@ div#notebook {
   </div>
 </body>
 
- 
+
 
 
 </html>

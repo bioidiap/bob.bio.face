@@ -1,3 +1,4 @@
+# isort: skip_file
 from .Histogram import Histogram
 
 # gets sphinx autodoc done right - don't remove it

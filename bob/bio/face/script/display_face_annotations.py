@@ -11,20 +11,18 @@ Note that this script can only be used with face image databases, not with video
 
 from __future__ import print_function
 
-import os
-import click
-import sys
 import logging
-import json
+import os
 
+import click
+
+from bob.bio.base.utils.annotations import read_annotation_file
+from bob.bio.face.color import gray_to_rgb
 from bob.extension.scripts.click_helper import (
-    verbosity_option,
     ConfigCommand,
     ResourceOption,
+    verbosity_option,
 )
-
-from bob.bio.face.color import rgb_to_gray, gray_to_rgb
-from bob.bio.base.utils.annotations import read_annotation_file
 
 logger = logging.getLogger(__name__)
 
@@ -189,10 +187,16 @@ def display_face_annotations(
                 annotations_dir, sample.key + annotations_extension
             )
             if os.path.exists(annotations_file):
-                logger.info("Loading annotations from file %s", annotations_file)
-                annotations = read_annotation_file(annotations_file, annotations_type)
+                logger.info(
+                    "Loading annotations from file %s", annotations_file
+                )
+                annotations = read_annotation_file(
+                    annotations_file, annotations_type
+                )
             else:
-                logger.warn("Could not find annotation file %s", annotations_file)
+                logger.warn(
+                    "Could not find annotation file %s", annotations_file
+                )
         else:
             # get annotations from database
             annotations = database.annotations(sample)
@@ -212,7 +216,11 @@ def display_face_annotations(
         for n, a in annotations.items():
             if isinstance(a, (list, tuple)) and len(a) == 2:
                 pyplot.plot(
-                    a[1], a[0], marker_style, ms=marker_size, mew=marker_size / 5.0
+                    a[1],
+                    a[0],
+                    marker_style,
+                    ms=marker_size,
+                    mew=marker_size / 5.0,
                 )
                 if display_names:
                     pyplot.annotate(
@@ -247,8 +255,7 @@ def display_face_annotations(
             pyplot.savefig(output_path)
 
         if not self_test:
-            input_text = "Press Enter to continue to the next image (or Ctrl-C to exit)"
-            if sys.version_info >= (3, 0):
-                input(input_text)
-            else:
-                raw_input(input_text)
+            input_text = (
+                "Press Enter to continue to the next image (or Ctrl-C to exit)"
+            )
+            input(input_text)

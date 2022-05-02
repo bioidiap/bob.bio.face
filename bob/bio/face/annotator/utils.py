@@ -1,5 +1,4 @@
 import math
-import numpy as np
 
 available_sources = {
     "direct": ("topleft", "bottomright"),
@@ -151,7 +150,9 @@ class BoundingBox:
     @property
     def center(self):
         """The center of the bounding box, read access only"""
-        return (self.top_f + self.bottom_f) // 2, (self.left_f + self.right_f) // 2
+        return (self.top_f + self.bottom_f) // 2, (
+            self.left_f + self.right_f
+        ) // 2
 
     @property
     def area(self):
@@ -339,7 +340,7 @@ def bounding_box_from_annotation(source=None, padding=None, **kwargs):
       The type of annotations present in the list of keyword arguments, see above.
 
     padding : {'top':float, 'bottom':float, 'left':float, 'right':float}
-      This padding is added to the center between the given points, to define the top left and bottom right positions in the bounding box; values are relative to the distance between the two given points; ignored for some of the ``source``\s
+      This padding is added to the center between the given points, to define the top left and bottom right positions in the bounding box; values are relative to the distance between the two given points; ignored for some of the ``source``\\s
 
     kwargs : key=value
       Further keyword arguments specifying the annotations.
@@ -368,7 +369,8 @@ def bounding_box_from_annotation(source=None, padding=None, **kwargs):
         # check if a source could be estimated from the keywords
         if source is None:
             raise ValueError(
-                "The given list of keywords (%s) could not be interpreted" % kwargs
+                "The given list of keywords (%s) could not be interpreted"
+                % kwargs
             )
 
     assert source in available_sources
@@ -401,7 +403,9 @@ def bounding_box_from_annotation(source=None, padding=None, **kwargs):
         pos_1 = kwargs[keys[1]]
         tb_center = float(pos_0[0] + pos_1[0]) / 2.0
         lr_center = float(pos_0[1] + pos_1[1]) / 2.0
-        distance = math.sqrt((pos_0[0] - pos_1[0]) ** 2 + (pos_0[1] - pos_1[1]) ** 2)
+        distance = math.sqrt(
+            (pos_0[0] - pos_1[0]) ** 2 + (pos_0[1] - pos_1[1]) ** 2
+        )
 
         top = tb_center + padding["top"] * distance
         bottom = tb_center + padding["bottom"] * distance

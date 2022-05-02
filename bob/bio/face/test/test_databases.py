@@ -18,15 +18,17 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
+import os
+
 import pytest
 
-import os
 import bob.bio.base
-from bob.bio.base.test.utils import db_available
-from bob.bio.base.test.test_database_implementations import check_database
 import bob.extension.log
-from bob.extension.download import get_file
+
+from bob.bio.base.test.test_database_implementations import check_database
+from bob.bio.base.test.utils import db_available
 from bob.extension import rc
+from bob.extension.download import get_file
 
 logger = bob.extension.log.setup("bob.bio.face")
 
@@ -60,7 +62,9 @@ def _check_annotations(
         else:
             found_none = True
     if found_none:
-        logger.warn("Some annotations were None for {}".format(database_legacy.name))
+        logger.warn(
+            "Some annotations were None for {}".format(database_legacy.name)
+        )
 
 
 def test_mobio():
@@ -185,7 +189,8 @@ def test_replaymobile():
     )
     sample = database.probes()[0][0]
     assert (
-        sample.path == "devel/real/client005_session02_authenticate_mobile_adverse"
+        sample.path
+        == "devel/real/client005_session02_authenticate_mobile_adverse"
     ), sample.path
     assert sample.frame == "12", sample.frame
     assert sample.should_flip, sample
@@ -211,7 +216,8 @@ def test_replaymobile():
     # test another sample where should_flip is False
     sample2 = [s for s in database.all_samples() if not s.should_flip][0]
     assert (
-        sample2.path == "enroll/train/client001_session01_enroll_tablet_lightoff"
+        sample2.path
+        == "enroll/train/client001_session01_enroll_tablet_lightoff"
     ), sample2.path
     assert sample2.frame == "12", sample2.frame
     assert not sample2.should_flip, sample2
@@ -241,7 +247,7 @@ def test_replaymobile():
 def test_ijbc():
     from bob.bio.face.database import IJBCDatabase
 
-    ##### test1 #####
+    # test1 #####
 
     database = IJBCDatabase(protocol="test1")
 
@@ -251,7 +257,7 @@ def test_ijbc():
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 19557 + 15638932  # Genuine + Impostor
 
-    ##### test2 #####
+    # test2 #####
     database = IJBCDatabase(protocol="test2")
 
     assert len(database.references()) == 140739
@@ -260,7 +266,7 @@ def test_ijbc():
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 39208203
 
-    ##### test4 G1 #####
+    # test4 G1 #####
     database = IJBCDatabase(protocol="test4-G1")
 
     assert len(database.references()) == 1772
@@ -268,7 +274,7 @@ def test_ijbc():
     num_comparisons = sum([len(item.references) for item in database.probes()])
     assert num_comparisons == 34718796
 
-    ##### test4 G2 #####
+    # test4 G2 #####
     database = IJBCDatabase(protocol="test4-G2")
 
     assert len(database.references()) == 1759
@@ -285,7 +291,9 @@ def test_fargo():
     try:
         check_database(database)
     except IOError as e:
-        pytest.skip("The database could not queried; Here is the error: '%s'" % e)
+        pytest.skip(
+            "The database could not queried; Here is the error: '%s'" % e
+        )
 
 
 def test_meds():
@@ -371,7 +379,9 @@ def test_frgc():
     _check_samples(
         database.references(), n_templates=7572, n_subjects=370, template_size=1
     )
-    _check_samples(database.probes(), n_templates=8456, n_subjects=345, template_size=1)
+    _check_samples(
+        database.probes(), n_templates=8456, n_subjects=345, template_size=1
+    )
 
     database = FRGCDatabase("2.0.2")
     _check_samples(
@@ -380,7 +390,9 @@ def test_frgc():
     _check_samples(
         database.references(), n_templates=1893, n_subjects=370, template_size=4
     )
-    _check_samples(database.probes(), n_templates=2114, n_subjects=345, template_size=4)
+    _check_samples(
+        database.probes(), n_templates=2114, n_subjects=345, template_size=4
+    )
 
     database = FRGCDatabase("2.0.4")
     _check_samples(
@@ -389,7 +401,9 @@ def test_frgc():
     _check_samples(
         database.references(), n_templates=7572, n_subjects=370, template_size=1
     )
-    _check_samples(database.probes(), n_templates=4228, n_subjects=345, template_size=1)
+    _check_samples(
+        database.probes(), n_templates=4228, n_subjects=345, template_size=1
+    )
 
 
 def test_polathermal():
@@ -451,7 +465,9 @@ def test_scface():
         assert len(database.probes(group="dev")) == N_DEV * n_distances * n_cams
 
         assert len(database.references(group="eval")) == N_EVAL * n_mugshots
-        assert len(database.probes(group="eval")) == N_EVAL * n_distances * n_cams
+        assert (
+            len(database.probes(group="eval")) == N_EVAL * n_distances * n_cams
+        )
 
         return p
 
@@ -545,22 +561,22 @@ def test_caspeal():
     assert len(database.probes()) == 2243
     assert len(database.background_model_samples()) == 1200
 
-    ### There's no pose protocol
+    # There's no pose protocol
 
 
 def test_arface():
     def assert_attributes(samplesets, attribute, references):
-        assert sorted(set([getattr(sset, attribute) for sset in samplesets])) == sorted(
-            references
-        )
+        assert sorted(
+            set([getattr(sset, attribute) for sset in samplesets])
+        ) == sorted(references)
 
     from bob.bio.face.database import ARFaceDatabase
 
     # protocols = 'all','expression', 'illumination', 'occlusion', 'occlusion_and_illumination'
-    expression_choices = ("neutral", "smile", "anger", "scream")
-    illumination_choices = ("front", "left", "right", "all")
-    occlusion_choices = ("none", "sunglasses", "scarf")
-    session_choices = ("first", "second")
+    # expression_choices = ("neutral", "smile", "anger", "scream")
+    # illumination_choices = ("front", "left", "right", "all")
+    # occlusion_choices = ("none", "sunglasses", "scarf")
+    # session_choices = ("first", "second")
 
     database = ARFaceDatabase("all")
     assert len(database.references(group="dev")) == 43
@@ -751,11 +767,11 @@ def test_lfw():
 def test_vgg2():
     from bob.bio.face.database import VGG2Database
 
-    ## Getting the absolute path
+    # Getting the absolute path
     urls = VGG2Database.urls()
     filename = get_file("vgg2.tar.gz", urls)
 
-    ## Removing the file before the test
+    # Removing the file before the test
     try:
         os.remove(filename)
     except Exception:
@@ -765,7 +781,7 @@ def test_vgg2():
 
     database = VGG2Database(protocol=p)
 
-    ## Sanity check on vgg2-short
+    # Sanity check on vgg2-short
     assert len(database.treferences()) == 194
     assert len(database.zprobes()) == 200
 
@@ -778,7 +794,7 @@ def test_vgg2():
 
     database = VGG2Database(protocol=p)
 
-    ## Sanity check on vgg2-short
+    # Sanity check on vgg2-short
     assert len(database.treferences()) == 194
     assert len(database.zprobes()) == 200
 

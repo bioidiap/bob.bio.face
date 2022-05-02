@@ -2,7 +2,6 @@ import bob.bio.base
 
 
 def load_cropper(face_cropper):
-    from .FaceCrop import FaceCrop
 
     if face_cropper is None:
         cropper = None

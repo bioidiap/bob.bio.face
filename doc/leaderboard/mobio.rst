@@ -9,7 +9,7 @@ Mobio Dataset
 
 The MOBIO (:py:class`bob.bio.face.database.MobioDatabase`) dataset is a video database containing bimodal data (face/speaker).
 It is composed by 152 people (split in the two genders male and female), mostly Europeans, split in 5 sessions (few weeks time lapse between sessions).
-The database was recorded using two types of mobile devices: mobile phones (NOKIA N93i) and laptop 
+The database was recorded using two types of mobile devices: mobile phones (NOKIA N93i) and laptop
 computers(standard 2008 MacBook).
 
 For face recognition images are used instead of videos.
@@ -46,7 +46,7 @@ Setting up the database
 
 Benchmarking
 ============
-    
+
 You can run the mobio baselines command with a simple command such as:
 
 .. code-block:: bash
@@ -59,7 +59,7 @@ A det curve can be generated with these scores by running the following commands
 
 .. code-block:: bash
 
-   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/mobio-male.tar.gz   
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/mobio-male.tar.gz
    tar -xzvf mobio-male.tar.gz
    bob bio det ./mobio-male/{arcface_insightFace_lresnet100,inception_resnet_v2_msceleb_centerloss_2018,iresnet50,iresnet100,mobilenetv2_msceleb_arcface_2021,resnet50_msceleb_arcface_20210521,vgg16_oxford_baseline,afffe_baseline}/scores-{dev,eval} --legends arcface_insightFace_lresnet100,inception_resnet_v2_msceleb_centerloss_2018,iresnet50,iresnet100,mobilenetv2_msceleb_arcface_2021,resnet50_msceleb_arcface_20210521,vgg16_oxford_baseline,afffe -S -e --figsize 16,8
 
@@ -74,7 +74,7 @@ This is done be the command `bob bio face plots mobio-gender` command as in the 
 
 .. code-block:: bash
 
-   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz   
+   wget https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/frice_scores.tar.gz
    tar -xzvf frice_scores.tar.gz
    bob bio face plots mobio-gender -e \
         ./frice_scores/mobio-gender/arcface_insightface/scores-{dev,eval}.csv \
@@ -87,4 +87,3 @@ This is done be the command `bob bio face plots mobio-gender` command as in the 
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
-

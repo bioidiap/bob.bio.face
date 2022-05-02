@@ -1,1 +1,1 @@
-from .models import FaceXZooModelFactory
+from .models import FaceXZooModelFactory  # noqa: F401

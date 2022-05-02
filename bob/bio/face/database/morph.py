@@ -3,19 +3,17 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  MEDS database implementation 
+  MEDS database implementation
 """
 
-from bob.bio.base.database import (
-    CSVDataset,
-    CSVDatasetZTNorm,
-)
-from bob.bio.base.database import CSVToSampleLoaderBiometrics
+from sklearn.pipeline import make_pipeline
+
+import bob.io.base
+
+from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-import bob.io.base
-from sklearn.pipeline import make_pipeline
 
 
 class MorphDatabase(CSVDatasetZTNorm):

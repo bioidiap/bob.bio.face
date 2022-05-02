@@ -1,14 +1,15 @@
 import logging
 import os
 import pickle
-import time
+
 from collections import namedtuple
 
 import numpy as np
 import pkg_resources
+
+from bob.bio.face.color import gray_to_rgb
 from bob.extension.download import get_file
 from bob.io.image import to_matplotlib
-from bob.bio.face.color import gray_to_rgb
 
 from .Base import Base
 
@@ -68,7 +69,9 @@ class TinyFace(Base):
         self.normal_idx = np.where(self.clusters[:, 4] == 1)
 
         self.mod = mx.mod.Module(
-            symbol=all_layers["fusex_output"], data_names=["data"], label_names=None
+            symbol=all_layers["fusex_output"],
+            data_names=["data"],
+            label_names=None,
         )
         self.mod.bind(
             for_training=False,
@@ -157,7 +160,6 @@ class TinyFace(Base):
         scales_pow = np.hstack((scales_down, scales_up))
         scales = np.power(2.0, scales_pow)
 
-        start = time.time()
         bboxes = np.empty(shape=(0, 5))
         for s in scales[::-1]:
             img = cv.resize(raw_img_f, (0, 0), fx=s, fy=s)
@@ -169,7 +171,9 @@ class TinyFace(Base):
                 tids = list(range(4, 12))
             else:
                 tids = list(range(4, 12)) + list(range(18, 25))
-            ignoredTids = list(set(range(0, self.clusters.shape[0])) - set(tids))
+            ignoredTids = list(
+                set(range(0, self.clusters.shape[0])) - set(tids)
+            )
             img_h = img.shape[1]
             img_w = img.shape[2]
             img = img[np.newaxis, :]
@@ -229,7 +233,9 @@ class TinyFace(Base):
         annotations = refind_bboxes
         annots = []
         for i in range(len(refind_bboxes)):
-            topleft = round(float(annotations[i][1])), round(float(annotations[i][0]))
+            topleft = round(float(annotations[i][1])), round(
+                float(annotations[i][0])
+            )
             bottomright = (
                 round(float(annotations[i][3])),
                 round(float(annotations[i][2])),

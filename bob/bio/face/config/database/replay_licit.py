@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from bob.bio.face.database import ReplayBioDatabase
 from bob.bio.base.pipelines import DatabaseConnector
+from bob.bio.face.database import ReplayBioDatabase
 from bob.extension import rc
-
 
 replay_attack_directory = rc["bob.db.replay.directory"]
 

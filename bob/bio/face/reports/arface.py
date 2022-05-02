@@ -1,11 +1,9 @@
 import matplotlib.pyplot as plt
-import matplotlib as mpl
+import numpy as np
+
+import bob.measure
 
 from bob.bio.base.score.load import get_split_dataframe
-import numpy as np
-from matplotlib.backends.backend_pdf import PdfPages
-import bob.measure
-import itertools
 
 
 def arface_report(
@@ -36,7 +34,11 @@ def arface_report(
     eval_fmr_fnmr_occlusion_illumination = dict()
     eval_fmr_fnmr_occlusion = dict()
 
-    for d_scores, e_scores, title, in zip(scores_dev, scores_eval, titles):
+    for (
+        d_scores,
+        e_scores,
+        title,
+    ) in zip(scores_dev, scores_eval, titles):
 
         eval_fmr_fnmr_occlusion_illumination[title] = []
         eval_fmr_fnmr_occlusion[title] = []
@@ -98,19 +100,25 @@ def arface_report(
         overall_fmr_fnmr = compute_fmr_fnmr(impostors_eval, genuines_eval)
         eval_fmr_fnmr_occlusion_illumination[title].append(overall_fmr_fnmr)
 
-        ### EVALUATING DIFFERENT TYPES OF OCCLUSION
+        # EVALUATING DIFFERENT TYPES OF OCCLUSION
         for occlusion in occlusions:
-            i_eval = impostors_eval.loc[impostors_eval.probe_occlusion == occlusion]
-            g_eval = genuines_eval.loc[genuines_eval.probe_occlusion == occlusion]
+            i_eval = impostors_eval.loc[
+                impostors_eval.probe_occlusion == occlusion
+            ]
+            g_eval = genuines_eval.loc[
+                genuines_eval.probe_occlusion == occlusion
+            ]
 
-            eval_fmr_fnmr_occlusion[title].append(compute_fmr_fnmr(i_eval, g_eval))
+            eval_fmr_fnmr_occlusion[title].append(
+                compute_fmr_fnmr(i_eval, g_eval)
+            )
 
     pass
 
-    ### Plotting
-    pdf = PdfPages(output_filename)
+    # Plotting
 
-    ### EFFECT OF OCCLUSION TYPES
+    #
+    # EFFECT OF OCCLUSION TYPES
 
     # Figure for eval plot
     fig = plt.figure(figsize=figsize)
@@ -126,16 +134,31 @@ def arface_report(
 
         x_axis = X + (i + 1) * width - width / 2
         ax.bar(
-            x_axis, fmrs, width, label=title, color=color, alpha=1, hatch="\\",
+            x_axis,
+            fmrs,
+            width,
+            label=title,
+            color=color,
+            alpha=1,
+            hatch="\\",
         )
         ax.bar(
-            x_axis, fnmrs, width, color=color, alpha=0.5, hatch="/",
+            x_axis,
+            fnmrs,
+            width,
+            color=color,
+            alpha=0.5,
+            hatch="/",
         )
 
         # Writting the texts on top of the bar plots
         for i, fnmr, fmr in zip(x_axis, fnmrs, fmrs):
-            plt.text(i - width / 2, fnmr + 0.5, str(round(fnmr, 1)), fontsize=15)
-            plt.text(i - width / 2, fmr - 2.3, str(round(abs(fmr), 1)), fontsize=15)
+            plt.text(
+                i - width / 2, fnmr + 0.5, str(round(fnmr, 1)), fontsize=15
+            )
+            plt.text(
+                i - width / 2, fmr - 2.3, str(round(abs(fmr), 1)), fontsize=15
+            )
 
     # Plot finalization
     plt.title(f"FMR vs FNMR.  at Dev. FMR@{fmr_threshold*100}%", fontsize=16)
@@ -145,7 +168,15 @@ def arface_report(
     ax.set_xticks(X + 0.5)
     ax.set_xticklabels(occlusions, fontsize=14)
 
-    yticks = np.array([-y_abs_max / 4, 0, y_abs_max / 4, y_abs_max / 2, y_abs_max,])
+    yticks = np.array(
+        [
+            -y_abs_max / 4,
+            0,
+            y_abs_max / 4,
+            y_abs_max / 2,
+            y_abs_max,
+        ]
+    )
 
     ax.set_yticks(yticks)
     ax.set_yticklabels([abs(int(y)) for y in yticks], fontsize=16)
@@ -156,9 +187,9 @@ def arface_report(
     plt.legend()
     plt.grid()
 
-    pdf.savefig(fig)
+    plt.savefig(fig)
 
-    ### EFFECT OF ILLUMINATION AND OCCLUSION
+    # EFFECT OF ILLUMINATION AND OCCLUSION
 
     # Figure for eval plot
     fig = plt.figure(figsize=figsize)
@@ -168,16 +199,31 @@ def arface_report(
 
     for i, (title, color) in enumerate(zip(titles, colors)):
         fmrs = [
-            -1 * fmr * 100 for fmr, _ in eval_fmr_fnmr_occlusion_illumination[title]
+            -1 * fmr * 100
+            for fmr, _ in eval_fmr_fnmr_occlusion_illumination[title]
         ]
-        fnmrs = [fnmr * 100 for _, fnmr in eval_fmr_fnmr_occlusion_illumination[title]]
+        fnmrs = [
+            fnmr * 100
+            for _, fnmr in eval_fmr_fnmr_occlusion_illumination[title]
+        ]
 
         x_axis = X + (i + 1) * width - width / 2
         ax.bar(
-            x_axis, fmrs, width, label=title, color=color, alpha=1, hatch="\\",
+            x_axis,
+            fmrs,
+            width,
+            label=title,
+            color=color,
+            alpha=1,
+            hatch="\\",
         )
         ax.bar(
-            x_axis, fnmrs, width, color=color, alpha=0.5, hatch="/",
+            x_axis,
+            fnmrs,
+            width,
+            color=color,
+            alpha=0.5,
+            hatch="/",
         )
         # Writting the texts on top of the bar plots
         for i, fnmr, fmr in zip(x_axis, fnmrs, fmrs):
@@ -188,7 +234,10 @@ def arface_report(
                 fontsize=15,
             )
             plt.text(
-                i - width / 2, fmr - 0.9, str(int(fmr)), fontsize=15,
+                i - width / 2,
+                fmr - 0.9,
+                str(int(fmr)),
+                fontsize=15,
             )
 
     plt.title(f"FMR vs FNMR.  at Dev. FMR@{fmr_threshold*100}%", fontsize=16)
@@ -207,6 +256,4 @@ def arface_report(
 
     plt.legend()
     plt.grid()
-    pdf.savefig(fig)
-
-    pdf.close()
+    plt.savefig(fig)

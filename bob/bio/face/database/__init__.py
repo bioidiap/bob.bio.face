@@ -4,14 +4,12 @@
 
 from .database import FaceBioFile
 from .mobio import MobioDatabase
-from .replay import ReplayBioDatabase
 from .gbu import GBUDatabase
 from .arface import ARFaceDatabase
 from .lfw import LFWDatabase
 from .multipie import MultipieDatabase
 from .ijbc import IJBCDatabase
 from .replaymobile import ReplayMobileBioDatabase
-from .fargo import FargoBioDatabase
 from .frgc import FRGCDatabase
 from .meds import MEDSDatabase
 from .morph import MorphDatabase
@@ -43,14 +41,12 @@ def __appropriate__(*args):
 __appropriate__(
     FaceBioFile,
     MobioDatabase,
-    ReplayBioDatabase,
     GBUDatabase,
     ARFaceDatabase,
     LFWDatabase,
     MultipieDatabase,
     IJBCDatabase,
     ReplayMobileBioDatabase,
-    FargoBioDatabase,
     MEDSDatabase,
     MorphDatabase,
     CasiaAfricaDatabase,

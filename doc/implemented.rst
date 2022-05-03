@@ -19,12 +19,10 @@ Bob databases (used for biometric testing)
    bob.bio.face.database.CasiaAfricaDatabase
    bob.bio.face.database.MobioDatabase
    bob.bio.face.database.IJBCDatabase
-   bob.bio.face.database.ReplayBioDatabase
    bob.bio.face.database.ReplayMobileBioDatabase
    bob.bio.face.database.GBUDatabase
    bob.bio.face.database.LFWDatabase
    bob.bio.face.database.MultipieDatabase
-   bob.bio.face.database.FargoBioDatabase
    bob.bio.face.database.MEDSDatabase
    bob.bio.face.database.MorphDatabase
    bob.bio.face.database.PolaThermalDatabase

@@ -108,7 +108,6 @@ setup(
             "caspeal-distance = bob.bio.face.config.database.caspeal_distance:database",
             "caspeal-expression = bob.bio.face.config.database.caspeal_expression:database",
             "caspeal-lighting = bob.bio.face.config.database.caspeal_lighting:database",
-            "fargo                    = bob.bio.face.config.database.fargo:database",
             "frgc-exp1                = bob.bio.face.config.database.frgc_experiment1:database",
             "frgc-exp2                = bob.bio.face.config.database.frgc_experiment2:database",
             "frgc-exp4                = bob.bio.face.config.database.frgc_experiment4:database",
@@ -214,7 +213,6 @@ setup(
             # databases
             "atnt                                  = bob.bio.face.config.database.atnt",
             "casia-africa                          = bob.bio.face.config.database.casia_africa",
-            "fargo                                 = bob.bio.face.config.database.fargo",
             "frgc-exp1                             = bob.bio.face.config.database.frgc_experiment1",
             "frgc-exp2                             = bob.bio.face.config.database.frgc_experiment2",
             "frgc-exp4                             = bob.bio.face.config.database.frgc_experiment4",

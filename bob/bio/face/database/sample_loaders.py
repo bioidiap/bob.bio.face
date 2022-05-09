@@ -22,7 +22,6 @@ class EyesAnnotations(TransformerMixin, BaseEstimator):
 
     def _more_tags(self):
         return {
-            "stateless": True,
             "requires_fit": False,
         }
 
@@ -60,7 +59,6 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
 
     def _more_tags(self):
         return {
-            "stateless": True,
             "requires_fit": False,
         }
 

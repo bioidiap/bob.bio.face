@@ -114,7 +114,7 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         return d
 
     def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
+        return {"requires_fit": False}
 
     def place_model_on_device(self):
         if self.model is not None:

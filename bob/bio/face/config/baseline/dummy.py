@@ -21,7 +21,7 @@ class ToGray(TransformerMixin, BaseEstimator):
         return [rgb_to_gray(data)[0:10, 0:10] for data in X]
 
     def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
+        return {"requires_fit": False}
 
     def fit(self, X, y=None):
         return self

@@ -58,7 +58,7 @@ class Base(TransformerMixin, BaseEstimator):
         return self.color_channel
 
     def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
+        return {"requires_fit": False}
 
     def fit(self, X, y=None):
         return self

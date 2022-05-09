@@ -178,7 +178,7 @@ class TensorflowTransformer(TransformerMixin, BaseEstimator):
         return embeddings
 
     def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
+        return {"requires_fit": False}
 
     def __del__(self):
         self.model = None

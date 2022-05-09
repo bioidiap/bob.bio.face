@@ -91,7 +91,7 @@ class OpenCVTransformer(TransformerMixin, BaseEstimator):
         return d
 
     def _more_tags(self):
-        return {"stateless": True, "requires_fit": False}
+        return {"requires_fit": False}
 
 
 class VGG16_Oxford(OpenCVTransformer):

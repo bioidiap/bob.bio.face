@@ -30,21 +30,22 @@ requirements:
     - bob.pipelines
     - matplotlib {{ matplotlib }}
     - scikit-image {{ scikit_image }}
-    - six {{ six }}
     - tensorflow {{ tensorflow }}  # [linux]
     - imageio-ffmpeg {{ imageio_ffmpeg }}
     - opencv {{opencv}}
+    - pytorch {{ pytorch }}
+    - pytoch-lightning {{ pytorch_lightning }}
+    - torchvision {{ torchvision }}
   run:
     - python
     - setuptools
     - {{ pin_compatible('matplotlib', max_pin="x.x") }}
-    - {{ pin_compatible('six') }}
     - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('imageio-ffmpeg') }}
     - {{ pin_compatible('opencv') }}
     - {{ pin_compatible('pytorch', max_pin="x.x") }}
     - {{ pin_compatible('torchvision', max_pin="x.x") }}
     - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}
-    - pydeprecate==0.3.1
 
   run_constrained:
     - {{ pin_compatible('tensorflow') }}  # [linux]

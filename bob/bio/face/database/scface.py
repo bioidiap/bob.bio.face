@@ -56,7 +56,7 @@ class SCFaceDatabase(CSVDataset):
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
-            allow_scoring_with_all_biometric_references=True,
+            score_all_vs_all=True,
         )
 
     @staticmethod

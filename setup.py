@@ -100,7 +100,6 @@ setup(
             "arface-illumination = bob.bio.face.config.database.arface_illumination:database",
             "arface-occlusion = bob.bio.face.config.database.arface_occlusion:database",
             "arface-occlusion-and-illumination = bob.bio.face.config.database.arface_occlusion_and_illumination:database",
-            "atnt                     = bob.bio.face.config.database.atnt:database",
             "casia-africa             = bob.bio.face.config.database.casia_africa:database",
             "caspeal-accessory = bob.bio.face.config.database.caspeal_accessory:database",
             "caspeal-aging = bob.bio.face.config.database.caspeal_aging:database",
@@ -211,7 +210,6 @@ setup(
             "rexnet                                = bob.bio.face.config.baseline.rex_net",
             "ghostnet                              = bob.bio.face.config.baseline.ghost_net",
             # databases
-            "atnt                                  = bob.bio.face.config.database.atnt",
             "casia-africa                          = bob.bio.face.config.database.casia_africa",
             "frgc-exp1                             = bob.bio.face.config.database.frgc_experiment1",
             "frgc-exp2                             = bob.bio.face.config.database.frgc_experiment2",

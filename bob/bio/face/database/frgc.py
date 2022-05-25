@@ -14,7 +14,7 @@ from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
-from bob.pipelines.utils import hash_string
+from bob.pipelines import hash_string
 
 
 class FRGCDatabase(CSVDataset):
@@ -51,7 +51,7 @@ class FRGCDatabase(CSVDataset):
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
-            allow_scoring_with_all_biometric_references=True,
+            score_all_vs_all=True,
             group_probes_by_reference_id=True,
             memory_demanding=True,
         )

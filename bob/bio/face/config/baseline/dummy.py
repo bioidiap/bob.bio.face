@@ -1,9 +1,10 @@
 from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import FunctionTransformer
 
-from bob.bio.base.pipelines import Distance, PipelineSimple
+from bob.bio.base.algorithm import Distance
+from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.face.utils import lookup_config_from_database
 from bob.pipelines import wrap
-from bob.pipelines.transformers import SampleLinearize
 
 (
     annotation_type,
@@ -37,7 +38,10 @@ def load(annotation_type, fixed_positions=None):
             ToGray(),
             transform_extra_arguments=transform_extra_arguments,
         ),
-        SampleLinearize(),
+        wrap(
+            ["sample"],
+            FunctionTransformer(lambda X: [x.flatten() for x in X]),
+        ),
     )
 
     algorithm = Distance()

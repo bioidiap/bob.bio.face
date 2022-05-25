@@ -8,7 +8,8 @@ import os
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
 
-from bob.bio.base.pipelines import Distance, PipelineSimple
+from bob.bio.base.algorithm import Distance
+from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.face.annotator import MTCNN
 from bob.bio.face.utils import dnn_default_cropping, embedding_transformer
 from bob.extension.download import get_file

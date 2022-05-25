@@ -1,6 +1,6 @@
 import logging
 
-from sklearn.pipeline import make_pipeline
+from sklearn.pipeline import Pipeline
 
 from bob.pipelines import wrap
 
@@ -360,13 +360,18 @@ def embedding_transformer(
         **kwargs,
     )
 
-    transformer = make_pipeline(
-        wrap(
-            ["sample"],
-            face_cropper,
-            transform_extra_arguments=transform_extra_arguments,
-        ),
-        wrap(["sample"], embedding),
+    transformer = Pipeline(
+        [
+            (
+                "cropper",
+                wrap(
+                    ["sample"],
+                    face_cropper,
+                    transform_extra_arguments=transform_extra_arguments,
+                ),
+            ),
+            ("embedding", wrap(["sample"], embedding)),
+        ]
     )
 
     return transformer

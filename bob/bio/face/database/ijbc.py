@@ -10,8 +10,8 @@ import bob.io.base
 
 from bob.bio.base.pipelines.abstract_classes import Database
 from bob.extension import rc
+from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample, SampleSet
-from bob.pipelines.utils import hash_string
 
 logger = logging.getLogger(__name__)
 
@@ -131,14 +131,14 @@ class IJBCDatabase(Database):
 
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(
-                "Invalid or non existent `original_directory`: f{original_directory}"
+                f"Invalid or non existent `original_directory`: {original_directory}"
             )
 
         self._check_protocol(protocol)
         super().__init__(
             name="ijbc",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=False,
+            score_all_vs_all=False,
             annotation_type="bounding-box",
             fixed_positions=None,
             memory_demanding=True,
@@ -154,7 +154,7 @@ class IJBCDatabase(Database):
 
         # For the test4 protocols
         if "test4" in protocol:
-            self.allow_scoring_with_all_biometric_references = True
+            self.score_all_vs_all = True
 
     def _load_metadata(self, protocol):
         # Load CSV files

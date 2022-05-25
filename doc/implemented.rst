@@ -133,15 +133,6 @@ Image Preprocessors
    bob.bio.face.preprocessor.INormLBP
 
 
-
-
-Face Recognition Algorithms
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. autosummary::
-   bob.bio.face.algorithm.Histogram
-
-
 Databases
 ---------
 .. automodule:: bob.bio.face.database
@@ -155,13 +146,6 @@ Preprocessors
 -------------
 
 .. automodule:: bob.bio.face.preprocessor
-
-
-
-Algorithms
-----------
-
-.. automodule:: bob.bio.face.algorithm
 
 Utilities
 ---------

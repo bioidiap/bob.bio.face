@@ -98,7 +98,7 @@ class LFWDatabase(Database):
 
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(
-                "Invalid or non existent `original_directory`: f{original_directory}."
+                f"Invalid or non existent `original_directory`: {original_directory}."
                 "Please, do `bob config set bob.bio.face.lfw.directory PATH` to set the LFW data directory."
             )
 
@@ -164,7 +164,7 @@ class LFWDatabase(Database):
         super().__init__(
             name="lfw",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=protocol[0] == "o",
+            score_all_vs_all=protocol[0] == "o",
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             memory_demanding=False,

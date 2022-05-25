@@ -16,9 +16,9 @@ from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.base.utils.annotations import read_annotation_file
 from bob.extension import rc
 from bob.extension.download import get_file
+from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample
 from bob.pipelines.sample_loaders import AnnotationsLoader
-from bob.pipelines.utils import hash_string
 
 logger = logging.getLogger(__name__)
 

@@ -166,7 +166,7 @@ class GBUDatabase(Database):
         super().__init__(
             name="gbu",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=True,
+            score_all_vs_all=True,
             annotation_type="eyes-center",
             fixed_positions=fixed_positions,
             memory_demanding=True,

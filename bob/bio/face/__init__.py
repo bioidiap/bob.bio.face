@@ -1,6 +1,5 @@
 # isort: skip_file
 from . import preprocessor  # noqa: F401
-from . import algorithm  # noqa: F401
 from . import script  # noqa: F401
 from . import database  # noqa: F401
 from . import annotator  # noqa: F401

@@ -200,6 +200,7 @@ def test_replaymobile():
     rc.get("bob.bio.face.ijbc.directory") is None,
     reason="IJBC original protocols not available. Please do `bob config set bob.bio.face.ijbc.directory [IJBC PATH]` to set the IJBC data path.",
 )
+@pytest.mark.slow
 def test_ijbc():
     from bob.bio.face.database import IJBCDatabase
 

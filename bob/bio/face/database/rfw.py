@@ -82,7 +82,7 @@ class RFWDatabase(Database):
         super().__init__(
             name="rfw",
             protocol=protocol,
-            allow_scoring_with_all_biometric_references=False,
+            score_all_vs_all=False,
             annotation_type="eyes-center",
             fixed_positions=None,
             memory_demanding=False,

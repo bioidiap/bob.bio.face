@@ -34,7 +34,7 @@ requirements:
     - imageio-ffmpeg {{ imageio_ffmpeg }}
     - opencv {{opencv}}
     - pytorch {{ pytorch }}
-    - pytoch-lightning {{ pytorch_lightning }}
+    - pytorch-lightning {{ pytorch_lightning }}
     - torchvision {{ torchvision }}
   run:
     - python

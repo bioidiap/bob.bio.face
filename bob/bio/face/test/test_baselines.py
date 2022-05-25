@@ -92,8 +92,8 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
 
         dirs = os.listdir(d)
         assert "biometric_references" in dirs
-        assert "samplewrapper-1" in dirs
-        assert "samplewrapper-2" in dirs
+        assert "cropper" in dirs
+        assert "embedding" in dirs
         assert "scores" in dirs
 
     # DASK
@@ -111,8 +111,8 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
 
         dirs = os.listdir(d)
         assert "biometric_references" in dirs
-        assert "samplewrapper-1" in dirs
-        assert "samplewrapper-2" in dirs
+        assert "cropper" in dirs
+        assert "embedding" in dirs
         assert "scores" in dirs
 
 

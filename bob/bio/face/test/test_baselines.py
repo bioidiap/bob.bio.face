@@ -10,10 +10,7 @@ import pytest
 import bob.io.base
 
 from bob.bio.base import load_resource
-from bob.bio.base.pipelines import (
-    checkpoint_pipeline_simple,
-    dask_pipeline_simple,
-)
+from bob.bio.base.pipelines import checkpoint_pipeline_simple, dask_bio_pipeline
 from bob.bio.base.test.utils import is_library_available
 from bob.pipelines import DelayedSample, Sample, SampleSet
 
@@ -99,7 +96,7 @@ def run_baseline(baseline, samples_for_training=[], target_scores=None):
 
     with tempfile.TemporaryDirectory() as d:
         cpy = copy.deepcopy(pipeline)
-        dask_pipeline = dask_pipeline_simple(
+        dask_pipeline = dask_bio_pipeline(
             checkpoint_pipeline_simple(cpy, base_dir=d)
         )
         dask_scores = dask_pipeline([], biometric_references, probes)

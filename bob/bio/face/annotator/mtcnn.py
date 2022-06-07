@@ -78,6 +78,15 @@ class MTCNN(Base):
         )
         return box, prob, landmarks
 
+    def __getstate__(self):
+        # Handling unpicklable objects
+        state = {}
+        for key, value in super().__getstate__().items():
+            if key != "_fun":
+                state[key] = value
+        state["_fun"] = None
+        return state
+
     def detect(self, image):
         """Detects all faces in the image.
 

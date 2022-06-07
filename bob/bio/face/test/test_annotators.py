@@ -1,3 +1,5 @@
+import pickle
+
 import numpy
 
 import bob.io.base
@@ -47,6 +49,19 @@ def _assert_tinyface(annot):
     assert [int(x) for x in annot["leye"]] == [162, 216], annot
 
 
+def _assert_annotator_is_serializable(annotator):
+    """
+    Verifies that a given `annotator` can be serialized / deserialized properly.
+    This is required to be usable on the grid with dask.
+    """
+    serializable = True
+    try:
+        pickle.loads(pickle.dumps(annotator))
+    except Exception:
+        serializable = False
+    assert serializable, "Can not serialize {}".format(annotator)
+
+
 @is_library_available("tensorflow")
 def test_mtcnn_annotator():
     """
@@ -59,6 +74,8 @@ def test_mtcnn_annotator():
 
     annot = mtcnn_annotator.annotations(face_image_multiple)
     assert len(annot) == 6
+
+    _assert_annotator_is_serializable(mtcnn_annotator)
 
 
 @is_library_available("cv2")

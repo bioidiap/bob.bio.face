@@ -41,7 +41,7 @@ def get_fake_sample_set(face_size=(160, 160), purpose="bioref"):
                 )
             ],
             key=key,
-            reference_id=key,
+            template_id=key,
             references=["1"],
         )
     ]
@@ -53,7 +53,7 @@ def get_fake_samples_for_training():
     annotations = {"reye": (131, 176), "leye": (222, 170)}
 
     return [
-        Sample(x, key=str(i), reference_id=str(i), annotations=annotations)
+        Sample(x, key=str(i), template_id=str(i), annotations=annotations)
         for i, x in enumerate(data)
     ]
 

@@ -56,8 +56,8 @@ def load_scores(baseline, protocol, group):
 
 # Function to separate genuines from impostors
 def split(df):
-    impostors = df[df["probe_reference_id"] != df["bio_ref_reference_id"]]
-    genuines = df[df["probe_reference_id"] == df["bio_ref_reference_id"]]
+    impostors = df[df["probe_template_id"] != df["bio_ref_template_id"]]
+    genuines = df[df["probe_template_id"] == df["bio_ref_template_id"]]
     return impostors, genuines
 
 

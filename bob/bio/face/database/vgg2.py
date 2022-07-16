@@ -16,7 +16,7 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
 from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import DelayedSample
@@ -103,7 +103,7 @@ class VGG2Annotations(TransformerMixin, BaseEstimator):
         return annotated_samples
 
 
-class VGG2Database(CSVDatasetZTNorm):
+class VGG2Database(CSVDatabaseZTNorm):
     """
     The VGG2 Dataset is composed of 9131 people split into two sets.
     The training set contains 8631 identities, while the test set contains 500 identities.
@@ -179,10 +179,10 @@ class VGG2Database(CSVDatasetZTNorm):
 
         super().__init__(
             name="vgg2",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=dataset_original_directory,
                     extension=dataset_original_extension,

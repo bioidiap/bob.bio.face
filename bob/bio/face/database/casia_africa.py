@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class CasiaAfricaDatabase(CSVDataset):
+class CasiaAfricaDatabase(CSVDatabase):
     """
     The Casia-Face-Africa dataset is composed of 1133 identities from different ethical groups in Nigeria.
 
@@ -118,14 +118,14 @@ class CasiaAfricaDatabase(CSVDataset):
 
         super().__init__(
             name="casia-africa",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=directory,
                     extension=".jpg",
-                    reference_id_equal_subject_id=False,
+                    template_id_equal_subject_id=False,
                 ),
                 EyesAnnotations(),
             ),

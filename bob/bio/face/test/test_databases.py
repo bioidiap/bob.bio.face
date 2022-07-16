@@ -310,7 +310,7 @@ def test_frgc():
 
     def _check_samples(samples, n_templates, n_subjects, template_size=0):
         assert len(samples) == n_templates
-        assert len(set([x.reference_id for x in samples])) == n_templates
+        assert len(set([x.template_id for x in samples])) == n_templates
         assert len(set([x.subject_id for x in samples])) == n_subjects
 
         if template_size > 0:

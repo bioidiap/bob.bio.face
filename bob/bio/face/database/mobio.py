@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class MobioDatabase(CSVDatasetZTNorm):
+class MobioDatabase(CSVDatabaseZTNorm):
     """
     The MOBIO dataset is a video database containing bimodal data (face/speaker).
     It is composed by 152 people (split in the two genders male and female), mostly Europeans, split in 5 sessions (few weeks time lapse between sessions).
@@ -73,10 +73,10 @@ class MobioDatabase(CSVDatasetZTNorm):
 
         super().__init__(
             name="mobio",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=dataset_original_directory,
                     extension=dataset_original_extension,

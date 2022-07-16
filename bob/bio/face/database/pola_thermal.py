@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class PolaThermalDatabase(CSVDataset):
+class PolaThermalDatabase(CSVDatabase):
     """
     Collected by USA Army, the Polarimetric Thermal Database contains basically VIS and Thermal face images.
 
@@ -105,9 +105,9 @@ class PolaThermalDatabase(CSVDataset):
         super().__init__(
             name="polathermal",
             protocol=protocol,
-            dataset_protocol_path=filename,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            dataset_protocols_path=filename,
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=load,
                     dataset_original_directory=directory,
                     extension=".png",

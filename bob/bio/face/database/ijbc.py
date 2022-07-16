@@ -26,7 +26,7 @@ def _make_sample_from_template_row(row, image_directory):
         load=partial(
             bob.io.base.load, os.path.join(image_directory, row["FILENAME"])
         ),
-        reference_id=str(row["TEMPLATE_ID"]),
+        template_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
         key=key,
         # gender=row["GENDER"],
@@ -74,9 +74,9 @@ def _make_sample_set_from_template_group(template_group, image_directory):
     )
     return SampleSet(
         samples,
-        reference_id=samples[0].reference_id,
+        template_id=samples[0].template_id,
         subject_id=samples[0].subject_id,
-        key=samples[0].reference_id,
+        key=samples[0].template_id,
     )
 
 
@@ -275,12 +275,12 @@ class IJBCDatabase(Database):
                 grouped_matches = self.matches.groupby("VERIF_TEMPLATE_ID")
                 for probe_sampleset in self._cached_probes:
                     probe_sampleset.references = list(
-                        grouped_matches.get_group(probe_sampleset.reference_id)[
+                        grouped_matches.get_group(probe_sampleset.template_id)[
                             "ENROLL_TEMPLATE_ID"
                         ]
                     )
             elif "test4" in self.protocol:
-                references = [s.reference_id for s in self.references()]
+                references = [s.template_id for s in self.references()]
                 # You compare with all biometric references
                 for probe_sampleset in self._cached_probes:
                     probe_sampleset.references = copy.deepcopy(references)

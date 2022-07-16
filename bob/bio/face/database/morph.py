@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class MorphDatabase(CSVDatasetZTNorm):
+class MorphDatabase(CSVDatabaseZTNorm):
     """
     The MORPH dataset is relatively old, but is getting some traction recently mostly because its richness
     with respect to sensitive attributes.
@@ -72,10 +72,10 @@ class MorphDatabase(CSVDatasetZTNorm):
 
         super().__init__(
             name="morph",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=dataset_original_directory
                     if dataset_original_directory

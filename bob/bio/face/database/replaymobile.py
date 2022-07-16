@@ -12,7 +12,7 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.image
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.base.utils.annotations import read_annotation_file
 from bob.extension import rc
 from bob.extension.download import get_file
@@ -68,7 +68,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     return image
 
 
-class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
+class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
     """A loader transformer returning a specific frame of a video file.
 
     This is specifically tailored for replay-mobile. It uses a specific loader
@@ -79,21 +79,21 @@ class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
         self,
         dataset_original_directory="",
         extension="",
-        reference_id_equal_subject_id=True,
+        template_id_equal_subject_id=True,
     ):
         super().__init__(
             data_loader=None,
             extension=extension,
             dataset_original_directory=dataset_original_directory,
         )
-        self.reference_id_equal_subject_id = reference_id_equal_subject_id
+        self.template_id_equal_subject_id = template_id_equal_subject_id
 
     def convert_row_to_sample(self, row, header):
         """Creates a sample given a row of the CSV protocol definition."""
         fields = dict([[str(h).lower(), r] for h, r in zip(header, row)])
 
-        if self.reference_id_equal_subject_id:
-            fields["subject_id"] = fields["reference_id"]
+        if self.template_id_equal_subject_id:
+            fields["subject_id"] = fields["template_id"]
         else:
             if "subject_id" not in fields:
                 raise ValueError(f"`subject_id` not available in {header}")
@@ -202,7 +202,7 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
         return annotated_samples
 
 
-class ReplayMobileBioDatabase(CSVDataset):
+class ReplayMobileBioDatabase(CSVDatabase):
     """Database interface that loads a csv definition for replay-mobile
 
     Looks for the protocol definition files (structure of CSV files). If not
@@ -298,8 +298,8 @@ class ReplayMobileBioDatabase(CSVDataset):
         super().__init__(
             name="replaymobile",
             protocol=protocol,
-            dataset_protocol_path=protocol_definition_path,
-            csv_to_sample_loader=make_pipeline(
+            dataset_protocols_path=protocol_definition_path,
+            transformer=make_pipeline(
                 ReplayMobileCSVFrameSampleLoader(
                     dataset_original_directory=data_path,
                     extension=data_extension,

@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class ARFaceDatabase(CSVDataset):
+class ARFaceDatabase(CSVDatabase):
     """
     This package contains the access API and descriptions for the AR face database.
     It only contains the Bob_ accessor methods to use the DB directly from python, with our certified protocols.
@@ -76,10 +76,10 @@ class ARFaceDatabase(CSVDataset):
 
         super().__init__(
             name="arface",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc[
                         "bob.bio.face.arface.directory"
@@ -110,6 +110,6 @@ class ARFaceDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
+            "https://www.idiap.ch/software/bob/data/bob.bio.face/arface-1983798hsakjd.tar.gz",
             "http://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
         ]

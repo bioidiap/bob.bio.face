@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import MultiposeAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class MultipieDatabase(CSVDataset):
+class MultipieDatabase(CSVDatabase):
     """
 
     The `CMU Multi-PIE face database <http://www.cs.cmu.edu/afs/cs/project/PIE/MultiPie/Multi-Pie/Home.html>`_ contains more than 750,000 images
@@ -112,10 +112,10 @@ class MultipieDatabase(CSVDataset):
 
         super().__init__(
             name="multipie",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc["bob.db.multipie.directory"]
                     if rc["bob.db.multipie.directory"]

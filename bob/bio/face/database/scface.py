@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class SCFaceDatabase(CSVDataset):
+class SCFaceDatabase(CSVDatabase):
     """
     Surveillance Camera Face dataset
 
@@ -42,10 +42,10 @@ class SCFaceDatabase(CSVDataset):
 
         super().__init__(
             name="scface",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc.get(
                         "bob.bio.face.scface.directory", ""

@@ -211,10 +211,10 @@ class RFWDatabase(Database):
         # Picking the first reference
         if self.protocol == "idiap":
             for p in self._pairs:
-                _, subject_id, reference_id = p.split("/")
+                _, subject_id, template_id = p.split("/")
                 if subject_id in self._first_reference_of_subject:
                     continue
-                self._first_reference_of_subject[subject_id] = reference_id
+                self._first_reference_of_subject[subject_id] = template_id
 
         # Preparing the probes
         self._inverted_pairs = self._invert_dict(self._pairs)
@@ -260,8 +260,8 @@ class RFWDatabase(Database):
             # train data from Caucasians are stored differently
             if race == "Caucasian":
                 for f in files:
-                    reference_id = os.listdir(os.path.join(data_dir, f))[0]
-                    key = f"{race}/{f}/{reference_id[:-4]}"
+                    template_id = os.listdir(os.path.join(data_dir, f))[0]
+                    key = f"{race}/{f}/{template_id[:-4]}"
                     cache.append(
                         self._make_sampleset(
                             key, target_set="train", get_demographic=False
@@ -284,7 +284,7 @@ class RFWDatabase(Database):
                 self._idiap_protocol_seed + 1
             )
             references = list(
-                set([s.reference_id for s in self.references(group=group)])
+                set([s.template_id for s in self.references(group=group)])
             )
             for p in self._cached_zprobes:
                 p.references = copy.deepcopy(references)
@@ -360,25 +360,25 @@ class RFWDatabase(Database):
         return self._landmarks[key]
 
     def _make_sampleset(self, item, target_set="test", get_demographic=True):
-        race, subject_id, reference_id = item.split("/")
+        race, subject_id, template_id = item.split("/")
 
         # RFW original data is not super organized
         # Test and train data os stored differently
 
-        key = f"{race}/{subject_id}/{reference_id}"
+        key = f"{race}/{subject_id}/{template_id}"
 
         path = (
             os.path.join(
                 self.original_directory,
                 f"{target_set}/data/{race}",
                 subject_id,
-                reference_id + self._default_extension,
+                template_id + self._default_extension,
             )
             if (target_set == "test" or race == "Caucasian")
             else os.path.join(
                 self.original_directory,
                 f"{target_set}/data/{race}",
-                reference_id + self._default_extension,
+                template_id + self._default_extension,
             )
         )
 
@@ -387,7 +387,7 @@ class RFWDatabase(Database):
                 os.path.join(
                     self.original_directory, "erratum1", "Caucasian_lmk.txt"
                 ),
-                reference_id,
+                template_id,
             )
             if (target_set == "train" and race == "Caucasian")
             else self._fetch_landmarks(
@@ -395,7 +395,7 @@ class RFWDatabase(Database):
                     self.original_directory,
                     f"{target_set}/txts/{race}/{race}_lmk.txt",
                 ),
-                reference_id,
+                template_id,
             )
         )
 
@@ -407,7 +407,7 @@ class RFWDatabase(Database):
                 ),
                 key=key,
                 annotations=annotations,
-                reference_id=reference_id,
+                template_id=template_id,
                 subject_id=subject_id,
             )
         ]
@@ -419,7 +419,7 @@ class RFWDatabase(Database):
             return SampleSet(
                 samples,
                 key=key,
-                reference_id=reference_id,
+                template_id=template_id,
                 subject_id=subject_id,
                 race=race,
                 gender=gender,
@@ -429,7 +429,7 @@ class RFWDatabase(Database):
             return SampleSet(
                 samples,
                 key=key,
-                reference_id=reference_id,
+                template_id=template_id,
                 subject_id=subject_id,
                 race=race,
             )

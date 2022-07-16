@@ -383,7 +383,7 @@ class LFWDatabase(Database):
         # generate one sampleset from images of the unknown unknowns
         sset = SampleSet(
             key="unknown",
-            reference_id="unknown",
+            template_id="unknown",
             subject_id="unknown",
             samples=[
                 DelayedSample(
@@ -436,7 +436,7 @@ class LFWDatabase(Database):
 
                     sset = SampleSet(
                         key=key,
-                        reference_id=key,
+                        template_id=key,
                         subject_id=self.subject_id_from_filename(key),
                         references=copy.deepcopy(
                             self.probe_reference_keys[key]
@@ -444,7 +444,7 @@ class LFWDatabase(Database):
                         samples=[
                             DelayedSample(
                                 key=key,
-                                reference_id=key,
+                                template_id=key,
                                 subject_id=self.subject_id_from_filename(key),
                                 load=partial(bob.io.base.load, image_path),
                                 annotations=annotations,
@@ -487,12 +487,12 @@ class LFWDatabase(Database):
                     # one probe sample per image
                     sset = SampleSet(
                         key=image,
-                        reference_id=image,
+                        template_id=image,
                         subject_id=key,
                         samples=[
                             DelayedSample(
                                 key=image,
-                                reference_id=image,
+                                template_id=image,
                                 load=partial(bob.io.base.load, image_path),
                                 annotations=annotations,
                             )
@@ -526,12 +526,12 @@ class LFWDatabase(Database):
 
                     sset = SampleSet(
                         key=key,
-                        reference_id=key,
+                        template_id=key,
                         subject_id=self.subject_id_from_filename(key),
                         samples=[
                             DelayedSample(
                                 key=key,
-                                reference_id=key,
+                                template_id=key,
                                 load=partial(bob.io.base.load, image_path),
                                 subject_id=self.subject_id_from_filename(key),
                                 annotations=annotations,
@@ -565,12 +565,12 @@ class LFWDatabase(Database):
                     # generate one sampleset from several (should be 3) images of the same person
                     sset = SampleSet(
                         key=key,
-                        reference_id=key,
+                        template_id=key,
                         subject_id=key,
                         samples=[
                             DelayedSample(
                                 key=image,
-                                reference_id=key,
+                                template_id=key,
                                 load=partial(bob.io.base.load, data[image][0]),
                                 annotations=data[image][1],
                             )

@@ -10,14 +10,14 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import hash_string
 
 
-class FRGCDatabase(CSVDataset):
+class FRGCDatabase(CSVDatabase):
     """
     Face Recognition Grand Test dataset
     """
@@ -36,23 +36,23 @@ class FRGCDatabase(CSVDataset):
 
         super().__init__(
             name="frgc",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc.get(
                         "bob.bio.face.frgc.directory", ""
                     ),
                     extension="",
-                    reference_id_equal_subject_id=False,
+                    template_id_equal_subject_id=False,
                 ),
                 EyesAnnotations(),
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             score_all_vs_all=True,
-            group_probes_by_reference_id=True,
+            group_probes_by_template_id=True,
             memory_demanding=True,
         )
 

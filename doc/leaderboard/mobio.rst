@@ -1,6 +1,6 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard.mobio:
+.. _bob.bio.face.leaderboard.mobio:
 
 =============
 Mobio Dataset
@@ -53,6 +53,11 @@ You can run the mobio baselines command with a simple command such as:
 
    bob bio pipeline simple mobio-all arcface-insightface
 
+.. note::
+
+   Use ``bob bio pipeline simple --dump-config default.py`` to generate a file
+   containing all the possible parameters and option of that command with the default
+   value assigned, but also all the possible values for each parameter as comment.
 
 Scores from some of our baselines can be found `here <https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/scores/mobio-male.tar.gz>`_.
 A det curve can be generated with these scores by running the following commands:
@@ -87,3 +92,81 @@ This is done be the command `bob bio face plots mobio-gender` command as in the 
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
+
+
+
+
+.. YD2022: TODO
+.. What follows was copied directly from bob.bio.face_ongoing documentation.
+.. THIS IS NOT UP TO DATE.
+.. Please replace this with the new numbers and remove this comment when re-running the
+.. experiments.
+
+Results
+=======
+
+
+Testing only the **mobio-male** protocol.
+
+ +-----------------------------------------------+-------------+-------------+
+ | System                                        | ERR (dev)   | HTER (eval) |
+ +===============================================+=============+=============+
+ | VGG16                                         | 2.58%       | 3.09%       |
+ +-----------------------------------------------+-------------+-------------+
+ | Facenet                                       | 0.56%       | 0.22%       |
+ +-----------------------------------------------+-------------+-------------+
+ | DrGAN                                         | 0.8%        | 2.6%        |
+ +-----------------------------------------------+-------------+-------------+
+ | CasiaNET                                      | 16.2%       | 9.9%        |
+ +-----------------------------------------------+-------------++------------+
+ | CNN8                                          | 14.8%       | 14.9%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **Casia WebFace - Resnetv1 center loss gray** | 2.46%       | 1.34%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **Casia WebFace - Resnetv1 center loss RGB**  | 1.7%        | 0.95%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **Casia WebFace - Resnetv2 center loss gray** | 2.77%       | 1.80%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **Casia WebFace - Resnetv2 center loss RGB**  | 1.23%       | 0.89%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **MSCeleb - Resnetv1 center loss gray**       | 1.51%       | 0.49%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **MSCeleb - Resnetv1 center loss RGB**        | 2.07%       | 0.73%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **MSCeleb - Resnetv2 center loss gray**       | 1.63%       | 0.88%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **MSCeleb - Resnetv2 center loss RGB**        | 0.33%       | 0.29%       |
+ +-----------------------------------------------+-------------+-------------+
+ | **ISV**                                       | 3.2%        | 7.5%        |
+ +-----------------------------------------------+-------------+-------------+
+
+
+To run each one of these baselines do:
+
+.. code-block:: sh
+
+    $ bob bio baseline vgg16 mobio-male
+    $ bob bio baseline facenet mobio-male
+    $ bob bio baseline casianet mobio-male
+    $ bob bio baseline cnn8 mobio-male
+    $ bob bio baseline idiap_casia_inception_v1_centerloss_gray mobio-male
+    $ bob bio baseline idiap_casia_inception_v1_centerloss_rgb mobio-male
+    $ bob bio baseline idiap_casia_inception_v2_centerloss_gray mobio-male
+    $ bob bio baseline idiap_casia_inception_v2_centerloss_rgb mobio-male
+    $ bob bio baseline idiap_msceleb_inception_v1_centerloss_gray mobio-male
+    $ bob bio baseline idiap_msceleb_inception_v1_centerloss_rgb mobio-male
+    $ bob bio baseline idiap_msceleb_inception_v2_centerloss_gray mobio-male
+    $ bob bio baseline idiap_msceleb_inception_v2_centerloss_rgb mobio-male
+    $ bob bio baseline isv mobio-male
+
+
+Follow below the DET curves for the development and dev sets, and the EPC for the best systems
+
+.. image:: ./img/mobio-male/DET-dev.png
+
+.. image:: ./img/mobio-male/DET-eval.png
+
+.. image:: ./img/mobio-male/EPC.png
+
+
+.. YD2022: TODO update those pictures too

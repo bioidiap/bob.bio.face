@@ -1,6 +1,6 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard.scface:
+.. _bob.bio.face.leaderboard.scface:
 
 ==============
 SCFace Dataset
@@ -71,3 +71,10 @@ This is done be the command `bob bio face plots scface` command as in the exampl
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
+
+
+
+
+.. todo::
+
+   Add reference results.

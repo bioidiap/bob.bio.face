@@ -1,6 +1,6 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard.arface:
+.. _bob.bio.face.leaderboard.arface:
 
 ==============
 ARFACE Dataset
@@ -68,3 +68,9 @@ This is done be the command `bob bio face plots arface` command as in the exampl
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
+
+
+
+.. todo::
+
+   Add reference results.

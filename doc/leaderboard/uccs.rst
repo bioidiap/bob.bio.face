@@ -1,6 +1,6 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard.uccs:
+.. _bob.bio.face.leaderboard.uccs:
 
 ============
 UCCS Dataset

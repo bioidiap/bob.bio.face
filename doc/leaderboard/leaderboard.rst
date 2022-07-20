@@ -1,12 +1,14 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard:
+.. _bob.bio.face.leaderboard:
 
-==========
-Leaderboad
-==========
+=============
+ Leaderboard
+=============
 
-In the following pages we present a face recognition learderboard with some popular datasets.
+In the following pages we present a face recognition leaderboard with some popular datasets.
+
+
 
 Datasets
 --------

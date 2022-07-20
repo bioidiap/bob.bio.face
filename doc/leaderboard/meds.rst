@@ -1,6 +1,6 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard.meds:
+.. _bob.bio.face.leaderboard.meds:
 
 ============
 MEDS Dataset

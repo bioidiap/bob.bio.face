@@ -1,6 +1,6 @@
 .. vim: set fileencoding=utf-8 :
 
-.. _bob.bio.face.learderboard.gbu:
+.. _bob.bio.face.leaderboard.gbu:
 
 ===========
 GBU Dataset
@@ -66,3 +66,10 @@ This is done be the command `bob bio face plots gbu` command as in the example b
 
 .. note::
   Always remember, `bob bio face plots --help` is your friend.
+
+
+
+
+.. todo::
+
+   Add reference results.

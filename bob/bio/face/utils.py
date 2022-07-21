@@ -343,7 +343,7 @@ def embedding_transformer(
     **kwargs,
 ):
     """
-    Creates a pipeline composed by and FaceCropper and an Embedding extractor.
+    Creates a pipeline composed by a FaceCropper and an Embedding extractor.
     This transformer is suited for Facenet based architectures
 
     .. warning::
@@ -360,6 +360,10 @@ def embedding_transformer(
         **kwargs,
     )
 
+    # Support None and "passthrough" Estimators
+    if embedding is not None and type(embedding) is not str:
+        embedding = wrap(["sample"], embedding)
+
     transformer = Pipeline(
         [
             (
@@ -370,7 +374,7 @@ def embedding_transformer(
                     transform_extra_arguments=transform_extra_arguments,
                 ),
             ),
-            ("embedding", wrap(["sample"], embedding)),
+            ("embedding", embedding),
         ]
     )
 

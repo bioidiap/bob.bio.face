@@ -6,7 +6,6 @@ package:
   version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
 
 build:
-  skip: True  # [arm64]
   entry_points:
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:

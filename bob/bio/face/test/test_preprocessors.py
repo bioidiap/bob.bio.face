@@ -20,6 +20,7 @@
 
 import numpy
 import pkg_resources
+import pytest
 
 regenerate_refs = False
 
@@ -55,7 +56,7 @@ def _compare(
 
     # compare reference
     reference = read_function(reference)
-    assert numpy.allclose(data, reference, atol=atol, rtol=rtol)
+    numpy.testing.assert_allclose(data, reference, rtol=rtol, atol=atol)
     return reference
 
 
@@ -118,6 +119,7 @@ def test_face_crop():
     cropper = bob.bio.face.preprocessor.FaceCrop(
         cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
         cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+        dtype=int,
     )
 
     assert isinstance(cropper, bob.bio.face.preprocessor.FaceCrop)
@@ -138,6 +140,7 @@ def test_face_crop():
             "reye": annotation["reye"],
             "leye": annotation["leye"],
         },
+        dtype=int,
     )
 
     # result must be identical to the original face cropper (same eyes are used)
@@ -226,6 +229,7 @@ def test_multi_face_crop():
     eyes_cropper = bob.bio.face.preprocessor.FaceCrop(
         cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
         cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+        dtype=int,
     )
 
     face_cropper = bob.bio.face.preprocessor.FaceCrop(
@@ -233,6 +237,7 @@ def test_multi_face_crop():
         cropper=FaceCropBoundingBox(
             final_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
         ),
+        dtype=int,
     )
 
     cropper = bob.bio.face.preprocessor.MultiFaceCrop(
@@ -258,18 +263,13 @@ def test_multi_face_crop():
     _compare(bbox_cropped.astype("uint8"), bbox_reference)
 
     # test a ValueError is raised if the annotations don't match any cropper
-    try:
+    with pytest.raises(ValueError):
         annot = dict(landmark_A=(60, 60), landmark_B=(120, 120))
         cropper.transform([image], [annot])
-        assert (
-            0
-        ), "MultiFaceCrop did not raise a ValueError for annotations matching no cropper"
-    except ValueError:
-        pass
 
     # test that the first annotator is taken when multiple exist
     annot = {**eye_annotation, **bbox_annotation}
-    eye_cropped = cropper.transform([image], [annot])
+    eye_cropped = cropper.transform([image], [annot])[0]
     _compare(eye_cropped, eye_reference)
 
 

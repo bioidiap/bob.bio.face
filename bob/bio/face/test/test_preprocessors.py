@@ -292,7 +292,7 @@ def test_tan_triggs():
 
     # execute face cropper
     _compare(
-        preprocessor.transform([image], [annotation]),
+        preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_cropped.hdf5"
         ),
@@ -306,7 +306,7 @@ def test_tan_triggs():
 
     # result must be identical to the original face cropper (same eyes are used)
     _compare(
-        preprocessor.transform([image], [annotation]),
+        preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/tan_triggs_none.hdf5"
         ),
@@ -333,7 +333,7 @@ def test_inorm_lbp():
 
     # execute preprocessor
     _compare(
-        preprocessor.transform([image], [annotation]),
+        preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/inorm_lbp_cropped.hdf5"
         ),
@@ -366,7 +366,7 @@ def test_heq():
 
     # execute preprocessor
     _compare(
-        preprocessor.transform([image], [annotation]),
+        preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
             "bob.bio.face.test", "data/histogram_cropped.hdf5"
         ),

@@ -63,7 +63,6 @@ test:
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
     - conda inspect objects -p $PREFIX {{ name }}  # [osx]
   requires:
-    - nose {{ nose }}
     - pytest {{ pytest }}
     - pytest-cov {{ pytest_cov }}
     - coverage {{ coverage }}

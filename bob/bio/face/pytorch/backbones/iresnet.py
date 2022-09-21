@@ -215,7 +215,7 @@ class IResNet(nn.Module):
         x = self.features(x)
         return x
 
-
+# TODO: Suggest: Omit progress? 
 def _iresnet(arch, block, layers, pretrained, progress, **kwargs):
     model = IResNet(block, layers, **kwargs)
     if pretrained:

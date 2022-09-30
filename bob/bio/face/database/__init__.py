@@ -20,7 +20,8 @@ from .rfw import RFWDatabase
 from .scface import SCFaceDatabase
 from .caspeal import CaspealDatabase
 from .vgg2 import VGG2Database
-
+from .tinyface import TinyFaceDatabase
+from .survface import QMULSurvFaceDatabase
 
 # gets sphinx autodoc done right - don't remove it
 def __appropriate__(*args):
@@ -57,5 +58,7 @@ __appropriate__(
     SCFaceDatabase,
     CaspealDatabase,
     VGG2Database,
+    TinyFaceDatabase,
+    QMULSurvFaceDatabase
 )
 __all__ = [_ for _ in dir() if not _.startswith("_")]

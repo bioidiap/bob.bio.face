@@ -201,61 +201,60 @@ def test_arcface_resnet50_msceleb_20210521():
     )
 
 
-# TODO Commenting failing tests - ydayer 202210
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_afffe():
-#     run_baseline(
-#         "afffe",
-#         target_scores=-1.0096582463616277,
-#     )
+@pytest.mark.slow
+@is_library_available("torch")
+def test_afffe():
+    run_baseline(
+        "afffe",
+        target_scores=-1.0096582463616277,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_iresnet34():
-#     run_baseline(
-#         "iresnet34",
-#         target_scores=-0.8302991105719331,
-#     )
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet34():
+    run_baseline(
+        "iresnet34",
+        target_scores=-0.8302991105719331,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_iresnet50():
-#     run_baseline(
-#         "iresnet50",
-#         target_scores=-0.8016123867448196,
-#     )
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet50():
+    run_baseline(
+        "iresnet50",
+        target_scores=-0.8016123867448196,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_iresnet100():
-#     run_baseline(
-#         "iresnet100",
-#         target_scores=-0.8541905958816157,
-#     )
+@pytest.mark.slow
+@is_library_available("torch")
+def test_iresnet100():
+    run_baseline(
+        "iresnet100",
+        target_scores=-0.8541905958816157,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_attentionnet():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_attentionnet():
 
-#     run_baseline(
-#         "attentionnet",
-#         target_scores=-0.8856203334291886,
-#     )
+    run_baseline(
+        "attentionnet",
+        target_scores=-0.8856203334291886,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_resnest():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_resnest():
 
-#     run_baseline(
-#         "resnest",
-#         target_scores=-0.8548176067335934,
-#     )
+    run_baseline(
+        "resnest",
+        target_scores=-0.8548176067335934,
+    )
 
 
 @pytest.mark.slow
@@ -268,94 +267,94 @@ def test_mobilefacenet():
     )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_efficientnet():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_efficientnet():
 
-#     run_baseline(
-#         "efficientnet",
-#         target_scores=-0.7978759562781405,
-#     )
-
-
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_tfnas():
-
-#     run_baseline(
-#         "tfnas",
-#         target_scores=-0.7823820403380854,
-#     )
+    run_baseline(
+        "efficientnet",
+        target_scores=-0.7978759562781405,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_hrnet():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_tfnas():
 
-#     run_baseline(
-#         "hrnet",
-#         target_scores=-0.6428357755937835,
-#     )
-
-
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_rexnet():
-
-#     run_baseline(
-#         "rexnet",
-#         target_scores=-0.7886427683602303,
-#     )
+    run_baseline(
+        "tfnas",
+        target_scores=-0.7823820403380854,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_ghostnet():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_hrnet():
 
-#     run_baseline(
-#         "ghostnet",
-#         target_scores=-0.7886787784251782,
-#     )
-
-
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_oxford_resnet50_scratch_dag_vgg2():
-
-#     run_baseline(
-#         "oxford-resnet50-scratch-dag-vgg2",
-#         target_scores=-0.6782927,
-#     )
+    run_baseline(
+        "hrnet",
+        target_scores=-0.6428357755937835,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_oxford_resnet50_ft_dag_vgg2():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_rexnet():
 
-#     run_baseline(
-#         "oxford-resnet50-ft-dag-vgg2",
-#         target_scores=-0.78003523113,
-#     )
-
-
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_oxford_senet50_ft_dag_vgg2():
-
-#     run_baseline(
-#         "oxford-senet50-ft-dag-vgg2",
-#         target_scores=-0.744730213,
-#     )
+    run_baseline(
+        "rexnet",
+        target_scores=-0.7886427683602303,
+    )
 
 
-# @pytest.mark.slow
-# @is_library_available("torch")
-# def test_oxford_senet50_scratch_dag_vgg2():
+@pytest.mark.slow
+@is_library_available("torch")
+def test_ghostnet():
 
-#     run_baseline(
-#         "oxford-senet50-scratch-dag-vgg2",
-#         target_scores=-0.6919739,
-#     )
+    run_baseline(
+        "ghostnet",
+        target_scores=-0.7886787784251782,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_oxford_resnet50_scratch_dag_vgg2():
+
+    run_baseline(
+        "oxford-resnet50-scratch-dag-vgg2",
+        target_scores=-0.6782927,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_oxford_resnet50_ft_dag_vgg2():
+
+    run_baseline(
+        "oxford-resnet50-ft-dag-vgg2",
+        target_scores=-0.78003523113,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_oxford_senet50_ft_dag_vgg2():
+
+    run_baseline(
+        "oxford-senet50-ft-dag-vgg2",
+        target_scores=-0.744730213,
+    )
+
+
+@pytest.mark.slow
+@is_library_available("torch")
+def test_oxford_senet50_scratch_dag_vgg2():
+
+    run_baseline(
+        "oxford-senet50-scratch-dag-vgg2",
+        target_scores=-0.6919739,
+    )
 
 
 @pytest.mark.slow

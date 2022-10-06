@@ -23,6 +23,9 @@ from bob.bio.face.utils import (
 )
 from bob.extension.download import get_file
 
+# Fix for torch on docker (fixes CI linux runners):
+torch.set_num_threads(1)
+
 
 class PyTorchModel(TransformerMixin, BaseEstimator):
     """

@@ -33,7 +33,7 @@ class RFWDatabase(Database):
     (or non-mated) is possible. This is closed to a real-world scenario.
 
     .. warning::
-        The following identities are assossiated with two races in the original dataset
+        The following identities are associated with two races in the original dataset
          - m.023915
          - m.0z08d8y
          - m.0bk56n
@@ -70,9 +70,7 @@ class RFWDatabase(Database):
     ):
 
         if original_directory is None or not os.path.exists(original_directory):
-            raise ValueError(
-                "Invalid or non existant `original_directory`: f{original_directory}"
-            )
+            raise ValueError(f"Invalid or non existent {original_directory=}")
 
         self._check_protocol(protocol)
         self._races = ["African", "Asian", "Caucasian", "Indian"]
@@ -244,7 +242,7 @@ class RFWDatabase(Database):
         cache = []
 
         # Setting the seed for the IDIAP PROTOCOL,
-        # so we have a consisent set of probes
+        # so we have a consistent set of probes
         np.random.seed(seed)
 
         for race in self._races:
@@ -304,7 +302,7 @@ class RFWDatabase(Database):
         if self._cached_probes is None:
 
             # Setting the seed for the IDIAP PROTOCOL,
-            # so we have a consisent set of probes
+            # so we have a consistent set of probes
             np.random.seed(self._idiap_protocol_seed)
 
             self._cached_probes = []
@@ -460,9 +458,9 @@ class RFWDatabase(Database):
     def _check_protocol(self, protocol):
         assert (
             protocol in self.protocols()
-        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
+        ), "Invalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
-        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
+        assert group in self.groups(), "Invalid group `{}` not in {}".format(
             group, self.groups()
         )

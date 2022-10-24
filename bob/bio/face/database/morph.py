@@ -3,20 +3,20 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  MEDS database implementation
+  MORPH database implementation
 """
 
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class MorphDatabase(CSVDatabaseZTNorm):
+class MorphDatabase(CSVDatabase):
     """
     The MORPH dataset is relatively old, but is getting some traction recently mostly because its richness
     with respect to sensitive attributes.
@@ -66,9 +66,7 @@ class MorphDatabase(CSVDatabaseZTNorm):
 
         # Downloading model if not exists
         urls = MorphDatabase.urls()
-        filename = get_file(
-            "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
-        )
+        filename = get_file("morph.tar.gz", urls, file_hash="1200b906")
 
         super().__init__(
             name="morph",
@@ -91,6 +89,6 @@ class MorphDatabase(CSVDatabaseZTNorm):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/morph_v2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/morph_v2.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
         ]

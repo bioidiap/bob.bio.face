@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class MobioDatabase(CSVDatabaseZTNorm):
+class MobioDatabase(CSVDatabase):
     """
     The MOBIO dataset is a video database containing bimodal data (face/speaker).
     It is composed by 152 people (split in the two genders male and female), mostly Europeans, split in 5 sessions (few weeks time lapse between sessions).
@@ -67,9 +67,7 @@ class MobioDatabase(CSVDatabaseZTNorm):
 
         # Downloading model if not exists
         urls = MobioDatabase.urls()
-        filename = get_file(
-            "mobio.tar.gz", urls, file_hash="4a7f99b33a54b2dd337ddcaecb09edb8"
-        )
+        filename = get_file("mobio.tar.gz", urls, file_hash="0580d95a")
 
         super().__init__(
             name="mobio",
@@ -88,23 +86,8 @@ class MobioDatabase(CSVDatabaseZTNorm):
         )
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "laptop1-female",
-            "laptop_mobile1-female",
-            "mobile0-female",
-            "mobile0-male-female",
-            "mobile1-male",
-            "laptop1-male",
-            "laptop_mobile1-male",
-            "mobile0-male",
-            "mobile1-female",
-        ]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/mobio-7fdf4f20.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/mobio-7fdf4f20.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/mobio-0580d95a.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/mobio-0580d95a.tar.gz",
         ]

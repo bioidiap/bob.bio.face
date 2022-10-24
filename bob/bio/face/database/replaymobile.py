@@ -125,7 +125,7 @@ def read_frame_annotation_file_replaymobile(
 ):
     """Returns the bounding-box for one frame of a video file of replay-mobile.
 
-    Given an annnotation file location and a frame number, returns the bounding
+    Given an annotation file location and a frame number, returns the bounding
     box coordinates corresponding to the frame.
 
     The replay-mobile annotation files are composed of 4 columns and N rows for
@@ -247,11 +247,11 @@ class ReplayMobileBioDatabase(CSVDatabase):
 
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            proto_def_hash = "fee57d46"
+            proto_def_hash = "c511eeeb"
             proto_def_name = f"replaymobile-{proto_def_hash}.tar.gz"
             proto_def_urls = [
-                f"https://www.idiap.ch/software/bob/databases/latest/{proto_def_name}",
-                f"http://www.idiap.ch/software/bob/databases/latest//{proto_def_name}",
+                f"https://www.idiap.ch/software/bob/databases/latest/face/{proto_def_name}",
+                f"http://www.idiap.ch/software/bob/databases/latest/face/{proto_def_name}",
             ]
             protocol_definition_path = get_file(
                 filename=proto_def_name,

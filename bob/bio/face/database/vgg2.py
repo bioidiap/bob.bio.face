@@ -16,7 +16,7 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import DelayedSample
@@ -26,7 +26,7 @@ class VGG2Annotations(TransformerMixin, BaseEstimator):
     """
     Decode VGG2 Annotations.
 
-    VGG2 has 5 landmarks annnotated and the are the following: two for eyes, one for the nose and two for the mouth
+    VGG2 has 5 landmarks annotated and the are the following: two for eyes, one for the nose and two for the mouth
 
     """
 
@@ -103,7 +103,7 @@ class VGG2Annotations(TransformerMixin, BaseEstimator):
         return annotated_samples
 
 
-class VGG2Database(CSVDatabaseZTNorm):
+class VGG2Database(CSVDatabase):
     """
     The VGG2 Dataset is composed of 9131 people split into two sets.
     The training set contains 8631 identities, while the test set contains 500 identities.
@@ -130,11 +130,11 @@ class VGG2Database(CSVDatabaseZTNorm):
     On the other hand, the `vgg2-short` presents 10 samples per identity at the probe and training sets.
     With that the training set of `vgg2-short` contains 86'310 samples instead of 3'141'890 samples
     from `vgg2-full`.
-    The protocols with the suffix `-with-eval`, splits the orinal test set into a dev and eval sets
+    The protocols with the suffix `-with-eval`, splits the original test set into a dev and eval sets
     containing 250 identities each.
 
 
-    All the landmarks and face crops provided in the original dataset is provided with this inteface.
+    All the landmarks and face crops provided in the original dataset is provided with this interface.
 
     .. warning::
 
@@ -173,9 +173,7 @@ class VGG2Database(CSVDatabaseZTNorm):
 
         # Downloading model if not exists
         urls = VGG2Database.urls()
-        filename = get_file(
-            "vgg2.tar.gz", urls, file_hash="4a05d797a326374a6b52bcd8d5a89d48"
-        )
+        filename = get_file("vgg2.tar.gz", urls, file_hash="fce8f047")
 
         super().__init__(
             name="vgg2",
@@ -201,18 +199,8 @@ class VGG2Database(CSVDatabaseZTNorm):
         return super().background_model_samples()
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "vgg2-short",
-            "vgg2-full",
-            "vgg2-short-with-eval",
-            "vgg2-full-with-eval",
-        ]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/vgg2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/vgg2.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
         ]

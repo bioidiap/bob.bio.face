@@ -99,7 +99,10 @@ class MultipieDatabase(CSVDatabase):
     """
 
     def __init__(
-        self, protocol, annotation_type="eyes-center", fixed_positions=None
+        self,
+        protocol,
+        annotation_type=("eyes-center", "left-profile", "right-profile"),
+        fixed_positions=None,
     ):
 
         # Downloading model if not exists
@@ -107,7 +110,7 @@ class MultipieDatabase(CSVDatabase):
         filename = get_file(
             "multipie.tar.gz",
             urls,
-            file_hash="6c27c9616c2d0373c5f052b061d80178",
+            file_hash="39e3437d",
         )
 
         super().__init__(
@@ -124,39 +127,13 @@ class MultipieDatabase(CSVDatabase):
                 ),
                 MultiposeAnnotations(),
             ),
-            annotation_type=["eyes-center", "left-profile", "right-profile"],
+            annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "P240",
-            "P191",
-            "P130",
-            "G",
-            "P010",
-            "P041",
-            "P051",
-            "P050",
-            "M",
-            "P110",
-            "P",
-            "P140",
-            "U",
-            "P200",
-            "E",
-            "P190",
-            "P120",
-            "P080",
-            "P081",
-            "P090",
-        ]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/multipie_v2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/multipie_v2.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
         ]

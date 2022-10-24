@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  PolaThermal database: database implementation
+  PolaThermal dataset: database implementation
 """
 
 from sklearn.pipeline import make_pipeline
@@ -69,7 +69,7 @@ class PolaThermalDatabase(CSVDatabase):
     .. warning::
         Use the command below to set the path of the real data::
 
-            $ bob config set bob.db.pola-thermal.directory [PATH-TO-MEDS-DATA]
+            $ bob config set bob.db.pola-thermal.directory [PATH-TO-RAW-DATA]
 
 
 
@@ -89,7 +89,7 @@ class PolaThermalDatabase(CSVDatabase):
         filename = get_file(
             "polathermal.tar.gz",
             urls,
-            file_hash="4693149bc883debe5a9e1441a4f5f4ae",
+            file_hash="09a724b6",
         )
 
         directory = rc.get("bob.db.pola-thermal.directory", "")
@@ -119,69 +119,8 @@ class PolaThermalDatabase(CSVDatabase):
         )
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "VIS-VIS-split1",
-            "VIS-VIS-split2",
-            "VIS-VIS-split3",
-            "VIS-VIS-split4",
-            "VIS-VIS-split5",
-            "VIS-thermal-overall-split1",
-            "VIS-thermal-overall-split2",
-            "VIS-thermal-overall-split3",
-            "VIS-thermal-overall-split4",
-            "VIS-thermal-overall-split5",
-            "VIS-polarimetric-overall-split1",
-            "VIS-polarimetric-overall-split2",
-            "VIS-polarimetric-overall-split3",
-            "VIS-polarimetric-overall-split4",
-            "VIS-polarimetric-overall-split5",
-            "VIS-thermal-expression-split1",
-            "VIS-thermal-expression-split2",
-            "VIS-thermal-expression-split3",
-            "VIS-thermal-expression-split4",
-            "VIS-thermal-expression-split5",
-            "VIS-polarimetric-expression-split1",
-            "VIS-polarimetric-expression-split2",
-            "VIS-polarimetric-expression-split3",
-            "VIS-polarimetric-expression-split4",
-            "VIS-polarimetric-expression-split5",
-            "VIS-thermal-R1-split1",
-            "VIS-thermal-R1-split2",
-            "VIS-thermal-R1-split3",
-            "VIS-thermal-R1-split4",
-            "VIS-thermal-R1-split5",
-            "VIS-polarimetric-R1-split1",
-            "VIS-polarimetric-R1-split2",
-            "VIS-polarimetric-R1-split3",
-            "VIS-polarimetric-R1-split4",
-            "VIS-polarimetric-R1-split5",
-            "VIS-thermal-R2-split1",
-            "VIS-thermal-R2-split2",
-            "VIS-thermal-R2-split3",
-            "VIS-thermal-R2-split4",
-            "VIS-thermal-R2-split5",
-            "VIS-polarimetric-R2-split1",
-            "VIS-polarimetric-R2-split2",
-            "VIS-polarimetric-R2-split3",
-            "VIS-polarimetric-R2-split4",
-            "VIS-polarimetric-R2-split5",
-            "VIS-thermal-R3-split1",
-            "VIS-thermal-R3-split2",
-            "VIS-thermal-R3-split3",
-            "VIS-thermal-R3-split4",
-            "VIS-thermal-R3-split5",
-            "VIS-polarimetric-R3-split1",
-            "VIS-polarimetric-R3-split2",
-            "VIS-polarimetric-R3-split3",
-            "VIS-polarimetric-R3-split4",
-            "VIS-polarimetric-R3-split5",
-        ]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
         ]

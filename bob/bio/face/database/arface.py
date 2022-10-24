@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  Multipie database implementation
+  AR Face database implementation
 """
 
 from sklearn.pipeline import make_pipeline
@@ -48,7 +48,7 @@ class ARFaceDatabase(CSVDatabase):
 
         .. code-block:: sh
 
-            bob config set bob.bio.face.arface.directory [ARFACE PATH]
+            bob config set bob.bio.face.arface.directory [ARFACE DATA PATH]
 
 
     .. code-block:: latex
@@ -71,7 +71,7 @@ class ARFaceDatabase(CSVDatabase):
         filename = get_file(
             "arface.tar.gz",
             urls,
-            file_hash="66cf05fe03adb8d73a76fd75641dd468",
+            file_hash="903a0187",
         )
 
         super().__init__(
@@ -96,20 +96,20 @@ class ARFaceDatabase(CSVDatabase):
             fixed_positions=fixed_positions,
         )
 
-    @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "all",
-            "expression",
-            "illumination",
-            "occlusion",
-            "occlusion_and_illumination",
-        ]
+    # @staticmethod
+    # def protocols():
+    #     # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+    #     return [
+    #         "all",
+    #         "expression",
+    #         "illumination",
+    #         "occlusion",
+    #         "occlusion_and_illumination",
+    #     ]
 
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/data/bob.bio.face/arface-1983798hsakjd.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
         ]

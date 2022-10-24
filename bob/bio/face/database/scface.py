@@ -37,7 +37,7 @@ class SCFaceDatabase(CSVDatabase):
         filename = get_file(
             "scface.tar.gz",
             urls,
-            file_hash="813cd9339e3314826821978a11bdc34a",
+            file_hash="e6ffa822",
         )
 
         super().__init__(
@@ -60,13 +60,8 @@ class SCFaceDatabase(CSVDatabase):
         )
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return ["close", "medium", "far", "combined", "IR"]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/scface.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/scface.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/scface-e6ffa822.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/scface-e6ffa822.tar.gz",
         ]

@@ -31,7 +31,7 @@ class CasiaAfricaDatabase(CSVDatabase):
     These locations were strategically selected as they are known to have diverse population of local ethnicities.
 
     .. warning::
-       Only 17 subjects had their images capture in two sessions.
+       Only 17 subjects had their images captured in two sessions.
 
     Images were captured during  daytime  and  night using three different cameras:
       - C1: Visual Light Camera
@@ -39,7 +39,7 @@ class CasiaAfricaDatabase(CSVDatabase):
       - C3: NIR camera
 
 
-    This dataset interface implemented the three verificatio protocols: "ID-V-All-Ep1", "ID-V-All-Ep2", and "ID-V-All-Ep3"
+    This dataset interface implemented the three verification protocols: "ID-V-All-Ep1", "ID-V-All-Ep2", and "ID-V-All-Ep3"
     and they are organized as the following:
 
     +------------------------------------------------------------------------------------+
@@ -58,7 +58,7 @@ class CasiaAfricaDatabase(CSVDatabase):
     .. warning::
         Use the command below to set the path of the real data::
 
-            $ bob config set bob.db.casia-africa.directory [PATH-TO-MEDS-DATA]
+            $ bob config set bob.db.casia-africa.directory [PATH-TO-RAW-DATA]
 
 
     .. code-block:: latex
@@ -107,12 +107,12 @@ class CasiaAfricaDatabase(CSVDatabase):
         filename = get_file(
             "casia-africa.tar.gz",
             urls,
-            file_hash="080d4bfffec95a6445507065054757eb",
+            file_hash="d5a3d14b",
         )
 
         directory = (
             rc["bob.db.casia-africa.directory"]
-            if rc["bob.db.casia-africa.directory "]
+            if "bob.db.casia-africa.directory" in rc
             else ""
         )
 
@@ -134,17 +134,8 @@ class CasiaAfricaDatabase(CSVDatabase):
         )
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "ID-V-All-Ep1",
-            "ID-V-All-Ep2",
-            "ID-V-All-Ep3",
-        ]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/casia-africa.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/casia-africa.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
         ]

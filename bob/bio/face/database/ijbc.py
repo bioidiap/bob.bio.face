@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 def _make_sample_from_template_row(row, image_directory):
 
-    # Appending this key, so we can handle parallel writting done correctly
-    # paying the penalty of having duplicate files
+    # Appending this key, so we can handle parallel writing correctly
+    # paying the penalty of having duplicate checkpoint files
     key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["SUBJECT_ID"])
 
     return DelayedSample(
@@ -80,7 +80,7 @@ def _make_sample_set_from_template_group(template_group, image_directory):
     )
 
 
-class IJBCDatabase(Database):
+class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
     """
 
     This package contains the access API and descriptions for the IARPA Janus Benchmark C -- IJB-C database.
@@ -108,13 +108,13 @@ class IJBCDatabase(Database):
             bob config set bob.bio.face.ijbc.directory [IJBC PATH]
 
 
-    The code below allows you to fetch the galery and probes of the "1:1" protocol.
+    The code below allows you to fetch the gallery and probes of the "1:1" protocol.
 
     .. code-block:: python
 
         >>> from bob.bio.face.database import IJBCDatabase
         >>> ijbc = IJBCDatabase(protocol="test1")
-        >>>
+
         >>> # Fetching the gallery
         >>> references = ijbc.references()
         >>> # Fetching the probes
@@ -128,6 +128,12 @@ class IJBCDatabase(Database):
         original_directory=rc.get("bob.bio.face.ijbc.directory"),
         **kwargs,
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported (This one actually needs to be converted to a CSVDatabase).",
+            DeprecationWarning,
+        )
 
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(

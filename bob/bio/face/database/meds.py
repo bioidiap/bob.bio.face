@@ -10,13 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabaseZTNorm, FileSampleLoader
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class MEDSDatabase(CSVDatabaseZTNorm):
+class MEDSDatabase(CSVDatabase):
     """
     The MEDS II database was developed by NIST to support and assists their biometrics evaluation program.
     It is composed by 518 identities from both men/women (labeled as M and F) and five different race annotations (Asian, Black, American Indian, Unknown and White)
@@ -61,11 +61,11 @@ class MEDSDatabase(CSVDatabaseZTNorm):
     >>> database.probes()
 
 
-    Fetching refererences for T-Norm normalization::
+    Fetching references for T-Norm normalization::
 
     >>> from bob.bio.face.database import MEDSDatabase
     >>> database = MEDSDatabase(protocol="verification_fold1")
-    >>> database.trerefences()
+    >>> database.treferences()
 
 
     Fetching probes for Z-Norm normalization::
@@ -99,9 +99,7 @@ class MEDSDatabase(CSVDatabaseZTNorm):
 
         # Downloading model if not exists
         urls = MEDSDatabase.urls()
-        filename = get_file(
-            "meds.tar.gz", urls, file_hash="3b01354d4c170672ac14120b80dace75"
-        )
+        filename = get_file("meds.tar.gz", urls, file_hash="b74e3c3a")
 
         super().__init__(
             name="meds",
@@ -124,6 +122,6 @@ class MEDSDatabase(CSVDatabaseZTNorm):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/meds_v2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/meds_v2.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
         ]

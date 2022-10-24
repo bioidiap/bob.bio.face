@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  Multipie database implementation
+  FRGC database implementation
 """
 
 from sklearn.pipeline import make_pipeline
@@ -31,7 +31,7 @@ class FRGCDatabase(CSVDatabase):
         filename = get_file(
             "frgc.tar.gz",
             urls,
-            file_hash="242168e993fe0f6f29bd59fccf3c79a0",
+            file_hash="9a2c1279",
         )
 
         super().__init__(
@@ -59,17 +59,8 @@ class FRGCDatabase(CSVDatabase):
         self.hash_fn = hash_string
 
     @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "2.0.1",
-            "2.0.2",
-            "2.0.4",
-        ]
-
-    @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/frgc.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/frgc.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
         ]

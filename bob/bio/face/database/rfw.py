@@ -16,7 +16,7 @@ from bob.pipelines.sample import DelayedSample, SampleSet
 logger = logging.getLogger("bob.bio.face")
 
 
-class RFWDatabase(Database):
+class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     """
     Dataset interface for the Racial faces in the wild dataset:
 
@@ -84,6 +84,7 @@ class RFWDatabase(Database):
             annotation_type="eyes-center",
             fixed_positions=None,
             memory_demanding=False,
+            **kwargs,
         )
 
         self._pairs = dict()
@@ -117,8 +118,8 @@ class RFWDatabase(Database):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+            "https://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",  # TODO This need to be verified if it is the same format as the previous files or if the class can be ported to CSVDatabase
+            "http://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",
         ]
 
     def _get_demographics_dict(self):
@@ -141,9 +142,9 @@ class RFWDatabase(Database):
 
         urls = RFWDatabase.urls()
         filename = get_file(
-            "msceleb_wikidata_demographics.csv.tar.gz",
+            "rfw.tar.gz",
             urls,
-            file_hash="8eb0e3c93647dfa0c13fade5db96d73a",
+            file_hash="83549522",
             extract=True,
         )[:-7]
         if self._demographics is None:

@@ -59,6 +59,12 @@ class CBSRNirVis2Database(CSVDatabase):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            DeprecationWarning,
+        )
 
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()

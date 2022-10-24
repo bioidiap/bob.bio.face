@@ -3,7 +3,7 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  Multipie database implementation
+  Caspeal database implementation
 """
 
 from sklearn.pipeline import make_pipeline
@@ -54,6 +54,12 @@ class CaspealDatabase(CSVDatabase):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            DeprecationWarning,
+        )
 
         # Downloading model if not exists
         urls = CaspealDatabase.urls()

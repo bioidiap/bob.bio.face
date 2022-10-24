@@ -21,7 +21,7 @@ from bob.pipelines import DelayedSample, SampleSet
 logger = logging.getLogger(__name__)
 
 
-class LFWDatabase(Database):
+class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
     """
     This package contains the access API and descriptions for the `Labeled Faced in the Wild <http://vis-www.cs.umass.edu/lfw>`_ (LFW) database.
     It only contains the Bob_ accessor methods to use the DB directly from python, with our certified protocols.
@@ -95,6 +95,12 @@ class LFWDatabase(Database):
         annotation_directory=rc.get("bob.bio.face.lfw.annotation_directory"),
         annotation_issuer="funneled",
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported (This one actually needs to be converted to a CSVDatabase).",
+            DeprecationWarning,
+        )
 
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(

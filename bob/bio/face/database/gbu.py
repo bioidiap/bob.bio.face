@@ -138,6 +138,12 @@ class GBUDatabase(Database):
         original_directory=rc.get("bob.bio.face.gbu.directory"),
         extension=".jpg",
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            DeprecationWarning,
+        )
 
         # self.filename = "/idiap/user/tpereira/gitlab/bob/bob.nightlies/temp/gbu.tar.gz"
         # Downloading model if not exists
@@ -167,7 +173,7 @@ class GBUDatabase(Database):
             name="gbu",
             protocol=protocol,
             score_all_vs_all=True,
-            annotation_type="eyes-center",
+            annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             memory_demanding=True,
         )

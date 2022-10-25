@@ -8,6 +8,7 @@ import os.path
 import imageio
 import numpy
 
+from sklearn.base import BaseEstimator
 from sklearn.pipeline import make_pipeline
 
 import bob.io.image
@@ -18,7 +19,6 @@ from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample
-from bob.pipelines.sample_loaders import AnnotationsLoader
 
 logger = logging.getLogger(__name__)
 
@@ -159,7 +159,7 @@ def read_frame_annotation_file_replaymobile(
     return frame_annotations
 
 
-class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
+class FrameBoundingBoxAnnotationLoader(BaseEstimator):
     """A transformer that adds bounding-box to a sample from annotations files.
 
     Parameters
@@ -201,6 +201,11 @@ class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
 
         return annotated_samples
 
+    def _more_tags(self):
+        return {
+            "requires_fit": False,
+        }
+
 
 class ReplayMobileBioDatabase(CSVDatabase):
     """Database interface that loads a csv definition for replay-mobile
@@ -229,7 +234,7 @@ class ReplayMobileBioDatabase(CSVDatabase):
 
     annotation_path: str or None
         Specifies a path where the annotation files are located.
-        If None: Downloads the files to the path poited by the
+        If None: Downloads the files to the path pointed by the
         ``bob.db.replaymobile.annotation_directory`` config.
         If None and the config does not exist: Downloads the file in ``~/bob_data``.
     """

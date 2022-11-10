@@ -27,11 +27,12 @@ regenerate_refs = False
 import bob.bio.base
 import bob.bio.face
 
-from bob.bio.base.test.utils import is_library_available
 from bob.bio.base.utils.annotations import read_annotation_file
 from bob.bio.face.color import rgb_to_gray
 from bob.bio.face.preprocessor import BoundingBoxAnnotatorCrop
 from bob.bio.face.preprocessor.croppers import FaceCropBoundingBox, FaceEyesNorm
+
+from .utils import is_library_available
 
 # Cropping
 CROPPED_IMAGE_HEIGHT = 80

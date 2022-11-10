@@ -6,7 +6,6 @@ import bob.io.base
 import bob.io.base.testing_utils
 
 from bob.bio.base.annotator import FailSafe
-from bob.bio.base.test.utils import is_library_available
 from bob.bio.face.annotator import (
     MTCNN,
     FaceX106Landmarks,
@@ -14,6 +13,8 @@ from bob.bio.face.annotator import (
     TinyFace,
     min_face_size_validator,
 )
+
+from .utils import is_library_available
 
 # An image with one face
 face_image = bob.io.base.load(

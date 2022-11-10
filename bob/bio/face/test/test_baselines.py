@@ -11,8 +11,9 @@ import bob.io.base
 
 from bob.bio.base import load_resource
 from bob.bio.base.pipelines import checkpoint_pipeline_simple, dask_bio_pipeline
-from bob.bio.base.test.utils import is_library_available
 from bob.pipelines import DelayedSample, Sample, SampleSet
+
+from .utils import is_library_available
 
 images = dict()
 images["bioref"] = (

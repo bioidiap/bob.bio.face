@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class MobioDatabase(CSVDatabase):
@@ -56,6 +55,15 @@ class MobioDatabase(CSVDatabase):
 
     """
 
+    name = "mobio"
+    category = "face"
+    dataset_protocols_name = "mobio.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/mobio-0580d95a.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/mobio-0580d95a.tar.gz",
+    ]
+    dataset_protocols_hash = "0580d95a"
+
     def __init__(
         self,
         protocol,
@@ -65,13 +73,8 @@ class MobioDatabase(CSVDatabase):
         dataset_original_extension=rc.get("bob.db.mobio.extension", ".png"),
     ):
 
-        # Downloading model if not exists
-        urls = MobioDatabase.urls()
-        filename = get_file("mobio.tar.gz", urls, file_hash="0580d95a")
-
         super().__init__(
-            name="mobio",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -84,10 +87,3 @@ class MobioDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/mobio-0580d95a.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/mobio-0580d95a.tar.gz",
-        ]

@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class MEDSDatabase(CSVDatabase):
@@ -88,6 +87,15 @@ class MEDSDatabase(CSVDatabase):
 
     """
 
+    name = "meds"
+    category = "face"
+    dataset_protocols_name = "meds.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
+    ]
+    dataset_protocols_hash = "b74e3c3a"
+
     def __init__(
         self,
         protocol,
@@ -97,13 +105,8 @@ class MEDSDatabase(CSVDatabase):
         dataset_original_extension=".jpg",
     ):
 
-        # Downloading model if not exists
-        urls = MEDSDatabase.urls()
-        filename = get_file("meds.tar.gz", urls, file_hash="b74e3c3a")
-
         super().__init__(
-            name="meds",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -118,10 +121,3 @@ class MEDSDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
-        ]

@@ -18,7 +18,6 @@ import bob.io.base
 
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.extension import rc
-from bob.extension.download import get_file
 from bob.pipelines import DelayedSample
 
 
@@ -160,6 +159,15 @@ class VGG2Database(CSVDatabase):
         }
     """
 
+    name = "vgg2"
+    category = "face"
+    dataset_protocols_name = "vgg2.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
+    ]
+    dataset_protocols_hash = "fce8f047"
+
     def __init__(
         self,
         protocol,
@@ -171,13 +179,8 @@ class VGG2Database(CSVDatabase):
         fixed_positions=None,
     ):
 
-        # Downloading model if not exists
-        urls = VGG2Database.urls()
-        filename = get_file("vgg2.tar.gz", urls, file_hash="fce8f047")
-
         super().__init__(
-            name="vgg2",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -197,10 +200,3 @@ class VGG2Database(CSVDatabase):
                 "This set is very long (3M samples). It might take ~4 minutes to load everything"
             )
         return super().background_model_samples()
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
-        ]

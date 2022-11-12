@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class CasiaAfricaDatabase(CSVDatabase):
@@ -98,27 +97,23 @@ class CasiaAfricaDatabase(CSVDatabase):
         One of the database protocols. Options are "ID-V-All-Ep1", "ID-V-All-Ep2" and "ID-V-All-Ep3"
     """
 
+    name = "casia-africa"
+    category = "face"
+    dataset_protocols_name = "casia-africa.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
+    ]
+    dataset_protocols_hash = "d5a3d14b"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        # Downloading model if not exists
-        urls = CasiaAfricaDatabase.urls()
-        filename = get_file(
-            "casia-africa.tar.gz",
-            urls,
-            file_hash="d5a3d14b",
-        )
-
-        directory = (
-            rc["bob.db.casia-africa.directory"]
-            if "bob.db.casia-africa.directory" in rc
-            else ""
-        )
+        directory = rc.get("bob.db.casia-africa.directory", "")
 
         super().__init__(
-            name="casia-africa",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -132,10 +127,3 @@ class CasiaAfricaDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
-        ]

@@ -122,6 +122,15 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
 
     """
 
+    name = "ijbc"
+    category = "face"
+    dataset_protocols_name = "ijbc.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/ijbc-????.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/ijbc-????.tar.gz",
+    ]
+    dataset_protocols_hash = "????"
+
     def __init__(
         self,
         protocol,
@@ -142,7 +151,7 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
 
         self._check_protocol(protocol)
         super().__init__(
-            name="ijbc",
+            name=self.name,
             protocol=protocol,
             score_all_vs_all=False,
             annotation_type="bounding-box",

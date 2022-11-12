@@ -17,11 +17,11 @@ from .utils import is_library_available
 
 images = dict()
 images["bioref"] = (
-    pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg"),
+    pkg_resources.resource_filename(__name__, "data/testimage.jpg"),
     {"reye": (176, 131), "leye": (170, 222)},
 )
 images["probe"] = (
-    pkg_resources.resource_filename("bob.bio.face.test", "data/ada.png"),
+    pkg_resources.resource_filename(__name__, "data/ada.png"),
     {"reye": (207, 440), "leye": (207, 546)},
 )
 

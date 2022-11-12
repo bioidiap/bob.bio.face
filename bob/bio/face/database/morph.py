@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class MorphDatabase(CSVDatabase):
@@ -55,6 +54,15 @@ class MorphDatabase(CSVDatabase):
 
     """
 
+    name = "morph"
+    category = "face"
+    dataset_protocols_name = "morph.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
+    ]
+    dataset_protocols_hash = "1200b906"
+
     def __init__(
         self,
         protocol,
@@ -64,13 +72,8 @@ class MorphDatabase(CSVDatabase):
         dataset_original_extension=".JPG",
     ):
 
-        # Downloading model if not exists
-        urls = MorphDatabase.urls()
-        filename = get_file("morph.tar.gz", urls, file_hash="1200b906")
-
         super().__init__(
-            name="morph",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -85,10 +88,3 @@ class MorphDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
-        ]

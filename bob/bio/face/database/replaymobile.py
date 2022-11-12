@@ -171,11 +171,10 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
     def __init__(
         self, annotation_directory=None, annotation_extension=".json", **kwargs
     ):
-        super().__init__(
-            annotation_directory=annotation_directory,
-            annotation_extension=annotation_extension,
-            **kwargs,
-        )
+
+        self.annotation_directory = (annotation_directory,)
+        self.annotation_extension = (annotation_extension,)
+        self.annotation_type = annotation_extension.replace(".", "")
 
     def transform(self, X):
         """Adds the bounding-box annotations to a series of samples."""
@@ -314,7 +313,7 @@ class ReplayMobileBioDatabase(CSVDatabase):
                     annotation_extension=annotations_extension,
                 ),
             ),
-            is_sparse=True,
+            score_all_vs_all=False,
             **kwargs,
         )
         self.annotation_type = "eyes-center"

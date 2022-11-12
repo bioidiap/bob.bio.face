@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class PolaThermalDatabase(CSVDatabase):
@@ -80,17 +79,18 @@ class PolaThermalDatabase(CSVDatabase):
         One of the database protocols.
     """
 
+    name = "polathermal"
+    category = "face"
+    dataset_protocols_name = "polathermal.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
+    ]
+    dataset_protocols_hash = "09a724b6"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-
-        # Downloading model if not exists
-        urls = PolaThermalDatabase.urls()
-        filename = get_file(
-            "polathermal.tar.gz",
-            urls,
-            file_hash="09a724b6",
-        )
 
         directory = rc.get("bob.db.pola-thermal.directory", "")
 
@@ -103,9 +103,8 @@ class PolaThermalDatabase(CSVDatabase):
             return bob.io.base.load(path) / 257
 
         super().__init__(
-            name="polathermal",
+            name=self.name,
             protocol=protocol,
-            dataset_protocols_path=filename,
             transformer=make_pipeline(
                 FileSampleLoader(
                     data_loader=load,
@@ -117,10 +116,3 @@ class PolaThermalDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
-        ]

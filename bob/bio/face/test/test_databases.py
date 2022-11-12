@@ -69,7 +69,7 @@ def test_mobio():
     from bob.bio.face.database import MobioDatabase
 
     # Getting the absolute path
-    urls = MobioDatabase.urls()
+    urls = MobioDatabase.dataset_protocols_urls
     filename = get_file("mobio.tar.gz", urls)
 
     # Removing the file before the test
@@ -103,12 +103,14 @@ def test_mobio():
     assert len(database.references(group="eval")) == 38
     assert len(database.probes(group="eval")) == 3990
 
+    assert database.protocols() == MobioDatabase.protocols()
+
 
 def test_multipie():
     from bob.bio.face.database import MultipieDatabase
 
     # Getting the absolute path
-    urls = MultipieDatabase.urls()
+    urls = MultipieDatabase.dataset_protocols_urls
     filename = get_file("multipie.tar.gz", urls)
 
     # Removing the file before the test
@@ -137,6 +139,8 @@ def test_multipie():
 
     assert len(database.references(group="eval")) == 65
     assert len(database.probes(group="eval")) == 3380
+
+    assert database.protocols() == MultipieDatabase.protocols()
 
 
 def test_replaymobile():
@@ -245,7 +249,7 @@ def test_meds():
     from bob.bio.face.database import MEDSDatabase
 
     # Getting the absolute path
-    urls = MEDSDatabase.urls()
+    urls = MEDSDatabase.dataset_protocols_urls
     filename = get_file("meds.tar.gz", urls)
 
     # Removing the file before the test
@@ -272,7 +276,7 @@ def test_morph():
     from bob.bio.face.database import MorphDatabase
 
     # Getting the absolute path
-    urls = MorphDatabase.urls()
+    urls = MorphDatabase.dataset_protocols_urls
     filename = get_file("morph.tar.gz", urls)
 
     # Removing the file before the test
@@ -383,7 +387,7 @@ def test_scface():
     from bob.bio.face.database import SCFaceDatabase
 
     # Getting the absolute path
-    urls = SCFaceDatabase.urls()
+    urls = SCFaceDatabase.dataset_protocols_urls
     filename = get_file("scface.tar.gz", urls)
 
     # Removing the file before the test
@@ -712,7 +716,7 @@ def test_vgg2():
     from bob.bio.face.database import VGG2Database
 
     # Getting the absolute path
-    urls = VGG2Database.urls()
+    urls = VGG2Database.dataset_protocols_urls
     filename = get_file("vgg2.tar.gz", urls)
 
     # Removing the file before the test

@@ -63,17 +63,13 @@ def _compare(
 
 def _image():
     return bob.io.base.load(
-        pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/testimage.jpg"
-        )
+        pkg_resources.resource_filename(__name__, "data/testimage.jpg")
     )
 
 
 def _annotation():
     return read_annotation_file(
-        pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/testimage.json"
-        ),
+        pkg_resources.resource_filename(__name__, "data/testimage.json"),
         "json",
     )
 
@@ -127,9 +123,7 @@ def test_face_crop():
     assert isinstance(cropper, bob.bio.face.preprocessor.Base)
 
     # execute face cropper
-    reference = pkg_resources.resource_filename(
-        "bob.bio.face.test", "data/cropped.hdf5"
-    )
+    reference = pkg_resources.resource_filename(__name__, "data/cropped.hdf5")
 
     ref_image = _compare(cropper.transform([image], [annotation])[0], reference)
 
@@ -181,7 +175,7 @@ def test_bounding_box_annotator_crop():
     _, bbox_annotation = [
         read_annotation_file(
             pkg_resources.resource_filename(
-                "bob.bio.face.test", "data/" + filename + ".json"
+                __name__, "data/" + filename + ".json"
             ),
             "json",
         )
@@ -219,7 +213,7 @@ def test_multi_face_crop():
     eye_annotation, bbox_annotation = [
         read_annotation_file(
             pkg_resources.resource_filename(
-                "bob.bio.face.test", "data/" + filename + ".json"
+                __name__, "data/" + filename + ".json"
             ),
             "json",
         )
@@ -247,9 +241,7 @@ def test_multi_face_crop():
 
     # execute face cropper
     eye_reference, bbox_reference = [
-        pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/" + filename + ".hdf5"
-        )
+        pkg_resources.resource_filename(__name__, "data/" + filename + ".hdf5")
         for filename in ["cropped", "cropped_bbox"]
     ]
 
@@ -295,7 +287,7 @@ def test_tan_triggs():
     _compare(
         preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/tan_triggs_cropped.hdf5"
+            __name__, "data/tan_triggs_cropped.hdf5"
         ),
         atol=1e-3,
         rtol=1e-3,
@@ -308,9 +300,7 @@ def test_tan_triggs():
     # result must be identical to the original face cropper (same eyes are used)
     _compare(
         preprocessor.transform([image], [annotation])[0],
-        pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/tan_triggs_none.hdf5"
-        ),
+        pkg_resources.resource_filename(__name__, "data/tan_triggs_none.hdf5"),
         atol=1e-3,
         rtol=1e-3,
     )
@@ -336,7 +326,7 @@ def test_inorm_lbp():
     _compare(
         preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/inorm_lbp_cropped.hdf5"
+            __name__, "data/inorm_lbp_cropped.hdf5"
         ),
     )
 
@@ -369,7 +359,7 @@ def test_heq():
     _compare(
         preprocessor.transform([image], [annotation])[0],
         pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/histogram_cropped.hdf5"
+            __name__, "data/histogram_cropped.hdf5"
         ),
     )
 

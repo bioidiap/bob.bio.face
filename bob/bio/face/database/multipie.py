@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import MultiposeAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class MultipieDatabase(CSVDatabase):
@@ -98,6 +97,15 @@ class MultipieDatabase(CSVDatabase):
 
     """
 
+    name = "multipie"
+    category = "face"
+    dataset_protocols_name = "multipie.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
+    ]
+    dataset_protocols_hash = "39e3437d"
+
     def __init__(
         self,
         protocol,
@@ -105,24 +113,15 @@ class MultipieDatabase(CSVDatabase):
         fixed_positions=None,
     ):
 
-        # Downloading model if not exists
-        urls = MultipieDatabase.urls()
-        filename = get_file(
-            "multipie.tar.gz",
-            urls,
-            file_hash="39e3437d",
-        )
-
         super().__init__(
-            name="multipie",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc["bob.db.multipie.directory"]
-                    if rc["bob.db.multipie.directory"]
-                    else "",
+                    dataset_original_directory=rc.get(
+                        "bob.db.multipie.directory", ""
+                    ),
                     extension=".png",
                 ),
                 MultiposeAnnotations(),
@@ -130,10 +129,3 @@ class MultipieDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
-        ]

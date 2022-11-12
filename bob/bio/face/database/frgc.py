@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 from bob.pipelines import hash_string
 
 
@@ -22,45 +21,37 @@ class FRGCDatabase(CSVDatabase):
     Face Recognition Grand Test dataset
     """
 
+    name = "frgc"
+    category = "face"
+    dataset_protocols_name = "frgc.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
+    ]
+    dataset_protocols_hash = "9a2c1279"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        # Downloading model if not exists
-        urls = FRGCDatabase.urls()
-        filename = get_file(
-            "frgc.tar.gz",
-            urls,
-            file_hash="9a2c1279",
-        )
-
         super().__init__(
-            name="frgc",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc.get(
-                        "bob.bio.face.frgc.directory", ""
+                        "bob.bio.face.frgc.directory",
+                        "",  # TODO normalize this name
                     ),
                     extension="",
-                    template_id_equal_subject_id=False,
                 ),
                 EyesAnnotations(),
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             score_all_vs_all=True,
-            group_probes_by_template_id=True,
             memory_demanding=True,
         )
 
         self.hash_fn = hash_string
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
-        ]

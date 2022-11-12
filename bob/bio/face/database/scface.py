@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class SCFaceDatabase(CSVDatabase):
@@ -28,21 +27,21 @@ class SCFaceDatabase(CSVDatabase):
 
     """
 
+    name = "scface"
+    category = "face"
+    dataset_protocols_name = "scface.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/scface-e6ffa822.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/scface-e6ffa822.tar.gz",
+    ]
+    dataset_protocols_hash = "e6ffa822"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        # Downloading model if not exists
-        urls = SCFaceDatabase.urls()
-        filename = get_file(
-            "scface.tar.gz",
-            urls,
-            file_hash="e6ffa822",
-        )
-
         super().__init__(
-            name="scface",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -58,10 +57,3 @@ class SCFaceDatabase(CSVDatabase):
             fixed_positions=fixed_positions,
             score_all_vs_all=True,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/scface-e6ffa822.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/scface-e6ffa822.tar.gz",
-        ]

@@ -62,6 +62,15 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
     """
 
+    name = "rfw"
+    category = "face"
+    dataset_protocols_name = "rfw.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",
+    ]
+    dataset_protocols_hash = "83549522"
+
     def __init__(
         self,
         protocol,
@@ -78,7 +87,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._default_extension = ".jpg"
 
         super().__init__(
-            name="rfw",
+            name=self.name,
             protocol=protocol,
             score_all_vs_all=False,
             annotation_type="eyes-center",
@@ -115,13 +124,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._nzprobes = 25
         self._ntreferences = 25
 
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",  # TODO This need to be verified if it is the same format as the previous files or if the class can be ported to CSVDatabase
-            "http://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",
-        ]
-
     def _get_demographics_dict(self):
         """
         Get the dictionary with GENDER and COUNTRY of birth.
@@ -140,11 +142,10 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
         """
 
-        urls = RFWDatabase.urls()
         filename = get_file(
-            "rfw.tar.gz",
-            urls,
-            file_hash="83549522",
+            RFWDatabase.dataset_protocols_name,
+            RFWDatabase.dataset_protocols_urls,
+            file_hash=RFWDatabase.dataset_protocols_hash,
             extract=True,
         )[:-7]
         if self._demographics is None:

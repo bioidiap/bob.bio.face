@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class ARFaceDatabase(CSVDatabase):
@@ -62,54 +61,32 @@ class ARFaceDatabase(CSVDatabase):
 
     """
 
+    name = "arface"
+    category = "face"
+    dataset_protocols_name = "arface.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
+    ]
+    dataset_protocols_hash = "903a0187"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        # Downloading model if not exists
-        urls = ARFaceDatabase.urls()
-        filename = get_file(
-            "arface.tar.gz",
-            urls,
-            file_hash="903a0187",
-        )
-
         super().__init__(
-            name="arface",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc[
-                        "bob.bio.face.arface.directory"
-                    ]
-                    if rc["bob.bio.face.arface.directory"]
-                    else "",
-                    extension=rc["bob.bio.face.arface.extension"]
-                    if rc["bob.bio.face.arface.extension"]
-                    else ".ppm",
+                    dataset_original_directory=rc.get(
+                        "bob.bio.face.arface.directory", ""
+                    ),
+                    extension=rc.get("bob.bio.face.arface.extension", ".ppm"),
                 ),
                 EyesAnnotations(),
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    # @staticmethod
-    # def protocols():
-    #     # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-    #     return [
-    #         "all",
-    #         "expression",
-    #         "illumination",
-    #         "occlusion",
-    #         "occlusion_and_illumination",
-    #     ]
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
-        ]

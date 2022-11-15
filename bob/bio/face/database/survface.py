@@ -180,6 +180,6 @@ class QMULSurvFaceDatabase(Database):
     @staticmethod
     def urls():
         return [
-            "https://gitlab.idiap.ch/bob/bob.bio.face/-/tree/low_resolution/bob/bio/face/data",
-            "https://gitlab.idiap.ch/bob/bob.bio.face/-/tree/low_resolution/bob/bio/face/data",
+            "https://gitlab.idiap.ch/bob/bob.bio.face/-/raw/low_resolution/bob/bio/face/data/QMUL-SurvFace.tar.gz",
+            "https://gitlab.idiap.ch/bob/bob.bio.face/-/raw/low_resolution/bob/bio/face/data/QMUL-SurvFace.tar.gz",
         ]

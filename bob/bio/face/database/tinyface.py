@@ -33,7 +33,7 @@ class TinyFaceDatabase(CSVDataset):
         filename = get_file(
             "tinyface.tar.gz",
             urls,
-            file_hash="200d09d5f79d510f0edaf0b66f40b94c",
+            file_hash="23586cd2b342a8dca6a89637847efd61",
         )
 
         super().__init__(
@@ -69,8 +69,8 @@ class TinyFaceDatabase(CSVDataset):
     @staticmethod
     def urls():
         return [
-            "https://www.idiap.ch/~lluevano/tinyface.tar.gz",
-            "https://www.idiap.ch/~lluevano/tinyface.tar.gz",
+            "https://gitlab.idiap.ch/bob/bob.bio.face/-/tree/low_resolution/bob/bio/face/data",
+            "https://gitlab.idiap.ch/bob/bob.bio.face/-/tree/low_resolution/bob/bio/face/data",
         ]
 
     def objects(

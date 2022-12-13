@@ -120,13 +120,13 @@ In the following, find a list of all current databases, their configuration para
 
 
 *  MEDS II (:any:`bob.bio.face.database.MEDSDatabase`)
-  
+
   In the original files of the dataset the annotation used for each demography is depicted in the paranthesis. For example ``male`` gender is depcited by ``M``.
 
   - directory key: ``bob.db.meds.directory``; the directory containing all the images
   - expected extension: ``.jpg``
   - protocols: ``verification_fold1, verification_fold2, verification_fold3``
-  - races: ``Black(B)``, ``White(W)``, ``Asian(A)``, ``Unkown(U)``, ``Indian(I)`` 
+  - races: ``Black(B)``, ``White(W)``, ``Asian(A)``, ``Unkown(U)``, ``Indian(I)``
   - genders: ``male(M)``, ``female(F)``
   - annotations: eye centers (provided in the interface)
 

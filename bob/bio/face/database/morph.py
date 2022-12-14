@@ -3,20 +3,19 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  MEDS database implementation
+  MORPH database implementation
 """
 
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
-class MorphDatabase(CSVDatasetZTNorm):
+class MorphDatabase(CSVDatabase):
     """
     The MORPH dataset is relatively old, but is getting some traction recently mostly because its richness
     with respect to sensitive attributes.
@@ -55,6 +54,15 @@ class MorphDatabase(CSVDatasetZTNorm):
 
     """
 
+    name = "morph"
+    category = "face"
+    dataset_protocols_name = "morph.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/morph-1200b906.tar.gz",
+    ]
+    dataset_protocols_hash = "1200b906"
+
     def __init__(
         self,
         protocol,
@@ -64,18 +72,11 @@ class MorphDatabase(CSVDatasetZTNorm):
         dataset_original_extension=".JPG",
     ):
 
-        # Downloading model if not exists
-        urls = MorphDatabase.urls()
-        filename = get_file(
-            "morph.tar.gz", urls, file_hash="9efa1ff13ef6984ebfcf86f1b1f58873"
-        )
-
         super().__init__(
-            name="morph",
-            dataset_protocol_path=filename,
+            name=self.name,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=dataset_original_directory
                     if dataset_original_directory
@@ -87,10 +88,3 @@ class MorphDatabase(CSVDatasetZTNorm):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/morph_v2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/morph_v2.tar.gz",
-        ]

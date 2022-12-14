@@ -233,9 +233,7 @@ def test_vgg2():
 def test_data_augmentation():
 
     image = bob.io.base.load(
-        pkg_resources.resource_filename(
-            "bob.bio.face.test", "data/testimage.jpg"
-        )
+        pkg_resources.resource_filename(__name__, "data/testimage.jpg")
     )
 
     from bob.bio.face.pytorch.preprocessing import (

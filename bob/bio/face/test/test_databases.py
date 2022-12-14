@@ -307,6 +307,16 @@ def test_casia_africa():
     assert len(database.references()) == 2455
     assert len(database.probes()) == 2426
 
+    database = CasiaAfricaDatabase("ID-V-All-Ep2")
+
+    assert len(database.references()) == 2455
+    assert len(database.probes()) == 1171
+
+    database = CasiaAfricaDatabase("ID-V-All-Ep3")
+
+    assert len(database.references()) == 2466
+    assert len(database.probes()) == 1193
+
 
 def test_frgc():
 
@@ -321,9 +331,9 @@ def test_frgc():
             assert all([len(x) == template_size for x in samples])
 
     database = FRGCDatabase("2.0.1")
-    _check_samples(
-        database.background_model_samples(), n_templates=12776, n_subjects=222
-    )
+    background_model_samples = database.background_model_samples()
+    assert len(background_model_samples) == 12776
+    assert len(set([x.subject_id for x in background_model_samples])) == 222
     _check_samples(
         database.references(), n_templates=7572, n_subjects=370, template_size=1
     )
@@ -332,9 +342,9 @@ def test_frgc():
     )
 
     database = FRGCDatabase("2.0.2")
-    _check_samples(
-        database.background_model_samples(), n_templates=12776, n_subjects=222
-    )
+    background_model_samples = database.background_model_samples()
+    assert len(background_model_samples) == 12776
+    assert len(set([x.subject_id for x in background_model_samples])) == 222
     _check_samples(
         database.references(), n_templates=1893, n_subjects=370, template_size=4
     )
@@ -343,9 +353,9 @@ def test_frgc():
     )
 
     database = FRGCDatabase("2.0.4")
-    _check_samples(
-        database.background_model_samples(), n_templates=12776, n_subjects=222
-    )
+    background_model_samples = database.background_model_samples()
+    assert len(background_model_samples) == 12776
+    assert len(set([x.subject_id for x in background_model_samples])) == 222
     _check_samples(
         database.references(), n_templates=7572, n_subjects=370, template_size=1
     )
@@ -515,7 +525,7 @@ def test_caspeal():
 def test_arface():
     def assert_attributes(samplesets, attribute, references):
         assert sorted(
-            set([getattr(sset, attribute) for sset in samplesets])
+            set([getattr(s, attribute) for sset in samplesets for s in sset])
         ) == sorted(references)
 
     from bob.bio.face.database import ARFaceDatabase

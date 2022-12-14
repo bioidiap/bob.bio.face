@@ -98,12 +98,12 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
         import warnings
 
         warnings.warn(
-            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported (This one actually needs to be converted to a CSVDatabase).",
+            "The lfw database is not yet adapted to this version of bob. Please port it or ask for it to be ported (This one actually needs to be converted to a CSVDatabase).",
             DeprecationWarning,
         )
 
         if original_directory is None or not os.path.exists(original_directory):
-            raise ValueError(
+            logger.warning(
                 f"Invalid or non existent `original_directory`: {original_directory}."
                 "Please, do `bob config set bob.bio.face.lfw.directory PATH` to set the LFW data directory."
             )

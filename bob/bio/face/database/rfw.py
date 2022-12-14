@@ -117,7 +117,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._demographics = self._get_demographics_dict()
 
         # Setting the seed for the IDIAP PROTOCOL,
-        # so we have a consisent set of probes
+        # so we have a consistent set of probes
         self._idiap_protocol_seed = 652
 
         # Number of samples used to Z-Norm and T-Norm (per race)

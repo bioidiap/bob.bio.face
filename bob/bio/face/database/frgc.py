@@ -25,10 +25,10 @@ class FRGCDatabase(CSVDatabase):
     category = "face"
     dataset_protocols_name = "frgc.tar.gz"
     dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/frgc-9a2c1279.tar.gz",
+        "https://www.idiap.ch/software/bob/databases/latest/face/frgc-294a2ce4.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/frgc-294a2ce4.tar.gz",
     ]
-    dataset_protocols_hash = "9a2c1279"
+    dataset_protocols_hash = "294a2ce4"
 
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
@@ -41,8 +41,8 @@ class FRGCDatabase(CSVDatabase):
                 FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc.get(
-                        "bob.bio.face.frgc.directory",
-                        "",  # TODO normalize this name
+                        "bob.bio.face.frgc.directory",  # TODO normalize this name
+                        "",
                     ),
                     extension="",
                 ),

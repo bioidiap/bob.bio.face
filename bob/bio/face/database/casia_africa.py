@@ -101,10 +101,10 @@ class CasiaAfricaDatabase(CSVDatabase):
     category = "face"
     dataset_protocols_name = "casia-africa.tar.gz"
     dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/casia-africa-d5a3d14b.tar.gz",
+        "https://www.idiap.ch/software/bob/databases/latest/face/casia-africa-e517a48d.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/casia-africa-e517a48d.tar.gz",
     ]
-    dataset_protocols_hash = "d5a3d14b"
+    dataset_protocols_hash = "e517a48d"
 
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
@@ -120,7 +120,6 @@ class CasiaAfricaDatabase(CSVDatabase):
                     data_loader=bob.io.base.load,
                     dataset_original_directory=directory,
                     extension=".jpg",
-                    template_id_equal_subject_id=False,
                 ),
                 EyesAnnotations(),
             ),

@@ -65,10 +65,10 @@ class ARFaceDatabase(CSVDatabase):
     category = "face"
     dataset_protocols_name = "arface.tar.gz"
     dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/arface-903a0187.tar.gz",
+        "https://www.idiap.ch/software/bob/databases/latest/face/arface-7078bd96.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/arface-7078bd96.tar.gz",
     ]
-    dataset_protocols_hash = "903a0187"
+    dataset_protocols_hash = "7078bd96"
 
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None

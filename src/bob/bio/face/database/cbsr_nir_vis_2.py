@@ -15,7 +15,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class CBSRNirVis2Database(CSVDatabase):
@@ -56,30 +55,18 @@ class CBSRNirVis2Database(CSVDatabase):
         One of the database protocols.
     """
 
+    name = "cbsr-nir-vis2"
+    category = "face"
+    dataset_protocols_name = "cbsr-nir-vis2.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/cbsr-nir-vis2-cabebf97.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/cbsr-nir-vis2-cabebf97.tar.gz",
+    ]
+    dataset_protocols_hash = "cabebf97"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-        import warnings
-
-        warnings.warn(
-            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
-            DeprecationWarning,
-        )
-
-        # Downloading model if not exists
-        urls = CBSRNirVis2Database.urls()
-        filename = get_file(
-            "cbsr-nir-vis2.tar.gz",
-            urls,
-            file_hash="e4bda52ab6754556783d6730eccc2ae2",
-        )
-
-        directory = (
-            rc["bob.db.cbsr-nir-vis-2.directory"]
-            if rc["bob.db.cbsr-nir-vis-2.directory"]
-            else ""
-        )
-
         def load(filename):
             extensions = [".jpg", ".bmp"]
             for e in extensions:
@@ -87,19 +74,18 @@ class CBSRNirVis2Database(CSVDatabase):
                 new_filename = f + e
                 if os.path.exists(new_filename):
                     return bob.io.base.load(new_filename)
-            else:
-                raise ValueError(
-                    "File `{0}` not found".format(str(new_filename))
-                )
+            raise ValueError("File `{0}` not found".format(str(new_filename)))
 
         super().__init__(
-            name="cbsr-nir-vis2",
-            dataset_protocols_path=filename,
+            name="",
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
                     data_loader=load,
-                    dataset_original_directory=directory,
+                    dataset_original_directory=rc[
+                        "bob.db.cbsr-nir-vis-2.directory"
+                    ]
+                    or "",
                     extension=".jpg",
                 ),
                 EyesAnnotations(),
@@ -107,26 +93,3 @@ class CBSRNirVis2Database(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "view2_1",
-            "view2_2",
-            "view2_3",
-            "view2_4",
-            "view2_5",
-            "view2_6",
-            "view2_7",
-            "view2_8",
-            "view2_9",
-            "view2_10",
-        ]
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/cbsr-nir-vis2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/cbsr-nir-vis2.tar.gz",
-        ]

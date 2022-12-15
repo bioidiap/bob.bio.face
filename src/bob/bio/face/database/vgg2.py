@@ -163,10 +163,10 @@ class VGG2Database(CSVDatabase):
     category = "face"
     dataset_protocols_name = "vgg2.tar.gz"
     dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
+        "https://www.idiap.ch/software/bob/databases/latest/face/vgg2-8c067663.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/vgg2-8c067663.tar.gz",
     ]
-    dataset_protocols_hash = "fce8f047"
+    dataset_protocols_hash = "8c067663"
 
     def __init__(
         self,

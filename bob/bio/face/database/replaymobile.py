@@ -8,17 +8,17 @@ import os.path
 import imageio
 import numpy
 
-from sklearn.base import BaseEstimator
 from sklearn.pipeline import make_pipeline
 
 import bob.io.image
 
-from bob.bio.base.database import CSVDatabase, FileSampleLoader
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.base.utils.annotations import read_annotation_file
 from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample
+from bob.pipelines.sample_loaders import AnnotationsLoader
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +68,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     return image
 
 
-class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
+class ReplayMobileCSVFrameSampleLoader(CSVToSampleLoaderBiometrics):
     """A loader transformer returning a specific frame of a video file.
 
     This is specifically tailored for replay-mobile. It uses a specific loader
@@ -79,21 +79,21 @@ class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
         self,
         dataset_original_directory="",
         extension="",
-        template_id_equal_subject_id=True,
+        reference_id_equal_subject_id=True,
     ):
         super().__init__(
             data_loader=None,
             extension=extension,
             dataset_original_directory=dataset_original_directory,
         )
-        self.template_id_equal_subject_id = template_id_equal_subject_id
+        self.reference_id_equal_subject_id = reference_id_equal_subject_id
 
     def convert_row_to_sample(self, row, header):
         """Creates a sample given a row of the CSV protocol definition."""
         fields = dict([[str(h).lower(), r] for h, r in zip(header, row)])
 
-        if self.template_id_equal_subject_id:
-            fields["subject_id"] = fields["template_id"]
+        if self.reference_id_equal_subject_id:
+            fields["subject_id"] = fields["reference_id"]
         else:
             if "subject_id" not in fields:
                 raise ValueError(f"`subject_id` not available in {header}")
@@ -125,7 +125,7 @@ def read_frame_annotation_file_replaymobile(
 ):
     """Returns the bounding-box for one frame of a video file of replay-mobile.
 
-    Given an annotation file location and a frame number, returns the bounding
+    Given an annnotation file location and a frame number, returns the bounding
     box coordinates corresponding to the frame.
 
     The replay-mobile annotation files are composed of 4 columns and N rows for
@@ -159,7 +159,7 @@ def read_frame_annotation_file_replaymobile(
     return frame_annotations
 
 
-class FrameBoundingBoxAnnotationLoader(BaseEstimator):
+class FrameBoundingBoxAnnotationLoader(AnnotationsLoader):
     """A transformer that adds bounding-box to a sample from annotations files.
 
     Parameters
@@ -171,10 +171,11 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
     def __init__(
         self, annotation_directory=None, annotation_extension=".json", **kwargs
     ):
-
-        self.annotation_directory = (annotation_directory,)
-        self.annotation_extension = (annotation_extension,)
-        self.annotation_type = annotation_extension.replace(".", "")
+        super().__init__(
+            annotation_directory=annotation_directory,
+            annotation_extension=annotation_extension,
+            **kwargs,
+        )
 
     def transform(self, X):
         """Adds the bounding-box annotations to a series of samples."""
@@ -200,13 +201,8 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
 
         return annotated_samples
 
-    def _more_tags(self):
-        return {
-            "requires_fit": False,
-        }
 
-
-class ReplayMobileBioDatabase(CSVDatabase):
+class ReplayMobileBioDatabase(CSVDataset):
     """Database interface that loads a csv definition for replay-mobile
 
     Looks for the protocol definition files (structure of CSV files). If not
@@ -233,7 +229,7 @@ class ReplayMobileBioDatabase(CSVDatabase):
 
     annotation_path: str or None
         Specifies a path where the annotation files are located.
-        If None: Downloads the files to the path pointed by the
+        If None: Downloads the files to the path poited by the
         ``bob.db.replaymobile.annotation_directory`` config.
         If None and the config does not exist: Downloads the file in ``~/bob_data``.
     """
@@ -251,11 +247,11 @@ class ReplayMobileBioDatabase(CSVDatabase):
 
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            proto_def_hash = "c511eeeb"
+            proto_def_hash = "fee57d46"
             proto_def_name = f"replaymobile-{proto_def_hash}.tar.gz"
             proto_def_urls = [
-                f"https://www.idiap.ch/software/bob/databases/latest/face/{proto_def_name}",
-                f"http://www.idiap.ch/software/bob/databases/latest/face/{proto_def_name}",
+                f"https://www.idiap.ch/software/bob/databases/latest/{proto_def_name}",
+                f"http://www.idiap.ch/software/bob/databases/latest//{proto_def_name}",
             ]
             protocol_definition_path = get_file(
                 filename=proto_def_name,
@@ -302,8 +298,8 @@ class ReplayMobileBioDatabase(CSVDatabase):
         super().__init__(
             name="replaymobile",
             protocol=protocol,
-            dataset_protocols_path=protocol_definition_path,
-            transformer=make_pipeline(
+            dataset_protocol_path=protocol_definition_path,
+            csv_to_sample_loader=make_pipeline(
                 ReplayMobileCSVFrameSampleLoader(
                     dataset_original_directory=data_path,
                     extension=data_extension,
@@ -313,7 +309,7 @@ class ReplayMobileBioDatabase(CSVDatabase):
                     annotation_extension=annotations_extension,
                 ),
             ),
-            score_all_vs_all=False,
+            is_sparse=True,
             **kwargs,
         )
         self.annotation_type = "eyes-center"

@@ -13270,8 +13270,8 @@ div#notebook {
 
 <span class="c1"># Function to separate genuines from impostors</span>
 <span class="k">def</span> <span class="nf">split</span><span class="p">(</span><span class="n">df</span><span class="p">):</span>
-    <span class="n">impostors</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;probe_template_id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;bio_ref_template_id&#39;</span><span class="p">]]</span>
-    <span class="n">genuines</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;probe_template_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;bio_ref_template_id&#39;</span><span class="p">]]</span>
+    <span class="n">impostors</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;probe_reference_id&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;bio_ref_reference_id&#39;</span><span class="p">]]</span>
+    <span class="n">genuines</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="p">[</span><span class="s1">&#39;probe_reference_id&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">df</span><span class="p">[</span><span class="s1">&#39;bio_ref_reference_id&#39;</span><span class="p">]]</span>
     <span class="k">return</span> <span class="n">impostors</span><span class="p">,</span> <span class="n">genuines</span>
 </pre></div>
 

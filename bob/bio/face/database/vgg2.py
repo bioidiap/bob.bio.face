@@ -16,8 +16,9 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabase, FileSampleLoader
+from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
 from bob.extension import rc
+from bob.extension.download import get_file
 from bob.pipelines import DelayedSample
 
 
@@ -25,7 +26,7 @@ class VGG2Annotations(TransformerMixin, BaseEstimator):
     """
     Decode VGG2 Annotations.
 
-    VGG2 has 5 landmarks annotated and the are the following: two for eyes, one for the nose and two for the mouth
+    VGG2 has 5 landmarks annnotated and the are the following: two for eyes, one for the nose and two for the mouth
 
     """
 
@@ -102,7 +103,7 @@ class VGG2Annotations(TransformerMixin, BaseEstimator):
         return annotated_samples
 
 
-class VGG2Database(CSVDatabase):
+class VGG2Database(CSVDatasetZTNorm):
     """
     The VGG2 Dataset is composed of 9131 people split into two sets.
     The training set contains 8631 identities, while the test set contains 500 identities.
@@ -129,11 +130,11 @@ class VGG2Database(CSVDatabase):
     On the other hand, the `vgg2-short` presents 10 samples per identity at the probe and training sets.
     With that the training set of `vgg2-short` contains 86'310 samples instead of 3'141'890 samples
     from `vgg2-full`.
-    The protocols with the suffix `-with-eval`, splits the original test set into a dev and eval sets
+    The protocols with the suffix `-with-eval`, splits the orinal test set into a dev and eval sets
     containing 250 identities each.
 
 
-    All the landmarks and face crops provided in the original dataset is provided with this interface.
+    All the landmarks and face crops provided in the original dataset is provided with this inteface.
 
     .. warning::
 
@@ -159,15 +160,6 @@ class VGG2Database(CSVDatabase):
         }
     """
 
-    name = "vgg2"
-    category = "face"
-    dataset_protocols_name = "vgg2.tar.gz"
-    dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/vgg2-fce8f047.tar.gz",
-    ]
-    dataset_protocols_hash = "fce8f047"
-
     def __init__(
         self,
         protocol,
@@ -179,11 +171,18 @@ class VGG2Database(CSVDatabase):
         fixed_positions=None,
     ):
 
+        # Downloading model if not exists
+        urls = VGG2Database.urls()
+        filename = get_file(
+            "vgg2.tar.gz", urls, file_hash="4a05d797a326374a6b52bcd8d5a89d48"
+        )
+
         super().__init__(
-            name=self.name,
+            name="vgg2",
+            dataset_protocol_path=filename,
             protocol=protocol,
-            transformer=make_pipeline(
-                FileSampleLoader(
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=dataset_original_directory,
                     extension=dataset_original_extension,
@@ -200,3 +199,20 @@ class VGG2Database(CSVDatabase):
                 "This set is very long (3M samples). It might take ~4 minutes to load everything"
             )
         return super().background_model_samples()
+
+    @staticmethod
+    def protocols():
+        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+        return [
+            "vgg2-short",
+            "vgg2-full",
+            "vgg2-short-with-eval",
+            "vgg2-full-with-eval",
+        ]
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/vgg2.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/vgg2.tar.gz",
+        ]

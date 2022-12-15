@@ -10,12 +10,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabase, FileSampleLoader
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import MultiposeAnnotations
 from bob.extension import rc
+from bob.extension.download import get_file
 
 
-class MultipieDatabase(CSVDatabase):
+class MultipieDatabase(CSVDataset):
     """
 
     The `CMU Multi-PIE face database <http://www.cs.cmu.edu/afs/cs/project/PIE/MultiPie/Multi-Pie/Home.html>`_ contains more than 750,000 images
@@ -97,35 +98,65 @@ class MultipieDatabase(CSVDatabase):
 
     """
 
-    name = "multipie"
-    category = "face"
-    dataset_protocols_name = "multipie.tar.gz"
-    dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/multipie-39e3437d.tar.gz",
-    ]
-    dataset_protocols_hash = "39e3437d"
-
     def __init__(
-        self,
-        protocol,
-        annotation_type=("eyes-center", "left-profile", "right-profile"),
-        fixed_positions=None,
+        self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
+        # Downloading model if not exists
+        urls = MultipieDatabase.urls()
+        filename = get_file(
+            "multipie.tar.gz",
+            urls,
+            file_hash="6c27c9616c2d0373c5f052b061d80178",
+        )
+
         super().__init__(
-            name=self.name,
+            name="multipie",
+            dataset_protocol_path=filename,
             protocol=protocol,
-            transformer=make_pipeline(
-                FileSampleLoader(
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc.get(
-                        "bob.db.multipie.directory", ""
-                    ),
+                    dataset_original_directory=rc["bob.db.multipie.directory"]
+                    if rc["bob.db.multipie.directory"]
+                    else "",
                     extension=".png",
                 ),
                 MultiposeAnnotations(),
             ),
-            annotation_type=annotation_type,
+            annotation_type=["eyes-center", "left-profile", "right-profile"],
             fixed_positions=fixed_positions,
         )
+
+    @staticmethod
+    def protocols():
+        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+        return [
+            "P240",
+            "P191",
+            "P130",
+            "G",
+            "P010",
+            "P041",
+            "P051",
+            "P050",
+            "M",
+            "P110",
+            "P",
+            "P140",
+            "U",
+            "P200",
+            "E",
+            "P190",
+            "P120",
+            "P080",
+            "P081",
+            "P090",
+        ]
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/multipie_v2.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/multipie_v2.tar.gz",
+        ]

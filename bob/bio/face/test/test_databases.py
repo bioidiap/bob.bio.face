@@ -69,7 +69,7 @@ def test_mobio():
     from bob.bio.face.database import MobioDatabase
 
     # Getting the absolute path
-    urls = MobioDatabase.dataset_protocols_urls
+    urls = MobioDatabase.urls()
     filename = get_file("mobio.tar.gz", urls)
 
     # Removing the file before the test
@@ -103,14 +103,12 @@ def test_mobio():
     assert len(database.references(group="eval")) == 38
     assert len(database.probes(group="eval")) == 3990
 
-    assert database.protocols() == MobioDatabase.protocols()
-
 
 def test_multipie():
     from bob.bio.face.database import MultipieDatabase
 
     # Getting the absolute path
-    urls = MultipieDatabase.dataset_protocols_urls
+    urls = MultipieDatabase.urls()
     filename = get_file("multipie.tar.gz", urls)
 
     # Removing the file before the test
@@ -139,8 +137,6 @@ def test_multipie():
 
     assert len(database.references(group="eval")) == 65
     assert len(database.probes(group="eval")) == 3380
-
-    assert database.protocols() == MultipieDatabase.protocols()
 
 
 def test_replaymobile():
@@ -249,7 +245,7 @@ def test_meds():
     from bob.bio.face.database import MEDSDatabase
 
     # Getting the absolute path
-    urls = MEDSDatabase.dataset_protocols_urls
+    urls = MEDSDatabase.urls()
     filename = get_file("meds.tar.gz", urls)
 
     # Removing the file before the test
@@ -276,7 +272,7 @@ def test_morph():
     from bob.bio.face.database import MorphDatabase
 
     # Getting the absolute path
-    urls = MorphDatabase.dataset_protocols_urls
+    urls = MorphDatabase.urls()
     filename = get_file("morph.tar.gz", urls)
 
     # Removing the file before the test
@@ -307,16 +303,6 @@ def test_casia_africa():
     assert len(database.references()) == 2455
     assert len(database.probes()) == 2426
 
-    database = CasiaAfricaDatabase("ID-V-All-Ep2")
-
-    assert len(database.references()) == 2455
-    assert len(database.probes()) == 1171
-
-    database = CasiaAfricaDatabase("ID-V-All-Ep3")
-
-    assert len(database.references()) == 2466
-    assert len(database.probes()) == 1193
-
 
 def test_frgc():
 
@@ -324,16 +310,16 @@ def test_frgc():
 
     def _check_samples(samples, n_templates, n_subjects, template_size=0):
         assert len(samples) == n_templates
-        assert len(set([x.template_id for x in samples])) == n_templates
+        assert len(set([x.reference_id for x in samples])) == n_templates
         assert len(set([x.subject_id for x in samples])) == n_subjects
 
         if template_size > 0:
             assert all([len(x) == template_size for x in samples])
 
     database = FRGCDatabase("2.0.1")
-    background_model_samples = database.background_model_samples()
-    assert len(background_model_samples) == 12776
-    assert len(set([x.subject_id for x in background_model_samples])) == 222
+    _check_samples(
+        database.background_model_samples(), n_templates=12776, n_subjects=222
+    )
     _check_samples(
         database.references(), n_templates=7572, n_subjects=370, template_size=1
     )
@@ -342,9 +328,9 @@ def test_frgc():
     )
 
     database = FRGCDatabase("2.0.2")
-    background_model_samples = database.background_model_samples()
-    assert len(background_model_samples) == 12776
-    assert len(set([x.subject_id for x in background_model_samples])) == 222
+    _check_samples(
+        database.background_model_samples(), n_templates=12776, n_subjects=222
+    )
     _check_samples(
         database.references(), n_templates=1893, n_subjects=370, template_size=4
     )
@@ -353,9 +339,9 @@ def test_frgc():
     )
 
     database = FRGCDatabase("2.0.4")
-    background_model_samples = database.background_model_samples()
-    assert len(background_model_samples) == 12776
-    assert len(set([x.subject_id for x in background_model_samples])) == 222
+    _check_samples(
+        database.background_model_samples(), n_templates=12776, n_subjects=222
+    )
     _check_samples(
         database.references(), n_templates=7572, n_subjects=370, template_size=1
     )
@@ -397,7 +383,7 @@ def test_scface():
     from bob.bio.face.database import SCFaceDatabase
 
     # Getting the absolute path
-    urls = SCFaceDatabase.dataset_protocols_urls
+    urls = SCFaceDatabase.urls()
     filename = get_file("scface.tar.gz", urls)
 
     # Removing the file before the test
@@ -525,7 +511,7 @@ def test_caspeal():
 def test_arface():
     def assert_attributes(samplesets, attribute, references):
         assert sorted(
-            set([getattr(s, attribute) for sset in samplesets for s in sset])
+            set([getattr(sset, attribute) for sset in samplesets])
         ) == sorted(references)
 
     from bob.bio.face.database import ARFaceDatabase
@@ -726,7 +712,7 @@ def test_vgg2():
     from bob.bio.face.database import VGG2Database
 
     # Getting the absolute path
-    urls = VGG2Database.dataset_protocols_urls
+    urls = VGG2Database.urls()
     filename = get_file("vgg2.tar.gz", urls)
 
     # Removing the file before the test

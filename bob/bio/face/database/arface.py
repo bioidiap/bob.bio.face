@@ -3,19 +3,20 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  AR Face database implementation
+  Multipie database implementation
 """
 
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabase, FileSampleLoader
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
+from bob.extension.download import get_file
 
 
-class ARFaceDatabase(CSVDatabase):
+class ARFaceDatabase(CSVDataset):
     """
     This package contains the access API and descriptions for the AR face database.
     It only contains the Bob_ accessor methods to use the DB directly from python, with our certified protocols.
@@ -47,7 +48,7 @@ class ARFaceDatabase(CSVDatabase):
 
         .. code-block:: sh
 
-            bob config set bob.bio.face.arface.directory [ARFACE DATA PATH]
+            bob config set bob.bio.face.arface.directory [ARFACE PATH]
 
 
     .. code-block:: latex
@@ -61,32 +62,54 @@ class ARFaceDatabase(CSVDatabase):
 
     """
 
-    name = "arface"
-    category = "face"
-    dataset_protocols_name = "arface.tar.gz"
-    dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/arface-7078bd96.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/arface-7078bd96.tar.gz",
-    ]
-    dataset_protocols_hash = "7078bd96"
-
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
+        # Downloading model if not exists
+        urls = ARFaceDatabase.urls()
+        filename = get_file(
+            "arface.tar.gz",
+            urls,
+            file_hash="66cf05fe03adb8d73a76fd75641dd468",
+        )
+
         super().__init__(
-            name=self.name,
+            name="arface",
+            dataset_protocol_path=filename,
             protocol=protocol,
-            transformer=make_pipeline(
-                FileSampleLoader(
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoaderBiometrics(
                     data_loader=bob.io.base.load,
-                    dataset_original_directory=rc.get(
-                        "bob.bio.face.arface.directory", ""
-                    ),
-                    extension=rc.get("bob.bio.face.arface.extension", ".ppm"),
+                    dataset_original_directory=rc[
+                        "bob.bio.face.arface.directory"
+                    ]
+                    if rc["bob.bio.face.arface.directory"]
+                    else "",
+                    extension=rc["bob.bio.face.arface.extension"]
+                    if rc["bob.bio.face.arface.extension"]
+                    else ".ppm",
                 ),
                 EyesAnnotations(),
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
+
+    @staticmethod
+    def protocols():
+        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+        return [
+            "all",
+            "expression",
+            "illumination",
+            "occlusion",
+            "occlusion_and_illumination",
+        ]
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/arface.tar.gz",
+        ]

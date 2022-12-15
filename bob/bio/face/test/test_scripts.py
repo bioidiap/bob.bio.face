@@ -16,7 +16,7 @@ def test_display_annotations():
     try:
         tmp_dir = tempfile.mkdtemp(prefix="bobtest_")
         annotations_dir = pkg_resources.resource_filename(
-            __name__, "data/annotations/"
+            "bob.bio.face.test", "data/annotations/"
         )
         runner = CliRunner()
         result = runner.invoke(

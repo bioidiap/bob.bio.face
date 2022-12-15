@@ -16,7 +16,7 @@ from bob.pipelines.sample import DelayedSample, SampleSet
 logger = logging.getLogger("bob.bio.face")
 
 
-class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
+class RFWDatabase(Database):
     """
     Dataset interface for the Racial faces in the wild dataset:
 
@@ -33,7 +33,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     (or non-mated) is possible. This is closed to a real-world scenario.
 
     .. warning::
-        The following identities are associated with two races in the original dataset
+        The following identities are assossiated with two races in the original dataset
          - m.023915
          - m.0z08d8y
          - m.0bk56n
@@ -62,15 +62,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
     """
 
-    name = "rfw"
-    category = "face"
-    dataset_protocols_name = "rfw.tar.gz"
-    dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/rfw-83549522.tar.gz",
-    ]
-    dataset_protocols_hash = "83549522"
-
     def __init__(
         self,
         protocol,
@@ -79,7 +70,9 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     ):
 
         if original_directory is None or not os.path.exists(original_directory):
-            raise ValueError(f"Invalid or non existent {original_directory=}")
+            raise ValueError(
+                "Invalid or non existant `original_directory`: f{original_directory}"
+            )
 
         self._check_protocol(protocol)
         self._races = ["African", "Asian", "Caucasian", "Indian"]
@@ -87,13 +80,12 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._default_extension = ".jpg"
 
         super().__init__(
-            name=self.name,
+            name="rfw",
             protocol=protocol,
             score_all_vs_all=False,
             annotation_type="eyes-center",
             fixed_positions=None,
             memory_demanding=False,
-            **kwargs,
         )
 
         self._pairs = dict()
@@ -117,12 +109,19 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._demographics = self._get_demographics_dict()
 
         # Setting the seed for the IDIAP PROTOCOL,
-        # so we have a consistent set of probes
+        # so we have a consisent set of probes
         self._idiap_protocol_seed = 652
 
         # Number of samples used to Z-Norm and T-Norm (per race)
         self._nzprobes = 25
         self._ntreferences = 25
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+        ]
 
     def _get_demographics_dict(self):
         """
@@ -142,10 +141,11 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
         """
 
+        urls = RFWDatabase.urls()
         filename = get_file(
-            RFWDatabase.dataset_protocols_name,
-            RFWDatabase.dataset_protocols_urls,
-            file_hash=RFWDatabase.dataset_protocols_hash,
+            "msceleb_wikidata_demographics.csv.tar.gz",
+            urls,
+            file_hash="8eb0e3c93647dfa0c13fade5db96d73a",
             extract=True,
         )[:-7]
         if self._demographics is None:
@@ -211,10 +211,10 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         # Picking the first reference
         if self.protocol == "idiap":
             for p in self._pairs:
-                _, subject_id, template_id = p.split("/")
+                _, subject_id, reference_id = p.split("/")
                 if subject_id in self._first_reference_of_subject:
                     continue
-                self._first_reference_of_subject[subject_id] = template_id
+                self._first_reference_of_subject[subject_id] = reference_id
 
         # Preparing the probes
         self._inverted_pairs = self._invert_dict(self._pairs)
@@ -244,7 +244,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         cache = []
 
         # Setting the seed for the IDIAP PROTOCOL,
-        # so we have a consistent set of probes
+        # so we have a consisent set of probes
         np.random.seed(seed)
 
         for race in self._races:
@@ -260,8 +260,8 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
             # train data from Caucasians are stored differently
             if race == "Caucasian":
                 for f in files:
-                    template_id = os.listdir(os.path.join(data_dir, f))[0]
-                    key = f"{race}/{f}/{template_id[:-4]}"
+                    reference_id = os.listdir(os.path.join(data_dir, f))[0]
+                    key = f"{race}/{f}/{reference_id[:-4]}"
                     cache.append(
                         self._make_sampleset(
                             key, target_set="train", get_demographic=False
@@ -284,7 +284,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
                 self._idiap_protocol_seed + 1
             )
             references = list(
-                set([s.template_id for s in self.references(group=group)])
+                set([s.reference_id for s in self.references(group=group)])
             )
             for p in self._cached_zprobes:
                 p.references = copy.deepcopy(references)
@@ -304,7 +304,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         if self._cached_probes is None:
 
             # Setting the seed for the IDIAP PROTOCOL,
-            # so we have a consistent set of probes
+            # so we have a consisent set of probes
             np.random.seed(self._idiap_protocol_seed)
 
             self._cached_probes = []
@@ -360,25 +360,25 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         return self._landmarks[key]
 
     def _make_sampleset(self, item, target_set="test", get_demographic=True):
-        race, subject_id, template_id = item.split("/")
+        race, subject_id, reference_id = item.split("/")
 
         # RFW original data is not super organized
         # Test and train data os stored differently
 
-        key = f"{race}/{subject_id}/{template_id}"
+        key = f"{race}/{subject_id}/{reference_id}"
 
         path = (
             os.path.join(
                 self.original_directory,
                 f"{target_set}/data/{race}",
                 subject_id,
-                template_id + self._default_extension,
+                reference_id + self._default_extension,
             )
             if (target_set == "test" or race == "Caucasian")
             else os.path.join(
                 self.original_directory,
                 f"{target_set}/data/{race}",
-                template_id + self._default_extension,
+                reference_id + self._default_extension,
             )
         )
 
@@ -387,7 +387,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
                 os.path.join(
                     self.original_directory, "erratum1", "Caucasian_lmk.txt"
                 ),
-                template_id,
+                reference_id,
             )
             if (target_set == "train" and race == "Caucasian")
             else self._fetch_landmarks(
@@ -395,7 +395,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
                     self.original_directory,
                     f"{target_set}/txts/{race}/{race}_lmk.txt",
                 ),
-                template_id,
+                reference_id,
             )
         )
 
@@ -407,7 +407,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
                 ),
                 key=key,
                 annotations=annotations,
-                template_id=template_id,
+                reference_id=reference_id,
                 subject_id=subject_id,
             )
         ]
@@ -419,7 +419,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
             return SampleSet(
                 samples,
                 key=key,
-                template_id=template_id,
+                reference_id=reference_id,
                 subject_id=subject_id,
                 race=race,
                 gender=gender,
@@ -429,7 +429,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
             return SampleSet(
                 samples,
                 key=key,
-                template_id=template_id,
+                reference_id=reference_id,
                 subject_id=subject_id,
                 race=race,
             )
@@ -460,9 +460,9 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     def _check_protocol(self, protocol):
         assert (
             protocol in self.protocols()
-        ), "Invalid protocol `{}` not in {}".format(protocol, self.protocols())
+        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
-        assert group in self.groups(), "Invalid group `{}` not in {}".format(
+        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
             group, self.groups()
         )

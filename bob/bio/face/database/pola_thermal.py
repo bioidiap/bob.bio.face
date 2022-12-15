@@ -3,19 +3,20 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  PolaThermal dataset: database implementation
+  PolaThermal database: database implementation
 """
 
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatabase, FileSampleLoader
+from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
+from bob.extension.download import get_file
 
 
-class PolaThermalDatabase(CSVDatabase):
+class PolaThermalDatabase(CSVDataset):
     """
     Collected by USA Army, the Polarimetric Thermal Database contains basically VIS and Thermal face images.
 
@@ -68,7 +69,7 @@ class PolaThermalDatabase(CSVDatabase):
     .. warning::
         Use the command below to set the path of the real data::
 
-            $ bob config set bob.db.pola-thermal.directory [PATH-TO-RAW-DATA]
+            $ bob config set bob.db.pola-thermal.directory [PATH-TO-MEDS-DATA]
 
 
 
@@ -79,18 +80,17 @@ class PolaThermalDatabase(CSVDatabase):
         One of the database protocols.
     """
 
-    name = "polathermal"
-    category = "face"
-    dataset_protocols_name = "polathermal.tar.gz"
-    dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/polathermal-09a724b6.tar.gz",
-    ]
-    dataset_protocols_hash = "09a724b6"
-
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
+
+        # Downloading model if not exists
+        urls = PolaThermalDatabase.urls()
+        filename = get_file(
+            "polathermal.tar.gz",
+            urls,
+            file_hash="4693149bc883debe5a9e1441a4f5f4ae",
+        )
 
         directory = rc.get("bob.db.pola-thermal.directory", "")
 
@@ -103,10 +103,11 @@ class PolaThermalDatabase(CSVDatabase):
             return bob.io.base.load(path) / 257
 
         super().__init__(
-            name=self.name,
+            name="polathermal",
             protocol=protocol,
-            transformer=make_pipeline(
-                FileSampleLoader(
+            dataset_protocol_path=filename,
+            csv_to_sample_loader=make_pipeline(
+                CSVToSampleLoaderBiometrics(
                     data_loader=load,
                     dataset_original_directory=directory,
                     extension=".png",
@@ -116,3 +117,71 @@ class PolaThermalDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
+
+    @staticmethod
+    def protocols():
+        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
+        return [
+            "VIS-VIS-split1",
+            "VIS-VIS-split2",
+            "VIS-VIS-split3",
+            "VIS-VIS-split4",
+            "VIS-VIS-split5",
+            "VIS-thermal-overall-split1",
+            "VIS-thermal-overall-split2",
+            "VIS-thermal-overall-split3",
+            "VIS-thermal-overall-split4",
+            "VIS-thermal-overall-split5",
+            "VIS-polarimetric-overall-split1",
+            "VIS-polarimetric-overall-split2",
+            "VIS-polarimetric-overall-split3",
+            "VIS-polarimetric-overall-split4",
+            "VIS-polarimetric-overall-split5",
+            "VIS-thermal-expression-split1",
+            "VIS-thermal-expression-split2",
+            "VIS-thermal-expression-split3",
+            "VIS-thermal-expression-split4",
+            "VIS-thermal-expression-split5",
+            "VIS-polarimetric-expression-split1",
+            "VIS-polarimetric-expression-split2",
+            "VIS-polarimetric-expression-split3",
+            "VIS-polarimetric-expression-split4",
+            "VIS-polarimetric-expression-split5",
+            "VIS-thermal-R1-split1",
+            "VIS-thermal-R1-split2",
+            "VIS-thermal-R1-split3",
+            "VIS-thermal-R1-split4",
+            "VIS-thermal-R1-split5",
+            "VIS-polarimetric-R1-split1",
+            "VIS-polarimetric-R1-split2",
+            "VIS-polarimetric-R1-split3",
+            "VIS-polarimetric-R1-split4",
+            "VIS-polarimetric-R1-split5",
+            "VIS-thermal-R2-split1",
+            "VIS-thermal-R2-split2",
+            "VIS-thermal-R2-split3",
+            "VIS-thermal-R2-split4",
+            "VIS-thermal-R2-split5",
+            "VIS-polarimetric-R2-split1",
+            "VIS-polarimetric-R2-split2",
+            "VIS-polarimetric-R2-split3",
+            "VIS-polarimetric-R2-split4",
+            "VIS-polarimetric-R2-split5",
+            "VIS-thermal-R3-split1",
+            "VIS-thermal-R3-split2",
+            "VIS-thermal-R3-split3",
+            "VIS-thermal-R3-split4",
+            "VIS-thermal-R3-split5",
+            "VIS-polarimetric-R3-split1",
+            "VIS-polarimetric-R3-split2",
+            "VIS-polarimetric-R3-split3",
+            "VIS-polarimetric-R3-split4",
+            "VIS-polarimetric-R3-split5",
+        ]
+
+    @staticmethod
+    def urls():
+        return [
+            "https://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
+            "http://www.idiap.ch/software/bob/databases/latest/polathermal.tar.gz",
+        ]

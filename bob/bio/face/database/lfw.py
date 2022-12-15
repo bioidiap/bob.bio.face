@@ -21,7 +21,7 @@ from bob.pipelines import DelayedSample, SampleSet
 logger = logging.getLogger(__name__)
 
 
-class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
+class LFWDatabase(Database):
     """
     This package contains the access API and descriptions for the `Labeled Faced in the Wild <http://vis-www.cs.umass.edu/lfw>`_ (LFW) database.
     It only contains the Bob_ accessor methods to use the DB directly from python, with our certified protocols.
@@ -95,15 +95,9 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
         annotation_directory=rc.get("bob.bio.face.lfw.annotation_directory"),
         annotation_issuer="funneled",
     ):
-        import warnings
-
-        warnings.warn(
-            "The lfw database is not yet adapted to this version of bob. Please port it or ask for it to be ported (This one actually needs to be converted to a CSVDatabase).",
-            DeprecationWarning,
-        )
 
         if original_directory is None or not os.path.exists(original_directory):
-            logger.warning(
+            raise ValueError(
                 f"Invalid or non existent `original_directory`: {original_directory}."
                 "Please, do `bob config set bob.bio.face.lfw.directory PATH` to set the LFW data directory."
             )
@@ -389,7 +383,7 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
         # generate one sampleset from images of the unknown unknowns
         sset = SampleSet(
             key="unknown",
-            template_id="unknown",
+            reference_id="unknown",
             subject_id="unknown",
             samples=[
                 DelayedSample(
@@ -442,7 +436,7 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
                     sset = SampleSet(
                         key=key,
-                        template_id=key,
+                        reference_id=key,
                         subject_id=self.subject_id_from_filename(key),
                         references=copy.deepcopy(
                             self.probe_reference_keys[key]
@@ -450,7 +444,7 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
                         samples=[
                             DelayedSample(
                                 key=key,
-                                template_id=key,
+                                reference_id=key,
                                 subject_id=self.subject_id_from_filename(key),
                                 load=partial(bob.io.base.load, image_path),
                                 annotations=annotations,
@@ -493,12 +487,12 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
                     # one probe sample per image
                     sset = SampleSet(
                         key=image,
-                        template_id=image,
+                        reference_id=image,
                         subject_id=key,
                         samples=[
                             DelayedSample(
                                 key=image,
-                                template_id=image,
+                                reference_id=image,
                                 load=partial(bob.io.base.load, image_path),
                                 annotations=annotations,
                             )
@@ -532,12 +526,12 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
                     sset = SampleSet(
                         key=key,
-                        template_id=key,
+                        reference_id=key,
                         subject_id=self.subject_id_from_filename(key),
                         samples=[
                             DelayedSample(
                                 key=key,
-                                template_id=key,
+                                reference_id=key,
                                 load=partial(bob.io.base.load, image_path),
                                 subject_id=self.subject_id_from_filename(key),
                                 annotations=annotations,
@@ -571,12 +565,12 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
                     # generate one sampleset from several (should be 3) images of the same person
                     sset = SampleSet(
                         key=key,
-                        template_id=key,
+                        reference_id=key,
                         subject_id=key,
                         samples=[
                             DelayedSample(
                                 key=image,
-                                template_id=key,
+                                reference_id=key,
                                 load=partial(bob.io.base.load, data[image][0]),
                                 annotations=data[image][1],
                             )

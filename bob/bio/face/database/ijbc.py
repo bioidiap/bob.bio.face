@@ -18,15 +18,15 @@ logger = logging.getLogger(__name__)
 
 def _make_sample_from_template_row(row, image_directory):
 
-    # Appending this key, so we can handle parallel writing correctly
-    # paying the penalty of having duplicate checkpoint files
+    # Appending this key, so we can handle parallel writting done correctly
+    # paying the penalty of having duplicate files
     key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["SUBJECT_ID"])
 
     return DelayedSample(
         load=partial(
             bob.io.base.load, os.path.join(image_directory, row["FILENAME"])
         ),
-        template_id=str(row["TEMPLATE_ID"]),
+        reference_id=str(row["TEMPLATE_ID"]),
         subject_id=str(row["SUBJECT_ID"]),
         key=key,
         # gender=row["GENDER"],
@@ -74,13 +74,13 @@ def _make_sample_set_from_template_group(template_group, image_directory):
     )
     return SampleSet(
         samples,
-        template_id=samples[0].template_id,
+        reference_id=samples[0].reference_id,
         subject_id=samples[0].subject_id,
-        key=samples[0].template_id,
+        key=samples[0].reference_id,
     )
 
 
-class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
+class IJBCDatabase(Database):
     """
 
     This package contains the access API and descriptions for the IARPA Janus Benchmark C -- IJB-C database.
@@ -108,13 +108,13 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
             bob config set bob.bio.face.ijbc.directory [IJBC PATH]
 
 
-    The code below allows you to fetch the gallery and probes of the "1:1" protocol.
+    The code below allows you to fetch the galery and probes of the "1:1" protocol.
 
     .. code-block:: python
 
         >>> from bob.bio.face.database import IJBCDatabase
         >>> ijbc = IJBCDatabase(protocol="test1")
-
+        >>>
         >>> # Fetching the gallery
         >>> references = ijbc.references()
         >>> # Fetching the probes
@@ -122,27 +122,12 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
 
     """
 
-    name = "ijbc"
-    category = "face"
-    dataset_protocols_name = "ijbc.tar.gz"
-    dataset_protocols_urls = [
-        "https://www.idiap.ch/software/bob/databases/latest/face/ijbc-????.tar.gz",
-        "http://www.idiap.ch/software/bob/databases/latest/face/ijbc-????.tar.gz",
-    ]
-    dataset_protocols_hash = "????"
-
     def __init__(
         self,
         protocol,
         original_directory=rc.get("bob.bio.face.ijbc.directory"),
         **kwargs,
     ):
-        import warnings
-
-        warnings.warn(
-            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported (This one actually needs to be converted to a CSVDatabase).",
-            DeprecationWarning,
-        )
 
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(
@@ -151,7 +136,7 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
 
         self._check_protocol(protocol)
         super().__init__(
-            name=self.name,
+            name="ijbc",
             protocol=protocol,
             score_all_vs_all=False,
             annotation_type="bounding-box",
@@ -290,12 +275,12 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
                 grouped_matches = self.matches.groupby("VERIF_TEMPLATE_ID")
                 for probe_sampleset in self._cached_probes:
                     probe_sampleset.references = list(
-                        grouped_matches.get_group(probe_sampleset.template_id)[
+                        grouped_matches.get_group(probe_sampleset.reference_id)[
                             "ENROLL_TEMPLATE_ID"
                         ]
                     )
             elif "test4" in self.protocol:
-                references = [s.template_id for s in self.references()]
+                references = [s.reference_id for s in self.references()]
                 # You compare with all biometric references
                 for probe_sampleset in self._cached_probes:
                     probe_sampleset.references = copy.deepcopy(references)

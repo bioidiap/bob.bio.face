@@ -37,7 +37,7 @@ class MTCNN(Base):
         self.factor = factor
         self.thresholds = thresholds
         self._graph_path = pkg_resources.resource_filename(
-            "bob.bio.face", "data/mtcnn.pb"
+            __name__, "data/mtcnn.pb"
         )
 
         # Avoids loading graph at initilization

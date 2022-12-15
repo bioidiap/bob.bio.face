@@ -13,7 +13,7 @@ from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines.sample import DelayedSample, SampleSet
 
-logger = logging.getLogger("bob.bio.face")
+logger = logging.getLogger(__name__)
 
 
 class RFWDatabase(Database):  # TODO Make this a CSVDatabase?

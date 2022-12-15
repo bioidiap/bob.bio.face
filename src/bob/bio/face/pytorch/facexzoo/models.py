@@ -4,7 +4,7 @@ from bob.bio.face.pytorch.facexzoo.backbone_def import BackboneFactory
 from bob.extension.download import get_file
 
 def_backbone_conf = pkg_resources.resource_filename(
-    "bob.bio.face", "pytorch/facexzoo/backbone_conf.yaml"
+    __name__, "pytorch/facexzoo/backbone_conf.yaml"
 )
 
 info = {

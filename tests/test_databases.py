@@ -28,7 +28,7 @@ import bob.extension.log
 from bob.extension import rc
 from bob.extension.download import get_file
 
-logger = bob.extension.log.setup("bob.bio.face")
+logger = bob.extension.log.setup(__name__)
 
 
 def _check_annotations(

@@ -8,7 +8,7 @@ import importlib
 import logging
 import unittest
 
-logger = logging.getLogger("bob.bio.face")
+logger = logging.getLogger(__name__)
 
 
 def is_library_available(library):

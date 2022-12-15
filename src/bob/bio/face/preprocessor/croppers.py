@@ -10,7 +10,7 @@ import logging
 
 from sklearn.base import BaseEstimator, TransformerMixin
 
-logger = logging.getLogger("bob.bio.face")
+logger = logging.getLogger(__name__)
 
 import cv2
 import numpy as np

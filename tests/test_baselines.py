@@ -59,7 +59,9 @@ def get_fake_samples_for_training():
     ]
 
 
-def run_baseline(baseline, samples_for_training=[], target_scores=None):
+def run_baseline(baseline, samples_for_training=None, target_scores=None):
+    if samples_for_training is None:
+        samples_for_training = []
     biometric_references = get_fake_sample_set(purpose="bioref")
     probes = get_fake_sample_set(purpose="probe")
 

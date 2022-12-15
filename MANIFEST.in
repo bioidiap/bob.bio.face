@@ -1,4 +1,4 @@
-include README.rst bootstrap-buildout.py buildout.cfg develop.cfg LICENSE version.txt requirements.txt
+include README.rst LICENSE
 recursive-include doc *.py *.rst
 recursive-include bob/bio/face/test/data *.hdf5 *.jpg *.json *.png *.tar.gz *.yaml
 recursive-include bob/bio/face/data *.pb *.jpg *.json *.png

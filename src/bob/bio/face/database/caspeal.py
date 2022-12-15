@@ -13,7 +13,6 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
 class CaspealDatabase(CSVDatabase):
@@ -51,27 +50,22 @@ class CaspealDatabase(CSVDatabase):
 
     """
 
+    name = "caspeal"
+    category = "face"
+    dataset_protocols_name = "caspeal.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/caspeal-9ce68f00.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/caspeal-9ce68f00.tar.gz",
+    ]
+
+    dataset_protocols_hash = "9ce68f00"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-        import warnings
-
-        warnings.warn(
-            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
-            DeprecationWarning,
-        )
-
-        # Downloading model if not exists
-        urls = CaspealDatabase.urls()
-        filename = get_file(
-            "caspeal.tar.gz",
-            urls,
-            file_hash="1c77f660ef85fa263a2312fd8263d0d9",
-        )
 
         super().__init__(
-            name="caspeal",
-            dataset_protocols_path=filename,
+            name=self.name,
             protocol=protocol,
             transformer=make_pipeline(
                 FileSampleLoader(
@@ -79,8 +73,7 @@ class CaspealDatabase(CSVDatabase):
                     dataset_original_directory=rc[
                         "bob.bio.face.caspeal.directory"
                     ]
-                    if rc["bob.bio.face.caspeal.directory"]
-                    else "",
+                    or "",
                     extension=".png",
                 ),
                 EyesAnnotations(),
@@ -88,22 +81,3 @@ class CaspealDatabase(CSVDatabase):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "accessory",
-            "aging",
-            "background",
-            "distance",
-            "expression",
-            "lighting",
-        ]
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/caspeal.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/caspeal.tar.gz",
-        ]

@@ -39,9 +39,9 @@ def load_annotations(annotations_file):
 
 
 class File(object):
-    def __init__(self, subject_id, reference_id, path):
+    def __init__(self, subject_id, template_id, path):
         self.subject_id = subject_id
-        self.reference_id = reference_id
+        self.template_id = template_id
         self.path = path
 
 
@@ -63,7 +63,7 @@ class XmlFileReader(xml.sax.handler.ContentHandler):
             self.m_signature = attrs["name"]  # subject_id
         elif name == "presentation":
             self.m_path = os.path.splitext(attrs["file-name"])[0]  # path
-            self.m_presentation = attrs["name"]  # reference_id
+            self.m_presentation = attrs["name"]  # template_id
         else:
             pass
 
@@ -138,6 +138,12 @@ class GBUDatabase(Database):
         original_directory=rc.get("bob.bio.face.gbu.directory"),
         extension=".jpg",
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            DeprecationWarning,
+        )
 
         # self.filename = "/idiap/user/tpereira/gitlab/bob/bob.nightlies/temp/gbu.tar.gz"
         # Downloading model if not exists
@@ -167,7 +173,7 @@ class GBUDatabase(Database):
             name="gbu",
             protocol=protocol,
             score_all_vs_all=True,
-            annotation_type="eyes-center",
+            annotation_type=annotation_type,
             fixed_positions=fixed_positions,
             memory_demanding=True,
         )
@@ -209,11 +215,11 @@ class GBUDatabase(Database):
                 )
 
             f = search_file(self.filename, f"GBU_{self.protocol}_Query.xml")
-            reference_ids = [x.reference_id for x in self.references()]
+            template_ids = [x.template_id for x in self.references()]
 
             self.probes_dict[
                 self.protocol
-            ] = self._make_sampleset_from_filedict(read_list(f), reference_ids)
+            ] = self._make_sampleset_from_filedict(read_list(f), template_ids)
         return self.probes_dict[self.protocol]
 
     def references(self, group="dev"):
@@ -252,7 +258,7 @@ class GBUDatabase(Database):
             group, self.groups()
         )
 
-    def _make_sampleset_from_filedict(self, file_dict, reference_ids=None):
+    def _make_sampleset_from_filedict(self, file_dict, template_ids=None):
         samplesets = []
         for key in file_dict:
             f = file_dict[key]
@@ -260,15 +266,13 @@ class GBUDatabase(Database):
             annotations_key = os.path.basename(f.path)
 
             kwargs = (
-                {"references": reference_ids}
-                if reference_ids is not None
-                else {}
+                {"references": template_ids} if template_ids is not None else {}
             )
 
             samplesets.append(
                 SampleSet(
                     key=f.path,
-                    reference_id=f.reference_id,
+                    template_id=f.template_id,
                     subject_id=f.subject_id,
                     **kwargs,
                     samples=[

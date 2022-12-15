@@ -12,13 +12,13 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class CBSRNirVis2Database(CSVDataset):
+class CBSRNirVis2Database(CSVDatabase):
     """
     This package contains the access API and descriptions for the `CASIA NIR-VIS 2.0 Database <http://www.cbsr.ia.ac.cn/english/NIR-VIS-2.0-Database.html>`.
     The actual raw data for the database should be downloaded from the original URL.
@@ -59,6 +59,12 @@ class CBSRNirVis2Database(CSVDataset):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            DeprecationWarning,
+        )
 
         # Downloading model if not exists
         urls = CBSRNirVis2Database.urls()
@@ -88,10 +94,10 @@ class CBSRNirVis2Database(CSVDataset):
 
         super().__init__(
             name="cbsr-nir-vis2",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=load,
                     dataset_original_directory=directory,
                     extension=".jpg",

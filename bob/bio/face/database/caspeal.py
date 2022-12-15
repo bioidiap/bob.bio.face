@@ -3,20 +3,20 @@
 # Tiago de Freitas Pereira <tiago.pereira@idiap.ch>
 
 """
-  Multipie database implementation
+  Caspeal database implementation
 """
 
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
 from bob.extension.download import get_file
 
 
-class CaspealDatabase(CSVDataset):
+class CaspealDatabase(CSVDatabase):
     """
     The CAS-PEAL database consists of several ten thousand images of Chinese people (CAS = Chinese Academy of Science).
     Overall, there are 1040 identities contained in the database.
@@ -54,6 +54,12 @@ class CaspealDatabase(CSVDataset):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
+        import warnings
+
+        warnings.warn(
+            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            DeprecationWarning,
+        )
 
         # Downloading model if not exists
         urls = CaspealDatabase.urls()
@@ -65,10 +71,10 @@ class CaspealDatabase(CSVDataset):
 
         super().__init__(
             name="caspeal",
-            dataset_protocol_path=filename,
+            dataset_protocols_path=filename,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc[
                         "bob.bio.face.caspeal.directory"

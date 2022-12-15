@@ -11,16 +11,17 @@ import bob.io.base
 
 from bob.bio.base import load_resource
 from bob.bio.base.pipelines import checkpoint_pipeline_simple, dask_bio_pipeline
-from bob.bio.base.test.utils import is_library_available
 from bob.pipelines import DelayedSample, Sample, SampleSet
+
+from .utils import is_library_available
 
 images = dict()
 images["bioref"] = (
-    pkg_resources.resource_filename("bob.bio.face.test", "data/testimage.jpg"),
+    pkg_resources.resource_filename(__name__, "data/testimage.jpg"),
     {"reye": (176, 131), "leye": (170, 222)},
 )
 images["probe"] = (
-    pkg_resources.resource_filename("bob.bio.face.test", "data/ada.png"),
+    pkg_resources.resource_filename(__name__, "data/ada.png"),
     {"reye": (207, 440), "leye": (207, 546)},
 )
 
@@ -41,7 +42,7 @@ def get_fake_sample_set(face_size=(160, 160), purpose="bioref"):
                 )
             ],
             key=key,
-            reference_id=key,
+            template_id=key,
             references=["1"],
         )
     ]
@@ -53,7 +54,7 @@ def get_fake_samples_for_training():
     annotations = {"reye": (131, 176), "leye": (222, 170)}
 
     return [
-        Sample(x, key=str(i), reference_id=str(i), annotations=annotations)
+        Sample(x, key=str(i), template_id=str(i), annotations=annotations)
         for i, x in enumerate(data)
     ]
 

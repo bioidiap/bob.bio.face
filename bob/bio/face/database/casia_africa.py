@@ -10,13 +10,12 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDataset, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
-class CasiaAfricaDatabase(CSVDataset):
+class CasiaAfricaDatabase(CSVDatabase):
     """
     The Casia-Face-Africa dataset is composed of 1133 identities from different ethical groups in Nigeria.
 
@@ -31,7 +30,7 @@ class CasiaAfricaDatabase(CSVDataset):
     These locations were strategically selected as they are known to have diverse population of local ethnicities.
 
     .. warning::
-       Only 17 subjects had their images capture in two sessions.
+       Only 17 subjects had their images captured in two sessions.
 
     Images were captured during  daytime  and  night using three different cameras:
       - C1: Visual Light Camera
@@ -39,7 +38,7 @@ class CasiaAfricaDatabase(CSVDataset):
       - C3: NIR camera
 
 
-    This dataset interface implemented the three verificatio protocols: "ID-V-All-Ep1", "ID-V-All-Ep2", and "ID-V-All-Ep3"
+    This dataset interface implemented the three verification protocols: "ID-V-All-Ep1", "ID-V-All-Ep2", and "ID-V-All-Ep3"
     and they are organized as the following:
 
     +------------------------------------------------------------------------------------+
@@ -58,7 +57,7 @@ class CasiaAfricaDatabase(CSVDataset):
     .. warning::
         Use the command below to set the path of the real data::
 
-            $ bob config set bob.db.casia-africa.directory [PATH-TO-MEDS-DATA]
+            $ bob config set bob.db.casia-africa.directory [PATH-TO-RAW-DATA]
 
 
     .. code-block:: latex
@@ -98,53 +97,32 @@ class CasiaAfricaDatabase(CSVDataset):
         One of the database protocols. Options are "ID-V-All-Ep1", "ID-V-All-Ep2" and "ID-V-All-Ep3"
     """
 
+    name = "casia-africa"
+    category = "face"
+    dataset_protocols_name = "casia-africa.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/casia-africa-e517a48d.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/casia-africa-e517a48d.tar.gz",
+    ]
+    dataset_protocols_hash = "e517a48d"
+
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        # Downloading model if not exists
-        urls = CasiaAfricaDatabase.urls()
-        filename = get_file(
-            "casia-africa.tar.gz",
-            urls,
-            file_hash="080d4bfffec95a6445507065054757eb",
-        )
-
-        directory = (
-            rc["bob.db.casia-africa.directory"]
-            if rc["bob.db.casia-africa.directory "]
-            else ""
-        )
+        directory = rc.get("bob.db.casia-africa.directory", "")
 
         super().__init__(
-            name="casia-africa",
-            dataset_protocol_path=filename,
+            name=self.name,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=directory,
                     extension=".jpg",
-                    reference_id_equal_subject_id=False,
                 ),
                 EyesAnnotations(),
             ),
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def protocols():
-        # TODO: Until we have (if we have) a function that dumps the protocols, let's use this one.
-        return [
-            "ID-V-All-Ep1",
-            "ID-V-All-Ep2",
-            "ID-V-All-Ep3",
-        ]
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/casia-africa.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/casia-africa.tar.gz",
-        ]

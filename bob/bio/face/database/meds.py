@@ -10,13 +10,12 @@ from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
-from bob.bio.base.database import CSVDatasetZTNorm, CSVToSampleLoaderBiometrics
+from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
 from bob.extension import rc
-from bob.extension.download import get_file
 
 
-class MEDSDatabase(CSVDatasetZTNorm):
+class MEDSDatabase(CSVDatabase):
     """
     The MEDS II database was developed by NIST to support and assists their biometrics evaluation program.
     It is composed by 518 identities from both men/women (labeled as M and F) and five different race annotations (Asian, Black, American Indian, Unknown and White)
@@ -61,11 +60,11 @@ class MEDSDatabase(CSVDatasetZTNorm):
     >>> database.probes()
 
 
-    Fetching refererences for T-Norm normalization::
+    Fetching references for T-Norm normalization::
 
     >>> from bob.bio.face.database import MEDSDatabase
     >>> database = MEDSDatabase(protocol="verification_fold1")
-    >>> database.trerefences()
+    >>> database.treferences()
 
 
     Fetching probes for Z-Norm normalization::
@@ -88,6 +87,15 @@ class MEDSDatabase(CSVDatasetZTNorm):
 
     """
 
+    name = "meds"
+    category = "face"
+    dataset_protocols_name = "meds.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/meds-b74e3c3a.tar.gz",
+    ]
+    dataset_protocols_hash = "b74e3c3a"
+
     def __init__(
         self,
         protocol,
@@ -97,18 +105,11 @@ class MEDSDatabase(CSVDatasetZTNorm):
         dataset_original_extension=".jpg",
     ):
 
-        # Downloading model if not exists
-        urls = MEDSDatabase.urls()
-        filename = get_file(
-            "meds.tar.gz", urls, file_hash="3b01354d4c170672ac14120b80dace75"
-        )
-
         super().__init__(
-            name="meds",
-            dataset_protocol_path=filename,
+            name=self.name,
             protocol=protocol,
-            csv_to_sample_loader=make_pipeline(
-                CSVToSampleLoaderBiometrics(
+            transformer=make_pipeline(
+                FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=dataset_original_directory
                     if dataset_original_directory
@@ -120,10 +121,3 @@ class MEDSDatabase(CSVDatasetZTNorm):
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
-
-    @staticmethod
-    def urls():
-        return [
-            "https://www.idiap.ch/software/bob/databases/latest/meds_v2.tar.gz",
-            "http://www.idiap.ch/software/bob/databases/latest/meds_v2.tar.gz",
-        ]

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # vim: set fileencoding=utf-8 :
 
-"""  Sample and Metatada loaders"""
+"""Sample and Metadata loaders"""
 
 
 from sklearn.base import BaseEstimator, TransformerMixin
@@ -13,7 +13,7 @@ def find_attribute(x, attribute):
     if hasattr(x, attribute):
         return getattr(x, attribute)
     else:
-        ValueError(f"Attribute not found in the dataset: {attribute}")
+        raise ValueError(f"Attribute not found in the dataset: {attribute}")
 
 
 class EyesAnnotations(TransformerMixin, BaseEstimator):
@@ -27,7 +27,7 @@ class EyesAnnotations(TransformerMixin, BaseEstimator):
 
     def transform(self, X):
         """
-        Convert  leye_x, leye_y, reye_x, reye_y attributes to `annotations = (leye, reye)`
+        Converts leye_x, leye_y, reye_x, reye_y attributes to ``annotations = (leye, reye)``
         """
 
         annotated_samples = []

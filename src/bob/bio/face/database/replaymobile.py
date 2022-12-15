@@ -41,7 +41,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
         The index of the frame to load.
 
     capturing device: str
-        'mobile' devices' frames will be flipped vertically.
+        ``mobile`` devices' frames will be flipped vertically.
         Other devices' frames will not be flipped.
 
     Returns
@@ -61,7 +61,7 @@ def load_frame_from_file_replaymobile(file_name, frame, should_flip):
     # (Images were captured horizontally and bob.io.video does not read the
     #   metadata correctly, whether it was on the right or left side)
     if not should_flip:
-        # after changing from bob.io.video to imageio-ffmpeg, turns out tablet
+        # after changing from bob.io.video to imageio-ffmpeg, the tablet
         # videos should be flipped to match previous behavior.
         image = numpy.flip(image, 2)
 
@@ -82,42 +82,46 @@ class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
         template_id_equal_subject_id=True,
     ):
         super().__init__(
-            data_loader=None,
+            data_loader=lambda: None,
             extension=extension,
             dataset_original_directory=dataset_original_directory,
         )
         self.template_id_equal_subject_id = template_id_equal_subject_id
 
-    def convert_row_to_sample(self, row, header):
+    def transform(self, samples):
         """Creates a sample given a row of the CSV protocol definition."""
-        fields = dict([[str(h).lower(), r] for h, r in zip(header, row)])
+        output = []
 
-        if self.template_id_equal_subject_id:
-            fields["subject_id"] = fields["template_id"]
-        else:
-            if "subject_id" not in fields:
-                raise ValueError(f"`subject_id` not available in {header}")
-        if "should_flip" not in fields:
-            raise ValueError(f"`should_flip` not available in {header}")
+        for sample in samples:
 
-        kwargs = {k: fields[k] for k in fields.keys() - {"id", "should_flip"}}
+            if not self.template_id_equal_subject_id and not hasattr(
+                sample, "subject_id"
+            ):
+                raise ValueError(f"`subject_id` not available in {sample}")
+            if not hasattr(sample, "should_flip"):
+                raise ValueError(f"`should_flip` not available in {sample}")
 
-        # One row creates one samples (=> one comparison because of `is_sparse`)
-        should_flip = fields["should_flip"].lower() == "true"
-        return DelayedSample(
-            functools.partial(
-                load_frame_from_file_replaymobile,
-                file_name=os.path.join(
-                    self.dataset_original_directory,
-                    fields["path"] + self.extension,
+            # One row creates one samples (=> one comparison because of `is_sparse`)
+            should_flip = sample.should_flip.lower() == "true"
+            new_s = DelayedSample(
+                functools.partial(
+                    load_frame_from_file_replaymobile,
+                    file_name=os.path.join(
+                        self.dataset_original_directory,
+                        sample.path + self.extension,
+                    ),
+                    frame=int(sample.frame),
+                    should_flip=should_flip,
                 ),
-                frame=int(fields["frame"]),
+                key=sample.key,
                 should_flip=should_flip,
-            ),
-            key=fields["id"],
-            should_flip=should_flip,
-            **kwargs,
-        )
+                subject_id=sample.template_id
+                if self.template_id_equal_subject_id
+                else sample.subject_id,
+                parent=sample,
+            )
+            output.append(new_s)
+        return output
 
 
 def read_frame_annotation_file_replaymobile(
@@ -169,11 +173,14 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
     """
 
     def __init__(
-        self, annotation_directory=None, annotation_extension=".json", **kwargs
+        self,
+        annotation_directory: str | None = None,
+        annotation_extension: str = ".json",
+        **kwargs,
     ):
 
-        self.annotation_directory = (annotation_directory,)
-        self.annotation_extension = (annotation_extension,)
+        self.annotation_directory = annotation_directory
+        self.annotation_extension = annotation_extension
         self.annotation_type = annotation_extension.replace(".", "")
 
     def transform(self, X):

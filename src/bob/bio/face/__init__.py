@@ -6,7 +6,6 @@ from . import annotator  # noqa: F401
 from . import utils  # noqa: F401
 from . import pytorch  # noqa: F401
 from . import embeddings  # noqa: F401
-from . import test  # noqa: F401
 
 
 def get_config():

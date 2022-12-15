@@ -1,17 +1,282 @@
 [build-system]
-    requires = ["setuptools", "wheel", "bob.extension"]
+    requires      = ["setuptools>=61.0.0", "wheel"]
     build-backend = "setuptools.build_meta"
 
+[project]
+    name            = "bob.bio.face"
+    version         = "7.1.3b0"
+    requires-python = ">=3.9"
+    description     = "Tools for running face recognition experiments"
+    dynamic         = ["readme"]
+    license         = {text = "BSD 3-Clause License"}
+    authors         = [
+    {name = "Manuel Gunther"},
+    {email = "siebenkopf@googlemail.com"},
+    ]
+    keywords = ["bob", "biometric recognition", "evaluation"]
+
+    classifiers=[
+        "Framework :: Bob",
+        "Development Status :: 3 - Alpha",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: BSD License",
+        "Natural Language :: English",
+        "Programming Language :: Python",
+        "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    ]
+    dependencies = [
+        "setuptools",
+        "bob.extension",
+        "bob.io.base",
+        "bob.measure",
+        "bob.bio.base",
+        "bob.pipelines",
+        "matplotlib",
+        "scikit-image",
+        "scikit-learn",
+        "torch",
+        "torchvision",
+        "imageio-ffmpeg",
+        "pytorch-lightning",
+        "opencv-python",
+    ]
+
+[project.urls]
+    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.face/stable/"
+    homepage      = "https://pypi.org/project/bob.bio.face/"
+    repository    = "https://gitlab.idiap.ch/bob/bob.bio.face"
+    changelog     = "https://gitlab.idiap.ch/bob/bob.bio.face/-/releases"
+
+[project.optional-dependencies]
+    qa  = ["pre-commit"]
+    doc = [
+        "sphinx",
+        "sphinx_rtd_theme",
+        "sphinx-autodoc-typehints",
+        "auto-intersphinx",
+        "sphinxcontrib-programoutput",
+        "matplotlib",
+        "dask-ml",
+        "tensorflow",
+        ]
+    test = [
+        "pytest",
+        "pytest-cov",
+        "coverage",
+        "dask",
+        "tensorflow ; sys_platform == 'linux'",
+        "tensorflow-macos ; sys_platform != 'linux'",
+        ]
+
+[tool.setuptools]
+    zip-safe    = false
+    package-dir = {"" = "src"}
+
+[tool.setuptools.dynamic]
+    readme = {file = "README.rst"}
+
+[project.entry-points."bob.bio.database"]
+    arface-all                        = "bob.bio.face.config.database.arface_all:database"
+    arface-expression                 = "bob.bio.face.config.database.arface_expression:database"
+    arface-illumination               = "bob.bio.face.config.database.arface_illumination:database"
+    arface-occlusion                  = "bob.bio.face.config.database.arface_occlusion:database"
+    arface-occlusion-and-illumination = "bob.bio.face.config.database.arface_occlusion_and_illumination:database"
+    casia-africa                      = "bob.bio.face.config.database.casia_africa:database"
+    caspeal-accessory                 = "bob.bio.face.config.database.caspeal_accessory:database"
+    caspeal-aging                     = "bob.bio.face.config.database.caspeal_aging:database"
+    caspeal-background                = "bob.bio.face.config.database.caspeal_background:database"
+    caspeal-distance                  = "bob.bio.face.config.database.caspeal_distance:database"
+    caspeal-expression                = "bob.bio.face.config.database.caspeal_expression:database"
+    caspeal-lighting                  = "bob.bio.face.config.database.caspeal_lighting:database"
+    frgc-exp1                         = "bob.bio.face.config.database.frgc_experiment1:database"
+    frgc-exp2                         = "bob.bio.face.config.database.frgc_experiment2:database"
+    frgc-exp4                         = "bob.bio.face.config.database.frgc_experiment4:database"
+    gbu-good                          = "bob.bio.face.config.database.gbu_good:database"
+    gbu-bad                           = "bob.bio.face.config.database.gbu_bad:database"
+    gbu-ugly                          = "bob.bio.face.config.database.gbu_ugly:database"
+    ijbc-test1                        = "bob.bio.face.config.database.ijbc_test1:database"
+    ijbc-test2                        = "bob.bio.face.config.database.ijbc_test2:database"
+    ijbc-test4-g1                     = "bob.bio.face.config.database.ijbc_test4_g1:database"
+    ijbc-test4-g2                     = "bob.bio.face.config.database.ijbc_test4_g2:database"
+    lfw-o1                            = "bob.bio.face.config.database.lfw_o1:database"
+    lfw-o2                            = "bob.bio.face.config.database.lfw_o2:database"
+    lfw-o3                            = "bob.bio.face.config.database.lfw_o3:database"
+    lfw-view2                         = "bob.bio.face.config.database.lfw_view2:database"
+    meds                              = "bob.bio.face.config.database.meds:database"
+    mobio-all                         = "bob.bio.face.config.database.mobio_all:database"
+    mobio-male                        = "bob.bio.face.config.database.mobio_male:database"
+    morph                             = "bob.bio.face.config.database.morph:database"
+    multipie                          = "bob.bio.face.config.database.multipie:database"
+    multipie-pose                     = "bob.bio.face.config.database.multipie_pose:database"
+    pola-thermal                      = "bob.bio.face.config.database.pola_thermal:database"
+    replaymobile-img                  = "bob.bio.face.config.database.replaymobile:database"
+    rfw-original                      = "bob.bio.face.config.database.rfw_original:database"
+    rfw-idiap                         = "bob.bio.face.config.database.rfw_idiap:database"
+    scface                            = "bob.bio.face.config.database.scface_combined:database"
+    scface-close                      = "bob.bio.face.config.database.scface_close:database"
+    scface-medium                     = "bob.bio.face.config.database.scface_medium:database"
+    scface-far                        = "bob.bio.face.config.database.scface_far:database"
+    scface-ir                         = "bob.bio.face.config.database.scface_ir:database"
+    vgg2-full                         = "bob.bio.face.config.database.vgg2_full:database"
+    vgg2-short                        = "bob.bio.face.config.database.vgg2_short:database"
+
+[project.entry-points."bob.bio.annotator"]
+    mtcnn    = "bob.bio.face.config.annotator.mtcnn:annotator"
+    tinyface = "bob.bio.face.config.annotator.tinyface:annotator"
+
+[project.entry-points."bob.bio.pipeline"]
+    afffe                              = "bob.bio.face.config.baseline.afffe:pipeline"
+    arcface-insightface                = "bob.bio.face.config.baseline.arcface_insightface:pipeline"
+    dummy                              = "bob.bio.face.config.baseline.dummy:pipeline"
+    facenet-sanderberg                 = "bob.bio.face.config.baseline.facenet_sanderberg:pipeline"
+    inception-resnetv1-casiawebface    = "bob.bio.face.config.baseline.inception_resnetv1_casiawebface:pipeline"
+    inception-resnetv1-msceleb         = "bob.bio.face.config.baseline.inception_resnetv1_msceleb:pipeline"
+    inception-resnetv2-casiawebface    = "bob.bio.face.config.baseline.inception_resnetv2_casiawebface:pipeline"
+    inception-resnetv2-msceleb         = "bob.bio.face.config.baseline.inception_resnetv2_msceleb:pipeline"
+    iresnet100                         = "bob.bio.face.config.baseline.iresnet100:pipeline"
+    iresnet100-elastic                 = "bob.bio.face.config.baseline.iresnet100_elastic:pipeline"
+    iresnet100-msceleb-idiap-20210623  = "bob.bio.face.config.baseline.iresnet100_msceleb_arcface_20210623:pipeline"
+    iresnet34                          = "bob.bio.face.config.baseline.iresnet34:pipeline"
+    iresnet50                          = "bob.bio.face.config.baseline.iresnet50:pipeline"
+    iresnet50-msceleb-idiap-20210623   = "bob.bio.face.config.baseline.iresnet50_msceleb_arcface_20210623:pipeline"
+    mobilenetv2-msceleb-arcface-2021   = "bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021:pipeline"
+    resnet50-msceleb-arcface-2021      = "bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021:pipeline"
+    resnet50-msceleb-arcface-20210521  = "bob.bio.face.config.baseline.resnet50_msceleb_arcface_20210521:pipeline"
+    resnet101-msceleb-arcface-20210521 = "bob.bio.face.config.baseline.resnet101_msceleb_arcface_20210521:pipeline"
+    resnet50-vgg2-arcface-2021         = "bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021:pipeline"
+    vgg16-oxford                       = "bob.bio.face.config.baseline.vgg16_oxford:pipeline"
+    attentionnet                       = "bob.bio.face.config.baseline.attention_net:pipeline"
+    resnest                            = "bob.bio.face.config.baseline.resne_st:pipeline"
+    mobilefacenet                      = "bob.bio.face.config.baseline.mobile_facenet:pipeline"
+    resnet                             = "bob.bio.face.config.baseline.resnet:pipeline"
+    efficientnet                       = "bob.bio.face.config.baseline.efficient_net:pipeline"
+    tfnas                              = "bob.bio.face.config.baseline.tf_nas:pipeline"
+    hrnet                              = "bob.bio.face.config.baseline.hr_net:pipeline"
+    rexnet                             = "bob.bio.face.config.baseline.rex_net:pipeline"
+    ghostnet                           = "bob.bio.face.config.baseline.ghost_net:pipeline"
+    oxford-resnet50-scratch-dag-vgg2   = "bob.bio.face.config.baseline.oxford_resnet50_scratch_dag_vgg2:pipeline"
+    oxford-resnet50-ft-dag-vgg2        = "bob.bio.face.config.baseline.oxford_resnet50_ft_dag_vgg2:pipeline"
+    oxford-senet50-scratch-dag-vgg2    = "bob.bio.face.config.baseline.oxford_senet50_scratch_dag_vgg2:pipeline"
+    oxford-senet50-ft-dag-vgg2         = "bob.bio.face.config.baseline.oxford_senet50_ft_dag_vgg2:pipeline"
+
+[project.entry-points."bob.bio.config"]
+    afffe                              = "bob.bio.face.config.baseline.afffe"
+    arcface-insightface                = "bob.bio.face.config.baseline.arcface_insightface"
+    facenet-sanderberg                 = "bob.bio.face.config.baseline.facenet_sanderberg"
+    inception-resnetv1-casiawebface    = "bob.bio.face.config.baseline.inception_resnetv1_casiawebface"
+    inception-resnetv1-msceleb         = "bob.bio.face.config.baseline.inception_resnetv1_msceleb"
+    inception-resnetv2-casiawebface    = "bob.bio.face.config.baseline.inception_resnetv2_casiawebface"
+    inception-resnetv2-msceleb         = "bob.bio.face.config.baseline.inception_resnetv2_msceleb"
+    iresnet100                         = "bob.bio.face.config.baseline.iresnet100"
+    iresnet100-msceleb-idiap-20210623  = "bob.bio.face.config.baseline.iresnet100_msceleb_arcface_20210623"
+    iresnet34                          = "bob.bio.face.config.baseline.iresnet34"
+    iresnet50                          = "bob.bio.face.config.baseline.iresnet50"
+    iresnet50-msceleb-idiap-20210623   = "bob.bio.face.config.baseline.iresnet50_msceleb_arcface_20210623"
+    iresnet100-elastic                 = "bob.bio.face.config.baseline.iresnet100_elastic"
+    mobilenetv2-msceleb-arcface-2021   = "bob.bio.face.config.baseline.mobilenetv2_msceleb_arcface_2021"
+    resnet50-msceleb-arcface-2021      = "bob.bio.face.config.baseline.resnet50_msceleb_arcface_2021"
+    resnet50-msceleb-arcface-20210521  = "bob.bio.face.config.baseline.resnet50_msceleb_arcface_20210521"
+    resnet101-msceleb-arcface-20210521 = "bob.bio.face.config.baseline.resnet101_msceleb_arcface_20210521"
+    resnet50-vgg2-arcface-2021         = "bob.bio.face.config.baseline.resnet50_vgg2_arcface_2021"
+    vgg16-oxford                       = "bob.bio.face.config.baseline.vgg16_oxford"
+    attentionnet                       = "bob.bio.face.config.baseline.attention_net"
+    resnest                            = "bob.bio.face.config.baseline.resne_st"
+    mobilefacenet                      = "bob.bio.face.config.baseline.mobile_facenet"
+    resnet                             = "bob.bio.face.config.baseline.resnet"
+    efficientnet                       = "bob.bio.face.config.baseline.efficient_net"
+    tfnas                              = "bob.bio.face.config.baseline.tf_nas"
+    hrnet                              = "bob.bio.face.config.baseline.hr_net"
+    rexnet                             = "bob.bio.face.config.baseline.rex_net"
+    ghostnet                           = "bob.bio.face.config.baseline.ghost_net"
+    casia-africa                       = "bob.bio.face.config.database.casia_africa"
+    frgc-exp1                          = "bob.bio.face.config.database.frgc_experiment1"
+    frgc-exp2                          = "bob.bio.face.config.database.frgc_experiment2"
+    frgc-exp4                          = "bob.bio.face.config.database.frgc_experiment4"
+    gbu-good                           = "bob.bio.face.config.database.gbu_good"
+    gbu-bad                            = "bob.bio.face.config.database.gbu_bad"
+    gbu-ugly                           = "bob.bio.face.config.database.gbu_ugly"
+    ijbc-test1                         = "bob.bio.face.config.database.ijbc_test1"
+    ijbc-test2                         = "bob.bio.face.config.database.ijbc_test2"
+    ijbc-test4-g1                      = "bob.bio.face.config.database.ijbc_test4_g1"
+    ijbc-test4-g2                      = "bob.bio.face.config.database.ijbc_test4_g2"
+    lfw-o1                             = "bob.bio.face.config.database.lfw_o1"
+    lfw-o2                             = "bob.bio.face.config.database.lfw_o2"
+    lfw-o3                             = "bob.bio.face.config.database.lfw_o3"
+    lfw-view2                          = "bob.bio.face.config.database.lfw_view2"
+    meds                               = "bob.bio.face.config.database.meds"
+    mobio-all                          = "bob.bio.face.config.database.mobio_all"
+    mobio-male                         = "bob.bio.face.config.database.mobio_male"
+    morph                              = "bob.bio.face.config.database.morph"
+    multipie                           = "bob.bio.face.config.database.multipie"
+    multipie-pose                      = "bob.bio.face.config.database.multipie_pose"
+    pola-thermal                       = "bob.bio.face.config.database.pola_thermal"
+    replaymobile-img                   = "bob.bio.face.config.database.replaymobile"
+    rfw-original                       = "bob.bio.face.config.database.rfw_original"
+    rfw-idiap                          = "bob.bio.face.config.database.rfw_idiap"
+    scface                             = "bob.bio.face.config.database.scface_combined"
+    scface-close                       = "bob.bio.face.config.database.scface_close"
+    scface-medium                      = "bob.bio.face.config.database.scface_medium"
+    scface-far                         = "bob.bio.face.config.database.scface_far"
+    scface-ir                          = "bob.bio.face.config.database.scface_ir"
+    arface-all                         = "bob.bio.face.config.database.arface_all"
+    arface-expression                  = "bob.bio.face.config.database.arface_expression"
+    arface-illumination                = "bob.bio.face.config.database.arface_illumination"
+    arface-occlusion                   = "bob.bio.face.config.database.arface_occlusion"
+    arface-occlusion-and-illumination  = "bob.bio.face.config.database.arface_occlusion_and_illumination"
+    caspeal-accessory                  = "bob.bio.face.config.database.caspeal_accessory"
+    caspeal-aging                      = "bob.bio.face.config.database.caspeal_aging"
+    caspeal-background                 = "bob.bio.face.config.database.caspeal_background"
+    caspeal-distance                   = "bob.bio.face.config.database.caspeal_distance"
+    caspeal-expression                 = "bob.bio.face.config.database.caspeal_expression"
+    caspeal-lighting                   = "bob.bio.face.config.database.caspeal_lighting"
+    oxford-resnet50-scratch-dag-vgg2   = "bob.bio.face.config.baseline.oxford_resnet50_scratch_dag_vgg2"
+    oxford-resnet50-ft-dag-vgg2        = "bob.bio.face.config.baseline.oxford_resnet50_ft_dag_vgg2"
+    oxford-senet50-scratch-dag-vgg2    = "bob.bio.face.config.baseline.oxford_senet50_scratch_dag_vgg2"
+    oxford-senet50-ft-dag-vgg2         = "bob.bio.face.config.baseline.oxford_senet50_ft_dag_vgg2"
+    vgg2-short                         = "bob.bio.face.config.database.vgg2_short"
+    vgg2-full                          = "bob.bio.face.config.database.vgg2_full"
+    vgg2-short-with-eval               = "bob.bio.face.config.database.vgg2_short_with_eval"
+    vgg2-full-with-eval                = "bob.bio.face.config.database.vgg2_full_with_eval"
+
+[project.entry-points."bob.bio.cli"]
+    display-face-annotations = "bob.bio.face.script.display_face_annotations:display_face_annotations"
+    face                     = "bob.bio.face.script.face:face"
+
+[project.entry-points."bob.bio.face.cli"]
+    plots = "bob.bio.face.script.plots:plots"
+
+[project.entry-points."bob.bio.face.plots.cli"]
+    multipie-pose       = "bob.bio.face.script.face_plots_commands:multipie_pose"
+    multipie-expression = "bob.bio.face.script.face_plots_commands:multipie_expression"
+    scface              = "bob.bio.face.script.face_plots_commands:scface_distance"
+    arface              = "bob.bio.face.script.face_plots_commands:arface"
+    mobio-gender        = "bob.bio.face.script.face_plots_commands:mobio_gender"
+    gbu                 = "bob.bio.face.script.face_plots_commands:gbu"
+    ijbc                = "bob.bio.face.script.face_plots_commands:ijbc"
+
+[tool.distutils.bdist_wheel]
+    universal = true
+
 [tool.isort]
-    profile = "black"
-    line_length = 80
-    order_by_type = true
+    profile             = "black"
+    line_length         = 80
+    order_by_type       = true
     lines_between_types = 1
 
 [tool.black]
     line-length = 80
 
+[tool.coverage.run]
+    relative_files = true
+
 [tool.pytest.ini_options]
-markers = [
-    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
-]
+    addopts = [
+        "--import-mode=append",
+        "--cov-report=term-missing",
+        "--cov=bob.bio.video",
+    ]
+    markers = [
+        "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    ]
+    junit_logging           = "all"
+    junit_log_passing_tests = false

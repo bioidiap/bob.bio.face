@@ -1,21 +1,20 @@
-{% set name = 'bob.bio.face' %}
-{% set project_dir = environ.get('RECIPE_DIR') + '/..' %}
+{% set data = load_file_data(RECIPE_DIR + '/../pyproject.toml') %}
+{% set name = data['project']['name'] %}
 
 package:
   name: {{ name }}
   version: {{ environ.get('BOB_PACKAGE_VERSION', '0.0.1') }}
 
+source:
+  path: ..
+
 build:
-  entry_points:
+  noarch: python
   number: {{ environ.get('BOB_BUILD_NUMBER', 0) }}
   run_exports:
     - {{ pin_subpackage(name) }}
   script:
-    - cd {{ project_dir }}
-    {% if environ.get('BUILD_EGG') %}
-    - "{{ PYTHON }} setup.py sdist --formats=zip"
-    {% endif %}
-    - "{{ PYTHON }} -m pip install . -vv"
+    - "{{ PYTHON }} -m pip install {{ SRC_DIR }} -vv"
 
 requirements:
   host:
@@ -38,13 +37,18 @@ requirements:
   run:
     - python
     - setuptools
-    - {{ pin_compatible('matplotlib', max_pin="x.x") }}
+    - bob.extension
+    - bob.io.base
+    - bob.measure
+    - bob.bio.base
+    - bob.pipelines
+    - {{ pin_compatible('matplotlib')}}
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('imageio-ffmpeg') }}
     - {{ pin_compatible('opencv') }}
-    - {{ pin_compatible('pytorch', max_pin="x.x") }}
-    - {{ pin_compatible('torchvision', max_pin="x.x") }}
-    - {{ pin_compatible('pytorch-lightning', max_pin="x.x") }}
+    - {{ pin_compatible('pytorch') }}
+    - {{ pin_compatible('torchvision') }}
+    - {{ pin_compatible('pytorch-lightning') }}
 
   run_constrained:
     - {{ pin_compatible('tensorflow') }}  # [linux]
@@ -52,28 +56,13 @@ requirements:
 
 test:
   imports:
-    - {{ name }}
+    - {{ name.replace('-','_') }}
   commands:
-    - bob bio display-face-annotations --help
-    # runs tests for package only, report only what is in the package
-    # creates html and xml reports and place them in specific directories
-    - pytest --verbose --cov {{ name }} --cov-report term-missing --cov-report html:{{ project_dir }}/sphinx/coverage --cov-report xml:{{ project_dir }}/coverage.xml --pyargs {{ name }}
-    - sphinx-build -aEW {{ project_dir }}/doc {{ project_dir }}/sphinx # [linux]
-    - sphinx-build -aEb doctest {{ project_dir }}/doc sphinx # [linux]
     - conda inspect linkages -p $PREFIX {{ name }}  # [not win]
-    - conda inspect objects -p $PREFIX {{ name }}  # [osx]
-  requires:
-    - pytest {{ pytest }}
-    - pytest-cov {{ pytest_cov }}
-    - coverage {{ coverage }}
-    - sphinx {{ sphinx }}
-    - sphinx_rtd_theme {{ sphinx_rtd_theme }}
-    - tensorflow  # [linux]
-    - imageio-ffmpeg {{ imageio_ffmpeg }}
-    - pydeprecate==0.3.1
+
 
 about:
-  home: https://www.idiap.ch/software/bob/
-  license: BSD License
-  summary: Tools for running face recognition experiments
+  home: {{ data['project']['urls']['homepage'] }}
+  summary: {{ data['project']['description'] }}
+  license: {{ data['project']['license']['text'] }}
   license_family: BSD

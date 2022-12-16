@@ -7,7 +7,6 @@ parts
 .installed.cfg
 .mr.developer.cfg
 *.egg-info
-src
 develop-eggs
 sphinx
 dist
@@ -15,3 +14,5 @@ record.txt
 build/
 bob/bio/face/embeddings/data
 *.DS_Store
+.gitlab-ci-local*
+html/

@@ -22,13 +22,15 @@ import os
 
 import pytest
 
+from exposed.rc import UserDefaults
+
 import bob.bio.base
 import bob.extension.log
 
-from bob.extension import rc
 from bob.extension.download import get_file
 
 logger = bob.extension.log.setup(__name__)
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 def _check_annotations(

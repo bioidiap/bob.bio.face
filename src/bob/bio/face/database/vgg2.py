@@ -11,14 +11,16 @@ logger = logging.getLogger(__name__)
   VGG2 database implementation
 """
 
+from exposed.rc import UserDefaults
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
-from bob.extension import rc
 from bob.pipelines import DelayedSample
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class VGG2Annotations(TransformerMixin, BaseEstimator):

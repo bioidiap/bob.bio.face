@@ -10,6 +10,7 @@ from typing import Optional
 import imageio
 import numpy
 
+from exposed.rc import UserDefaults
 from sklearn.base import BaseEstimator
 from sklearn.pipeline import make_pipeline
 
@@ -17,12 +18,12 @@ import bob.io.image
 
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.base.utils.annotations import read_annotation_file
-from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample
 
 logger = logging.getLogger(__name__)
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 read_annotation_file = functools.lru_cache()(read_annotation_file)
 

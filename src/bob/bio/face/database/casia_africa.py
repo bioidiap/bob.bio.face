@@ -6,13 +6,15 @@
   CASIA-Face-Africa: database implementation
 """
 
+from exposed.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
-from bob.extension import rc
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class CasiaAfricaDatabase(CSVDatabase):
@@ -110,7 +112,7 @@ class CasiaAfricaDatabase(CSVDatabase):
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        directory = rc.get("bob.db.casia-africa.directory", "")
+        directory = UserDefaults.get("bob.db.casia-africa.directory", "")
 
         super().__init__(
             name=self.name,

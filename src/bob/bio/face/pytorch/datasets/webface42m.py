@@ -7,13 +7,15 @@ import os
 
 import numpy as np
 
+from exposed.rc import UserDefaults
 from torch.utils.data import Dataset
 
 import bob.io.base
 
 # from bob.bio.face.database import MEDSDatabase, MorphDatabase
-from bob.extension import rc
 from bob.extension.download import get_file, search_file
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class WebFace42M(Dataset):

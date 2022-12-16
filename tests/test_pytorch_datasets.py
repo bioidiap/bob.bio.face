@@ -4,6 +4,8 @@ import numpy as np
 import pkg_resources
 import pytest
 
+from exposed.rc import UserDefaults
+
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader
 
@@ -19,7 +21,8 @@ from bob.bio.face.pytorch.datasets import (
     WebFace42M,
 )
 from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
-from bob.extension import rc
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 @pytest.mark.skipif(

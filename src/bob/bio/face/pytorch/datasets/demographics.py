@@ -18,6 +18,7 @@ import numpy as np
 import pandas as pd
 import torch
 
+from exposed.rc import UserDefaults
 from torch.utils.data import Dataset
 
 import bob.io.base
@@ -29,10 +30,10 @@ from bob.bio.face.database import (
     RFWDatabase,
     VGG2Database,
 )
-from bob.extension import rc
 from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class DemographicTorchDataset(Dataset):
@@ -716,7 +717,6 @@ class MSCelebTorchDataset(DemographicTorchDataset):
         # Private keys
         self._possible_genders = ["male", "female", "other"]
 
-        # filename = "/idiap/user/tpereira/gitlab/bob/database-purgatory/wikidata/msceleb_race_wikidata.csv"
         urls = MSCelebTorchDataset.urls()
         filename = (
             get_file(

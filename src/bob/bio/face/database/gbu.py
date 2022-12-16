@@ -8,12 +8,15 @@ import xml.sax
 
 from functools import partial
 
+from exposed.rc import UserDefaults
+
 import bob.io.base
 
 from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension import rc
 from bob.extension.download import get_file, search_file
 from bob.pipelines import DelayedSample, SampleSet
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 """
 GBU Database
@@ -145,7 +148,6 @@ class GBUDatabase(Database):
             DeprecationWarning,
         )
 
-        # self.filename = "/idiap/user/tpereira/gitlab/bob/bob.nightlies/temp/gbu.tar.gz"
         # Downloading model if not exists
         urls = GBUDatabase.urls()
         self.filename = get_file(

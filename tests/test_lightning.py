@@ -9,6 +9,7 @@ import pytest
 import torch
 import torchvision
 
+from exposed.rc import UserDefaults
 from torch import nn
 from torch.nn import Module
 
@@ -17,7 +18,8 @@ from torch.utils.data import DataLoader, Dataset
 
 from bob.bio.face.pytorch.head import ArcFace
 from bob.bio.face.pytorch.lightning import BackboneHeadModel
-from bob.extension import rc
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 # import torchvision.transforms as transforms
 

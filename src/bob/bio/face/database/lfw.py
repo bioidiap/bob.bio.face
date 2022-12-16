@@ -11,14 +11,16 @@ from functools import partial
 
 import numpy as np
 
+from exposed.rc import UserDefaults
+
 import bob.io.base
 
 from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension import rc
 from bob.extension.download import get_file
 from bob.pipelines import DelayedSample, SampleSet
 
 logger = logging.getLogger(__name__)
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class LFWDatabase(Database):  # TODO Make this a CSVDatabase?

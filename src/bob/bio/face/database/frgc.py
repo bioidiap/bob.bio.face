@@ -6,14 +6,16 @@
   FRGC database implementation
 """
 
+from exposed.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
 
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.bio.face.database.sample_loaders import EyesAnnotations
-from bob.extension import rc
 from bob.pipelines import hash_string
+
+rc = UserDefaults("~/.bobrc", "BOBRC")
 
 
 class FRGCDatabase(CSVDatabase):

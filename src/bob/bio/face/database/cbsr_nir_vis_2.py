@@ -84,9 +84,9 @@ class CBSRNirVis2Database(CSVDatabase):
             transformer=make_pipeline(
                 FileSampleLoader(
                     data_loader=load,
-                    dataset_original_directory=rc[
-                        "bob.db.cbsr-nir-vis-2.directory"
-                    ]
+                    dataset_original_directory=rc.get(
+                        "bob.db.cbsr-nir-vis-2.directory", ""
+                    )
                     or "",
                     extension=".jpg",
                 ),

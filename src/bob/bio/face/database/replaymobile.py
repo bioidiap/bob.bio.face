@@ -103,6 +103,13 @@ class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
             if not hasattr(sample, "should_flip"):
                 raise ValueError(f"`should_flip` not available in {sample}")
 
+            subject_id = (
+                sample.subject_id
+                if not self.template_id_equal_subject_id
+                or not hasattr(sample, "template_id")  # e.g. in train set
+                else sample.template_id
+            )
+
             # One row creates one samples (=> one comparison because of `is_sparse`)
             should_flip = sample.should_flip.lower() == "true"
             new_s = DelayedSample(
@@ -117,9 +124,7 @@ class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
                 ),
                 key=sample.key,
                 should_flip=should_flip,
-                subject_id=sample.template_id
-                if self.template_id_equal_subject_id
-                else sample.subject_id,
+                subject_id=subject_id,
                 parent=sample,
             )
             output.append(new_s)
@@ -247,6 +252,15 @@ class ReplayMobileBioDatabase(CSVDatabase):
         If None and the config does not exist: Downloads the file in ``~/bob_data``.
     """
 
+    name = "replaymobile"
+    category = "face"
+    dataset_protocols_name = "replaymobile.tar.gz"
+    dataset_protocols_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/face/replaymobile-354f3301.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/face/replaymobile-354f3301.tar.gz",
+    ]
+    dataset_protocols_hash = "354f3301"
+
     def __init__(
         self,
         protocol="grandtest",
@@ -260,17 +274,11 @@ class ReplayMobileBioDatabase(CSVDatabase):
 
         if protocol_definition_path is None:
             # Downloading database description files if it is not specified
-            proto_def_hash = "c511eeeb"
-            proto_def_name = f"replaymobile-{proto_def_hash}.tar.gz"
-            proto_def_urls = [
-                f"https://www.idiap.ch/software/bob/databases/latest/face/{proto_def_name}",
-                f"http://www.idiap.ch/software/bob/databases/latest/face/{proto_def_name}",
-            ]
             protocol_definition_path = get_file(
-                filename=proto_def_name,
-                urls=proto_def_urls,
-                cache_subdir="datasets",
-                file_hash=proto_def_hash,
+                filename=self.dataset_protocols_name,
+                urls=self.dataset_protocols_urls,
+                cache_subdir=os.path.join("datasets", self.category),
+                file_hash=self.dataset_protocols_hash,
             )
 
         if data_path is None:

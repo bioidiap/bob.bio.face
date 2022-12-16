@@ -232,14 +232,15 @@ autodoc_default_options = {
     "show-inheritance": True,
 }
 
-# For inter-documentation mapping:
-from bob.extension.utils import link_documentation, load_requirements
-
-sphinx_requirements = "extra-intersphinx.txt"
-if os.path.exists(sphinx_requirements):
-    intersphinx_mapping = link_documentation(
-        additional_packages=["python", "numpy"]
-        + load_requirements(sphinx_requirements)
-    )
-else:
-    intersphinx_mapping = link_documentation()
+auto_intersphinx_packages = [
+    ("python", "3"),
+    "numpy",
+    "scikit-learn",
+    "bob.bio.face",
+    "bob.extension",
+    "bob.bio.video",
+    "bob.bio.spear",
+    "bob.bio.vein",
+    "bob.pipelines",
+    "dask",
+]

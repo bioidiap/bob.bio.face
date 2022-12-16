@@ -115,7 +115,7 @@ class GBUDatabase(Database):
             bob config set bob.bio.face.gbu.directory [GBU PATH]
 
 
-    The code below allows you to fetch the galery and probes of the "Good" protocol.
+    The code below allows you to fetch the gallery and probes of the "Good" protocol.
 
     .. code-block:: python
 
@@ -251,10 +251,10 @@ class GBUDatabase(Database):
     def _check_protocol(self, protocol):
         assert (
             protocol in self.protocols()
-        ), "Unvalid protocol `{}` not in {}".format(protocol, self.protocols())
+        ), "Invalid protocol `{}` not in {}".format(protocol, self.protocols())
 
     def _check_group(self, group):
-        assert group in self.groups(), "Unvalid group `{}` not in {}".format(
+        assert group in self.groups(), "Invalid group `{}` not in {}".format(
             group, self.groups()
         )
 

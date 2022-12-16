@@ -25,6 +25,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.mathjax",
     "matplotlib.sphinxext.plot_directive",
+    "auto_intersphinx",
 ]
 
 # Be picky about warnings
@@ -236,11 +237,5 @@ auto_intersphinx_packages = [
     ("python", "3"),
     "numpy",
     "scikit-learn",
-    "bob.bio.face",
-    "bob.extension",
-    "bob.bio.video",
-    "bob.bio.spear",
-    "bob.bio.vein",
-    "bob.pipelines",
-    "dask",
+    "bob.bio.base",
 ]

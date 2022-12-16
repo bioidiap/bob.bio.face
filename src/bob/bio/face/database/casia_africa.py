@@ -112,7 +112,7 @@ class CasiaAfricaDatabase(CSVDatabase):
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
 
-        directory = UserDefaults.get("bob.db.casia-africa.directory", "")
+        directory = rc.get("bob.db.casia-africa.directory", "")
 
         super().__init__(
             name=self.name,

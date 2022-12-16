@@ -5,6 +5,8 @@ import functools
 import logging
 import os.path
 
+from typing import Optional
+
 import imageio
 import numpy
 
@@ -174,7 +176,7 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
 
     def __init__(
         self,
-        annotation_directory: str | None = None,
+        annotation_directory: Optional[str] = None,
         annotation_extension: str = ".json",
         **kwargs,
     ):

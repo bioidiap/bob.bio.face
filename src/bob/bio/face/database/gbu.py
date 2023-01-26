@@ -16,7 +16,7 @@ from bob.bio.base.pipelines.abstract_classes import Database
 from bob.extension.download import get_file, search_file
 from bob.pipelines import DelayedSample, SampleSet
 
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 """
 GBU Database

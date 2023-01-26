@@ -20,7 +20,7 @@ import bob.io.base
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
 from bob.pipelines import DelayedSample
 
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 
 class VGG2Annotations(TransformerMixin, BaseEstimator):

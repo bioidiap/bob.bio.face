@@ -15,7 +15,7 @@ import bob.io.base
 # from bob.bio.face.database import MEDSDatabase, MorphDatabase
 from bob.extension.download import get_file, search_file
 
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 
 class WebFace42M(Dataset):

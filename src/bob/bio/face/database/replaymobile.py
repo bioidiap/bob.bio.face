@@ -23,7 +23,7 @@ from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 read_annotation_file = functools.lru_cache()(read_annotation_file)
 

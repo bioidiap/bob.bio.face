@@ -15,7 +15,7 @@ from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample, SampleSet
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 
 def _make_sample_from_template_row(row, image_directory):

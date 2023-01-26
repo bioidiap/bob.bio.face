@@ -30,7 +30,7 @@ import bob.extension.log
 from bob.extension.download import get_file
 
 logger = bob.extension.log.setup(__name__)
-rc = UserDefaults("~/.bobrc", "BOBRC")
+rc = UserDefaults("~/.bobrc")
 
 
 def _check_annotations(

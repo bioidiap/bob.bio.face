@@ -13,6 +13,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
 
 from bob.bio.base.algorithm import Distance
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.face.annotator import MTCNN
 from bob.bio.face.pytorch.facexzoo import FaceXZooModelFactory
@@ -21,7 +22,6 @@ from bob.bio.face.utils import (
     dnn_default_cropping,
     embedding_transformer,
 )
-from bob.extension.download import get_file
 
 # Fix for torch on docker (fixes CI linux runners):
 torch.set_num_threads(1)
@@ -212,14 +212,14 @@ class AFFFE_2021(PyTorchModel):
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz",
         ]
 
-        filename = get_file(
-            "AFFFE-42a53f19.tar.gz",
-            urls,
-            cache_subdir="data/pytorch/AFFFE-42a53f19.tar.gz",
-            file_hash="1358bbcda62cb59b85b2418ef1f81e9b",
+        path = download_file(
+            urls=urls,
+            destination_sub_directory="data/pytorch/AFFFE-42a53f19",
+            destination_filename="AFFFE-42a53f19.tar.gz",
+            checksum="1358bbcda62cb59b85b2418ef1f81e9b",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        path = os.path.dirname(filename)
         config = os.path.join(path, "AFFFE.py")
         checkpoint_path = os.path.join(path, "AFFFE.pth")
 
@@ -247,11 +247,12 @@ def _get_iresnet_file():
         "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet-91a5de61.tar.gz",
     ]
 
-    return get_file(
-        "iresnet-91a5de61.tar.gz",
-        urls,
-        cache_subdir="data/pytorch/iresnet-91a5de61/",
-        file_hash="3976c0a539811d888ef5b6217e5de425",
+    return download_file(
+        urls=urls,
+        destination_sub_directory="data/pytorch/iresnet-91a5de61",
+        destination_filename="iresnet-91a5de61.tar.gz",
+        checksum="3976c0a539811d888ef5b6217e5de425",
+        checksum_fct=md5_hash,
         extract=True,
     )
 
@@ -401,11 +402,12 @@ class OxfordVGG2Resnets(PyTorchModel):
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/oxford_resnet50_vgg2.tar.gz",
         ]
 
-        filename = get_file(
-            "oxford_resnet50_vgg2.tar.gz",
-            urls,
-            cache_subdir="data/pytorch/oxford_resnet50_vgg2/",
-            file_hash="c8e1ed3715d83647b4a02e455213aaf0",
+        path = download_file(
+            urls=urls,
+            destination_sub_directory="data/pytorch/oxford_resnet50_vgg2",
+            destination_filename="oxford_resnet50_vgg2.tar.gz",
+            checksum="c8e1ed3715d83647b4a02e455213aaf0",
+            checksum_fct=md5_hash,
             extract=True,
         )
 
@@ -421,7 +423,6 @@ class OxfordVGG2Resnets(PyTorchModel):
             )
 
         self.model_name = model_name
-        path = os.path.dirname(filename)
         config = os.path.join(path, model_name, f"{model_name}.py")
         checkpoint_path = os.path.join(path, model_name, f"{model_name}.pth")
 
@@ -551,15 +552,15 @@ class IResnet100Elastic(PyTorchModel):
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
         ]
 
-        filename = get_file(
-            "iresnet100-elastic.tar.gz",
-            urls,
-            cache_subdir="data/pytorch/iresnet100-elastic/",
-            file_hash="0ac36db3f0f94930993afdb27faa4f02",
+        path = download_file(
+            urls=urls,
+            destination_sub_directory="data/pytorch/iresnet100-elastic",
+            destination_filename="iresnet100-elastic.tar.gz",
+            checksum="0ac36db3f0f94930993afdb27faa4f02",
+            checksum_fct=md5_hash,
             extract=True,
         )
 
-        path = os.path.dirname(filename)
         config = os.path.join(path, "iresnet.py")
         checkpoint_path = os.path.join(path, "iresnet100-elastic.pt")
 
@@ -600,7 +601,7 @@ class FaceXZooModel(PyTorchModel):
         _model = FaceXZooModelFactory(self.arch)
         filename = _model.get_facexzoo_file()
         config = None
-        path = os.path.dirname(filename)
+        path = filename
         checkpoint_path = os.path.join(path, self.arch + ".pt")
 
         super(FaceXZooModel, self).__init__(

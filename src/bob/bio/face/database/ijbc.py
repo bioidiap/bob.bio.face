@@ -153,9 +153,7 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
 
         self._check_protocol(protocol)
         super().__init__(
-            name=self.name,
             protocol=protocol,
-            score_all_vs_all=False,
             annotation_type="bounding-box",
             fixed_positions=None,
             memory_demanding=True,

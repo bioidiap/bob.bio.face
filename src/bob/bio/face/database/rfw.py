@@ -10,8 +10,8 @@ from exposed.rc import UserDefaults
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension.download import get_file
 from bob.pipelines.sample import DelayedSample, SampleSet
 
 logger = logging.getLogger("bob.bio.face")
@@ -73,6 +73,11 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     ]
     dataset_protocols_hash = "83549522"
 
+    demographics_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+    ]
+
     def __init__(
         self,
         protocol,
@@ -89,9 +94,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._default_extension = ".jpg"
 
         super().__init__(
-            name=self.name,
             protocol=protocol,
-            score_all_vs_all=False,
             annotation_type="eyes-center",
             fixed_positions=None,
             memory_demanding=False,
@@ -144,12 +147,16 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
         """
 
-        filename = get_file(
-            RFWDatabase.dataset_protocols_name,
-            RFWDatabase.dataset_protocols_urls,
-            file_hash=RFWDatabase.dataset_protocols_hash,
-            extract=True,
-        )[:-7]
+        filename = (
+            download_file(
+                urls=RFWDatabase.demographics_urls,
+                destination_sub_directory="protocols/" + RFWDatabase.category,
+                checksum="8eb0e3c93647dfa0c13fade5db96d73a",
+                checksum_fct=md5_hash,
+                extract=True,
+            )
+            / "msceleb_wikidata_demographics.csv"
+        )
         if self._demographics is None:
             self._demographics = dict()
             with open(filename) as f:

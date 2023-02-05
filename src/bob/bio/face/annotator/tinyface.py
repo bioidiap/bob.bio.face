@@ -7,8 +7,8 @@ from collections import namedtuple
 import numpy as np
 import pkg_resources
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.face.color import gray_to_rgb
-from bob.extension.download import get_file
 from bob.io.image import to_matplotlib
 
 from .Base import Base
@@ -38,15 +38,14 @@ class TinyFace(Base):
             "https://www.idiap.ch/software/bob/data/bob/bob.ip.facedetect/master/tinyface_detector.tar.gz"
         ]
 
-        filename = get_file(
-            "tinyface_detector.tar.gz",
-            urls,
-            cache_subdir="data/tinyface_detector",
-            file_hash="f24e820b47a7440d7cdd7e0c43d4d455",
+        self.checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tinyface_detector",
+            destination_filename="tinyface_detector.tar.gz",
+            checksum="f24e820b47a7440d7cdd7e0c43d4d455",
+            checksum_fct=md5_hash,
             extract=True,
         )
-
-        self.checkpoint_path = os.path.dirname(filename)
 
         self.MAX_INPUT_DIM = 5000.0
         self.prob_thresh = prob_thresh

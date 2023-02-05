@@ -15,8 +15,8 @@ from exposed.rc import UserDefaults
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension.download import get_file
 from bob.pipelines import DelayedSample, SampleSet
 
 logger = logging.getLogger(__name__)
@@ -126,15 +126,16 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
                 f"Fetching it from {annotation_urls[0]}"
             )
 
-            annotation_directory = get_file(
-                "lfw_annotations.tar.gz",
-                annotation_urls,
-                file_hash="c0ce6e090e19d0ed159172fcba2e8252",
+            annotation_directory = download_file(
+                urls=annotation_urls,
+                destination_filename="lfw_annotations.tar.gz",
+                checksum="c0ce6e090e19d0ed159172fcba2e8252",
+                checksum_fct=md5_hash,
                 extract=True,
             )
 
             # Removing extension
-            annotation_directory = annotation_directory[:-7]
+            annotation_directory = annotation_directory / "lfw_annotations"
 
             # Attaching the issuer sub-directory
             annotation_directory = os.path.join(

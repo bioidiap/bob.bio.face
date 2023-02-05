@@ -23,6 +23,7 @@ from torch.utils.data import Dataset
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.face.database import (
     MEDSDatabase,
     MobioDatabase,
@@ -30,7 +31,6 @@ from bob.bio.face.database import (
     RFWDatabase,
     VGG2Database,
 )
-from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
 rc = UserDefaults("~/.bobrc")
@@ -719,13 +719,14 @@ class MSCelebTorchDataset(DemographicTorchDataset):
 
         urls = MSCelebTorchDataset.urls()
         filename = (
-            get_file(
-                "msceleb_race_wikidata.tar.gz",
-                urls,
-                file_hash="76339d73f352faa00c155f7040e772bb",
+            download_file(
+                urls=urls,
+                destination_filename="msceleb_race_wikidata.tar.gz",
+                checksum="76339d73f352faa00c155f7040e772bb",
+                checksum_fct=md5_hash,
                 extract=True,
-            )[:-7]
-            + ".csv"
+            )
+            / "msceleb_race_wikidata.csv"
         )
 
         self.load_bucket(filename)

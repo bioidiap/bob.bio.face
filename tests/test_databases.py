@@ -17,19 +17,19 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-
+import logging
 import os
+import random
 
 import pytest
 
 from exposed.rc import UserDefaults
 
 import bob.bio.base
-import bob.extension.log
 
-from bob.extension.download import get_file
+from bob.bio.base.database.utils import download_file
 
-logger = bob.extension.log.setup(__name__)
+logger = logging.getLogger(__name__)
 rc = UserDefaults("~/.bobrc")
 
 
@@ -39,8 +39,6 @@ def _check_annotations(
     database_legacy = database.database
     files = database_legacy.all_files()
     if limit_files is not None:
-        import random
-
         files = random.sample(files, limit_files)
     found_none = False
 
@@ -62,7 +60,7 @@ def _check_annotations(
         else:
             found_none = True
     if found_none:
-        logger.warn(
+        logger.warning(
             "Some annotations were None for {}".format(database_legacy.name)
         )
 
@@ -72,7 +70,9 @@ def test_mobio():
 
     # Getting the absolute path
     urls = MobioDatabase.dataset_protocols_urls
-    filename = get_file("mobio.tar.gz", urls)
+    filename = download_file(
+        urls, destination_filename="mobio.tar.gz"
+    )  # TODO use tmpdir
 
     # Removing the file before the test
     try:
@@ -113,7 +113,9 @@ def test_multipie():
 
     # Getting the absolute path
     urls = MultipieDatabase.dataset_protocols_urls
-    filename = get_file("multipie.tar.gz", urls)
+    filename = download_file(
+        urls=urls, destination_filename="multipie.tar.gz"
+    )  # TODO use tmpdir
 
     # Removing the file before the test
     try:
@@ -252,7 +254,9 @@ def test_meds():
 
     # Getting the absolute path
     urls = MEDSDatabase.dataset_protocols_urls
-    filename = get_file("meds.tar.gz", urls)
+    filename = download_file(
+        urls=urls, destination_filename="meds.tar.gz"
+    )  # TODO use tmpdir
 
     # Removing the file before the test
     try:
@@ -279,7 +283,9 @@ def test_morph():
 
     # Getting the absolute path
     urls = MorphDatabase.dataset_protocols_urls
-    filename = get_file("morph.tar.gz", urls)
+    filename = download_file(
+        urls=urls, destination_filename="morph.tar.gz"
+    )  # TODO use tmpdir
 
     # Removing the file before the test
     try:
@@ -400,7 +406,9 @@ def test_scface():
 
     # Getting the absolute path
     urls = SCFaceDatabase.dataset_protocols_urls
-    filename = get_file("scface.tar.gz", urls)
+    filename = download_file(
+        urls=urls, destination_filename="scface.tar.gz"
+    )  # TODO use tmpdir
 
     # Removing the file before the test
     try:
@@ -729,7 +737,9 @@ def test_vgg2():
 
     # Getting the absolute path
     urls = VGG2Database.dataset_protocols_urls
-    filename = get_file("vgg2.tar.gz", urls)
+    filename = download_file(
+        urls=urls, destination_filename="vgg2.tar.gz"
+    )  # TODO use tmpdir
 
     # Removing the file before the test
     try:

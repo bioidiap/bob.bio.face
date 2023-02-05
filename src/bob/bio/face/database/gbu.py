@@ -12,8 +12,8 @@ from exposed.rc import UserDefaults
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash, search_and_open
 from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension.download import get_file, search_file
 from bob.pipelines import DelayedSample, SampleSet
 
 rc = UserDefaults("~/.bobrc")
@@ -144,16 +144,17 @@ class GBUDatabase(Database):
         import warnings
 
         warnings.warn(
-            f"The {self.name} database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
+            "The GBU database is not yet adapted to this version of bob. Please port it or ask for it to be ported.",
             DeprecationWarning,
         )
 
         # Downloading model if not exists
         urls = GBUDatabase.urls()
-        self.filename = get_file(
-            "gbu-xmls.tar.gz",
-            urls,
-            file_hash="827de43434ee84020c6a949ece5e4a4d",
+        self.filename = download_file(
+            urls=urls,
+            destination_filename="gbu-xmls.tar.gz",
+            checksum="827de43434ee84020c6a949ece5e4a4d",
+            checksum_fct=md5_hash,
         )
 
         self.references_dict = {}
@@ -195,14 +196,18 @@ class GBUDatabase(Database):
         if self.background_samples is None:
             if self.annotations is None:
                 self.annotations = load_annotations(
-                    search_file(self.filename, "alleyes.csv")
+                    search_and_open(
+                        search_pattern="alleyes.csv", base_dir=self.filename
+                    )
                 )
             # for
             self.background_samples = []
 
             for b_files in self._background_files:
 
-                f = search_file(self.filename, f"{b_files}")
+                f = search_and_open(
+                    search_pattern=f"{b_files}", base_dir=self.filename
+                )
 
                 self.background_samples += self._make_sampleset_from_filedict(
                     read_list(f)
@@ -213,10 +218,15 @@ class GBUDatabase(Database):
         if self.protocol not in self.probes_dict:
             if self.annotations is None:
                 self.annotations = load_annotations(
-                    search_file(self.filename, "alleyes.csv")
+                    search_and_open(
+                        search_pattern="alleyes.csv", base_dir=self.filename
+                    )
                 )
 
-            f = search_file(self.filename, f"GBU_{self.protocol}_Query.xml")
+            f = search_and_open(
+                search_pattern=f"GBU_{self.protocol}_Query.xml",
+                base_dir=self.filename,
+            )
             template_ids = [x.template_id for x in self.references()]
 
             self.probes_dict[
@@ -230,10 +240,15 @@ class GBUDatabase(Database):
 
             if self.annotations is None:
                 self.annotations = load_annotations(
-                    search_file(self.filename, "alleyes.csv")
+                    search_and_open(
+                        search_pattern="alleyes.csv", base_dir=self.filename
+                    )
                 )
 
-            f = search_file(self.filename, f"GBU_{self.protocol}_Target.xml")
+            f = search_and_open(
+                search_pattern=f"GBU_{self.protocol}_Target.xml",
+                base_dir=self.filename,
+            )
             self.references_dict[
                 self.protocol
             ] = self._make_sampleset_from_filedict(

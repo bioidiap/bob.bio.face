@@ -16,13 +16,10 @@ import os
 
 import click
 
+from exposed.click import ConfigCommand, ResourceOption, verbosity_option
+
 from bob.bio.base.utils.annotations import read_annotation_file
 from bob.bio.face.color import gray_to_rgb
-from bob.extension.scripts.click_helper import (
-    ConfigCommand,
-    ResourceOption,
-    verbosity_option,
-)
 
 logger = logging.getLogger(__name__)
 
@@ -133,7 +130,7 @@ Examples:
     show_default=True,
     help="Biometric Database group that will be displayed.",
 )
-@verbosity_option(cls=ResourceOption)
+@verbosity_option(logger=logger, expose_value=False)
 def display_face_annotations(
     database,
     is_video,

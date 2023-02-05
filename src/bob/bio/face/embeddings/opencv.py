@@ -9,10 +9,10 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
 
 from bob.bio.base.algorithm import Distance
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.face.annotator import MTCNN
 from bob.bio.face.utils import dnn_default_cropping, embedding_transformer
-from bob.extension.download import get_file
 
 
 class OpenCVTransformer(TransformerMixin, BaseEstimator):
@@ -107,14 +107,14 @@ class VGG16_Oxford(OpenCVTransformer):
             "http://bobconda.lab.idiap.ch/public-upload/data/bob/bob.bio.face/master/caffe/vgg_face_caffe.tar.gz",
         ]
 
-        filename = get_file(
-            "vgg_face_caffe.tar.gz",
-            urls,
-            cache_subdir="data/caffe/vgg_face_caffe",
-            file_hash="ee707ac6e890bc148cb155adeaad12be",
+        path = download_file(
+            urls=urls,
+            destination_sub_directory="data/caffe/vgg_face_caffe",
+            destination_filename="vgg_face_caffe.tar.gz",
+            checksum="ee707ac6e890bc148cb155adeaad12be",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        path = os.path.dirname(filename)
         config = os.path.join(
             path, "vgg_face_caffe", "VGG_FACE_deploy.prototxt"
         )

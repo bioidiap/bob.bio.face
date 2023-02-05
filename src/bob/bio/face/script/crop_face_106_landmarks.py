@@ -7,13 +7,13 @@ import cv2
 import dask.bag
 import numpy as np
 
+from exposed.click import ResourceOption
 from skimage import transform as trans
 
 import bob.bio.face
 import bob.io.base
 
 from bob.bio.face.annotator import FaceX106Landmarks
-from bob.extension.scripts.click_helper import ResourceOption
 from bob.io.image import bob_to_opencvbgr, opencvbgr_to_bob
 from bob.pipelines.distributed import VALID_DASK_CLIENT_STRINGS
 

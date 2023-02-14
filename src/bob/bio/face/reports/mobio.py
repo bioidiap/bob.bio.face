@@ -17,7 +17,6 @@ def mobio_report(
     figsize=(16, 8),
     colors=plt.cm.tab10.colors,
 ):
-
     genders = [
         "m",
         "f",
@@ -33,7 +32,6 @@ def mobio_report(
         e_scores,
         title,
     ) in zip(scores_dev, scores_eval, titles):
-
         eval_fmr_fnmr[title] = []
 
         # Load the score files and fill in the angle associated to each camera
@@ -68,7 +66,6 @@ def mobio_report(
         )
 
         for gender in genders[1:]:
-
             i_eval = impostors_eval.loc[impostors_eval.probe_gender == gender]
             g_eval = genuines_eval.loc[genuines_eval.probe_gender == gender]
 

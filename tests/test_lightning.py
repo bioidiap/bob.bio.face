@@ -9,7 +9,7 @@ import pytest
 import torch
 import torchvision
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from torch import nn
 from torch.nn import Module
 

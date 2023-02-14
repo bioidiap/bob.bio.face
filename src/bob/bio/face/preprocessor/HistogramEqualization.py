@@ -29,7 +29,6 @@ class HistogramEqualization(Base):
     """
 
     def __init__(self, face_cropper, **kwargs):
-
         Base.__init__(self, **kwargs)
 
         self.face_cropper = (face_cropper,)

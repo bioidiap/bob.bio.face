@@ -16,7 +16,7 @@ class BackboneHeadModel(pl.LightningModule):
         loss_fn,
         optimizer_fn,
         backbone_checkpoint_file=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Pytorch-lightining (https://pytorch-lightning.readthedocs.io/) model composed of two `torch.nn.Module`:
@@ -73,9 +73,7 @@ class BackboneHeadModel(pl.LightningModule):
         return self.backbone(inputs)
 
     def training_epoch_end(self, training_step_outputs):
-
         if self.backbone_checkpoint_file is not None:
-
             torch.save(
                 self.backbone.state_dict(),
                 os.path.join(self.backbone_checkpoint_file),
@@ -85,7 +83,6 @@ class BackboneHeadModel(pl.LightningModule):
     #    pass
 
     def validation_step(self, val_batch, batch_idx):
-
         data = val_batch["data"]
         labels = val_batch["label"].cpu().detach().numpy()
 
@@ -109,7 +106,6 @@ class BackboneHeadModel(pl.LightningModule):
         self.log("validation/accuracy", accuracy)
 
     def training_step(self, batch, batch_idx):
-
         data = batch["data"]
         label = batch["label"]
 

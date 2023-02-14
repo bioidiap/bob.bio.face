@@ -7,13 +7,14 @@ import os
 
 import numpy as np
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from torch.utils.data import Dataset
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash, search_and_open
+
 # from bob.bio.face.database import MEDSDatabase, MorphDatabase
-from bob.extension.download import get_file, search_file
 
 rc = UserDefaults("~/.bobrc")
 
@@ -60,12 +61,13 @@ class WebFace42M(Dataset):
             )
 
         urls = WebFace42M.urls()
-        filename = get_file(
-            "webface42M.tar.gz",
-            urls,
-            file_hash="50c32cbe61de261466e1ea3af2721cea",
+        filename = download_file(
+            urls=urls,
+            destination_filename="webface42M.tar.gz",
+            checksum="50c32cbe61de261466e1ea3af2721cea",
+            checksum_fct=md5_hash,
         )
-        self.file = search_file(filename, "webface42M.csv")
+        self.file = search_and_open(filename, "webface42M.csv")
 
         self._line_offset = 51
         self.transform = transform
@@ -76,7 +78,6 @@ class WebFace42M(Dataset):
         return 42474558
 
     def __getitem__(self, idx):
-
         self.file.seek(0)
 
         # Allowing negative indexing

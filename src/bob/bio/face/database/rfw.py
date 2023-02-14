@@ -6,12 +6,12 @@ from functools import partial
 
 import numpy as np
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.base.pipelines.abstract_classes import Database
-from bob.extension.download import get_file
 from bob.pipelines.sample import DelayedSample, SampleSet
 
 logger = logging.getLogger("bob.bio.face")
@@ -73,13 +73,17 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     ]
     dataset_protocols_hash = "83549522"
 
+    demographics_urls = [
+        "https://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+        "http://www.idiap.ch/software/bob/databases/latest/msceleb_wikidata_demographics.csv.tar.gz",
+    ]
+
     def __init__(
         self,
         protocol,
         original_directory=rc.get("bob.bio.face.rfw.directory"),
         **kwargs,
     ):
-
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(f"Invalid or non existent {original_directory=}")
 
@@ -89,9 +93,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._default_extension = ".jpg"
 
         super().__init__(
-            name=self.name,
             protocol=protocol,
-            score_all_vs_all=False,
             annotation_type="eyes-center",
             fixed_positions=None,
             memory_demanding=False,
@@ -144,12 +146,16 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
         """
 
-        filename = get_file(
-            RFWDatabase.dataset_protocols_name,
-            RFWDatabase.dataset_protocols_urls,
-            file_hash=RFWDatabase.dataset_protocols_hash,
-            extract=True,
-        )[:-7]
+        filename = (
+            download_file(
+                urls=RFWDatabase.demographics_urls,
+                destination_sub_directory="protocols/" + RFWDatabase.category,
+                checksum="8eb0e3c93647dfa0c13fade5db96d73a",
+                checksum_fct=md5_hash,
+                extract=True,
+            )
+            / "msceleb_wikidata_demographics.csv"
+        )
         if self._demographics is None:
             self._demographics = dict()
             with open(filename) as f:
@@ -167,7 +173,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
     def _load_metadata(self, target_set="test"):
         for race in self._races:
-
             pair_file = os.path.join(
                 self.original_directory,
                 target_set,
@@ -242,7 +247,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         return []
 
     def _get_zt_samples(self, seed):
-
         cache = []
 
         # Setting the seed for the IDIAP PROTOCOL,
@@ -304,7 +308,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     def probes(self, group="dev"):
         self._check_group(group)
         if self._cached_probes is None:
-
             # Setting the seed for the IDIAP PROTOCOL,
             # so we have a consistent set of probes
             np.random.seed(self._idiap_protocol_seed)
@@ -342,7 +345,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         return self._cached_probes
 
     def _fetch_landmarks(self, filename, key):
-
         if key not in self._landmarks:
             with open(filename) as f:
                 for line in f.readlines():

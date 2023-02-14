@@ -67,7 +67,6 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
             "reye": (55, 40),
         }
     elif annotation_type == "left-profile":
-
         cropped_positions = {"leye": (52, 56), "mouth": (91, 56)}
     elif annotation_type == "right-profile":
         return {"reye": (52, 56), "mouth": (91, 56)}
@@ -112,7 +111,6 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
     cropped_positions = {}
 
     if annotation_type == "bounding-box":
-
         TOP_LEFT_POS = (0, 0)
         BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
         cropped_positions.update(
@@ -132,7 +130,6 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
         cropped_positions.update({"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS})
 
     elif annotation_type == "left-profile":
-
         EYE_POS = (
             round(2 / 7 * CROPPED_IMAGE_HEIGHT),
             round(3 / 8 * CROPPED_IMAGE_WIDTH),
@@ -144,7 +141,6 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
         cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
 
     elif annotation_type == "right-profile":
-
         EYE_POS = (
             round(2 / 7 * CROPPED_IMAGE_HEIGHT),
             round(5 / 8 * CROPPED_IMAGE_WIDTH),
@@ -156,7 +152,6 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
         cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
 
     else:
-
         logger.warning(
             f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
         )
@@ -198,7 +193,6 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
     cropped_positions = {}
 
     if annotation_type == "bounding-box":
-
         TOP_LEFT_POS = (0, 0)
         BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
         cropped_positions.update(
@@ -234,7 +228,6 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
         cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
 
     else:
-
         logger.warning(
             f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
         )
@@ -400,7 +393,6 @@ def face_crop_solver(
         # Detects the face and crops it without eye detection
 
         if isinstance(cropped_positions, list):
-
             # TODO: This is a hack to support multiple annotations for left, right and eyes center profile
             # We need to do a more elegant solution
 

@@ -219,7 +219,6 @@ class IResNet(nn.Module):
 def _iresnet(arch, block, layers, pretrained, progress, **kwargs):
     model = IResNet(block, layers, **kwargs)
     if pretrained:
-
         map_location = (
             torch.device("cuda")
             if torch.cuda.is_available()
@@ -256,7 +255,7 @@ def iresnet100(pretrained=False, progress=True, **kwargs):
         [3, 13, 30, 3],
         pretrained,
         progress,
-        **kwargs
+        **kwargs,
     )
 
 
@@ -267,5 +266,5 @@ def iresnet200(pretrained=False, progress=True, **kwargs):
         [6, 26, 60, 6],
         pretrained,
         progress,
-        **kwargs
+        **kwargs,
     )

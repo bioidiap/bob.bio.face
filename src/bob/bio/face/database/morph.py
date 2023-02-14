@@ -6,7 +6,7 @@
   MORPH database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
@@ -73,7 +73,6 @@ class MorphDatabase(CSVDatabase):
         dataset_original_directory=rc.get("bob.db.morph.directory", ""),
         dataset_original_extension=".JPG",
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

@@ -63,7 +63,6 @@ class MultiposeAnnotations(TransformerMixin, BaseEstimator):
         }
 
     def transform(self, X):
-
         annotated_samples = []
         for x in X:
             annotations = dict()

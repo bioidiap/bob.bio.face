@@ -147,7 +147,6 @@ class FaceCrop(Base):
         """
 
         def _crop(image, annot):
-
             # Priority to fixed position annotations
             if self.fixed_positions is not None:
                 annot = self.fixed_positions
@@ -215,7 +214,6 @@ class MultiFaceCrop(Base):
         self.croppers_list = croppers_list
 
     def transform(self, X, annotations=None):
-
         # Assign each sample to its matching cropper
         transformed_samples = []
         for X_elem, annotations_elem in zip(X, annotations):
@@ -273,7 +271,6 @@ class BoundingBoxAnnotatorCrop(Base):
         annotator,
         margin=0.5,
     ):
-
         self.eyes_cropper = eyes_cropper
         self.margin = margin
         self.face_cropper = FaceCropBoundingBox(
@@ -302,7 +299,6 @@ class BoundingBoxAnnotatorCrop(Base):
         faces = []
 
         for x, annot in zip(X, annotations):
-
             face_crop = self.face_cropper.transform(x, annot, resize=False)
 
             # get the coordinates with the annotator
@@ -321,7 +317,6 @@ class BoundingBoxAnnotatorCrop(Base):
                 # append original image cropped with original bounding boxes
                 faces.append(self.face_cropper.transform(x, annot, resize=True))
             else:
-
                 faces.append(
                     self.eyes_cropper.transform(
                         face_crop, annotator_annotations

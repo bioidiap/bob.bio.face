@@ -18,11 +18,12 @@ import numpy as np
 import pandas as pd
 import torch
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from torch.utils.data import Dataset
 
 import bob.io.base
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.face.database import (
     MEDSDatabase,
     MobioDatabase,
@@ -30,7 +31,6 @@ from bob.bio.face.database import (
     RFWDatabase,
     VGG2Database,
 )
-from bob.extension.download import get_file
 
 logger = logging.getLogger(__name__)
 rc = UserDefaults("~/.bobrc")
@@ -51,7 +51,6 @@ class DemographicTorchDataset(Dataset):
     """
 
     def __init__(self, bob_dataset, transform=None):
-
         self.bob_dataset = bob_dataset
         self.transform = transform
         self.load_bucket()
@@ -208,7 +207,6 @@ class MedsTorchDataset(DemographicTorchDataset):
         take_from_znorm=False,
         group="dev",
     ):
-
         bob_dataset = MEDSDatabase(
             protocol=protocol,
             dataset_original_directory=database_path,
@@ -330,7 +328,6 @@ class VGG2TorchDataset(DemographicTorchDataset):
         include_u_n=False,
         train=True,
     ):
-
         bob_dataset = VGG2Database(
             protocol=protocol,
             dataset_original_directory=database_path,
@@ -360,7 +357,6 @@ class VGG2TorchDataset(DemographicTorchDataset):
         return f"{sample.gender}-{self.decode_race(sample.race)}"
 
     def get_cache_path(self):
-
         filename = (
             "vgg2_short_cached_bucket.pickle"
             if self.bob_dataset.protocol == "vgg2-short"
@@ -392,7 +388,6 @@ class VGG2TorchDataset(DemographicTorchDataset):
         return bucket
 
     def load_bucket(self):
-
         # Defining the demographics keys
         self._demographic_keys = [
             f"{gender}-{race}"
@@ -500,7 +495,6 @@ class MorphTorchDataset(DemographicTorchDataset):
         take_from_znorm=True,
         group="dev",
     ):
-
         bob_dataset = MorphDatabase(
             protocol=protocol,
             dataset_original_directory=database_path,
@@ -512,7 +506,6 @@ class MorphTorchDataset(DemographicTorchDataset):
         super().__init__(bob_dataset, transform=transform)
 
     def load_bucket(self):
-
         # Morph dataset has an intersection in between zprobes and treferences
         # Those are the
         self.excluding_list = [
@@ -575,7 +568,6 @@ class RFWTorchDataset(DemographicTorchDataset):
     def __init__(
         self, protocol, database_path, database_extension=".h5", transform=None
     ):
-
         bob_dataset = RFWDatabase(
             protocol=protocol,
             dataset_original_directory=database_path,
@@ -584,7 +576,6 @@ class RFWTorchDataset(DemographicTorchDataset):
         super().__init__(bob_dataset, transform=transform)
 
     def load_demographics(self):
-
         target_metadata = "race"
         metadata_keys = set(
             [
@@ -719,13 +710,14 @@ class MSCelebTorchDataset(DemographicTorchDataset):
 
         urls = MSCelebTorchDataset.urls()
         filename = (
-            get_file(
-                "msceleb_race_wikidata.tar.gz",
-                urls,
-                file_hash="76339d73f352faa00c155f7040e772bb",
+            download_file(
+                urls=urls,
+                destination_filename="msceleb_race_wikidata.tar.gz",
+                checksum="76339d73f352faa00c155f7040e772bb",
+                checksum_fct=md5_hash,
                 extract=True,
-            )[:-7]
-            + ".csv"
+            )
+            / "msceleb_race_wikidata.csv"
         )
 
         self.load_bucket(filename)
@@ -738,7 +730,6 @@ class MSCelebTorchDataset(DemographicTorchDataset):
         ]
 
     def get_cache_path(self):
-
         filename = (
             "msceleb_cached_bucket_WITH_unknow_demographics.csv"
             if self.include_unknow_demographics
@@ -775,7 +766,6 @@ class MSCelebTorchDataset(DemographicTorchDataset):
         return len(self.bucket)
 
     def load_bucket(self, csv_filename):
-
         dataframe = pd.read_csv(csv_filename)
 
         # Possible races
@@ -865,7 +855,6 @@ class MSCelebTorchDataset(DemographicTorchDataset):
         return self._demographic_keys[f"{gender}-{race}"]
 
     def __getitem__(self, idx):
-
         sample = self.bucket[idx]
 
         subject_id = sample.split("/")[-2]
@@ -898,7 +887,6 @@ class SiameseDemographicWrapper(Dataset):
         negative_pairs_per_subject=3,
         dense_negatives=False,
     ):
-
         self.demographic_dataset = demographic_dataset
         self.max_positive_pairs_per_subject = max_positive_pairs_per_subject
         self.negative_pairs_per_subject = negative_pairs_per_subject
@@ -930,7 +918,6 @@ class SiameseDemographicWrapper(Dataset):
         return len(self.siamese_bucket)
 
     def create_positive_pairs(self):
-
         # Creating positive pairs for each identity
         positives = []
         random.seed(0)
@@ -981,7 +968,6 @@ class SiameseDemographicWrapper(Dataset):
 
         # For each demographic, pic the negative pairs
         for d in demographic_subject:
-
             subject_combinations = itertools.combinations(
                 demographic_subject[d], 2
             )
@@ -1030,7 +1016,6 @@ class SiameseDemographicWrapper(Dataset):
         # For each demographic, pic the negative pairs
 
         for d in demographic_subject:
-
             n_subjects = len(demographic_subject[d])
 
             subject_combinations = list(
@@ -1052,7 +1037,6 @@ class SiameseDemographicWrapper(Dataset):
         return negatives
 
     def __getitem__(self, idx):
-
         sample = self.siamese_bucket[idx]
         label = self.labels[idx]
 

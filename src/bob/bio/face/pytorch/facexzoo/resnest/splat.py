@@ -29,7 +29,7 @@ class SplAtConv2d(Module):
         rectify_avg=False,
         norm_layer=None,
         dropblock_prob=0.0,
-        **kwargs
+        **kwargs,
     ):
         super(SplAtConv2d, self).__init__()
         padding = _pair(padding)
@@ -53,7 +53,7 @@ class SplAtConv2d(Module):
                 groups=groups * radix,
                 bias=bias,
                 average_mode=rectify_avg,
-                **kwargs
+                **kwargs,
             )
         else:
             self.conv = Conv2d(
@@ -65,7 +65,7 @@ class SplAtConv2d(Module):
                 dilation,
                 groups=groups * radix,
                 bias=bias,
-                **kwargs
+                **kwargs,
             )
         self.use_bn = norm_layer is not None
         if self.use_bn:

@@ -11,7 +11,6 @@ from bob.bio.face.color import gray_to_rgb, rgb_to_gray
 
 
 def test_gray():
-
     # This test verifies that gray-scale conversion works in both directions, for both images and numbers
 
     gray_image = np.random.random((30, 30))

@@ -29,7 +29,6 @@ class ToGray(TransformerMixin, BaseEstimator):
 
 
 def load(annotation_type, fixed_positions=None):
-
     transform_extra_arguments = (("annotations", "annotations"),)
 
     transformer = make_pipeline(

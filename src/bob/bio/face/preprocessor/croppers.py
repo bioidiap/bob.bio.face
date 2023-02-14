@@ -82,7 +82,6 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         self.final_image_size = final_image_size
 
     def _check_annotations(self, positions):
-
         if self.annotation_type == "eyes-center":
             assert "leye" in positions
             assert "reye" in positions
@@ -261,7 +260,6 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         expanded_image = cropped_image
 
         if original_height < bottom or original_width < right:
-
             pad_height = (
                 cropped_image.shape[0] + (bottom - original_height)
                 if original_height < bottom
@@ -396,7 +394,6 @@ class FaceCropBoundingBox(TransformerMixin, BaseEstimator):
             face_crop = opencvbgr_to_bob(np.array(face_crop))
 
         else:
-
             # Expanding the borders
             top_expanded = int(np.maximum(top - self.margin * height, 0))
             left_expanded = int(np.maximum(left - self.margin * width, 0))

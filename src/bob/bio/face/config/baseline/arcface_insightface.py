@@ -9,7 +9,6 @@ from bob.bio.face.utils import lookup_config_from_database
 
 
 def load(annotation_type, fixed_positions=None):
-
     return arcface_insightFace_lresnet100(
         annotation_type=annotation_type,
         fixed_positions=fixed_positions,

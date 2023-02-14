@@ -45,9 +45,8 @@ class INormLBP(Base):
         neighbors=8,
         radius=2,  # Radius of the LBP
         method="default",  # Type of LBP
-        **kwargs
+        **kwargs,
     ):
-
         # call base class constructors
         Base.__init__(self, **kwargs)
 
@@ -83,7 +82,6 @@ class INormLBP(Base):
         """
 
         def _crop_one_sample(image, annotations=None):
-
             if self.cropper is not None:
                 # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
                 image = (

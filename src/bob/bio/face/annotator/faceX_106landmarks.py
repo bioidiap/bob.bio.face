@@ -10,7 +10,7 @@ import torch
 
 from torchvision import transforms
 
-from bob.extension.download import get_file
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.io.image import bob_to_opencvbgr
 
 from . import Base
@@ -71,11 +71,12 @@ def download_faceX_model():
         "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/faceX_models.tar.gz",
     ]
 
-    filename = get_file(
-        "faceX_models.tar.gz",
-        urls,
-        cache_subdir="data/pytorch/",
-        file_hash="eb7ec871f434d2f44e5408627d656297",
+    filename = download_file(
+        urls=urls,
+        destination_sub_directory="models/pytorch/",
+        destination_filename="faceX_models.tar.gz",
+        checksum="eb7ec871f434d2f44e5408627d656297",
+        checksum_fct=md5_hash,
         extract=True,
     )
 
@@ -83,19 +84,18 @@ def download_faceX_model():
 
 
 def add_faceX_path(filename):
+    str_path = (filename / "faceX_models").as_posix()
 
-    path = os.path.join(os.path.dirname(filename), "faceX_models")
-
-    logger.warning(f"Adding the following path to PYTHON_PATH: {path}")
-    sys.path.insert(0, path)
-    return path
+    logger.warning(f"Adding the following path to PYTHON_PATH: {str_path}")
+    sys.path.insert(0, str_path)
+    return str_path
 
 
 class FaceXDetector(Base):
     """
     Face detector taken from https://github.com/JDAI-CV/FaceX-Zoo
 
-    This one we are using the 106 larnmark detector that was taken from
+    This one we are using the 106 landmark detector that was taken from
     https://github.com/Hsintao/pfld_106_face_landmarks/blob/master/models/mobilev3_pfld.py
 
     .. warning:

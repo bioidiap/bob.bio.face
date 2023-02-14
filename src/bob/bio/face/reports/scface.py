@@ -17,7 +17,6 @@ def scface_report(
     figsize=(16, 8),
     colors=plt.cm.tab10.colors,
 ):
-
     distances = [
         "close",
         "medium",
@@ -32,7 +31,6 @@ def scface_report(
         e_scores,
         title,
     ) in zip(scores_dev, scores_eval, titles):
-
         eval_fmr_fnmr[title] = []
 
         # Load the score files and fill in the angle associated to each camera
@@ -65,7 +63,6 @@ def scface_report(
             return eval_fmr, eval_fnmr
 
         for distance in distances:
-
             i_eval = impostors_eval.loc[
                 impostors_eval.probe_distance == distance
             ]

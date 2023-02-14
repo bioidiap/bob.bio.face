@@ -16,7 +16,6 @@ def arface_report(
     y_abs_max=32,  # Max absolute value for y axis
     colors=plt.cm.tab10.colors,
 ):
-
     occlusion_illumination = [
         "illumination",
         "occlusion",
@@ -39,7 +38,6 @@ def arface_report(
         e_scores,
         title,
     ) in zip(scores_dev, scores_eval, titles):
-
         eval_fmr_fnmr_occlusion_illumination[title] = []
         eval_fmr_fnmr_occlusion[title] = []
 

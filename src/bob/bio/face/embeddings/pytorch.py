@@ -267,9 +267,8 @@ class IResnet34(PyTorchModel):
         device=None,
         **kwargs,
     ):
-        filename = _get_iresnet_file()
+        path = _get_iresnet_file()
 
-        path = os.path.dirname(filename)
         config = os.path.join(path, "iresnet.py")
         checkpoint_path = os.path.join(path, "iresnet34-5b0d0e90.pth")
 

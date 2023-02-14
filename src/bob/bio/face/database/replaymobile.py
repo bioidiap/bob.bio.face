@@ -96,7 +96,6 @@ class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
         output = []
 
         for sample in samples:
-
             if not self.template_id_equal_subject_id and not hasattr(
                 sample, "subject_id"
             ):
@@ -186,7 +185,6 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
         annotation_extension: str = ".json",
         **kwargs,
     ):
-
         self.annotation_directory = annotation_directory
         self.annotation_extension = annotation_extension
         self.annotation_type = annotation_extension.replace(".", "")
@@ -271,7 +269,6 @@ class ReplayMobileBioDatabase(CSVDatabase):
         annotations_extension=".json",
         **kwargs,
     ):
-
         if data_path is None:
             data_path = rc.get("bob.db.replaymobile.directory", "")
         if data_path == "":

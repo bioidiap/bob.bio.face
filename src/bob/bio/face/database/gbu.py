@@ -204,7 +204,6 @@ class GBUDatabase(Database):
             self.background_samples = []
 
             for b_files in self._background_files:
-
                 f = search_and_open(
                     search_pattern=f"{b_files}", base_dir=self.filename
                 )
@@ -235,9 +234,7 @@ class GBUDatabase(Database):
         return self.probes_dict[self.protocol]
 
     def references(self, group="dev"):
-
         if self.protocol not in self.references_dict:
-
             if self.annotations is None:
                 self.annotations = load_annotations(
                     search_and_open(

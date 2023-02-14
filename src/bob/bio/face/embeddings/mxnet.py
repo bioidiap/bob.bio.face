@@ -69,7 +69,6 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         self.model = deserialized_net
 
     def transform(self, X):
-
         import mxnet as mx
 
         if self.model is None:

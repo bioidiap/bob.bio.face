@@ -84,7 +84,6 @@ class TinyFace(Base):
 
     @staticmethod
     def _nms(dets, prob_thresh):
-
         x1 = dets[:, 0]
         y1 = dets[:, 1]
         x2 = dets[:, 2]

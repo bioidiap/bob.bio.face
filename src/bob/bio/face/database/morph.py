@@ -73,7 +73,6 @@ class MorphDatabase(CSVDatabase):
         dataset_original_directory=rc.get("bob.db.morph.directory", ""),
         dataset_original_extension=".JPG",
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

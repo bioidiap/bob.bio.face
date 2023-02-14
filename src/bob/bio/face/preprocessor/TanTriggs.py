@@ -100,9 +100,8 @@ class TanTriggs(Base):
         size=5,
         threshold=10.0,
         alpha=0.1,
-        **kwargs
+        **kwargs,
     ):
-
         Base.__init__(self, **kwargs)
 
         # call base class constructor with its set of parameters
@@ -150,7 +149,6 @@ class TanTriggs(Base):
         """
 
         def _crop_one_sample(image, annotations=None):
-
             if self.cropper is not None:
                 # TODO: USE THE TAG `ALLOW_ANNOTATIONS`
                 image = (

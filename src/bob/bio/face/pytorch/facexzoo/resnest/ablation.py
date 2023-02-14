@@ -65,7 +65,7 @@ def resnest50_fast_1s1x64d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(
@@ -92,7 +92,7 @@ def resnest50_fast_2s1x64d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(
@@ -119,7 +119,7 @@ def resnest50_fast_4s1x64d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(
@@ -146,7 +146,7 @@ def resnest50_fast_1s2x40d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(
@@ -173,7 +173,7 @@ def resnest50_fast_2s2x40d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(
@@ -200,7 +200,7 @@ def resnest50_fast_4s2x40d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(
@@ -227,7 +227,7 @@ def resnest50_fast_1s4x24d(
         avg_down=True,
         avd=True,
         avd_first=True,
-        **kwargs
+        **kwargs,
     )
     if pretrained:
         model.load_state_dict(

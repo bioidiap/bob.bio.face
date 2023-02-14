@@ -93,7 +93,6 @@ class PolaThermalDatabase(CSVDatabase):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-
         directory = rc.get("bob.db.pola-thermal.directory", "")
 
         def load(path):

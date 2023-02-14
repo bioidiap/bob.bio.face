@@ -111,7 +111,6 @@ class CasiaAfricaDatabase(CSVDatabase):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-
         directory = rc.get("bob.db.casia-africa.directory", "")
 
         super().__init__(

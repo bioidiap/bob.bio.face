@@ -84,7 +84,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         original_directory=rc.get("bob.bio.face.rfw.directory"),
         **kwargs,
     ):
-
         if original_directory is None or not os.path.exists(original_directory):
             raise ValueError(f"Invalid or non existent {original_directory=}")
 
@@ -174,7 +173,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
     def _load_metadata(self, target_set="test"):
         for race in self._races:
-
             pair_file = os.path.join(
                 self.original_directory,
                 target_set,
@@ -249,7 +247,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         return []
 
     def _get_zt_samples(self, seed):
-
         cache = []
 
         # Setting the seed for the IDIAP PROTOCOL,
@@ -311,7 +308,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
     def probes(self, group="dev"):
         self._check_group(group)
         if self._cached_probes is None:
-
             # Setting the seed for the IDIAP PROTOCOL,
             # so we have a consistent set of probes
             np.random.seed(self._idiap_protocol_seed)
@@ -349,7 +345,6 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         return self._cached_probes
 
     def _fetch_landmarks(self, filename, key):
-
         if key not in self._landmarks:
             with open(filename) as f:
                 for line in f.readlines():

@@ -192,7 +192,6 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
@@ -224,7 +223,6 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
@@ -256,7 +254,6 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
@@ -288,7 +285,6 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
@@ -462,7 +458,6 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
@@ -529,7 +524,6 @@ class Resnet101_MsCeleb_ArcFace_20210521(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet101-msceleb-arcface_20210521.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet101-msceleb-arcface_20210521.tar.gz",
@@ -614,7 +608,6 @@ class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
@@ -698,7 +691,6 @@ class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
@@ -831,7 +823,6 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",

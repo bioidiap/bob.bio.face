@@ -106,7 +106,6 @@ class MEDSDatabase(CSVDatabase):
         dataset_original_directory=rc.get("bob.db.meds.directory", ""),
         dataset_original_extension=".jpg",
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

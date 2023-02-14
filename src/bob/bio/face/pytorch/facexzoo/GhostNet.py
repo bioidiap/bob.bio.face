@@ -68,7 +68,7 @@ class SqueezeExcite(nn.Module):
         act_layer=nn.ReLU,
         gate_fn=hard_sigmoid,
         divisor=4,
-        **_
+        **_,
     ):
         super(SqueezeExcite, self).__init__()
         self.gate_fn = gate_fn

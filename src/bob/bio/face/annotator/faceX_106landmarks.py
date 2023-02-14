@@ -84,7 +84,6 @@ def download_faceX_model():
 
 
 def add_faceX_path(filename):
-
     str_path = (filename / "faceX_models").as_posix()
 
     logger.warning(f"Adding the following path to PYTHON_PATH: {str_path}")

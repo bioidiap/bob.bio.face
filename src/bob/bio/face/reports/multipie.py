@@ -88,7 +88,6 @@ def multipie_pose_report(
     for d_scores, e_scores, title, (linestyle, marker), color in zip(
         scores_dev, scores_eval, titles, style_iterator, colors
     ):
-
         # Load the score files and fill in the angle associated to each camera
         impostors_dev, genuines_dev = get_split_dataframe(d_scores)
         impostors_eval, genuines_eval = get_split_dataframe(e_scores)
@@ -119,7 +118,6 @@ def multipie_pose_report(
         # Compute the min. HTER threshold on the Dev set
         threshold = None
         if not optimal_threshold:
-
             if threshold_eval:
                 threshold = bob.measure.far_threshold(
                     impostors_eval["score"].to_numpy(),
@@ -134,13 +132,17 @@ def multipie_pose_report(
                 )
 
         # Run the analysis per view angle
-        for ((angle, i_dev), (_, g_dev), (_, i_eval), (_, g_eval),) in zip(
+        for (
+            (angle, i_dev),
+            (_, g_dev),
+            (_, i_eval),
+            (_, g_eval),
+        ) in zip(
             impostors_dev.groupby("angle"),
             genuines_dev.groupby("angle"),
             impostors_eval.groupby("angle"),
             genuines_eval.groupby("angle"),
         ):
-
             if optimal_threshold:
                 if threshold_eval:
                     threshold = bob.measure.far_threshold(
@@ -219,7 +221,6 @@ def multipie_expression_report(
     y_abs_max=60,  # Max absolute value for y axis
     colors=plt.cm.tab10.colors,
 ):
-
     # "all",
     expressions = [
         "neutral",
@@ -240,7 +241,6 @@ def multipie_expression_report(
         e_scores,
         title,
     ) in zip(scores_dev, scores_eval, titles):
-
         eval_fmr_fnmr_expressions[title] = []
 
         # Load the score files and fill in the angle associated to each camera

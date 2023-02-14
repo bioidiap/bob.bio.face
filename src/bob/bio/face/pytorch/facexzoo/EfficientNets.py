@@ -338,7 +338,7 @@ class Conv2dStaticSamePadding(nn.Conv2d):
         kernel_size,
         stride=1,
         image_size=None,
-        **kwargs
+        **kwargs,
     ):
         super().__init__(
             in_channels, out_channels, kernel_size, stride, **kwargs
@@ -1058,7 +1058,6 @@ class EfficientNet(nn.Module):
         # Build blocks
         self._blocks = nn.ModuleList([])
         for block_args in self._blocks_args:
-
             # Update block input and output filters based on depth multiplier.
             block_args = block_args._replace(
                 input_filters=round_filters(
@@ -1263,7 +1262,7 @@ class EfficientNet(nn.Module):
         advprop=False,
         in_channels=3,
         num_classes=1000,
-        **override_params
+        **override_params,
     ):
         """create an efficientnet model according to name.
 

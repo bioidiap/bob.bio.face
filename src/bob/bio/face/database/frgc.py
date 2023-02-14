@@ -35,7 +35,6 @@ class FRGCDatabase(CSVDatabase):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

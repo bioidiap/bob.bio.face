@@ -33,7 +33,6 @@ class BackboneFactory:
         print(self.backbone_param)
 
     def get_backbone(self):
-
         if self.backbone_type == "MobileFaceNet":
             feat_dim = self.backbone_param[
                 "feat_dim"

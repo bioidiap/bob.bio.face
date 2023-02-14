@@ -41,6 +41,7 @@ baselines = {
 # +
 results_dir = "./results/"
 
+
 # Function to load the scores in CSV format
 def load_scores(baseline, protocol, group):
     scores = pd.read_csv(
@@ -91,7 +92,6 @@ fig1 = plt.figure(figsize=(8, 6))
 # Figure for Eval plot
 fig2 = plt.figure(figsize=(8, 6))
 for name, baseline in baselines.items():
-
     # Load the score files and fill in the angle associated to each camera
     dev_scores = load_scores(baseline, "P", "dev")
     eval_scores = load_scores(baseline, "P", "eval")

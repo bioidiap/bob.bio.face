@@ -55,7 +55,6 @@ class PyTorchModel(TransformerMixin, BaseEstimator):
         device=None,
         **kwargs,
     ):
-
         super().__init__(**kwargs)
         self.checkpoint_path = checkpoint_path
         self.config = config
@@ -206,7 +205,6 @@ class AFFFE_2021(PyTorchModel):
     """
 
     def __init__(self, memory_demanding=False, device=None, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/AFFFE-42a53f19.tar.gz",
@@ -269,7 +267,6 @@ class IResnet34(PyTorchModel):
         device=None,
         **kwargs,
     ):
-
         filename = _get_iresnet_file()
 
         path = os.path.dirname(filename)
@@ -286,7 +283,6 @@ class IResnet34(PyTorchModel):
         )
 
     def _load_model(self):
-
         model = imp.load_source("module", self.config).iresnet34(
             self.checkpoint_path
         )
@@ -308,7 +304,6 @@ class IResnet50(PyTorchModel):
         device=None,
         **kwargs,
     ):
-
         filename = _get_iresnet_file()
 
         path = os.path.dirname(filename)
@@ -325,7 +320,6 @@ class IResnet50(PyTorchModel):
         )
 
     def _load_model(self):
-
         model = imp.load_source("module", self.config).iresnet50(
             self.checkpoint_path
         )
@@ -347,7 +341,6 @@ class IResnet100(PyTorchModel):
         device=None,
         **kwargs,
     ):
-
         filename = _get_iresnet_file()
 
         path = os.path.dirname(filename)
@@ -396,7 +389,6 @@ class OxfordVGG2Resnets(PyTorchModel):
         device=None,
         **kwargs,
     ):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/oxford_resnet50_vgg2.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/oxford_resnet50_vgg2.tar.gz",
@@ -546,7 +538,6 @@ class IResnet100Elastic(PyTorchModel):
         device=None,
         **kwargs,
     ):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/pytorch/iresnet100-elastic.tar.gz",
@@ -596,7 +587,6 @@ class FaceXZooModel(PyTorchModel):
         arch="AttentionNet",
         **kwargs,
     ):
-
         self.arch = arch
         _model = FaceXZooModelFactory(self.arch)
         filename = _model.get_facexzoo_file()
@@ -614,7 +604,6 @@ class FaceXZooModel(PyTorchModel):
         )
 
     def _load_model(self):
-
         _model = FaceXZooModelFactory(self.arch)
         self.model = _model.get_model()
 

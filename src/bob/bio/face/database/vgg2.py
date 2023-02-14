@@ -180,7 +180,6 @@ class VGG2Database(CSVDatabase):
         annotation_type="eyes-center",
         fixed_positions=None,
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

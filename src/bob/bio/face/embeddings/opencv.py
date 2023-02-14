@@ -154,7 +154,6 @@ class VGG16_Oxford(OpenCVTransformer):
         self.model = net
 
     def transform(self, X):
-
         if self.model is None:
             self._load_model()
 

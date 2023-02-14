@@ -114,7 +114,6 @@ class MultipieDatabase(CSVDatabase):
         annotation_type=("eyes-center", "left-profile", "right-profile"),
         fixed_positions=None,
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

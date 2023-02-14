@@ -78,7 +78,6 @@ class WebFace42M(Dataset):
         return 42474558
 
     def __getitem__(self, idx):
-
         self.file.seek(0)
 
         # Allowing negative indexing

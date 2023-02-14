@@ -37,7 +37,6 @@ def lms106_2_lms5(lms_106):
 
 # Taken from here: https://github.com/JDAI-CV/FaceX-Zoo/blob/db0b087e4f4d28152e172d6c8d3767a8870733b4/face_sdk/utils/lms_trans.py
 def estimate_norm(lmk, image_size=112):
-
     # Arcface reference points for aligment
     arcface_reference_lmk = np.array(
         [
@@ -145,7 +144,6 @@ import click
     cls=ResourceOption,
 )
 def crop_faces_faceX(file_list, database_path, output_path, dask_client):
-
     files = open(file_list).readlines()
 
     files = dask.bag.from_sequence(files)

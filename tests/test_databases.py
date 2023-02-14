@@ -249,7 +249,6 @@ def test_ijbc():
 
 
 def test_meds():
-
     from bob.bio.face.database import MEDSDatabase
 
     # Getting the absolute path
@@ -278,7 +277,6 @@ def test_meds():
 
 
 def test_morph():
-
     from bob.bio.face.database import MorphDatabase
 
     # Getting the absolute path
@@ -307,7 +305,6 @@ def test_morph():
 
 
 def test_casia_africa():
-
     from bob.bio.face.database import CasiaAfricaDatabase
 
     database = CasiaAfricaDatabase("ID-V-All-Ep1")
@@ -327,7 +324,6 @@ def test_casia_africa():
 
 
 def test_frgc():
-
     from bob.bio.face.database import FRGCDatabase
 
     def _check_samples(samples, n_templates, n_subjects, template_size=0):
@@ -373,7 +369,6 @@ def test_frgc():
 
 
 def test_polathermal():
-
     from bob.bio.face.database import PolaThermalDatabase
 
     database = PolaThermalDatabase("VIS-thermal-overall-split1")
@@ -386,7 +381,6 @@ def test_polathermal():
     reason="RFW original protocols not available. Please do `bob config set bob.bio.face.rfw.directory [RFW PATH]` to set the RFW data path.",
 )
 def test_rfw():
-
     from bob.bio.face.database import RFWDatabase
 
     database = RFWDatabase("original")
@@ -461,7 +455,6 @@ def test_scface():
 
 
 def test_cbsr_nir_vis_2():
-
     from bob.bio.face.database import CBSRNirVis2Database
 
     database = CBSRNirVis2Database("view2_1")
@@ -475,7 +468,6 @@ def test_cbsr_nir_vis_2():
     reason="GBU original protocols not available. Please do `bob config set bob.bio.face.gbu.directory [GBU PATH]` to set the GBU data path.",
 )
 def test_gbu():
-
     from bob.bio.face.database import GBUDatabase
 
     database = GBUDatabase("Good")
@@ -494,7 +486,6 @@ def test_gbu():
 
 
 def test_caspeal():
-
     from bob.bio.face.database import CaspealDatabase
 
     # protocols = ['accessory', 'aging', 'background', 'distance', 'expression', 'lighting', 'pose']
@@ -653,7 +644,6 @@ def test_arface():
     reason="LFW original protocols not available. Please do `bob config set bob.bio.face.lfw.directory [LFW PATH]` to set the LFW data path.",
 )
 def test_lfw():
-
     from bob.bio.face.database import LFWDatabase
 
     # protocol view2

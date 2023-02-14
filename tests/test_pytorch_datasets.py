@@ -30,7 +30,6 @@ rc = UserDefaults("~/.bobrc")
     reason="WEBFace42M  not available. Please do `bob config set bob.bio.face.ijbc.directory [IJBC PATH]` to set the IJBC data path.",
 )
 def test_webface42M():
-
     dataset = WebFace42M()
 
     sample = dataset[0]
@@ -55,7 +54,6 @@ def test_webface42M():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
 )
 def test_meds():
-
     database_path = os.path.join(
         rc.get("bob.bio.demographics.directory"), "meds", "samplewrapper"
     )
@@ -82,7 +80,6 @@ def test_meds():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
 )
 def test_morph():
-
     database_path = os.path.join(
         rc.get("bob.bio.demographics.directory"), "morph", "samplewrapper"
     )
@@ -107,7 +104,6 @@ def test_morph():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
 )
 def test_rfw():
-
     # database_path = os.path.join(
     #    rc.get("bob.bio.demographics.directory"), "rfw", "samplewrapper"
     # )
@@ -128,7 +124,6 @@ def test_rfw():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.demographics.directory [PATH]` to set the base features path.",
 )
 def test_mobio():
-
     database_path = os.path.join(
         rc.get("bob.bio.demographics.directory"), "mobio", "samplewrapper"
     )
@@ -154,7 +149,6 @@ def test_mobio():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.face.msceleb.directory [PATH]` to set the base features path.",
 )
 def test_msceleb():
-
     database_path = rc.get("bob.bio.face.msceleb.directory")
 
     # WITH UNKNOW DEMOGRAPHICS
@@ -192,7 +186,6 @@ def test_msceleb():
     reason="Demographics features directory not available. Please do `bob config set bob.bio.face.vgg2-crops.directory [PATH]` to set the base features path.",
 )
 def test_vgg2():
-
     database_path = rc.get("bob.bio.face.vgg2-crops.directory")
 
     dataset = VGG2TorchDataset(
@@ -234,7 +227,6 @@ def test_vgg2():
 
 
 def test_data_augmentation():
-
     image = bob.io.base.load(
         pkg_resources.resource_filename(__name__, "data/testimage.jpg")
     )

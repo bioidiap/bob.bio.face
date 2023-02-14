@@ -303,9 +303,8 @@ class IResnet50(PyTorchModel):
         device=None,
         **kwargs,
     ):
-        filename = _get_iresnet_file()
+        path = _get_iresnet_file()
 
-        path = os.path.dirname(filename)
         config = os.path.join(path, "iresnet.py")
         checkpoint_path = os.path.join(path, "iresnet50-7f187506.pth")
 
@@ -340,9 +339,8 @@ class IResnet100(PyTorchModel):
         device=None,
         **kwargs,
     ):
-        filename = _get_iresnet_file()
+        path = _get_iresnet_file()
 
-        path = os.path.dirname(filename)
         config = os.path.join(path, "iresnet.py")
         checkpoint_path = os.path.join(path, "iresnet100-73e07ba7.pth")
 
@@ -588,9 +586,8 @@ class FaceXZooModel(PyTorchModel):
     ):
         self.arch = arch
         _model = FaceXZooModelFactory(self.arch)
-        filename = _model.get_facexzoo_file()
+        path = _model.get_facexzoo_file()
         config = None
-        path = filename
         checkpoint_path = os.path.join(path, self.arch + ".pt")
 
         super(FaceXZooModel, self).__init__(

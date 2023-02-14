@@ -10,15 +10,15 @@ from typing import Optional
 import imageio
 import numpy
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.base import BaseEstimator
 from sklearn.pipeline import make_pipeline
 
 import bob.io.image
 
 from bob.bio.base.database import CSVDatabase, FileSampleLoader
+from bob.bio.base.database.utils import download_file
 from bob.bio.base.utils.annotations import read_annotation_file
-from bob.extension.download import get_file
 from bob.pipelines import hash_string
 from bob.pipelines.sample import DelayedSample
 
@@ -96,7 +96,6 @@ class ReplayMobileCSVFrameSampleLoader(FileSampleLoader):
         output = []
 
         for sample in samples:
-
             if not self.template_id_equal_subject_id and not hasattr(
                 sample, "subject_id"
             ):
@@ -186,7 +185,6 @@ class FrameBoundingBoxAnnotationLoader(BaseEstimator):
         annotation_extension: str = ".json",
         **kwargs,
     ):
-
         self.annotation_directory = annotation_directory
         self.annotation_extension = annotation_extension
         self.annotation_type = annotation_extension.replace(".", "")
@@ -237,7 +235,6 @@ class ReplayMobileBioDatabase(CSVDatabase):
 
     protocol_definition_path: str or None
         Specifies a path where to fetch the database definition from.
-        (See :py:func:`bob.extension.download.get_file`)
         If None: Downloads the file in the path from ``bob_data_folder`` config.
         If None and the config does not exist: Downloads the file in ``~/bob_data``.
 
@@ -272,16 +269,6 @@ class ReplayMobileBioDatabase(CSVDatabase):
         annotations_extension=".json",
         **kwargs,
     ):
-
-        if protocol_definition_path is None:
-            # Downloading database description files if it is not specified
-            protocol_definition_path = get_file(
-                filename=self.dataset_protocols_name,
-                urls=self.dataset_protocols_urls,
-                cache_subdir=os.path.join("datasets", self.category),
-                file_hash=self.dataset_protocols_hash,
-            )
-
         if data_path is None:
             data_path = rc.get("bob.db.replaymobile.directory", "")
         if data_path == "":
@@ -298,15 +285,15 @@ class ReplayMobileBioDatabase(CSVDatabase):
                 f"https://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
                 f"http://www.idiap.ch/software/bob/data/bob/bob.pad.face/{annot_name}",
             ]
-            annotations_path = get_file(
-                filename=annot_name,
+            annotations_path = download_file(
                 urls=annot_urls,
-                cache_subdir="annotations",
-                file_hash=annot_hash,
+                destination_sub_directory="annotations",
+                destination_filename=annot_name,
+                checksum=annot_hash,
                 extract=True,
             )
             annotations_path = os.path.join(
-                os.path.dirname(annotations_path),
+                annotations_path,
                 "replaymobile-mtcnn-annotations",
             )
 

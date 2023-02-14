@@ -6,7 +6,7 @@
   PolaThermal dataset: database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
@@ -93,7 +93,6 @@ class PolaThermalDatabase(CSVDatabase):
     def __init__(
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
-
         directory = rc.get("bob.db.pola-thermal.directory", "")
 
         def load(path):

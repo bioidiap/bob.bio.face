@@ -5,8 +5,6 @@
 # Tranformers based on tensorflow
 
 
-import os
-
 import numpy as np
 import tensorflow as tf
 
@@ -14,6 +12,7 @@ from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
 
 from bob.bio.base.algorithm import Distance
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.base.pipelines import PipelineSimple
 from bob.bio.face.annotator import MTCNN
 from bob.bio.face.utils import (
@@ -21,7 +20,6 @@ from bob.bio.face.utils import (
     dnn_default_cropping,
     embedding_transformer,
 )
-from bob.extension.download import get_file
 
 
 def to_channels_last(image):
@@ -194,20 +192,19 @@ class InceptionResnetv2_MsCeleb_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
         ]
 
-        filename = get_file(
-            "inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/inceptionresnetv2_msceleb_centerloss_2018",
-            file_hash="7c0aa46bba16c01768a38594a3b4c14d",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/inceptionresnetv2_msceleb_centerloss_2018",
+            destination_filename="inceptionresnetv2_msceleb_centerloss_2018.tar.gz",
+            checksum="7c0aa46bba16c01768a38594a3b4c14d",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(InceptionResnetv2_MsCeleb_CenterLoss_2018, self).__init__(
             checkpoint_path,
@@ -226,20 +223,19 @@ class InceptionResnetv2_Casia_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv2_casia_centerloss_2018.tar.gz",
         ]
 
-        filename = get_file(
-            "inceptionresnetv2_casia_centerloss_2018.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/inceptionresnetv2_casia_centerloss_2018",
-            file_hash="1e0b62e45430a8d7516d7a6101a24c40",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/inceptionresnetv2_casia_centerloss_2018",
+            destination_filename="inceptionresnetv2_casia_centerloss_2018.tar.gz",
+            checksum="1e0b62e45430a8d7516d7a6101a24c40",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(InceptionResnetv2_Casia_CenterLoss_2018, self).__init__(
             checkpoint_path,
@@ -258,20 +254,19 @@ class InceptionResnetv1_Casia_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_casia_centerloss_2018.tar.gz",
         ]
 
-        filename = get_file(
-            "inceptionresnetv1_casia_centerloss_2018.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/inceptionresnetv1_casia_centerloss_2018",
-            file_hash="6601e6f6840ae863c7daf31a7c6b9a27",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/inceptionresnetv1_casia_centerloss_2018",
+            destination_filename="inceptionresnetv1_casia_centerloss_2018.tar.gz",
+            checksum="6601e6f6840ae863c7daf31a7c6b9a27",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(InceptionResnetv1_Casia_CenterLoss_2018, self).__init__(
             checkpoint_path,
@@ -290,20 +285,19 @@ class InceptionResnetv1_MsCeleb_CenterLoss_2018(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
         ]
 
-        filename = get_file(
-            "inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/inceptionresnetv1_msceleb_centerloss_2018",
-            file_hash="1ca0149619e4e9320a927ea65b2b5521",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/inceptionresnetv1_msceleb_centerloss_2018",
+            destination_filename="inceptionresnetv1_msceleb_centerloss_2018.tar.gz",
+            checksum="1ca0149619e4e9320a927ea65b2b5521",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(InceptionResnetv1_MsCeleb_CenterLoss_2018, self).__init__(
             checkpoint_path,
@@ -340,14 +334,14 @@ class FaceNetSanderberg_20170512_110547(TensorflowTransformer):
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/facenet_sanderberg_20170512_110547.tar.gz"
         ]
 
-        filename = get_file(
-            "facenet_sanderberg_20170512_110547.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/facenet_sanderberg_20170512_110547",
-            file_hash="734d1c997c10acdcdffc79fb51a2e715",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/facenet_sanderberg_20170512_110547",
+            destination_filename="facenet_sanderberg_20170512_110547.tar.gz",
+            checksum="734d1c997c10acdcdffc79fb51a2e715",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(FaceNetSanderberg_20170512_110547, self).__init__(
             checkpoint_path,
@@ -403,14 +397,14 @@ class Resnet50_MsCeleb_ArcFace_2021(TensorflowTransformer):
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
         ]
 
-        filename = get_file(
-            "resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/resnet50-msceleb-arcface_2021-48ec5cb8",
-            file_hash="17946f121af5ddd18c637c4620e54da6",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/resnet50-msceleb-arcface_2021-48ec5cb8",
+            destination_filename="resnet50-msceleb-arcface_2021-48ec5cb8.tar.gz",
+            checksum="17946f121af5ddd18c637c4620e54da6",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(Resnet50_MsCeleb_ArcFace_2021, self).__init__(
             checkpoint_path,
@@ -464,20 +458,19 @@ class Resnet50_MsCeleb_ArcFace_20210521(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
         ]
 
-        filename = get_file(
-            "resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/resnet50-msceleb-arcface_20210521-801991f0",
-            file_hash="e33090eea4951ce80be4620a0dac680d",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/resnet50-msceleb-arcface_20210521-801991f0",
+            destination_filename="resnet50-msceleb-arcface_20210521-e9bc085c.tar.gz",
+            checksum="e33090eea4951ce80be4620a0dac680d",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(Resnet50_MsCeleb_ArcFace_20210521, self).__init__(
             checkpoint_path,
@@ -531,20 +524,19 @@ class Resnet101_MsCeleb_ArcFace_20210521(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet101-msceleb-arcface_20210521.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet101-msceleb-arcface_20210521.tar.gz",
         ]
 
-        filename = get_file(
-            "resnet101-msceleb-arcface_20210521.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/resnet101-msceleb-arcface_20210521",
-            file_hash="c1b2124cb69186ff965f7e818f9f8641",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/resnet101-msceleb-arcface_20210521",
+            destination_filename="resnet101-msceleb-arcface_20210521.tar.gz",
+            checksum="c1b2124cb69186ff965f7e818f9f8641",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(Resnet101_MsCeleb_ArcFace_20210521, self).__init__(
             checkpoint_path,
@@ -616,20 +608,18 @@ class IResnet50_MsCeleb_ArcFace_20210623(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
         ]
 
-        filename = get_file(
-            "arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/arcface_iresnet50_msceleb_idiap-089640d2",
-            file_hash="089640d2",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/arcface_iresnet50_msceleb_idiap-089640d2",
+            destination_filename="arcface_iresnet50_msceleb_idiap-089640d2.tar.gz",
+            checksum="089640d2",
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super().__init__(
             checkpoint_path,
@@ -701,20 +691,18 @@ class IResnet100_MsCeleb_ArcFace_20210623(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
         ]
 
-        filename = get_file(
-            "arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/arcface_iresnet100_msceleb_idiap-1b22d544",
-            file_hash="1b22d544",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/arcface_iresnet100_msceleb_idiap-1b22d544",
+            destination_filename="arcface_iresnet100_msceleb_idiap-1b22d544.tar.gz",
+            checksum="1b22d544",
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super().__init__(
             checkpoint_path,
@@ -769,14 +757,14 @@ class Resnet50_VGG2_ArcFace_2021(TensorflowTransformer):
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/resnet50_vgg2_arcface_2021.tar.gz",
         ]
 
-        filename = get_file(
-            "resnet50_vgg2_arcface_2021.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/resnet50_vgg2_arcface_2021",
-            file_hash="64f89c8cb55e7a0d9c7e13ff412b6a13",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/resnet50_vgg2_arcface_2021",
+            destination_filename="resnet50_vgg2_arcface_2021.tar.gz",
+            checksum="64f89c8cb55e7a0d9c7e13ff412b6a13",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(Resnet50_VGG2_ArcFace_2021, self).__init__(
             checkpoint_path,
@@ -835,20 +823,19 @@ class MobileNetv2_MsCeleb_ArcFace_2021(TensorflowTransformer):
     """
 
     def __init__(self, memory_demanding=False, **kwargs):
-
         urls = [
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/tf2/mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
         ]
 
-        filename = get_file(
-            "mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
-            urls,
-            cache_subdir="data/tensorflow/mobilenet-v2-msceleb-arcface-2021-e012cb66",
-            file_hash="dd1399b86f01725c7b07b480b703e02a",
+        checkpoint_path = download_file(
+            urls=urls,
+            destination_sub_directory="data/tensorflow/mobilenet-v2-msceleb-arcface-2021-e012cb66",
+            destination_filename="mobilenet-v2-msceleb-arcface-2021-e012cb66.tar.gz",
+            checksum="dd1399b86f01725c7b07b480b703e02a",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        checkpoint_path = os.path.dirname(filename)
 
         super(MobileNetv2_MsCeleb_ArcFace_2021, self).__init__(
             checkpoint_path,

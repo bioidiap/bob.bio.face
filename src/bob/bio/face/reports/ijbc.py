@@ -7,7 +7,6 @@ from bob.measure import plot
 
 
 def ijbc_report(scores_dev, output_filename, titles, figsize=(8, 6)):
-
     colors = plt.cm.tab10.colors
 
     # Plotting

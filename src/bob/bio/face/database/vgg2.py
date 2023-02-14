@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
   VGG2 database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline
 
@@ -180,7 +180,6 @@ class VGG2Database(CSVDatabase):
         annotation_type="eyes-center",
         fixed_positions=None,
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

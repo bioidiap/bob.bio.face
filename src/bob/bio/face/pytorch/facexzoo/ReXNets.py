@@ -141,7 +141,7 @@ class LinearBottleneck(nn.Module):
         stride,
         use_se=True,
         se_ratio=12,
-        **kwargs
+        **kwargs,
     ):
         super(LinearBottleneck, self).__init__(**kwargs)
         self.use_shortcut = stride == 1 and in_channels <= channels

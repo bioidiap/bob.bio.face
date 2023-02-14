@@ -6,7 +6,7 @@
   MOBIO database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
@@ -74,7 +74,6 @@ class MobioDatabase(CSVDatabase):
         dataset_original_directory=rc.get("bob.db.mobio.directory", ""),
         dataset_original_extension=rc.get("bob.db.mobio.extension", ".png"),
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

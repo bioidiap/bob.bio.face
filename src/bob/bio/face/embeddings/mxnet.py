@@ -10,8 +10,8 @@ import numpy as np
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.utils import check_array
 
+from bob.bio.base.database.utils import download_file, md5_hash
 from bob.bio.face.annotator import MTCNN
-from bob.extension.download import get_file
 
 
 class MxNetTransformer(TransformerMixin, BaseEstimator):
@@ -69,7 +69,6 @@ class MxNetTransformer(TransformerMixin, BaseEstimator):
         self.model = deserialized_net
 
     def transform(self, X):
-
         import mxnet as mx
 
         if self.model is None:
@@ -125,14 +124,15 @@ class ArcFaceInsightFace_LResNet100(MxNetTransformer):
             "https://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz",
             "http://www.idiap.ch/software/bob/data/bob/bob.bio.face/master/mxnet/arcface_r100_v1_mxnet.tar.gz",
         ]
-        filename = get_file(
-            "arcface_r100_v1_mxnet.tar.gz",
-            urls,
-            cache_subdir="data/mxnet/arcface_r100_v1_mxnet",
-            file_hash="050ce7d6e731e560127c705f61391f48",
+        filename = download_file(
+            urls=urls,
+            destination_sub_directory="data/mxnet/arcface_r100_v1_mxnet",
+            destination_filename="arcface_r100_v1_mxnet.tar.gz",
+            checksum="050ce7d6e731e560127c705f61391f48",
+            checksum_fct=md5_hash,
             extract=True,
         )
-        path = os.path.dirname(filename)
+        path = filename
         checkpoint_path = os.path.join(path, "model-symbol.json")
         config = os.path.join(path, "model-0000.params")
 

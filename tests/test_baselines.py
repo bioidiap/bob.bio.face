@@ -27,7 +27,6 @@ images["probe"] = (
 
 
 def get_fake_sample_set(face_size=(160, 160), purpose="bioref"):
-
     data = images[purpose][0]
     annotations = images[purpose][1]
     key = "1" if purpose == "bioref" else "2"
@@ -49,7 +48,6 @@ def get_fake_sample_set(face_size=(160, 160), purpose="bioref"):
 
 
 def get_fake_samples_for_training():
-
     data = np.random.rand(10, 3, 400, 400)
     annotations = {"reye": (131, 176), "leye": (222, 170)}
 
@@ -74,7 +72,6 @@ def run_baseline(baseline, samples_for_training=None, target_scores=None):
 
     # CHECKPOINTING
     with tempfile.TemporaryDirectory() as d:
-
         cpy = copy.deepcopy(pipeline)
         checkpoint_pipeline = checkpoint_pipeline_simple(cpy, base_dir=d)
 
@@ -243,7 +240,6 @@ def test_iresnet100():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_attentionnet():
-
     run_baseline(
         "attentionnet",
         target_scores=-0.8856203334291886,
@@ -253,7 +249,6 @@ def test_attentionnet():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_resnest():
-
     run_baseline(
         "resnest",
         target_scores=-0.8548176067335934,
@@ -263,7 +258,6 @@ def test_resnest():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_mobilefacenet():
-
     run_baseline(
         "mobilefacenet",
         target_scores=-0.8398221143605292,
@@ -273,7 +267,6 @@ def test_mobilefacenet():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_efficientnet():
-
     run_baseline(
         "efficientnet",
         target_scores=-0.7978759562781405,
@@ -283,7 +276,6 @@ def test_efficientnet():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_tfnas():
-
     run_baseline(
         "tfnas",
         target_scores=-0.7823820403380854,
@@ -293,7 +285,6 @@ def test_tfnas():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_hrnet():
-
     run_baseline(
         "hrnet",
         target_scores=-0.6428357755937835,
@@ -303,7 +294,6 @@ def test_hrnet():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_rexnet():
-
     run_baseline(
         "rexnet",
         target_scores=-0.7886427683602303,
@@ -313,7 +303,6 @@ def test_rexnet():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_ghostnet():
-
     run_baseline(
         "ghostnet",
         target_scores=-0.7886787784251782,
@@ -323,7 +312,6 @@ def test_ghostnet():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_oxford_resnet50_scratch_dag_vgg2():
-
     run_baseline(
         "oxford-resnet50-scratch-dag-vgg2",
         target_scores=-0.6782927,
@@ -333,7 +321,6 @@ def test_oxford_resnet50_scratch_dag_vgg2():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_oxford_resnet50_ft_dag_vgg2():
-
     run_baseline(
         "oxford-resnet50-ft-dag-vgg2",
         target_scores=-0.78003523113,
@@ -343,7 +330,6 @@ def test_oxford_resnet50_ft_dag_vgg2():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_oxford_senet50_ft_dag_vgg2():
-
     run_baseline(
         "oxford-senet50-ft-dag-vgg2",
         target_scores=-0.744730213,
@@ -353,7 +339,6 @@ def test_oxford_senet50_ft_dag_vgg2():
 @pytest.mark.slow
 @is_library_available("torch")
 def test_oxford_senet50_scratch_dag_vgg2():
-
     run_baseline(
         "oxford-senet50-scratch-dag-vgg2",
         target_scores=-0.6919739,

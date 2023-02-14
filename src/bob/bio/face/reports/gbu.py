@@ -8,7 +8,6 @@ from bob.bio.base.score.load import get_split_dataframe
 
 
 def gbu_report(scores_dev, output_filename, titles, figsize=(8, 6)):
-
     colors = plt.cm.tab20.colors
 
     # Plotting
@@ -19,7 +18,6 @@ def gbu_report(scores_dev, output_filename, titles, figsize=(8, 6)):
     ax = fig.add_subplot(111)
 
     for d_scores, title, color in zip(scores_dev, titles, colors):
-
         # Load the score files and fill in the angle associated to each camera
         impostors_dev, genuines_dev = get_split_dataframe(d_scores)
 

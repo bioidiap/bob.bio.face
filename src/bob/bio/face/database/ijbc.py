@@ -6,7 +6,7 @@ from functools import partial
 
 import pandas as pd
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 import bob.io.base
 
@@ -19,7 +19,6 @@ rc = UserDefaults("~/.bobrc")
 
 
 def _make_sample_from_template_row(row, image_directory):
-
     # Appending this key, so we can handle parallel writing correctly
     # paying the penalty of having duplicate checkpoint files
     key = os.path.splitext(row["FILENAME"])[0] + "-" + str(row["SUBJECT_ID"])
@@ -66,7 +65,6 @@ def _make_sample_from_template_row(row, image_directory):
 
 
 def _make_sample_set_from_template_group(template_group, image_directory):
-
     samples = list(
         template_group.apply(
             _make_sample_from_template_row,
@@ -153,9 +151,7 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
 
         self._check_protocol(protocol)
         super().__init__(
-            name=self.name,
             protocol=protocol,
-            score_all_vs_all=False,
             annotation_type="bounding-box",
             fixed_positions=None,
             memory_demanding=True,
@@ -273,7 +269,6 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
     def probes(self, group="dev"):
         self._check_group(group)
         if self._cached_probes is None:
-
             logger.info(
                 "Loading probes. This operation might take some minutes"
             )
@@ -311,7 +306,6 @@ class IJBCDatabase(Database):  # TODO Make this a CSVDatabase?
     def references(self, group="dev"):
         self._check_group(group)
         if self._cached_references is None:
-
             logger.info(
                 "Loading templates. This operation might take some minutes"
             )

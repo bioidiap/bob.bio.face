@@ -8,7 +8,6 @@ from click.testing import CliRunner
 
 
 def test_display_annotations():
-
     from bob.bio.face.script.display_face_annotations import (
         display_face_annotations,
     )

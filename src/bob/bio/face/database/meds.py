@@ -6,7 +6,7 @@
   MEDS database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base
@@ -106,7 +106,6 @@ class MEDSDatabase(CSVDatabase):
         dataset_original_directory=rc.get("bob.db.meds.directory", ""),
         dataset_original_extension=".jpg",
     ):
-
         super().__init__(
             name=self.name,
             protocol=protocol,

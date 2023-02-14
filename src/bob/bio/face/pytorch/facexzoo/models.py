@@ -80,14 +80,11 @@ class FaceXZooModelFactory:
             ),
         ]
 
-        return (
-            download_file(
-                urls=urls,
-                destination_filename=self.info[self.arch][0],
-                destination_sub_directory=f"data/pytorch/{self.info[self.arch][0]}/",
-                checksum=self.info[self.arch][1],
-                checksum_fct=md5_hash,
-                extract=True,
-            )
-            / self.info[self.arch][2]
+        return download_file(
+            urls=urls,
+            destination_filename=self.info[self.arch][0],
+            destination_sub_directory=f"data/pytorch/{self.info[self.arch][0]}/",
+            checksum=self.info[self.arch][1],
+            checksum_fct=md5_hash,
+            extract=True,
         )

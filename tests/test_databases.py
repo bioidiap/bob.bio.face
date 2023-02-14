@@ -23,7 +23,7 @@ import random
 
 import pytest
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 import bob.bio.base
 

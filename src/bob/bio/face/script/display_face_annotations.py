@@ -16,7 +16,7 @@ import os
 
 import click
 
-from exposed.click import ConfigCommand, ResourceOption, verbosity_option
+from clapp.click import ConfigCommand, ResourceOption, verbosity_option
 
 from bob.bio.base.utils.annotations import read_annotation_file
 from bob.bio.face.color import gray_to_rgb

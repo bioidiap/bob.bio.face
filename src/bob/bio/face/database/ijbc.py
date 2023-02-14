@@ -6,7 +6,7 @@ from functools import partial
 
 import pandas as pd
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 import bob.io.base
 

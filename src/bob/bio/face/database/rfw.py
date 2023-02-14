@@ -6,7 +6,7 @@ from functools import partial
 
 import numpy as np
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 import bob.io.base
 

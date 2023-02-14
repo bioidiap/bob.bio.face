@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
   VGG2 database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.base import BaseEstimator, TransformerMixin
 from sklearn.pipeline import make_pipeline
 

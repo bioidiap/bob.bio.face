@@ -10,7 +10,7 @@ from typing import Optional
 import imageio
 import numpy
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.base import BaseEstimator
 from sklearn.pipeline import make_pipeline
 

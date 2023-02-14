@@ -6,7 +6,7 @@
   SCFace database implementation
 """
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base

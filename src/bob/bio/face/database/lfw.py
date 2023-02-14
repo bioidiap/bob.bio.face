@@ -11,7 +11,7 @@ from functools import partial
 
 import numpy as np
 
-from exposed.rc import UserDefaults
+from clapp.rc import UserDefaults
 
 import bob.io.base
 
@@ -144,7 +144,7 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
 
         self.annotation_issuer = annotation_issuer
         # Hard-coding the extension of the annotations
-        # I don't think we need this exposed
+        # I don't think we need this clapp
         # Please, open an issue if otherwise
         self.annotation_extension = (
             ".jpg.pts" if annotation_issuer == "funneled" else ".pos"

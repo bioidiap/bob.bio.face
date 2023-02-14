@@ -16,7 +16,7 @@ from bob.bio.base.database.utils import download_file, md5_hash, search_and_open
 
 # from bob.bio.face.database import MEDSDatabase, MorphDatabase
 
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 
 class WebFace42M(Dataset):

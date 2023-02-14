@@ -20,7 +20,7 @@ from bob.bio.base.pipelines.abstract_classes import Database
 from bob.pipelines import DelayedSample, SampleSet
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 
 class LFWDatabase(Database):  # TODO Make this a CSVDatabase?

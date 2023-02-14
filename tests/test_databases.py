@@ -29,8 +29,8 @@ import bob.bio.base
 
 from bob.bio.base.database.utils import download_file
 
-logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc")
+logger = bob.extension.log.setup(__name__)
+rc = UserDefaults("bobrc.toml")
 
 
 def _check_annotations(

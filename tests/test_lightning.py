@@ -19,7 +19,7 @@ from torch.utils.data import DataLoader, Dataset
 from bob.bio.face.pytorch.head import ArcFace
 from bob.bio.face.pytorch.lightning import BackboneHeadModel
 
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 # import torchvision.transforms as transforms
 

@@ -17,10 +17,10 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import logging
 import os
 import random
 
+import clapp.logging
 import pytest
 
 from clapp.rc import UserDefaults
@@ -29,7 +29,7 @@ import bob.bio.base
 
 from bob.bio.base.database.utils import download_file
 
-logger = bob.extension.log.setup(__name__)
+logger = clapp.logging.setup(__name__)
 rc = UserDefaults("bobrc.toml")
 
 

@@ -33,7 +33,7 @@ from bob.bio.face.database import (
 )
 
 logger = logging.getLogger(__name__)
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 
 class DemographicTorchDataset(Dataset):

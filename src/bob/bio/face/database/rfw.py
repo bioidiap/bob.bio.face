@@ -15,7 +15,7 @@ from bob.bio.base.pipelines.abstract_classes import Database
 from bob.pipelines.sample import DelayedSample, SampleSet
 
 logger = logging.getLogger("bob.bio.face")
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 
 class RFWDatabase(Database):  # TODO Make this a CSVDatabase?

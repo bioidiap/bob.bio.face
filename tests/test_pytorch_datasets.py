@@ -22,7 +22,7 @@ from bob.bio.face.pytorch.datasets import (
 )
 from bob.bio.face.pytorch.preprocessing import get_standard_data_augmentation
 
-rc = UserDefaults("~/.bobrc")
+rc = UserDefaults("bobrc.toml")
 
 
 @pytest.mark.skipif(

@@ -403,19 +403,19 @@ def face_crop_solver(
     else:
         # Detects the face and crops it without eye detection
 
-        if isinstance(cropped_positions, (list,tuple)):
+        if isinstance(cropped_positions, (list, tuple)):
             # TODO: This is a hack to support multiple annotations for left, right and eyes center profile
             # We need to do a more elegant solution
 
             croppers = []
             for positions in cropped_positions:
                 cropper = face_crop_solver(
-                        cropped_image_size=cropped_image_size,
-                        cropped_positions=positions,
-                        fixed_positions=fixed_positions,
-                        color_channel=color_channel,
-                        annotator=annotator,
-                        dtype=dtype,
+                    cropped_image_size=cropped_image_size,
+                    cropped_positions=positions,
+                    fixed_positions=fixed_positions,
+                    color_channel=color_channel,
+                    annotator=annotator,
+                    dtype=dtype,
                 )
                 croppers.append(cropper)
 
@@ -423,18 +423,17 @@ def face_crop_solver(
                 return croppers[0]
             return MultiFaceCrop(croppers)
         else:
-
             face_norm = FaceEyesNorm(
                 cropped_positions,
                 cropped_image_size,
                 annotation_type=_solve_annotation_type(cropped_positions),
             )
             # If the eyes annotations are provided
-            if ("topleft" in cropped_positions
+            if (
+                "topleft" in cropped_positions
                 and "bottomright" in cropped_positions
                 and len(cropped_positions) >= 4
             ):
-
                 return BoundingBoxAnnotatorCrop(
                     eyes_cropper=face_norm,
                     annotator=annotator,
@@ -448,7 +447,7 @@ def face_crop_solver(
                     fixed_positions=fixed_positions,
                     dtype=dtype,
                     annotator=annotator,
-                    cropper=face_norm
+                    cropper=face_norm,
                 )
 
 

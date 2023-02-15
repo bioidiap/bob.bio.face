@@ -110,7 +110,9 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         elif self.annotation_type == "right-profile":
             return np.array(positions["reye"]), np.array(positions["mouth"])
         elif self.annotation_type == "bounding-box":
-            return np.array(positions["topleft"]), np.array(positions["bottomright"])
+            return np.array(positions["topleft"]), np.array(
+                positions["bottomright"]
+            )
         else:
             raise ValueError(
                 "The annotation type must be either 'eyes-center', 'left-profile', 'right-profile' or 'bounding-box'"

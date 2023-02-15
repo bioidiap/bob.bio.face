@@ -91,9 +91,12 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
         elif self.annotation_type == "right-profile":
             assert "reye" in positions
             assert "mouth" in positions
+        elif self.annotation_type == "bounding-box":
+            assert "topleft" in positions
+            assert "bottomright" in positions
         else:
             raise ValueError(
-                "The annotation type must be either 'eyes-center', 'left-profile' or 'right-profile'"
+                "The annotation type must be either 'eyes-center', 'left-profile', 'right-profile' or 'bounding-box'"
             )
 
     def _decode_positions(self, positions):
@@ -106,9 +109,11 @@ class FaceEyesNorm(TransformerMixin, BaseEstimator):
             return np.array(positions["leye"]), np.array(positions["mouth"])
         elif self.annotation_type == "right-profile":
             return np.array(positions["reye"]), np.array(positions["mouth"])
+        elif self.annotation_type == "bounding-box":
+            return np.array(positions["topleft"]), np.array(positions["bottomright"])
         else:
             raise ValueError(
-                "The annotation type must be either 'eyes-center', 'left-profile' or 'right-profile'"
+                "The annotation type must be either 'eyes-center', 'left-profile', 'right-profile' or 'bounding-box'"
             )
 
     def _get_anthropometric_measurements(self, positions):

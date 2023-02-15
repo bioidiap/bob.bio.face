@@ -162,10 +162,28 @@ def test_face_crop():
     # reset the configuration, so that later tests don't get screwed.
     cropper.color_channel = "gray"
 
+    cropped_positions = dict(topleft=(0,0), bottomright=cropper.cropped_image_size)
+    # check cropping based on bounding box
+    bbx_cropper = bob.bio.face.preprocessor.FaceCrop(
+        cropper.cropped_image_size,
+        cropped_positions,
+        cropper=bob.bio.face.preprocessor.FaceEyesNorm(
+            cropped_positions,
+            cropper.cropped_image_size,
+            annotation_type="bounding-box",
+        ),
+        dtype=int
+    )
+    reference = pkg_resources.resource_filename(__name__, "data/boundingboxed.hdf5")
+
+    annot = dict(topleft=annotation["topleft"], bottomright=annotation["bottomright"])
+    _compare(bbx_cropper.transform([image], [annot])[0], reference)
+
 
 class FakeAnnotator(bob.bio.face.annotator.Base):
     def annotate(self, X):
         return None
+
 
 
 @is_library_available("tensorflow")

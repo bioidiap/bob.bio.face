@@ -454,7 +454,8 @@ def face_crop_solver(
             # If the eyes annotations are provided
             if (
                 "topleft" in cropped_positions
-                or "bottomright" in cropped_positions
+                and "bottomright" in cropped_positions
+                and len(cropped_positions) >= 4
             ):
                 eyes_cropper = FaceEyesNorm(
                     cropped_positions, cropped_image_size

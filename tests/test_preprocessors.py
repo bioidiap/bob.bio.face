@@ -108,6 +108,69 @@ def test_base():
     assert numpy.all(colored == image)
 
 
+def test_face_crop_solver():
+    # tests that the face crop solver returns the right things
+
+    image, annotation = _image(), _annotation()
+
+    # test default croppers
+    eyes_norm = bob.bio.face.utils.face_crop_solver(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+    )
+    assert isinstance(eyes_norm.cropper, bob.bio.face.preprocessor.FaceEyesNorm)
+    assert eyes_norm.cropper.annotation_type == "eyes-center"
+
+    left_profile_norm = bob.bio.face.utils.face_crop_solver(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "mouth": RIGHT_EYE_POS},
+    )
+    assert isinstance(left_profile_norm.cropper, bob.bio.face.preprocessor.FaceEyesNorm)
+    assert left_profile_norm.cropper.annotation_type == "left-profile"
+
+    right_profile_norm = bob.bio.face.utils.face_crop_solver(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"reye": LEFT_EYE_POS, "mouth": RIGHT_EYE_POS},
+    )
+    assert isinstance(right_profile_norm.cropper, bob.bio.face.preprocessor.FaceEyesNorm)
+    assert right_profile_norm.cropper.annotation_type == "right-profile"
+
+    bounding_box_norm = bob.bio.face.utils.face_crop_solver(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"topleft": (0,0), "bottomright": eyes_norm.cropped_image_size},
+    )
+    assert isinstance(bounding_box_norm.cropper, bob.bio.face.preprocessor.FaceEyesNorm)
+    assert bounding_box_norm.cropper.annotation_type == "bounding-box"
+
+    # test bounding box cropper with detection
+    bbx_annotator_norm = bob.bio.face.utils.face_crop_solver(
+        (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions={"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS, "topleft": (0,0), "bottomright": eyes_norm.cropped_image_size},
+    )
+    assert isinstance(bbx_annotator_norm, bob.bio.face.preprocessor.BoundingBoxAnnotatorCrop)
+    assert isinstance(bbx_annotator_norm.eyes_cropper, bob.bio.face.preprocessor.FaceEyesNorm)
+    assert bbx_annotator_norm.eyes_cropper.annotation_type == "eyes-center"
+    assert isinstance(bbx_annotator_norm.face_cropper, bob.bio.face.preprocessor.FaceCropBoundingBox)
+
+    # test multi cropper
+    multi_norm = bob.bio.face.utils.face_crop_solver(
+        cropped_image_size=(CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH),
+        cropped_positions=(
+            {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS},
+            {"leye": LEFT_EYE_POS, "mouth": RIGHT_EYE_POS},
+            {"reye": LEFT_EYE_POS, "mouth": RIGHT_EYE_POS},
+            {"topleft": (0,0), "bottomright": eyes_norm.cropped_image_size},
+        )
+    )
+
+    assert isinstance(multi_norm, bob.bio.face.preprocessor.MultiFaceCrop)
+    assert isinstance(multi_norm.croppers_list, list)
+    assert len(multi_norm.croppers_list) == 4
+    assert all(isinstance(cropper,bob.bio.face.preprocessor.FaceCrop) for cropper in multi_norm.croppers_list)
+    assert all(isinstance(cropper.cropper,bob.bio.face.preprocessor.FaceEyesNorm) for cropper in multi_norm.croppers_list)
+
+
+
 def test_face_crop():
     # read input
     image, annotation = _image(), _annotation()

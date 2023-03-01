@@ -25,7 +25,7 @@
     ]
     dependencies = [
         "setuptools",
-        "clapp",
+        "clapper",
         "bob.extension",
         "bob.io.base",
         "bob.measure",

@@ -4,7 +4,7 @@ import numpy as np
 import pkg_resources
 import pytest
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 
 # https://pytorch.org/docs/stable/data.html
 from torch.utils.data import DataLoader

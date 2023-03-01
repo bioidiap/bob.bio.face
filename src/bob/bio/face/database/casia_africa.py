@@ -6,7 +6,7 @@
   CASIA-Face-Africa: database implementation
 """
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 from sklearn.pipeline import make_pipeline
 
 import bob.io.base

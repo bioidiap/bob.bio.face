@@ -8,7 +8,7 @@ import xml.sax
 
 from functools import partial
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 
 import bob.io.base
 

@@ -7,7 +7,7 @@ import cv2
 import dask.bag
 import numpy as np
 
-from clapp.click import ResourceOption
+from clapper.click import ResourceOption
 from skimage import transform as trans
 
 import bob.bio.face

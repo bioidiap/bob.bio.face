@@ -18,7 +18,7 @@ import numpy as np
 import pandas as pd
 import torch
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 from torch.utils.data import Dataset
 
 import bob.io.base

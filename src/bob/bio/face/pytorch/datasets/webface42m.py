@@ -7,7 +7,7 @@ import os
 
 import numpy as np
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 from torch.utils.data import Dataset
 
 import bob.io.base

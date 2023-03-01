@@ -20,16 +20,16 @@
 import os
 import random
 
-import clapp.logging
+import clapper.logging
 import pytest
 
-from clapp.rc import UserDefaults
+from clapper.rc import UserDefaults
 
 import bob.bio.base
 
 from bob.bio.base.database.utils import download_file
 
-logger = clapp.logging.setup(__name__)
+logger = clapper.logging.setup(__name__)
 rc = UserDefaults("bobrc.toml")
 
 

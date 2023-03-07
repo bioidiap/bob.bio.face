@@ -1,5 +1,7 @@
 import logging
 
+from collections.abc import Iterable
+
 from sklearn.pipeline import Pipeline
 
 from bob.pipelines import wrap
@@ -59,10 +61,7 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
     """
 
     if isinstance(annotation_type, str):
-        if (
-            annotation_type == "eyes-center"
-            or annotation_type == "bounding-box"
-        ):
+        if annotation_type in ("eyes-center", "bounding-box"):
             cropped_positions = {
                 "leye": (55, 72),
                 "reye": (55, 40),
@@ -70,7 +69,7 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
         elif annotation_type == "left-profile":
             cropped_positions = {"leye": (52, 56), "mouth": (91, 56)}
         elif annotation_type == "right-profile":
-            return {"reye": (52, 56), "mouth": (91, 56)}
+            cropped_positions = {"reye": (52, 56), "mouth": (91, 56)}
         else:
             raise ValueError(
                 f"Annotations of the type `{annotation_type}` not supported"
@@ -78,8 +77,12 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
 
         return cropped_positions
 
-    # annotation_type is an iterable
-    return [cropped_positions_arcface(item) for item in annotation_type]
+    if isinstance(annotation_type, Iterable):
+        return [cropped_positions_arcface(item) for item in annotation_type]
+
+    raise ValueError(
+        f"Annotations of the type `{annotation_type}` not supported."
+    )
 
 
 def dnn_default_cropping(cropped_image_size, annotation_type):
@@ -104,6 +107,7 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
          The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
          ``annotation_type`` is a list
     """
+
     if isinstance(annotation_type, str):
         CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
@@ -160,11 +164,16 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
 
         return cropped_positions
 
-    # annotation_type is an iterable
-    return [
-        dnn_default_cropping(cropped_image_size, item)
-        for item in annotation_type
-    ]
+    if isinstance(annotation_type, Iterable):
+        return [
+            dnn_default_cropping(cropped_image_size, item)
+            for item in annotation_type
+        ]
+
+    logger.warning(
+        f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+    )
+    return None
 
 
 def legacy_default_cropping(cropped_image_size, annotation_type):
@@ -189,6 +198,7 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
          The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
          ``annotation_type`` is a list
     """
+
     if isinstance(annotation_type, str):
         CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
 
@@ -248,11 +258,16 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
 
         return cropped_positions
 
-    # annotation_type is an iterable
-    return [
-        legacy_default_cropping(cropped_image_size, item)
-        for item in annotation_type
-    ]
+    if isinstance(annotation_type, Iterable):
+        return [
+            legacy_default_cropping(cropped_image_size, item)
+            for item in annotation_type
+        ]
+
+    logger.warning(
+        f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+    )
+    return None
 
 
 def pad_default_cropping(cropped_image_size, annotation_type):

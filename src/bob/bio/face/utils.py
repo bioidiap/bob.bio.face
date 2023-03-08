@@ -1,5 +1,7 @@
 import logging
 
+from collections.abc import Iterable
+
 from sklearn.pipeline import Pipeline
 
 from bob.pipelines import wrap
@@ -58,24 +60,29 @@ def cropped_positions_arcface(annotation_type="eyes-center"):
 
     """
 
-    if isinstance(annotation_type, list):
+    if isinstance(annotation_type, str):
+        if annotation_type in ("eyes-center", "bounding-box"):
+            cropped_positions = {
+                "leye": (55, 72),
+                "reye": (55, 40),
+            }
+        elif annotation_type == "left-profile":
+            cropped_positions = {"leye": (52, 56), "mouth": (91, 56)}
+        elif annotation_type == "right-profile":
+            cropped_positions = {"reye": (52, 56), "mouth": (91, 56)}
+        else:
+            raise ValueError(
+                f"Annotations of the type `{annotation_type}` not supported"
+            )
+
+        return cropped_positions
+
+    if isinstance(annotation_type, Iterable):
         return [cropped_positions_arcface(item) for item in annotation_type]
 
-    if annotation_type == "eyes-center" or annotation_type == "bounding-box":
-        cropped_positions = {
-            "leye": (55, 72),
-            "reye": (55, 40),
-        }
-    elif annotation_type == "left-profile":
-        cropped_positions = {"leye": (52, 56), "mouth": (91, 56)}
-    elif annotation_type == "right-profile":
-        return {"reye": (52, 56), "mouth": (91, 56)}
-    else:
-        raise ValueError(
-            f"Annotations of the type `{annotation_type}` not supported"
-        )
-
-    return cropped_positions
+    raise ValueError(
+        f"Annotations of the type `{annotation_type}` not supported."
+    )
 
 
 def dnn_default_cropping(cropped_image_size, annotation_type):
@@ -100,64 +107,73 @@ def dnn_default_cropping(cropped_image_size, annotation_type):
          The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
          ``annotation_type`` is a list
     """
-    if isinstance(annotation_type, list):
+
+    if isinstance(annotation_type, str):
+        CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+
+        cropped_positions = {}
+
+        if annotation_type == "bounding-box":
+            TOP_LEFT_POS = (0, 0)
+            BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+            cropped_positions.update(
+                {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+            )
+
+        if annotation_type in ["bounding-box", "eyes-center"]:
+            # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
+            RIGHT_EYE_POS = (
+                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+                round(1 / 3 * CROPPED_IMAGE_WIDTH),
+            )
+            LEFT_EYE_POS = (
+                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+                round(2 / 3 * CROPPED_IMAGE_WIDTH),
+            )
+            cropped_positions.update(
+                {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+            )
+
+        elif annotation_type == "left-profile":
+            EYE_POS = (
+                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+                round(3 / 8 * CROPPED_IMAGE_WIDTH),
+            )
+            MOUTH_POS = (
+                round(5 / 7 * CROPPED_IMAGE_HEIGHT),
+                round(3 / 8 * CROPPED_IMAGE_WIDTH),
+            )
+            cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
+
+        elif annotation_type == "right-profile":
+            EYE_POS = (
+                round(2 / 7 * CROPPED_IMAGE_HEIGHT),
+                round(5 / 8 * CROPPED_IMAGE_WIDTH),
+            )
+            MOUTH_POS = (
+                round(5 / 7 * CROPPED_IMAGE_HEIGHT),
+                round(5 / 8 * CROPPED_IMAGE_WIDTH),
+            )
+            cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
+
+        else:
+            logger.warning(
+                f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+            )
+            cropped_positions = None
+
+        return cropped_positions
+
+    if isinstance(annotation_type, Iterable):
         return [
             dnn_default_cropping(cropped_image_size, item)
             for item in annotation_type
         ]
 
-    CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
-
-    cropped_positions = {}
-
-    if annotation_type == "bounding-box":
-        TOP_LEFT_POS = (0, 0)
-        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-        cropped_positions.update(
-            {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
-        )
-
-    if annotation_type in ["bounding-box", "eyes-center"]:
-        # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
-        RIGHT_EYE_POS = (
-            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-            round(1 / 3 * CROPPED_IMAGE_WIDTH),
-        )
-        LEFT_EYE_POS = (
-            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-            round(2 / 3 * CROPPED_IMAGE_WIDTH),
-        )
-        cropped_positions.update({"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS})
-
-    elif annotation_type == "left-profile":
-        EYE_POS = (
-            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-            round(3 / 8 * CROPPED_IMAGE_WIDTH),
-        )
-        MOUTH_POS = (
-            round(5 / 7 * CROPPED_IMAGE_HEIGHT),
-            round(3 / 8 * CROPPED_IMAGE_WIDTH),
-        )
-        cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
-
-    elif annotation_type == "right-profile":
-        EYE_POS = (
-            round(2 / 7 * CROPPED_IMAGE_HEIGHT),
-            round(5 / 8 * CROPPED_IMAGE_WIDTH),
-        )
-        MOUTH_POS = (
-            round(5 / 7 * CROPPED_IMAGE_HEIGHT),
-            round(5 / 8 * CROPPED_IMAGE_WIDTH),
-        )
-        cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
-
-    else:
-        logger.warning(
-            f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
-        )
-        cropped_positions = None
-
-    return cropped_positions
+    logger.warning(
+        f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+    )
+    return None
 
 
 def legacy_default_cropping(cropped_image_size, annotation_type):
@@ -182,58 +198,76 @@ def legacy_default_cropping(cropped_image_size, annotation_type):
          The dictionary of cropped positions that will be feeded to the FaceCropper, or a list of such dictionaries if
          ``annotation_type`` is a list
     """
-    if isinstance(annotation_type, list):
+
+    if isinstance(annotation_type, str):
+        CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
+
+        cropped_positions = {}
+
+        if annotation_type == "bounding-box":
+            TOP_LEFT_POS = (0, 0)
+            BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
+            cropped_positions.update(
+                {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
+            )
+
+        if annotation_type in ["bounding-box", "eyes-center"]:
+            # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
+
+            RIGHT_EYE_POS = (
+                CROPPED_IMAGE_HEIGHT // 5,
+                CROPPED_IMAGE_WIDTH // 4 - 1,
+            )
+            LEFT_EYE_POS = (
+                CROPPED_IMAGE_HEIGHT // 5,
+                CROPPED_IMAGE_WIDTH // 4 * 3,
+            )
+            cropped_positions.update(
+                {"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS}
+            )
+
+        elif annotation_type == "left-profile":
+            # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
+            EYE_POS = (
+                CROPPED_IMAGE_HEIGHT // 5,
+                CROPPED_IMAGE_WIDTH // 7 * 3 - 2,
+            )
+            MOUTH_POS = (
+                CROPPED_IMAGE_HEIGHT // 3 * 2,
+                CROPPED_IMAGE_WIDTH // 7 * 3 - 2,
+            )
+            cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
+
+        elif annotation_type == "right-profile":
+            # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
+            EYE_POS = (
+                CROPPED_IMAGE_HEIGHT // 5,
+                CROPPED_IMAGE_WIDTH // 7 * 4 + 2,
+            )
+            MOUTH_POS = (
+                CROPPED_IMAGE_HEIGHT // 3 * 2,
+                CROPPED_IMAGE_WIDTH // 7 * 4 + 2,
+            )
+            cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
+
+        else:
+            logger.warning(
+                f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+            )
+            cropped_positions = None
+
+        return cropped_positions
+
+    if isinstance(annotation_type, Iterable):
         return [
             legacy_default_cropping(cropped_image_size, item)
             for item in annotation_type
         ]
 
-    CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH = cropped_image_size
-
-    cropped_positions = {}
-
-    if annotation_type == "bounding-box":
-        TOP_LEFT_POS = (0, 0)
-        BOTTOM_RIGHT_POS = (CROPPED_IMAGE_HEIGHT, CROPPED_IMAGE_WIDTH)
-        cropped_positions.update(
-            {"topleft": TOP_LEFT_POS, "bottomright": BOTTOM_RIGHT_POS}
-        )
-
-    if annotation_type in ["bounding-box", "eyes-center"]:
-        # We also add cropped eye positions if `bounding-box`, to work with the BoundingBoxCropAnnotator
-
-        RIGHT_EYE_POS = (
-            CROPPED_IMAGE_HEIGHT // 5,
-            CROPPED_IMAGE_WIDTH // 4 - 1,
-        )
-        LEFT_EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 4 * 3)
-        cropped_positions.update({"leye": LEFT_EYE_POS, "reye": RIGHT_EYE_POS})
-
-    elif annotation_type == "left-profile":
-        # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
-        EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 3 - 2)
-        MOUTH_POS = (
-            CROPPED_IMAGE_HEIGHT // 3 * 2,
-            CROPPED_IMAGE_WIDTH // 7 * 3 - 2,
-        )
-        cropped_positions.update({"leye": EYE_POS, "mouth": MOUTH_POS})
-
-    elif annotation_type == "right-profile":
-        # Main reference https://gitlab.idiap.ch/bob/bob.chapter.FRICE/-/blob/master/bob/chapter/FRICE/script/pose.py
-        EYE_POS = (CROPPED_IMAGE_HEIGHT // 5, CROPPED_IMAGE_WIDTH // 7 * 4 + 2)
-        MOUTH_POS = (
-            CROPPED_IMAGE_HEIGHT // 3 * 2,
-            CROPPED_IMAGE_WIDTH // 7 * 4 + 2,
-        )
-        cropped_positions.update({"reye": EYE_POS, "mouth": MOUTH_POS})
-
-    else:
-        logger.warning(
-            f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
-        )
-        cropped_positions = None
-
-    return cropped_positions
+    logger.warning(
+        f"Annotation type {annotation_type} is not supported. Input images will be fully scaled."
+    )
+    return None
 
 
 def pad_default_cropping(cropped_image_size, annotation_type):

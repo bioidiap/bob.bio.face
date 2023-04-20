@@ -123,7 +123,7 @@ class MultipieDatabase(CSVDatabase):
                     dataset_original_directory=rc.get(
                         "bob.db.multipie.directory", ""
                     ),
-                    extension=".png",
+                    extension=rc.get("bob.db.multipie.extension", ".png"),
                 ),
                 MultiposeAnnotations(),
             ),

@@ -73,9 +73,8 @@ class CaspealDatabase(CSVDatabase):
                     data_loader=bob.io.base.load,
                     dataset_original_directory=rc.get(
                         "bob.bio.face.caspeal.directory", ""
-                    )
-                    or "",
-                    extension=".png",
+                    ),
+                    extension=rc.get("bob.bio.face.caspeal.extension", ".tif"),
                 ),
                 EyesAnnotations(),
             ),

@@ -50,7 +50,7 @@ class SCFaceDatabase(CSVDatabase):
                     dataset_original_directory=rc.get(
                         "bob.bio.face.scface.directory", ""
                     ),
-                    extension="",
+                    extension=rc.get("bob.bio.face.scface.extension", ""),
                 ),
                 EyesAnnotations(),
             ),

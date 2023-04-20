@@ -45,7 +45,7 @@ class FRGCDatabase(CSVDatabase):
                         "bob.bio.face.frgc.directory",  # TODO normalize this name
                         "",
                     ),
-                    extension="",
+                    extension=rc.get("bob.bio.face.frgc.extension", ""),
                 ),
                 EyesAnnotations(),
             ),

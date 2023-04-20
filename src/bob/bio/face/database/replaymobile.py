@@ -263,14 +263,12 @@ class ReplayMobileBioDatabase(CSVDatabase):
         self,
         protocol="grandtest",
         protocol_definition_path=None,
-        data_path=None,
-        data_extension=".mov",
+        data_path=rc.get("bob.db.replaymobile.directory", ""),
+        data_extension=rc.get("bob.db.replaymobile.extension", ".mov"),
         annotations_path=None,
         annotations_extension=".json",
         **kwargs,
     ):
-        if data_path is None:
-            data_path = rc.get("bob.db.replaymobile.directory", "")
         if data_path == "":
             logger.warning(
                 "Raw data path is not configured. Please set "

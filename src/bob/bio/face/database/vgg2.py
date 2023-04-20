@@ -191,6 +191,7 @@ class VGG2Database(CSVDatabase):
                 ),
                 VGG2Annotations(),
             ),
+            templates_metadata=["gender", "race"],
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )

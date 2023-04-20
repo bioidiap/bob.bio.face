@@ -93,6 +93,8 @@ def test_mobio():
         assert len(database.references(group="eval")) > 0
         assert len(database.probes(group="eval")) > 0
 
+        assert hasattr(database.references()[0], "gender")
+
     # Sanity check on mobio-male
     database = MobioDatabase(protocol="mobile0-male")
     assert len(database.treferences()) == 24
@@ -275,6 +277,11 @@ def test_meds():
     assert len(database.references(group="eval")) == 112
     assert len(database.probes(group="eval")) == 309
 
+    assert hasattr(database.references()[0], "race")
+    assert hasattr(database.references()[0], "sex")
+    assert hasattr(database.probes()[0], "race")
+    assert hasattr(database.probes()[0], "sex")
+
 
 def test_morph():
     from bob.bio.face.database import MorphDatabase
@@ -302,6 +309,13 @@ def test_morph():
 
     assert len(database.references(group="eval")) == 6742
     assert len(database.probes(group="eval")) == 6553
+
+    assert hasattr(database.references()[0], "date_of_birth")
+    assert hasattr(database.references()[0], "rac")
+    assert hasattr(database.references()[0], "sex")
+    assert hasattr(database.probes()[0], "date_of_birth")
+    assert hasattr(database.probes()[0], "rac")
+    assert hasattr(database.probes()[0], "sex")
 
 
 def test_casia_africa():
@@ -393,6 +407,11 @@ def test_rfw():
     assert len(database.zprobes()) == 100
     assert len(database.treferences()) == 100
     assert sum([len(d.references) for d in database.probes()]) == 89540
+
+    assert hasattr(database.references()[0], "gender")
+    assert hasattr(database.references()[0], "race")
+    assert hasattr(database.probes()[0], "gender")
+    assert hasattr(database.probes()[0], "race")
 
 
 def test_scface():
@@ -750,6 +769,11 @@ def test_vgg2():
     assert len(database.references()) == 500
     assert len(database.probes()) == 2500
 
+    assert hasattr(database.references()[0], "gender")
+    assert hasattr(database.references()[0], "race")
+    assert hasattr(database.probes()[0], "gender")
+    assert hasattr(database.probes()[0], "race")
+
     p = "vgg2-short-with-eval"
 
     database = VGG2Database(protocol=p)
@@ -765,3 +789,8 @@ def test_vgg2():
 
     assert len(database.references(group="eval")) == 250
     assert len(database.probes(group="eval")) == 1250
+
+    assert hasattr(database.references()[0], "gender")
+    assert hasattr(database.references()[0], "race")
+    assert hasattr(database.probes()[0], "gender")
+    assert hasattr(database.probes()[0], "race")

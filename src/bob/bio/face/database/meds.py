@@ -119,6 +119,7 @@ class MEDSDatabase(CSVDatabase):
                 ),
                 EyesAnnotations(),
             ),
+            templates_metadata=["sex", "race"],
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )

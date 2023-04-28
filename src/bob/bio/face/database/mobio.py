@@ -85,6 +85,7 @@ class MobioDatabase(CSVDatabase):
                 ),
                 EyesAnnotations(),
             ),
+            templates_metadata=["gender"],
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )

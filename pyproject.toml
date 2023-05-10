@@ -73,7 +73,7 @@
     package-dir = {"" = "src"}
 
 [tool.setuptools.dynamic]
-    readme = {file = "README.rst"}
+    readme = {file = "README.md"}
 
 [project.entry-points."bob.bio.database"]
     arface-all                        = "bob.bio.face.config.database.arface_all:database"

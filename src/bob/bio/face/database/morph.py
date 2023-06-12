@@ -71,7 +71,7 @@ class MorphDatabase(CSVDatabase):
         annotation_type="eyes-center",
         fixed_positions=None,
         dataset_original_directory=rc.get("bob.db.morph.directory", ""),
-        dataset_original_extension=".JPG",
+        dataset_original_extension=rc.get("bob.db.morph.extension", ".JPG"),
     ):
         super().__init__(
             name=self.name,

@@ -139,7 +139,7 @@ class GBUDatabase(Database):
         annotation_type="eyes-center",
         fixed_positions=None,
         original_directory=rc.get("bob.bio.face.gbu.directory"),
-        extension=".jpg",
+        extension=rc.get("bob.bio.face.gbu.extension", ".jpg"),
     ):
         import warnings
 

@@ -112,6 +112,7 @@ class CasiaAfricaDatabase(CSVDatabase):
         self, protocol, annotation_type="eyes-center", fixed_positions=None
     ):
         directory = rc.get("bob.db.casia-africa.directory", "")
+        extension = rc.get("bob.db.casia-africa.extension", ".jpg")
 
         super().__init__(
             name=self.name,
@@ -120,7 +121,7 @@ class CasiaAfricaDatabase(CSVDatabase):
                 FileSampleLoader(
                     data_loader=bob.io.base.load,
                     dataset_original_directory=directory,
-                    extension=".jpg",
+                    extension=extension,
                 ),
                 EyesAnnotations(),
             ),

@@ -104,7 +104,7 @@ class MEDSDatabase(CSVDatabase):
         annotation_type="eyes-center",
         fixed_positions=None,
         dataset_original_directory=rc.get("bob.db.meds.directory", ""),
-        dataset_original_extension=".jpg",
+        dataset_original_extension=rc.get("bob.db.meds.extension", ".jpg"),
     ):
         super().__init__(
             name=self.name,

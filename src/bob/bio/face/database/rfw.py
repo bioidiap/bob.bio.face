@@ -90,7 +90,7 @@ class RFWDatabase(Database):  # TODO Make this a CSVDatabase?
         self._check_protocol(protocol)
         self._races = ["African", "Asian", "Caucasian", "Indian"]
         self.original_directory = original_directory
-        self._default_extension = ".jpg"
+        self._default_extension = rc.get("bob.bio.face.rfw.extension", ".jpg")
 
         super().__init__(
             protocol=protocol,

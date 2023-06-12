@@ -93,7 +93,7 @@ class LFWDatabase(Database):  # TODO Make this a CSVDatabase?
         image_relative_path="all_images",
         fixed_positions=None,
         original_directory=rc.get("bob.bio.face.lfw.directory"),
-        extension=".jpg",
+        extension=rc.get("bob.bio.face.lfw.extension", ".jpg"),
         annotation_directory=rc.get("bob.bio.face.lfw.annotation_directory"),
         annotation_issuer="funneled",
     ):

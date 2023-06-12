@@ -110,7 +110,7 @@ class PolaThermalDatabase(CSVDatabase):
                 FileSampleLoader(
                     data_loader=load,
                     dataset_original_directory=directory,
-                    extension=".png",
+                    extension=rc.get("bob.db.pola-thermal.extension", ".png"),
                 ),
                 EyesAnnotations(),
             ),

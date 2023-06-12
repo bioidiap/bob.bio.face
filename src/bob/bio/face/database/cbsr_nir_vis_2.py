@@ -86,9 +86,8 @@ class CBSRNirVis2Database(CSVDatabase):
                     data_loader=load,
                     dataset_original_directory=rc.get(
                         "bob.db.cbsr-nir-vis-2.directory", ""
-                    )
-                    or "",
-                    extension=".jpg",
+                    ),
+                    extension=rc.get("bob.db.cbsr-nir-vis-2.extension", ".jpg"),
                 ),
                 EyesAnnotations(),
             ),

@@ -24,21 +24,20 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
-        "setuptools",
-        "clapper",
-        "bob.extension",
+        "bob",
         "bob.io.base",
         "bob.measure",
         "bob.bio.base",
         "bob.pipelines",
+        "clapper",
+        "imageio-ffmpeg",
         "matplotlib",
+        "opencv-python",
+        "pytorch-lightning",
         "scikit-image",
         "scikit-learn",
         "torch",
         "torchvision",
-        "imageio-ffmpeg",
-        "pytorch-lightning",
-        "opencv-python",
     ]
 
 [project.urls]

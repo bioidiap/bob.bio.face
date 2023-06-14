@@ -21,36 +21,36 @@ requirements:
     - python {{ python }}
     - setuptools {{ setuptools }}
     - pip {{ pip }}
-    - clapper
-    - bob.extension
+    - bob
     - bob.io.base
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - matplotlib {{ matplotlib }}
-    - scikit-image {{ scikit_image }}
-    - tensorflow {{ tensorflow }}  # [linux]
+    - clapper {{ clapper }}
     - imageio-ffmpeg {{ imageio_ffmpeg }}
+    - matplotlib {{ matplotlib }}
     - opencv {{ opencv }}
     - pytorch {{ pytorch }}
     - pytorch-lightning {{ pytorch_lightning }}
+    - scikit-image {{ scikit_image }}
+    - tensorflow {{ tensorflow }}  # [linux]
     - torchvision {{ torchvision }}
   run:
     - python
     - setuptools
-    - clapper
-    - bob.extension
+    - bob
     - bob.io.base
     - bob.measure
     - bob.bio.base
     - bob.pipelines
-    - {{ pin_compatible('matplotlib')}}
-    - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('clapper')}}
     - {{ pin_compatible('imageio-ffmpeg') }}
+    - {{ pin_compatible('matplotlib')}}
     - {{ pin_compatible('opencv') }}
     - {{ pin_compatible('pytorch') }}
-    - {{ pin_compatible('torchvision') }}
     - {{ pin_compatible('pytorch-lightning') }}
+    - {{ pin_compatible('scikit-image') }}
+    - {{ pin_compatible('torchvision') }}
 
   run_constrained:
     - {{ pin_compatible('tensorflow') }}  # [linux]

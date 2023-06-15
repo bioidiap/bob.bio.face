@@ -35,6 +35,8 @@ requirements:
     - scikit-image {{ scikit_image }}
     - tensorflow {{ tensorflow }}  # [linux]
     - torchvision {{ torchvision }}
+    # Somehow fsspec's backend requires aiohttp but it is not installed:
+    - aiohttp
   run:
     - python
     - setuptools
@@ -51,6 +53,7 @@ requirements:
     - {{ pin_compatible('pytorch-lightning') }}
     - {{ pin_compatible('scikit-image') }}
     - {{ pin_compatible('torchvision') }}
+    - aiohttp
 
   run_constrained:
     - {{ pin_compatible('tensorflow') }}  # [linux]

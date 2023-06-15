@@ -38,6 +38,8 @@
         "scikit-learn",
         "torch",
         "torchvision",
+        # Somehow fsspec's backend requires aiohttp but it is not installed:
+        "aiohttp",
     ]
 
 [project.urls]

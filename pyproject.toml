@@ -4,7 +4,7 @@
 
 [project]
     name            = "bob.bio.face"
-    version         = "8.0.0"
+    version         = "8.0.1b0"
     requires-python = ">=3.9"
     description     = "Tools for running face recognition experiments"
     dynamic         = ["readme"]
@@ -24,26 +24,26 @@
         "Topic :: Scientific/Engineering :: Artificial Intelligence",
     ]
     dependencies = [
-        "bob==12.0.0",
-        "bob.io.base==5.1.0",
-        "bob.measure==6.1.0",
-        "bob.bio.base==8.0.0",
-        "bob.pipelines==4.0.0",
-        "clapper==1.0.1",
-        "imageio-ffmpeg==0.4.8",
-        "matplotlib==3.6.2",
+        "bob",
+        "bob.io.base",
+        "bob.measure",
+        "bob.bio.base",
+        "bob.pipelines",
+        "clapper",
+        "imageio-ffmpeg",
+        "matplotlib",
         "opencv-python",
-        "pytorch-lightning==1.8.1",
-        "scikit-image==0.19.3",
-        "scikit-learn==1.1.2",
-        "torch==1.13.0",
-        "torchvision==0.14.0",
+        "pytorch-lightning",
+        "scikit-image",
+        "scikit-learn",
+        "torch",
+        "torchvision",
         # Somehow fsspec's backend requires aiohttp but it is not installed:
         "aiohttp",
     ]
 
 [project.urls]
-    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.face/v8.0.0/sphinx/"
+    documentation = "https://www.idiap.ch/software/bob/docs/bob/bob.bio.face/master/sphinx/"
     homepage      = "https://pypi.org/project/bob.bio.face/"
     repository    = "https://gitlab.idiap.ch/bob/bob.bio.face"
     changelog     = "https://gitlab.idiap.ch/bob/bob.bio.face/-/releases"
@@ -51,24 +51,24 @@
 [project.optional-dependencies]
     qa  = ["pre-commit"]
     doc = [
-        "sphinx==5.3.0",
-        "sphinx-rtd-theme==1.1.1",
-        "sphinx-autodoc-typehints==1.21.8",
-        "auto-intersphinx==1.0.2",
-        "sphinxcontrib-programoutput==0.17",
-        "matplotlib==3.6.2",
-        "dask-ml==2022.5.27",
-        "tensorflow==2.11.0; sys_platform != \"darwin\"",
+        "sphinx",
+        "sphinx_rtd_theme",
+        "sphinx-autodoc-typehints",
+        "auto-intersphinx",
+        "sphinxcontrib-programoutput",
+        "matplotlib",
+        "dask-ml",
+        "tensorflow",
         ]
     test = [
-        "pytest==7.2.1",
-        "pytest-cov==4.0.0",
-        "coverage==7.0.5",
-        "dask==2023.1.0",
+        "pytest",
+        "pytest-cov",
+        "coverage",
+        "dask",
         # dev-profile constraints will set the extras of tensorflow and
         # tensorflow-macos according to the current OS. Leave both deps in here:
-        "tensorflow==2.11.0; sys_platform != \"darwin\"",
-        "tensorflow-macos==2.11.0; sys_platform == \"darwin\"",
+        "tensorflow",
+        "tensorflow-macos",
         ]
 
 [tool.setuptools]
@@ -283,7 +283,3 @@
     ]
     junit_logging           = "all"
     junit_log_passing_tests = false
-
-[profile]
-    repository_url = "git@gitlab.idiap.ch:bob/dev-profile.git"
-    commit_hash = "ade723be1f11feddb7bece235de32cc98953dc07"

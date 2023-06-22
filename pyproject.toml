@@ -65,8 +65,10 @@
         "pytest-cov",
         "coverage",
         "dask",
-        "tensorflow ; sys_platform == 'linux'",
-        "tensorflow-macos ; sys_platform != 'linux'",
+        # dev-profile constraints will set the extras of tensorflow and
+        # tensorflow-macos according to the current OS. Leave both deps in here:
+        "tensorflow",
+        "tensorflow-macos",
         ]
 
 [tool.setuptools]

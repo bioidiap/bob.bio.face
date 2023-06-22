@@ -420,81 +420,56 @@ def face_crop_solver(
     """
     Decide which face cropper to use.
     """
+
+    def _solve_annotation_type(positions):
+        if "leye" in positions and "reye" in positions:
+            return "eyes-center"
+        if "leye" in positions and "mouth" in positions:
+            return "left-profile"
+        if "reye" in positions and "mouth" in positions:
+            return "right-profile"
+        if "topleft" in positions and "bottomright" in positions:
+            return "bounding-box"
+
     # If there's not cropped positions, just resize
     if cropped_positions is None:
         return Scale(cropped_image_size)
     else:
         # Detects the face and crops it without eye detection
 
-        if isinstance(cropped_positions, list):
+        if isinstance(cropped_positions, (list, tuple)):
             # TODO: This is a hack to support multiple annotations for left, right and eyes center profile
             # We need to do a more elegant solution
 
             croppers = []
             for positions in cropped_positions:
-                if "leye" in positions and "reye" in positions:
-                    cropper = FaceCrop(
-                        cropped_image_size=cropped_image_size,
-                        cropped_positions=positions,
-                        fixed_positions=fixed_positions,
-                        color_channel=color_channel,
-                        annotator=annotator,
-                        dtype=dtype,
-                        cropper=FaceEyesNorm(
-                            positions,
-                            cropped_image_size,
-                            annotation_type="eyes-center",
-                        ),
-                    )
-
-                elif "leye" in positions and "mouth" in positions:
-                    cropper = FaceCrop(
-                        cropped_image_size=cropped_image_size,
-                        cropped_positions=positions,
-                        fixed_positions=fixed_positions,
-                        color_channel=color_channel,
-                        annotator=annotator,
-                        dtype=dtype,
-                        cropper=FaceEyesNorm(
-                            positions,
-                            cropped_image_size,
-                            annotation_type="left-profile",
-                        ),
-                    )
-                elif "reye" in positions and "mouth" in positions:
-                    cropper = FaceCrop(
-                        cropped_image_size=cropped_image_size,
-                        cropped_positions=positions,
-                        fixed_positions=fixed_positions,
-                        color_channel=color_channel,
-                        annotator=annotator,
-                        dtype=dtype,
-                        cropper=FaceEyesNorm(
-                            positions,
-                            cropped_image_size,
-                            annotation_type="right-profile",
-                        ),
-                    )
-
-                else:
-                    raise ValueError(
-                        f"Unsupported list of annotations {cropped_positions}"
-                    )
-
+                cropper = face_crop_solver(
+                    cropped_image_size=cropped_image_size,
+                    cropped_positions=positions,
+                    fixed_positions=fixed_positions,
+                    color_channel=color_channel,
+                    annotator=annotator,
+                    dtype=dtype,
+                )
                 croppers.append(cropper)
 
+            if len(croppers) == 1:
+                return croppers[0]
             return MultiFaceCrop(croppers)
         else:
+            face_norm = FaceEyesNorm(
+                cropped_positions,
+                cropped_image_size,
+                annotation_type=_solve_annotation_type(cropped_positions),
+            )
             # If the eyes annotations are provided
             if (
                 "topleft" in cropped_positions
-                or "bottomright" in cropped_positions
+                and "bottomright" in cropped_positions
+                and len(cropped_positions) >= 4
             ):
-                eyes_cropper = FaceEyesNorm(
-                    cropped_positions, cropped_image_size
-                )
                 return BoundingBoxAnnotatorCrop(
-                    eyes_cropper=eyes_cropper,
+                    eyes_cropper=face_norm,
                     annotator=annotator,
                 )
 
@@ -506,7 +481,7 @@ def face_crop_solver(
                     fixed_positions=fixed_positions,
                     dtype=dtype,
                     annotator=annotator,
-                    **kwargs,
+                    cropper=face_norm,
                 )
 
 

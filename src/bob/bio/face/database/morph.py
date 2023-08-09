@@ -86,7 +86,7 @@ class MorphDatabase(CSVDatabase):
                 ),
                 EyesAnnotations(),
             ),
-            templates_metadata=["date_of_birth", "sex", "rac"],
+            templates_metadata=["date_of_birth", "age_phd", "sex", "rac"],
             annotation_type=annotation_type,
             fixed_positions=fixed_positions,
         )
